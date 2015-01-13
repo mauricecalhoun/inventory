@@ -2,7 +2,6 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\HasUserTrait;
 use Stevebauman\CoreHelper\Models\BaseModel;
 
 /**
@@ -11,8 +10,6 @@ use Stevebauman\CoreHelper\Models\BaseModel;
  */
 class Metric extends BaseModel
 {
-
-    use HasUserTrait;
 
     protected $table = 'metrics';
 

@@ -2,8 +2,6 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\HasUserTrait;
-use Stevebauman\Inventory\Traits\HasLocationTrait;
 use Stevebauman\CoreHelper\Models\BaseModel;
 
 /**
@@ -12,9 +10,6 @@ use Stevebauman\CoreHelper\Models\BaseModel;
  */
 class InventoryStock extends BaseModel
 {
-
-    use HasLocationTrait;
-    use HasUserTrait;
 
     protected $table = 'inventory_stocks';
 
@@ -31,12 +26,12 @@ class InventoryStock extends BaseModel
 
     public function item()
     {
-        return $this->belongsTo('Stevebauman\Maintenance\Models\Inventory', 'inventory_id', 'id');
+        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
     }
 
     public function movements()
     {
-        return $this->hasMany('Stevebauman\Maintenance\Models\InventoryStockMovement', 'stock_id')->orderBy('created_at', 'DESC');
+        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStockMovement', 'stock_id')->orderBy('created_at', 'DESC');
     }
 
     /**
@@ -101,4 +96,21 @@ class InventoryStock extends BaseModel
     {
         return $this->attributes['quantity'] . ' ' . $this->item->metric->name;
     }
+
+    /**
+     * @param int $quantity
+     */
+    public function take($quantity = 0)
+    {
+
+    }
+
+    /**
+     * @param int $quantity
+     */
+    public function put($quantity = 0)
+    {
+
+    }
+
 }
