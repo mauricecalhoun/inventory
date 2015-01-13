@@ -150,7 +150,7 @@ class InventoryStock extends BaseModel
     {
         if($this->isValidQuantity($quantity)) {
 
-            return $this->processStockChange($this->quantity, $quantity, $reason, $cost);
+            return $this->processPutOperation($quantity, $reason, $cost);
 
         } else {
 
@@ -190,49 +190,6 @@ class InventoryStock extends BaseModel
         return false;
     }
 
-    /**
-     * Processes a stock change then generates a stock movement
-     *
-     * @param $before
-     * @param $after
-     * @param string $reason
-     * @param int $cost
-     * @return static
-     */
-    private function processStockChange($before, $after, $reason = '', $cost = 0)
-    {
-        if($before > $after) {
-
-            $this->quantity = $before - $after;
-
-        } else if($after < $before) {
-
-            $this->quantity = $before + $after;
-
-        } else if($before == $after) {
-
-            if(config('inventory::allow_duplicate_movements')) {
-
-                $this->quantity = $after;
-
-            } else {
-
-                /*
-                 * Return last movement created
-                 */
-                return $this->movements()->orderBy('created_at', 'DESC')->first();
-
-            }
-
-        }
-
-        if($this->save()) {
-
-            return $this->generateStockMovement($before, $this->quantity, $reason, $cost);
-
-        }
-    }
-
     private function processTakeOperation($taking, $reason = '')
     {
         $before = $this->quantity;
@@ -265,6 +222,11 @@ class InventoryStock extends BaseModel
             return $this->generateStockMovement($before, $this->quantity, $reason);
 
         }
+
+    }
+
+    private function processPutOperation($putting, $reason = '', $cost = 0)
+    {
 
     }
 
