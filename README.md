@@ -1,0 +1,1 @@
+Inventory Management for Laravel 4
