@@ -135,6 +135,76 @@ class Inventory extends BaseModel
     }
 
     /**
+     * Filters inventory results by specified category
+     *
+     * @param $query
+     * @param null $category_id
+     */
+    public function scopeCategory($query, $category_id = NULL)
+    {
+
+        if ($category_id) {
+
+            /*
+             * Get descendants and self inventory category nodes
+             */
+            $categories = Category::find($category_id)->getDescendantsAndSelf();
+
+            /*
+             * Perform a subquery on main query
+             */
+            $query->where(function ($query) use ($categories) {
+
+                /*
+                 * For each category, apply a orWhere query to the subquery
+                 */
+                foreach ($categories as $category) {
+                    $query->orWhere('category_id', $category->id);
+                }
+
+                return $query;
+
+            });
+
+        }
+    }
+
+    /**
+     * Filters inventory results by specified location
+     *
+     * @param $query
+     * @param null $location_id
+     */
+    public function scopeLocation($query, $location_id = NULL)
+    {
+
+        if ($location_id) {
+
+            /*
+             * Get descendants and self inventory category nodes
+             */
+            $locations = Location::find($location_id)->getDescendantsAndSelf();
+
+            /*
+             * Perform a subquery on main query
+             */
+            $query->where(function ($query) use ($locations) {
+
+                /*
+                 * For each category, apply a orWhere query to the subquery
+                 */
+                foreach ($locations as $location) {
+                    $query->orWhere('location_id', $location->id);
+                }
+
+                return $query;
+
+            });
+
+        }
+    }
+
+    /**
      * Mutator for showing the total current stock of the inventory item
      *
      * @return int|string
@@ -219,7 +289,7 @@ class Inventory extends BaseModel
      * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
-    public function take($quantity = 0, $location)
+    public function take($quantity, $location, $reason = '')
     {
         if($this->isCollection($location)) {
 
@@ -241,7 +311,7 @@ class Inventory extends BaseModel
 
         }
 
-        return $stock->take($quantity);
+        return $stock->take($quantity, $reason);
 
     }
 
@@ -254,7 +324,7 @@ class Inventory extends BaseModel
      * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
-    public function takeFromMany($quantity = 0, $locations =  array())
+    public function takeFromMany($quantity, $locations =  array())
     {
         $stocks = array();
 
@@ -286,20 +356,19 @@ class Inventory extends BaseModel
     /**
      * @param int $quantity
      */
-    public function put($quantity = 0, $location)
+    public function put($quantity, $location)
     {
 
     }
 
-
     /**
      * Retrieves an inventory stock from a given location
      *
-     * @param \Illuminate\Support\Collection $location
+     * @param Location $location
      * @return mixed
      * @throws StockNotFoundException
      */
-    public function getStockFromLocation(Collection $location)
+    public function getStockFromLocation(Location $location)
     {
         $stock = InventoryStock::
             where('inventory_id', $this->id)

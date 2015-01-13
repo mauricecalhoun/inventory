@@ -11,8 +11,18 @@ use Stevebauman\CoreHelper\Models\BaseModel;
 class InventoryStockMovement extends BaseModel
 {
 
+    /**
+     * The database table to store inventory stock movement records
+     *
+     * @var string
+     */
     protected $table = 'inventory_stock_movements';
 
+    /**
+     * The fillable eloquent attribute array for allowing mass assignments
+     *
+     * @var array
+     */
     protected $fillable = array(
         'stock_id',
         'user_id',
