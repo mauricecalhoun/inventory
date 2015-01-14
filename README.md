@@ -22,13 +22,6 @@ Now, create a category to store the inventory record under:
     
 Then, you'll create an inventory record
     
-    $data = array(
-        'metric_id' => $metric->id,
-        'category_id' => $category->id,
-        'name' => 'Milk',
-        'description' => 'Delicious milk'
-    );
-    
     $item = new Inventory;
     
     $item->metric_id = $metric->id;
