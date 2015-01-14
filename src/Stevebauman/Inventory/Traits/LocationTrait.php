@@ -2,7 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Stevebauman\Maintenance\Models\Location;
+use Stevebauman\Inventory\Models\Location;
 
 trait LocationTrait {
 
@@ -37,14 +37,14 @@ trait LocationTrait {
     }
 
     /**
-     * Returns true or false if the specified location is an instance of them model Location
+     * Returns true or false if the specified location is an instance of the model Location
      *
      * @param $object
      * @return bool
      */
     private function isLocation($object)
     {
-        return ($object instanceof Location ? true : false);
+        return is_subclass_of($object, 'Stevebauman\Inventory\Models\Location') || $object instanceof Location;
     }
 
 }
