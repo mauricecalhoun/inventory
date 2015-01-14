@@ -18,6 +18,7 @@ Now, create a category to store the inventory record under:
     $category = new Category;
     
     $category->name = 'Drinks';
+    $category->save();
     
 Then, you'll create an inventory record
     
