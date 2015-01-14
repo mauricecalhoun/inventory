@@ -145,34 +145,58 @@ class InventoryStock extends BaseModel
     }
 
     /**
+     * Removes the specified quantity from the current stock
+     *
+     * @param $quantity
+     * @param string $reason
+     * @return InventoryStock
+     */
+    public function minus($quantity, $reason= '')
+    {
+        return $this->take($quantity, $reason);
+    }
+
+    /**
      * Processes a 'take' operation on the current stock
      *
      * @param $quantity
-     * @param $reason
+     * @param string $reason
      * @return InventoryStock
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    public function take($quantity, $reason)
+    public function take($quantity, $reason = '')
     {
         if($this->isValidQuantity($quantity) && $this->hasEnoughStock($quantity)) {
 
             return $this->processTakeOperation($quantity, $reason);
 
         }
+    }
 
+    /**
+     * Alias for put function
+     *
+     * @param $quantity
+     * @param $reason
+     * @param int $cost
+     * @return InventoryStock
+     */
+    public function add($quantity, $reason = '', $cost = 0)
+    {
+        return $this->put($quantity, $reason, $cost);
     }
 
     /**
      * Processes a 'put' operation on the current stock
      *
      * @param $quantity
-     * @param $reason
+     * @param string $reason
      * @param int $cost
      * @return static
      * @throws InvalidQuantityException
      */
-    public function put($quantity, $reason, $cost = 0)
+    public function put($quantity, $reason = '', $cost = 0)
     {
         if($this->isValidQuantity($quantity)) {
 
