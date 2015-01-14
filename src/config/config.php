@@ -7,6 +7,9 @@ return array(
      */
     'allow_no_user' => false,
 
+    /*
+     * Allows inventory stock movements to have the same before and after quantity
+     */
     'allow_duplicate_movements' => true,
 
     /*

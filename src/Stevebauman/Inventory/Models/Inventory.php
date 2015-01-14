@@ -283,9 +283,10 @@ class Inventory extends BaseModel
     /**
      * Takes the specified amount of stock from specified stock location
      *
-     * @param int $quantity
+     * @param string|int $quantity
      * @param $location
-     * @return mixed
+     * @param string $reason
+     * @return array
      * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
@@ -303,7 +304,7 @@ class Inventory extends BaseModel
 
         } else if(is_array($location)) {
 
-            return $this->takeFromMany($quantity, $location);
+            return $this->takeFromMany($quantity, $location, $reason);
 
         } else {
 
@@ -316,15 +317,16 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Takes the specified amount of stock from many stock locations
+     * Takes the specified amount of stock from the specified stock location(s)
      *
-     * @param int $quantity
+     * @param string|int $quantity
      * @param array $locations
+     * @param string $reason
      * @return array
      * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
-    public function takeFromMany($quantity, $locations =  array())
+    public function takeFromMany($quantity, $locations =  array(), $reason = '')
     {
         $stocks = array();
 
@@ -346,7 +348,7 @@ class Inventory extends BaseModel
 
             }
 
-            $stocks[] = $stock->take($quantity);
+            $stocks[] = $stock->take($quantity, $reason);
 
         }
 
@@ -354,11 +356,68 @@ class Inventory extends BaseModel
     }
 
     /**
-     * @param int $quantity
+     * Puts the specified amount of stock from the specified stock location(s)
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @param int $cost
+     * @return array
+     * @throws InvalidLocationException
+     * @throws StockNotFoundException
      */
-    public function put($quantity, $location)
+    public function put($quantity, $location, $reason = '', $cost = 0)
     {
+        if($this->isCollection($location)) {
 
+            $stock = $this->getStockFromLocation($location);
+
+        } else if(is_numeric($location)) {
+
+            $location = $this->getLocationById($location);
+
+            $stock = $this->getStockFromLocation($location);
+
+        } else if(is_array($location)) {
+
+            return $this->putToMany($quantity, $location);
+
+        } else {
+
+            throw new InvalidLocationException;
+
+        }
+
+        return $stock->put($quantity, $reason, $cost);
+    }
+
+    public function putToMany($quantity, $locations = array(), $reason = '', $cost = 0)
+    {
+        $stocks = array();
+
+        foreach($locations as $location) {
+
+            if($this->isCollection($location)) {
+
+                $stock = $this->getStockFromLocation($location);
+
+            } else if(is_numeric($location)) {
+
+                $location = $this->getLocationById($location);
+
+                $stock = $this->getStockFromLocation($location);
+
+            } else {
+
+                throw new InvalidLocationException;
+
+            }
+
+            $stocks[] = $stock->put($quantity, $reason, $cost);
+
+        }
+
+        return $stocks;
     }
 
     /**
@@ -396,7 +455,6 @@ class Inventory extends BaseModel
     {
         return Location::find($id);
     }
-
 
     /**
      * Returns true or false if the specified object is a collection

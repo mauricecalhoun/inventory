@@ -2,12 +2,11 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Cartalyst\Sentry\Facades\Laravel\Sentry;
-use Stevebauman\CoreHelper\Models\BaseModel;
+use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
-use Stevebauman\Maintenance\Models\InventoryStockMovement;
-
+use Stevebauman\CoreHelper\Models\BaseModel;
 /**
  * Class InventoryStock
  * @package Stevebauman\Inventory\Models
@@ -117,12 +116,23 @@ class InventoryStock extends BaseModel
     }
 
     /**
+     * Returns the last movement on the current stock record
+     *
+     * @return mixed
+     */
+    public function getLastMovement()
+    {
+       return $this->movements()->orderBy('created_at', 'DESC')->first();
+    }
+
+    /**
      * Processes a 'take' operation on the current stock
      *
      * @param $quantity
      * @param $reason
-     * @return static
+     * @return InventoryStock
      * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
      */
     public function take($quantity, $reason)
     {
@@ -130,11 +140,8 @@ class InventoryStock extends BaseModel
 
             return $this->processTakeOperation($quantity, $reason);
 
-        } else {
-
-            throw new InvalidQuantityException;
-
         }
+
     }
 
     /**
@@ -164,12 +171,13 @@ class InventoryStock extends BaseModel
      *
      * @param $quantity
      * @return bool
+     * @throws InvalidQuantityException
      */
     public function isValidQuantity($quantity)
     {
         if($this->isPositive($quantity)) return true;
 
-        return false;
+        throw new InvalidQuantityException;
     }
 
     /**
@@ -177,17 +185,16 @@ class InventoryStock extends BaseModel
      *
      * @param int $quantity
      * @return bool
+     * @throws NotEnoughStockException
      */
     public function hasEnoughStock($quantity = 0)
     {
         /**
          * Using double equals for validation of complete value only, not integer type
          */
-        if($this->quantity == $quantity || $this->quantity > $quantity) {
-            return true;
-        }
+        if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
-        return false;
+        throw new  NotEnoughStockException;
     }
 
     private function processTakeOperation($taking, $reason = '')
@@ -201,15 +208,9 @@ class InventoryStock extends BaseModel
          */
         if($left == $this->quantity) {
 
-            /*
-             * Check if duplicate movements is allowed, if they aren't then return the last movement created
-             */
             if(!config('inventory::allow_duplicate_movements')) {
 
-                /*
-                 * Return last movement created
-                 */
-                return $this->movements()->orderBy('created_at', 'DESC')->first();
+                return $this->getLastMovement();
 
             }
 
@@ -227,7 +228,35 @@ class InventoryStock extends BaseModel
 
     private function processPutOperation($putting, $reason = '', $cost = 0)
     {
+        $before = $this->quantity;
 
+        $total = $putting + $before;
+
+        if($total == $this->quatity) {
+
+            if(!config('inventory::allow_duplicate_movements')) {
+
+                return $this->getLastMovement();
+
+            }
+
+        }
+
+        $this->quantity = $total;
+
+        DB::beginTransaction();
+
+        if($this->save()) {
+
+            if($this->generateStockMovement($before, $this->quantity, $reason,  $cost)) DB::commit();
+
+            DB::rollback();
+
+        } else {
+
+            DB::rollback();
+
+        }
     }
 
     /**
@@ -295,15 +324,15 @@ class InventoryStock extends BaseModel
          */
         if(class_exists('Cartalyst\Sentry\SentryServiceProvider')) {
 
-            if(Sentry::check()) {
+            if(\Cartalyst\Sentry\Facades\Laravel\Sentry::check()) {
 
-                return Sentry::getUser()->id;
+                return \Cartalyst\Sentry\Facades\Laravel\Sentry::getUser()->id;
 
             }
 
-        } elseif (Auth::check()) {
+        } elseif (\Illuminate\Support\Facades\Auth::check()) {
 
-            return Auth::user()->id;
+            return \Illuminate\Support\Facades\Auth::user()->id;
 
         } else {
 

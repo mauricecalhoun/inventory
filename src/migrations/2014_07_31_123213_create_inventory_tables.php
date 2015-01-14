@@ -46,6 +46,9 @@ class CreateInventoryTables extends Migration
             $table->integer('inventory_id')->unsigned();
             $table->integer('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
+            $table->string('aisle')->nullable();
+            $table->string('row')->nullable();
+            $table->string('bin')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')
