@@ -20,7 +20,7 @@ Now, create a category to store the inventory record under:
     $category->name = 'Drinks';
     $category->save();
     
-Then, you'll create an inventory record
+Then, you'll create an inventory record, and assign the metric and category we just created:
     
     $item = new Inventory;
     
@@ -30,14 +30,14 @@ Then, you'll create an inventory record
     $item->description = 'Delicious milk';
     $item->save();
     
-Now we have out inventory item created. We'll have to add stock, but to add stock we need to create a Location to bind the stock to.
+Now we have out inventory item created. We'll have to add stock, but to add stock we need to create a Location to bind the stock to:
 
     $location = new Location;
     
     $location->name = 'Warehouse';
     $location->save();
     
-Now we can add stock to our inventory by supplying a number (int or string)
+Now we can add stock to our inventory by supplying a number (int or string):
 
     $item->addStock(500, $location);
     
