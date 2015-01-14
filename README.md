@@ -69,7 +69,7 @@ So, we've successfully added stock to our inventory item, now let's add some mor
     /*
     * Or you can use the add, they both perform the same function
     */
-    $stock->add(100, $reason, $cost);
+    $stock->add(3, $reason, $cost);
     
 We've added quantity to our stock, now lets take some away:
 
