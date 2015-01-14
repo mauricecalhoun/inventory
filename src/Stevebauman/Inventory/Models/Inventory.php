@@ -188,7 +188,6 @@ class Inventory extends BaseModel
      */
     public function scopeLocation($query, $location_id = NULL)
     {
-
         if ($location_id) {
 
             /*
@@ -211,7 +210,6 @@ class Inventory extends BaseModel
                 return $query;
 
             });
-
         }
     }
 
@@ -222,19 +220,13 @@ class Inventory extends BaseModel
      */
     public function getCurrentStockAttribute()
     {
-        if ($this->isInStock()) {
+        $stock = $this->getTotalStock();
 
-            $stock = $this->getTotalStock();
-
-            if ($this->hasMetric()) {
-                return sprintf('%s %s', $stock, $this->getMetricSymbol());
-            }
-
-            return $stock;
-
+        if ($this->hasMetric()) {
+            return sprintf('%s %s', $stock, $this->getMetricSymbol());
         }
 
-        return 0;
+        return $stock;
     }
 
     /**
@@ -288,7 +280,7 @@ class Inventory extends BaseModel
      */
     public function isInStock()
     {
-        return ($this->getStock() > 0 ? true : false);
+        return ($this->getTotalStock() > 0 ? true : false);
     }
 
     /**
@@ -359,9 +351,26 @@ class Inventory extends BaseModel
 
             $stock = $this->getStockFromLocation($location);
 
-            return $stock->take($quantity, $reason);
+            if($stock->take($quantity, $reason)) {
+
+                return $this;
+
+            }
 
         }
+    }
+
+    /**
+     * Alias for the `take` function
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @return array
+     */
+    public function minus($quantity, $location, $reason = '')
+    {
+        return $this->take($quantity, $location, $reason);
     }
 
     /**
@@ -408,9 +417,27 @@ class Inventory extends BaseModel
 
             $stock = $this->getStockFromLocation($location);
 
-            return $stock->put($quantity, $reason, $cost);
+            if($stock->put($quantity, $reason, $cost)) {
+
+                return $this;
+
+            }
 
         }
+    }
+
+    /**
+     * Alias for the `put` function
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @param int $cost
+     * @return array
+     */
+    public function add($quantity, $location, $reason = '', $cost = 0)
+    {
+        return $this->put($quantity, $location, $reason, $cost);
     }
 
     /**

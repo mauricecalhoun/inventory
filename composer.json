@@ -11,7 +11,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "4.2.*",
+        "illuminate/support": "4.*",
         "stevebauman/core-helper": "1.0.*",
         "baum/baum": "~1.0"
     },

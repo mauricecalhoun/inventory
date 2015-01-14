@@ -72,6 +72,16 @@ class InventoryStock extends BaseModel
     }
 
     /**
+     * The hasOne location relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function location()
+    {
+        return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
+    }
+
+    /**
      * Accessor for viewing the last movement of the stock
      *
      * @return null|string
@@ -142,6 +152,15 @@ class InventoryStock extends BaseModel
     public function getLastMovement()
     {
        return $this->movements()->orderBy('created_at', 'DESC')->first();
+    }
+
+    public function updateQuantity($quantity, $reason= '', $cost = 0)
+    {
+        if($this->isValidQuantity($quantity)) {
+
+            return $this->processUpdateQuantityOperation($quantity, $reason, $cost);
+
+        }
     }
 
     /**
@@ -253,6 +272,23 @@ class InventoryStock extends BaseModel
         throw new NotEnoughStockException($message);
     }
 
+    private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
+    {
+        if($quantity > $this->quantity) {
+
+            $putting = $quantity - $this->quantity;
+
+            return $this->put($putting, $reason, $cost);
+
+        } else {
+
+            $taking = $this->quantity - $quantity;
+
+            return $this->take($taking, $reason);
+
+        }
+    }
+
     /**
      * Processes removing quantity from the current stock
      *
@@ -270,13 +306,9 @@ class InventoryStock extends BaseModel
          * Check if the amount left is already the amount that is on the record
          */
         if($left == $this->quantity) {
-
             if(!config('inventory::allow_duplicate_movements')) {
-
                 return $this;
-
             }
-
         }
 
         $this->quantity = $left;
@@ -374,6 +406,7 @@ class InventoryStock extends BaseModel
                 'stock' => $this,
             ));
 
+            return $this;
         }
 
         DB::rollback();
