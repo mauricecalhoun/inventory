@@ -3,6 +3,9 @@
 namespace Stevebauman\Inventory\Models;
 
 use Illuminate\Support\Facades\DB;
+use Stevebauman\Inventory\Traits\FireEventTrait;
+use Stevebauman\Inventory\Traits\LocationTrait;
+use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
@@ -13,6 +16,16 @@ use Stevebauman\CoreHelper\Models\BaseModel;
  */
 class InventoryStock extends BaseModel
 {
+
+    /**
+     * Used for easily grabbing a specified location
+     */
+    use LocationTrait;
+
+    /**
+     * Used for easily firing events
+     */
+    use FireEventTrait;
 
     /**
      * The database table to store inventory stock records
@@ -159,11 +172,20 @@ class InventoryStock extends BaseModel
 
             return $this->processPutOperation($quantity, $reason, $cost);
 
-        } else {
-
-            throw new InvalidQuantityException;
-
         }
+    }
+
+    /**
+     * Moves a stock to the specified location
+     *
+     * @param $location
+     * @return bool
+     */
+    public function moveTo($location)
+    {
+        $location = $this->getLocation($location);
+
+        return $this->processMoveOperation($location);
     }
 
     /**
@@ -177,7 +199,9 @@ class InventoryStock extends BaseModel
     {
         if($this->isPositive($quantity)) return true;
 
-        throw new InvalidQuantityException;
+        $message = sprintf('Quantity %s is invalid', $quantity);
+
+        throw new InvalidQuantityException($message);
     }
 
     /**
@@ -194,9 +218,18 @@ class InventoryStock extends BaseModel
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
-        throw new  NotEnoughStockException;
+        $message = sprintf('Not enough stock. Tried to take %s but only %s is available', $quantity, $this->quantity);
+
+        throw new NotEnoughStockException($message);
     }
 
+    /**
+     * Processes removing quantity from the current stock
+     *
+     * @param $taking
+     * @param string $reason
+     * @return $this|bool
+     */
     private function processTakeOperation($taking, $reason = '')
     {
         $before = $this->quantity;
@@ -210,7 +243,7 @@ class InventoryStock extends BaseModel
 
             if(!config('inventory::allow_duplicate_movements')) {
 
-                return $this->getLastMovement();
+                return $this;
 
             }
 
@@ -218,14 +251,38 @@ class InventoryStock extends BaseModel
 
         $this->quantity = $left;
 
+        DB::beginTransaction();
+
         if($this->save()) {
 
-            return $this->generateStockMovement($before, $this->quantity, $reason);
+            if($this->generateStockMovement($before, $this->quantity, $reason)) {
+
+                DB::commit();
+
+                $this->fireEvent('inventory.stock.taken', array(
+                    'stock' => $this,
+                ));
+
+                return $this;
+
+            }
 
         }
 
+        DB::rollback();
+
+        return false;
+
     }
 
+    /**
+     * Processes adding quantity to current stock
+     *
+     * @param $putting
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|mixed
+     */
     private function processPutOperation($putting, $reason = '', $cost = 0)
     {
         $before = $this->quantity;
@@ -248,15 +305,50 @@ class InventoryStock extends BaseModel
 
         if($this->save()) {
 
-            if($this->generateStockMovement($before, $this->quantity, $reason,  $cost)) DB::commit();
+            if($this->generateStockMovement($before, $this->quantity, $reason,  $cost)) {
 
-            DB::rollback();
+                DB::commit();
 
-        } else {
+                $this->fireEvent('inventory.stock.added', array(
+                    'stock' => $this,
+                ));
 
-            DB::rollback();
+                return  $this;
+
+            }
 
         }
+
+        DB::rollback();
+
+        return false;
+    }
+
+    /**
+     * Processes the stock moving from one location to another
+     *
+     * @param $location
+     * @return bool
+     */
+    private function processMoveOperation($location)
+    {
+        $this->location_id = $location->id;
+
+        DB::beginTransaction();
+
+        if($this->save()) {
+
+            DB::commit();
+
+            $this->fireEvent('inventory.stock.moved', array(
+                'stock' => $this,
+            ));
+
+        }
+
+        DB::rollback();
+
+        return false;
     }
 
     /**
@@ -290,14 +382,7 @@ class InventoryStock extends BaseModel
      */
     private function isPositive($number)
     {
-        if($this->isNumeric($number)) {
-
-            return ($number >= 0 ? true : false);
-
-        }
-
-        return false;
-
+        if($this->isNumeric($number)) return ($number >= 0 ? true : false);
     }
 
     /**

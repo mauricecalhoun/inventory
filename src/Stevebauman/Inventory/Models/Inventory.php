@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Stevebauman\Inventory\Traits\LocationTrait;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Stevebauman\CoreHelper\Models\BaseModel;
 use Stevebauman\Inventory\Exceptions\InvalidLocationException;
@@ -18,6 +19,11 @@ class Inventory extends BaseModel
      * Soft deleting for inventory item recovery
      */
     use SoftDeletingTrait;
+
+    /**
+     * Location helper functions
+     */
+    use LocationTrait;
 
     /**
      * The database table to store inventory records
@@ -281,49 +287,36 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Takes the specified amount of stock from specified stock location
+     * Takes the specified amount ($quantity) of stock from specified stock location
      *
      * @param string|int $quantity
      * @param $location
      * @param string $reason
      * @return array
-     * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
     public function take($quantity, $location, $reason = '')
     {
-        if($this->isCollection($location)) {
-
-            $stock = $this->getStockFromLocation($location);
-
-        } else if(is_numeric($location)) {
-
-            $location = $this->getLocationById($location);
-
-            $stock = $this->getStockFromLocation($location);
-
-        } else if(is_array($location)) {
+        if(is_array($location)) {
 
             return $this->takeFromMany($quantity, $location, $reason);
 
         } else {
 
-            throw new InvalidLocationException;
+            $stock = $this->getStockFromLocation($location);
+
+            return $stock->take($quantity, $reason);
 
         }
-
-        return $stock->take($quantity, $reason);
-
     }
 
     /**
-     * Takes the specified amount of stock from the specified stock location(s)
+     * Takes the specified amount ($quantity) of stock from the specified stock locations
      *
      * @param string|int $quantity
      * @param array $locations
      * @param string $reason
      * @return array
-     * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
     public function takeFromMany($quantity, $locations =  array(), $reason = '')
@@ -332,21 +325,7 @@ class Inventory extends BaseModel
 
         foreach($locations as $location) {
 
-            if($this->isCollection($location)) {
-
-                $stock = $this->getStockFromLocation($location);
-
-            } else if(is_numeric($location)) {
-
-                $location = $this->getLocationById($location);
-
-                $stock = $this->getStockFromLocation($location);
-
-            } else {
-
-                throw new InvalidLocationException;
-
-            }
+            $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->take($quantity, $reason);
 
@@ -356,62 +335,47 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Puts the specified amount of stock from the specified stock location(s)
+     * Puts the specified amount ($quantity) of stock into the specified stock location(s)
      *
-     * @param $quantity
+     * @param string|int $quantity
      * @param $location
      * @param string $reason
      * @param int $cost
      * @return array
-     * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
     public function put($quantity, $location, $reason = '', $cost = 0)
     {
-        if($this->isCollection($location)) {
-
-            $stock = $this->getStockFromLocation($location);
-
-        } else if(is_numeric($location)) {
-
-            $location = $this->getLocationById($location);
-
-            $stock = $this->getStockFromLocation($location);
-
-        } else if(is_array($location)) {
+        if(is_array($location)) {
 
             return $this->putToMany($quantity, $location);
 
         } else {
 
-            throw new InvalidLocationException;
+            $stock = $this->getStockFromLocation($location);
+
+            return $stock->put($quantity, $reason, $cost);
 
         }
-
-        return $stock->put($quantity, $reason, $cost);
     }
 
+    /**
+     * Puts the specified amount ($quantity) of stock into the specified stock locations
+     *
+     * @param $quantity
+     * @param array $locations
+     * @param string $reason
+     * @param int $cost
+     * @return array
+     * @throws StockNotFoundException
+     */
     public function putToMany($quantity, $locations = array(), $reason = '', $cost = 0)
     {
         $stocks = array();
 
         foreach($locations as $location) {
 
-            if($this->isCollection($location)) {
-
-                $stock = $this->getStockFromLocation($location);
-
-            } else if(is_numeric($location)) {
-
-                $location = $this->getLocationById($location);
-
-                $stock = $this->getStockFromLocation($location);
-
-            } else {
-
-                throw new InvalidLocationException;
-
-            }
+            $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->put($quantity, $reason, $cost);
 
@@ -421,14 +385,33 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Retrieves an inventory stock from a given location
+     * Moves a stock from one location to another
      *
-     * @param Location $location
+     * @param $fromLocation
+     * @param $toLocation
      * @return mixed
      * @throws StockNotFoundException
      */
-    public function getStockFromLocation(Location $location)
+    public function moveStock($fromLocation, $toLocation)
     {
+        $stock = $this->getStockFromLocation($fromLocation);
+
+        $toLocation = $this->getLocation($toLocation);
+
+        return $stock->moveTo($toLocation);
+    }
+
+    /**
+     * Retrieves an inventory stock from a given location
+     *
+     * @param $location
+     * @return mixed
+     * @throws StockNotFoundException
+     */
+    public function getStockFromLocation($location)
+    {
+        $location = $this->getLocation($location);
+
         $stock = InventoryStock::
             where('inventory_id', $this->id)
             ->where('location_id', $location->id)
@@ -440,31 +423,13 @@ class Inventory extends BaseModel
 
         } else {
 
-            throw new StockNotFoundException;
+            $message = sprintf('No stock was found from location %s', $location->name);
+
+            throw new StockNotFoundException($message);
 
         }
     }
 
-    /**
-     * Retrieves a location by it's ID
-     *
-     * @param id|string $id
-     * @return \Illuminate\Support\Collection|null|static
-     */
-    public function getLocationById($id)
-    {
-        return Location::find($id);
-    }
 
-    /**
-     * Returns true or false if the specified object is a collection
-     *
-     * @param $object
-     * @return bool
-     */
-    private function isCollection($object)
-    {
-        return ($object instanceof Collection ? true : false);
-    }
 
 }
