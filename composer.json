@@ -10,7 +10,11 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*",
-        "stevebauman/core-helper": "1.0.*"
+        "stevebauman/core-helper": "1.0.*",
+        "baum/baum": "~1.0"
+    },
+    "suggest": {
+        "venturecraft/revisionable": "Allows the tracking of inventory stock location and category changes"
     },
     "autoload": {
         "classmap": [

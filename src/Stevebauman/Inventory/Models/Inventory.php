@@ -2,11 +2,13 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\LocationTrait;
+use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Stevebauman\CoreHelper\Models\BaseModel;
-use Stevebauman\Inventory\Exceptions\InvalidLocationException;
+use Stevebauman\Inventory\Traits\UserTrait;
+use Stevebauman\Inventory\Traits\LocationTrait;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
+use Stevebauman\Inventory\Models\InventoryStock;
+use Stevebauman\CoreHelper\Models\BaseModel;
 
 /**
  * Class Inventory
@@ -19,6 +21,11 @@ class Inventory extends BaseModel
      * Soft deleting for inventory item recovery
      */
     use SoftDeletingTrait;
+
+    /**
+     * User for easily identifying the current logged in user
+     */
+    use UserTrait;
 
     /**
      * Location helper functions
@@ -148,7 +155,6 @@ class Inventory extends BaseModel
      */
     public function scopeCategory($query, $category_id = NULL)
     {
-
         if ($category_id) {
 
             /*
@@ -171,7 +177,6 @@ class Inventory extends BaseModel
                 return $query;
 
             });
-
         }
     }
 
@@ -284,6 +289,55 @@ class Inventory extends BaseModel
     public function isInStock()
     {
         return ($this->getStock() > 0 ? true : false);
+    }
+
+    /**
+     * Adds a stock record to the current inventory item
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @param int $cost
+     * @param null $aisle
+     * @param null $row
+     * @param null $bin
+     * @return mixed
+     * @throws StockAlreadyExistsException
+     * @throws StockNotFoundException
+     * @throws \Stevebauman\Inventory\Traits\InvalidLocationException
+     * @throws \Stevebauman\Inventory\Traits\NoUserLoggedInException
+     */
+    public function addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
+    {
+        $location = $this->getLocation($location);
+
+        try{
+
+            if($this->getStockFromLocation($location)) {
+
+                $message = sprintf('Stock already exists on location %s', $location->name);
+
+                throw new StockAlreadyExistsException($message);
+
+            }
+
+        } catch(StockNotFoundException $e) {
+
+            $insert = array(
+                'user_id' => $this->getCurrentUserId(),
+                'inventory_id' => $this->id,
+                'location_id' => $location->id,
+                'quantity' => 0,
+                'aisle' => $aisle,
+                'row' => $row,
+                'bin' => $bin,
+            );
+
+            $stock = InventoryStock::create($insert);
+
+            return $stock->put($quantity, $reason, $cost);
+
+        }
     }
 
     /**

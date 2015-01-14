@@ -4,6 +4,10 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Models\Location;
 
+/**
+ * Class LocationTrait
+ * @package Stevebauman\Inventory\Traits
+ */
 trait LocationTrait {
 
     public function getLocation($location)

@@ -4,6 +4,10 @@ namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Support\Facades\Event;
 
+/**
+ * Class FireEventTrait
+ * @package Stevebauman\Inventory\Traits
+ */
 trait FireEventTrait {
 
     /**

@@ -4,6 +4,7 @@ namespace Stevebauman\Inventory\Models;
 
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Traits\FireEventTrait;
+use Stevebauman\Inventory\Traits\UserTrait;
 use Stevebauman\Inventory\Traits\LocationTrait;
 use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
@@ -21,6 +22,11 @@ class InventoryStock extends BaseModel
      * Used for easily grabbing a specified location
      */
     use LocationTrait;
+
+    /**
+     * User for easily identifying the current logged in user
+     */
+    use UserTrait;
 
     /**
      * Used for easily firing events
@@ -394,44 +400,6 @@ class InventoryStock extends BaseModel
     private function isNumeric($number)
     {
         return (is_numeric($number) ? true : false);
-    }
-
-    /**
-     * Returns the current users ID
-     *
-     * @return null|int
-     * @throws NoUserLoggedInException
-     */
-    private function getCurrentUserId()
-    {
-        /**
-         * Check if sentry exists
-         */
-        if(class_exists('Cartalyst\Sentry\SentryServiceProvider')) {
-
-            if(\Cartalyst\Sentry\Facades\Laravel\Sentry::check()) {
-
-                return \Cartalyst\Sentry\Facades\Laravel\Sentry::getUser()->id;
-
-            }
-
-        } elseif (\Illuminate\Support\Facades\Auth::check()) {
-
-            return \Illuminate\Support\Facades\Auth::user()->id;
-
-        } else {
-
-            if(config('inventory::allow_no_user')) {
-
-                return NULL;
-
-            } else {
-
-                throw new NoUserLoggedInException;
-
-            }
-
-        }
     }
 
 }
