@@ -1,6 +1,25 @@
 ![Inventory Banner]
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
+##Requirements
+
+- Laravel 4.* | 5.* - Not Tested
+- Etrepat/Baum 1.* (Category Management)
+
+##Installation
+
+Include in your `composer.json` file:
+
+    "stevebauman/inventory" : "1.*"
+
+Now perform a `composer update` on your project's source
+
+Run the migration
+
+    php artisan migrate --vendor="stevebauman/inventory"
+
+You're good to go!
+
 ##Usage
 
 Using inventory is exactly like using ordinary Laravel models, and that's because they all extend the Laravel model class.
@@ -42,7 +61,7 @@ Now we can add stock to our inventory by supplying a number (int or string), and
     $item->addStock(20, $location);
     
     /*
-    * If we know the location ID we wish the add the stock to, we can also do that
+    * If we know the location ID we want to add the stock to, we can also use ID's
     */
     $item->addStock(20, 1);
     $item->addStock(20, '1');
@@ -92,4 +111,37 @@ If you look at your database, inside your `inventory_stock_movements` table, you
         1           1       20.00   23.00   5.20    'bought some...'   
         1           1       23.00   8.00    0.00    'drank it...'
     
+##Exceptions
+
+Using this inventory system, you have to be prepared to catch exceptions.
+
+Here is a list of method's along with their exceptions that they can throw.
+
+###### NoUserLoggedInException
+
+Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver
+
+###### StockAlreadyExistsException
+
+Occurs when a stock of the item already exists at the specified location
+
+###### InvalidQuantityException
+
+Occurs when a non-numerical value is entered as the quantity, such as '30L', 'a20.0'
+
+###### InvalidLocationException
+
+Occurs when a location cannot be found, or the specified location is not a subclass or instance of Stevebauman\Inventory\Models\Location
+
+#### All Inventory Management Methods
+
+Throws
+    - NoUserLoggedInException (Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver)
+
+#### $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+
+Throws
+    - StockAlreadyExistsException
+    - InvalidQuantityException
+    - InvalidLocationException
     
