@@ -185,4 +185,6 @@ Occurs when a location cannot be found, or the specified location is not a subcl
     $item->moveStock($fromLocation, $toLocation);
 
 
-    
+## Events
+
+## Auth Integration
