@@ -58,13 +58,13 @@ Now we have our inventory item created. We have to add stock, but to add stock w
     
 Now we can add stock to our inventory by supplying a number (int or string), and the location (int, string or Location):
 
-    $item->addStock(20, $location);
+    $item->addStockToLocation(20, $location);
     
     /*
     * If we know the location ID we want to add the stock to, we can also use ID's
     */
-    $item->addStock(20, 1);
-    $item->addStock(20, '1');
+    $item->addStockToLocation(20, 1);
+    $item->addStockToLocation(20, '1');
     
 So, we've successfully added stock to our inventory item, now let's add some more quantity to it:
 
@@ -150,7 +150,7 @@ Occurs when a location cannot be found, or the specified location is not a subcl
     * @throws InvalidLocationException
     * @throws StockAlreadyExistsException
     */
-    $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+    $item->addStockToLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
     
     /**
     * @throws InvalidQuantityException

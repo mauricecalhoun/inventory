@@ -289,7 +289,7 @@ class Inventory extends BaseModel
      * @throws \Stevebauman\Inventory\Traits\InvalidLocationException
      * @throws \Stevebauman\Inventory\Traits\NoUserLoggedInException
      */
-    public function addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
+    public function addStockToLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
     {
         $location = $this->getLocation($location);
 
