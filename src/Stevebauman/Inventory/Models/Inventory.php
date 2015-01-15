@@ -274,7 +274,7 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Adds a stock record to the current inventory item
+     * Creates a stock record to the current inventory item
      *
      * @param $quantity
      * @param $location
@@ -289,7 +289,7 @@ class Inventory extends BaseModel
      * @throws \Stevebauman\Inventory\Traits\InvalidLocationException
      * @throws \Stevebauman\Inventory\Traits\NoUserLoggedInException
      */
-    public function addStockToLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
+    public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
     {
         $location = $this->getLocation($location);
 
@@ -331,11 +331,11 @@ class Inventory extends BaseModel
      * @return array
      * @throws StockNotFoundException
      */
-    public function take($quantity, $location, $reason = '')
+    public function takeFromLocation($quantity, $location, $reason = '')
     {
         if(is_array($location)) {
 
-            return $this->takeFromMany($quantity, $location, $reason);
+            return $this->takeFromManyLocations($quantity, $location, $reason);
 
         } else {
 
@@ -359,7 +359,7 @@ class Inventory extends BaseModel
      * @return array
      * @throws StockNotFoundException
      */
-    public function takeFromMany($quantity, $locations =  array(), $reason = '')
+    public function takeFromManyLocations($quantity, $locations =  array(), $reason = '')
     {
         $stocks = array();
 
@@ -382,9 +382,9 @@ class Inventory extends BaseModel
      * @param string $reason
      * @return array
      */
-    public function remove($quantity, $location, $reason = '')
+    public function removeFromLocation($quantity, $location, $reason = '')
     {
-        return $this->take($quantity, $location, $reason);
+        return $this->takeFromLocation($quantity, $location, $reason);
     }
 
     /**
@@ -395,9 +395,9 @@ class Inventory extends BaseModel
      * @param string $reason
      * @return array
      */
-    public function removeFromMany($quantity, $locations =  array(), $reason = '')
+    public function removeFromManyLocations($quantity, $locations =  array(), $reason = '')
     {
-        return $this->takeFromMany($quantity, $locations, $reason);
+        return $this->takeFromManyLocations($quantity, $locations, $reason);
     }
 
     /**
@@ -410,11 +410,11 @@ class Inventory extends BaseModel
      * @return array
      * @throws StockNotFoundException
      */
-    public function put($quantity, $location, $reason = '', $cost = 0)
+    public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
         if(is_array($location)) {
 
-            return $this->putToMany($quantity, $location);
+            return $this->putToManyLocations($quantity, $location);
 
         } else {
 
@@ -439,7 +439,7 @@ class Inventory extends BaseModel
      * @return array
      * @throws StockNotFoundException
      */
-    public function putToMany($quantity, $locations = array(), $reason = '', $cost = 0)
+    public function putToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0)
     {
         $stocks = array();
 
@@ -463,9 +463,9 @@ class Inventory extends BaseModel
      * @param int $cost
      * @return array
      */
-    public function add($quantity, $location, $reason = '', $cost = 0)
+    public function addToLocation($quantity, $location, $reason = '', $cost = 0)
     {
-        return $this->put($quantity, $location, $reason, $cost);
+        return $this->putToLocation($quantity, $location, $reason, $cost);
     }
 
     /**
@@ -477,9 +477,9 @@ class Inventory extends BaseModel
      * @param int $cost
      * @return array
      */
-    public function addToMany($quantity, $locations = array(), $reason = '', $cost = 0)
+    public function addToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0)
     {
-        return $this->putToMany($quantity, $locations, $reason, $cost);
+        return $this->putToManyLocations($quantity, $locations, $reason, $cost);
     }
 
     /**
@@ -504,6 +504,7 @@ class Inventory extends BaseModel
      *
      * @param $location
      * @return mixed
+     * @throws InvalidLocationException
      * @throws StockNotFoundException
      */
     public function getStockFromLocation($location)

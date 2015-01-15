@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Models;
 
 use Illuminate\Support\Facades\DB;
+use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Traits\FireEventTrait;
 use Stevebauman\Inventory\Traits\UserTrait;
 use Stevebauman\Inventory\Traits\LocationTrait;
@@ -145,15 +146,15 @@ class InventoryStock extends BaseModel
     }
 
     /**
-     * Returns the last movement on the current stock record
+     * Performs a quantity update. Automatically determining depending on the quantity entered if stock is being taken
+     * or added
      *
-     * @return mixed
+     * @param $quantity
+     * @param string $reason
+     * @param int $cost
+     * @return InventoryStock
+     * @throws InvalidQuantityException
      */
-    public function getLastMovement()
-    {
-       return $this->movements()->orderBy('created_at', 'DESC')->first();
-    }
-
     public function updateQuantity($quantity, $reason= '', $cost = 0)
     {
         if($this->isValidQuantity($quantity)) {
@@ -170,7 +171,7 @@ class InventoryStock extends BaseModel
      * @param string $reason
      * @return InventoryStock
      */
-    public function minus($quantity, $reason= '')
+    public function remove($quantity, $reason= '')
     {
         return $this->take($quantity, $reason);
     }
@@ -238,6 +239,44 @@ class InventoryStock extends BaseModel
     }
 
     /**
+     * Rolls back the last movement
+     *
+     * @return bool|void
+     */
+    public function rollback($movement = '')
+    {
+        if($movement) {
+
+            $movement = $this->getMovement($movement);
+
+            return $this->processRollbackOperation($movement);
+
+        } else  {
+
+            $movement = $this->getLastMovement();
+
+            if($movement) return $this->processRollbackOperation($movement);
+
+        }
+
+        return true;
+    }
+
+    /**
+     * Rolls back a specific movement
+     *
+     * @param $movement
+     * @return $this|bool|InventoryStock
+     * @throws InvalidMovementException
+     */
+    public function rollbackMovement($movement)
+    {
+        $movement = $this->getMovement($movement);
+
+        return $this->processRollbackOperation($movement);
+    }
+
+    /**
      * Returns true or false if the specified quantity is valid
      *
      * @param $quantity
@@ -263,13 +302,65 @@ class InventoryStock extends BaseModel
     public function hasEnoughStock($quantity = 0)
     {
         /**
-         * Using double equals for validation of complete value only, not integer type
+         * Using double equals for validation of complete value only, not variable type
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
         $message = sprintf('Not enough stock. Tried to take %s but only %s is available', $quantity, $this->quantity);
 
         throw new NotEnoughStockException($message);
+    }
+
+    /**
+     * Returns the last movement on the current stock record
+     *
+     * @return mixed
+     */
+    public function getLastMovement()
+    {
+        $movement = $this->movements()->orderBy('created_at', 'DESC')->first();
+
+        if($movement) return $movement;
+
+        return false;
+    }
+
+    /**
+     * Returns a movement depending on the specified argument. If an object is supplied, it is checked if it
+     * is an instance of the model InventoryStockMovement, if a numeric value is entered, it is retrieved by it's ID
+     *
+     * @param $movement
+     * @return \Illuminate\Support\Collection|null|InventoryStock|static
+     * @throws InvalidMovementException
+     */
+    public function getMovement($movement)
+    {
+        if($this->isMovement($movement)) {
+
+            return $movement;
+
+        } elseif(is_numeric($movement)) {
+
+            return $this->getMovementById($movement);
+
+        } else {
+
+            $message = sprintf('Movement %s is invalid', $movement);
+
+            throw new InvalidMovementException($message);
+
+        }
+    }
+
+    /**
+     * Retrieves a movement by the specified ID
+     *
+     * @param $id
+     * @return \Illuminate\Support\Collection|null|static
+     */
+    private function getMovementById($id)
+    {
+        return InventoryStockMovement::find($id);
     }
 
     private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
@@ -414,6 +505,35 @@ class InventoryStock extends BaseModel
         return false;
     }
 
+    private function processRollbackOperation($movement)
+    {
+        $this->quantity = $movement->before;
+
+        DB::beginTransaction();
+
+        if($this->save()) {
+
+            $reason = sprintf('Rolled back to movement ID: %s on %s', $movement->id, $movement->created_at);
+
+            if($this->generateStockMovement($movement->after, $this->quantity, $reason)) {
+
+                DB::commit();
+
+                $this->fireEvent('inventory.stock.rollback', array(
+                    'stock' => $this,
+                ));
+
+                return $this;
+
+            }
+
+        }
+
+        DB::rollback();
+
+        return false;
+    }
+
     /**
      * Creates a stock movement record
      *
@@ -457,6 +577,17 @@ class InventoryStock extends BaseModel
     private function isNumeric($number)
     {
         return (is_numeric($number) ? true : false);
+    }
+
+    /**
+     * Returns true or false if the specified movement is an instance of the model InventoryStockMovement
+     *
+     * @param $object
+     * @return bool
+     */
+    private function isMovement($object)
+    {
+        return is_subclass_of($object, 'Stevebauman\Inventory\Models\InventoryStockLocation') || $object instanceof InventoryStockMovement;
     }
 
 }

@@ -10,6 +10,14 @@ use Stevebauman\Inventory\Models\Location;
  */
 trait LocationTrait {
 
+    /**
+     * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
+     * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID
+     *
+     * @param $location
+     * @return \Illuminate\Support\Collection|null|LocationTrait|static
+     * @throws InvalidLocationException
+     */
     public function getLocation($location)
     {
         if($this->isLocation($location)) {

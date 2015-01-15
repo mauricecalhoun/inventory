@@ -58,13 +58,13 @@ Now we have our inventory item created. We have to add stock, but to add stock w
     
 Now we can add stock to our inventory by supplying a number (int or string), and the location (int, string or Location):
 
-    $item->addStockToLocation(20, $location);
+    $item->createStockOnLocation(20, $location);
     
     /*
     * If we know the location ID we want to add the stock to, we can also use ID's
     */
-    $item->addStockToLocation(20, 1);
-    $item->addStockToLocation(20, '1');
+    $item->createStockOnLocation(20, 1);
+    $item->createStockOnLocation(20, '1');
     
 So, we've successfully added stock to our inventory item, now let's add some more quantity to it:
 
@@ -97,19 +97,35 @@ We've added quantity to our stock, now lets take some away:
     $stock->take(15, $reason);
     
     /*
-    * Or you can use minus, they both perform the same function
+    * Or you can use remove, they both perform the same function
     */
-    $stock->minus(15, $reason);
+    $stock->remove(15, $reason);
+    
+Actually hang on, we definitely didn't take that much, let's roll it back:
+
+    $stock->rollback();
+    
+    /*
+    * We can also rollback specific movements, this is recommended 
+    * so you know which movement you're rolling back. You may want to
+    * rollback the last movement, but if a movement is created during a rollback,
+    * it won't take this into account.
+    */
+    $movement = InventoryStockMovement::find(2);
+    
+    $stock->rollback($movement);
     
 Now that we've added stock to our inventory, and made some changes, all changes are automatically tracked. 
 If an exception occurs during a stock change, it is automatically rolled back using Laravel's built in database transactions.
+These rollbacks are not tracked.
 
-If you look at your database, inside your `inventory_stock_movements` table, you should see 3 records:
+If you look at your database, inside your `inventory_stock_movements` table, you should see 4 records:
 
-    | stock_id | user_id | before | after | cost | reason |
-        1           1       0.00    20.00   0.00    
-        1           1       20.00   23.00   5.20    'bought some...'   
-        1           1       23.00   8.00    0.00    'drank it...'
+    | id | stock_id | user_id | before | after | cost | reason |
+       1     1           1       0.00    20.00   0.00    
+       2     1           1       20.00   23.00   5.20    'I bought some'   
+       3     1           1       23.00   8.00    0.00    'I drank it'
+       4     1           1       8.00    23.00   0.00    'Rolled back movement ID: 3 on 2015-01-15 10:00:54'
     
 ##Exceptions
 
@@ -150,39 +166,80 @@ Occurs when a location cannot be found, or the specified location is not a subcl
     * @throws InvalidLocationException
     * @throws StockAlreadyExistsException
     */
-    $item->addStockToLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+    $item->createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
     
     /**
     * @throws InvalidQuantityException
     * @throws InvalidLocationException
     * @throws NotEnoughStockException
     */
-    $item->take($quantity, $location, $reason = '');
+    $item->takeFromLocation($quantity, $location, $reason = '');
+    $item->removeFromLocation($quantity, $locations =  array(), $reason = '');
     
     /**
     * @throws InvalidQuantityException
     * @throws InvalidLocationException
     * @throws NotEnoughStockException
     */
-    $item->takeFromMany($quantity, $locations =  array(), $reason = '');
+    $item->takeFromManyLocations($quantity, $locations =  array(), $reason = '');
+    $item->removeFromManyLocations($quantity, $locations =  array(), $reason = '');
     
     /**
     * @throws InvalidQuantityException
     * @throws InvalidLocationException
     */
-    $item->put($quantity, $location, $reason = '', $cost = 0);
+    $item->putToLocation($quantity, $location, $reason = '', $cost = 0);
+    $item->addToLocation($quantity, $location, $reason = '', $cost = 0);
     
     /**
     * @throws InvalidQuantityException
     * @throws InvalidLocationException
     */
-    $item->putToMany($quantity, $locations = array(), $reason = '', $cost = 0);
+    $item->putToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0);
+    $item->addToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0);
     
     /**
     * @throws InvalidLocationException
     * @throws StockAlreadyExistsException
     */
     $item->moveStock($fromLocation, $toLocation);
+   
+    /**
+    * @throws InvalidLocationException
+    * @throws StockNotFoundException
+    */
+    $item->getStockFromLocation($location);
+
+#### Inventory Stock Model Methods
+
+    /**
+    * @throws InvalidQuantityException
+    */
+    $stock->updateQuantity($quantity, $reason= '', $cost = 0);
+    
+    /**
+    * @throws InvalidQuantityException
+    * @throws NotEnoughStockException
+    */
+    $stock->take($quantity, $reason = '');
+    $stock->remove($quantity, $reason= '');
+    
+    /**
+    * @throws InvalidQuantityException
+    */
+    $stock->add($quantity, $reason = '', $cost = 0);
+    $stock->put($quantity, $reason = '', $cost = 0);
+    
+    /**
+    * @throws InvalidLocationException
+    * @throws StockAlreadyExistsException
+    */
+    $stock->moveTo($location);
+    
+    /**
+    * @throws NotEnoughStockException
+    */
+    $stock->hasEnoughStock($quantity = 0);
 
 
 ## Events
