@@ -3,12 +3,26 @@
 namespace Stevebauman\Inventory\Models;
 
 
+use Illuminate\Database\Eloquent\Model;
 use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
-class BaseModel {
+class BaseModel extends Model {
+
+    /**
+     * Set's the user_id attribute to the current logged in user.
+     *
+     * @param array $attributes
+     * @throws NoUserLoggedInException
+     */
+    public function __construct(array $attributes = array())
+    {
+        $this->setAttribute('user_id', $this->getCurrentUserId());
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Attempt to find the user id of the currently logged in user
@@ -41,7 +55,9 @@ class BaseModel {
 
         } else {
 
-            throw new NoUserLoggedInException;
+            $message = 'Cannot retrieve user ID';
+
+            throw new NoUserLoggedInException($message);
 
         }
 

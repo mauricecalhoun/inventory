@@ -31,7 +31,6 @@ class Inventory extends BaseModel
      */
     protected $table = 'inventories';
 
-
     /**
      * The fillable eloquent attribute array for allowing mass assignments
      *
@@ -285,9 +284,9 @@ class Inventory extends BaseModel
     {
         $location = $this->getLocation($location);
 
-        try{
+        try {
 
-            if($this->getStockFromLocation($location)) {
+            if ($this->getStockFromLocation($location)) {
 
                 $message = sprintf('Stock already exists on location %s', $location->name);
 
@@ -295,10 +294,9 @@ class Inventory extends BaseModel
 
             }
 
-        } catch(StockNotFoundException $e) {
+        } catch (StockNotFoundException $e) {
 
             $insert = array(
-                'user_id' => $this->getCurrentUserId(),
                 'inventory_id' => $this->id,
                 'location_id' => $location->id,
                 'quantity' => 0,
@@ -325,7 +323,7 @@ class Inventory extends BaseModel
      */
     public function takeFromLocation($quantity, $location, $reason = '')
     {
-        if(is_array($location)) {
+        if (is_array($location)) {
 
             return $this->takeFromManyLocations($quantity, $location, $reason);
 
@@ -333,7 +331,7 @@ class Inventory extends BaseModel
 
             $stock = $this->getStockFromLocation($location);
 
-            if($stock->take($quantity, $reason)) {
+            if ($stock->take($quantity, $reason)) {
 
                 return $this;
 
@@ -351,11 +349,11 @@ class Inventory extends BaseModel
      * @return array
      * @throws StockNotFoundException
      */
-    public function takeFromManyLocations($quantity, $locations =  array(), $reason = '')
+    public function takeFromManyLocations($quantity, $locations = array(), $reason = '')
     {
         $stocks = array();
 
-        foreach($locations as $location) {
+        foreach ($locations as $location) {
 
             $stock = $this->getStockFromLocation($location);
 
@@ -387,7 +385,7 @@ class Inventory extends BaseModel
      * @param string $reason
      * @return array
      */
-    public function removeFromManyLocations($quantity, $locations =  array(), $reason = '')
+    public function removeFromManyLocations($quantity, $locations = array(), $reason = '')
     {
         return $this->takeFromManyLocations($quantity, $locations, $reason);
     }
@@ -404,7 +402,7 @@ class Inventory extends BaseModel
      */
     public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
-        if(is_array($location)) {
+        if (is_array($location)) {
 
             return $this->putToManyLocations($quantity, $location);
 
@@ -412,7 +410,7 @@ class Inventory extends BaseModel
 
             $stock = $this->getStockFromLocation($location);
 
-            if($stock->put($quantity, $reason, $cost)) {
+            if ($stock->put($quantity, $reason, $cost)) {
 
                 return $this;
 
@@ -435,7 +433,7 @@ class Inventory extends BaseModel
     {
         $stocks = array();
 
-        foreach($locations as $location) {
+        foreach ($locations as $location) {
 
             $stock = $this->getStockFromLocation($location);
 
@@ -504,11 +502,11 @@ class Inventory extends BaseModel
         $location = $this->getLocation($location);
 
         $stock = InventoryStock::
-            where('inventory_id', $this->id)
+        where('inventory_id', $this->id)
             ->where('location_id', $location->id)
             ->first();
 
-        if($stock) {
+        if ($stock) {
 
             return $stock;
 
@@ -520,7 +518,6 @@ class Inventory extends BaseModel
 
         }
     }
-
 
 
 }

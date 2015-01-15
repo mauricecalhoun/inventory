@@ -2,8 +2,6 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\CoreHelper\Models\BaseModel;
-
 /**
  * Class Metric
  * @package Stevebauman\Inventory\Models

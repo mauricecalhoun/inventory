@@ -6,8 +6,15 @@
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
 
 - Inventory stock management
-- Inventory movement tracking
+- Inventory quantity movements tracking
 - Inventory item management
+
+All movements, stocks and inventory items are automatically given the current logged in user's ID.
+
+## Customization
+
+Want to use your own models and add custom relationships? No problem, just extend your model to the existing inventory model like so:
+
 
 
 ## Requirements
@@ -17,7 +24,7 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 
 Recommended:
 
-- Venturecraft/Revisionable (For tracking Category and Location changes)
+- Venturecraft/Revisionable (For tracking Category and Location changes to stocks)
 
 ## Installation
 
@@ -26,6 +33,10 @@ Include in your `composer.json` file:
     "stevebauman/inventory" : "1.*"
 
 Now perform a `composer update` on your project's source
+
+Insert the service provider in your `config/app.php` config file:
+
+    'Stevebauman\Inventory\InventoryServiceProvider'
 
 Run the migration
 
@@ -257,4 +268,11 @@ Occurs when a location cannot be found, or the specified location is not a subcl
 
 ## Events
 
+
+
 ## Auth Integration
+
+Integration with Sentry, Sentinel and Laravel's auth driver is built in, so inventory items, stocks and movements are automatically
+tagged to the current logged in user. However, you turn this off if you'd like in the config file under:
+
+    'allow_no_user' => false

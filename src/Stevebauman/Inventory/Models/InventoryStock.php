@@ -430,7 +430,7 @@ class InventoryStock extends BaseModel
 
             if(!config('inventory::allow_duplicate_movements')) {
 
-                return $this->getLastMovement();
+                return $this;
 
             }
 
