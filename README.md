@@ -1,12 +1,25 @@
 ![Inventory Banner]
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
-##Requirements
+## Description
+
+Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
+
+- Inventory stock management
+- Inventory movement tracking
+- Inventory item management
+
+
+## Requirements
 
 - Laravel 4.* | 5.* - Not Tested
 - Etrepat/Baum 1.* (Category Management for Locations & Category models)
 
-##Installation
+Recommended:
+
+- Venturecraft/Revisionable (For tracking Category and Location changes)
+
+## Installation
 
 Include in your `composer.json` file:
 
@@ -20,7 +33,7 @@ Run the migration
 
 You're good to go!
 
-##Usage
+## Usage
 
 Using inventory is exactly like using ordinary Laravel models, and that's because they all extend the Laravel model class.
 
@@ -127,7 +140,7 @@ If you look at your database, inside your `inventory_stock_movements` table, you
        3     1           1       23.00   8.00    0.00    'I drank it'
        4     1           1       8.00    23.00   0.00    'Rolled back movement ID: 3 on 2015-01-15 10:00:54'
     
-##Exceptions
+## Exceptions
 
 Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.
 

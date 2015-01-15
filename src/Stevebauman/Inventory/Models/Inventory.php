@@ -2,13 +2,10 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Stevebauman\Inventory\Traits\UserTrait;
 use Stevebauman\Inventory\Traits\LocationTrait;
-use Stevebauman\Inventory\Exceptions\StockNotFoundException;
-use Stevebauman\Inventory\Models\InventoryStock;
-use Stevebauman\CoreHelper\Models\BaseModel;
 
 /**
  * Class Inventory
@@ -21,11 +18,6 @@ class Inventory extends BaseModel
      * Soft deleting for inventory item recovery
      */
     use SoftDeletingTrait;
-
-    /**
-     * User for easily identifying the current logged in user
-     */
-    use UserTrait;
 
     /**
      * Location helper functions

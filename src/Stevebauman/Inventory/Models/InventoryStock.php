@@ -2,16 +2,11 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
-use Stevebauman\Inventory\Traits\FireEventTrait;
-use Stevebauman\Inventory\Traits\UserTrait;
-use Stevebauman\Inventory\Traits\LocationTrait;
-use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
-use Stevebauman\CoreHelper\Models\BaseModel;
+use Stevebauman\Inventory\Traits\LocationTrait;
+
 /**
  * Class InventoryStock
  * @package Stevebauman\Inventory\Models
@@ -23,16 +18,6 @@ class InventoryStock extends BaseModel
      * Used for easily grabbing a specified location
      */
     use LocationTrait;
-
-    /**
-     * User for easily identifying the current logged in user
-     */
-    use UserTrait;
-
-    /**
-     * Used for easily firing events
-     */
-    use FireEventTrait;
 
     /**
      * The database table to store inventory stock records
@@ -239,17 +224,16 @@ class InventoryStock extends BaseModel
     }
 
     /**
-     * Rolls back the last movement
+     * Rolls back the last movement, or the movement specified
      *
-     * @return bool|void
+     * @param string $movement
+     * @return $this|bool|InventoryStock
      */
     public function rollback($movement = '')
     {
         if($movement) {
 
-            $movement = $this->getMovement($movement);
-
-            return $this->processRollbackOperation($movement);
+            return $this->rollbackMovement($movement);
 
         } else  {
 
@@ -404,13 +388,13 @@ class InventoryStock extends BaseModel
 
         $this->quantity = $left;
 
-        DB::beginTransaction();
+        $this->dbStartTransaction();
 
         if($this->save()) {
 
             if($this->generateStockMovement($before, $this->quantity, $reason)) {
 
-                DB::commit();
+                $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.taken', array(
                     'stock' => $this,
@@ -422,7 +406,7 @@ class InventoryStock extends BaseModel
 
         }
 
-        DB::rollback();
+        $this->dbRollbackTransaction();
 
         return false;
 
@@ -454,13 +438,13 @@ class InventoryStock extends BaseModel
 
         $this->quantity = $total;
 
-        DB::beginTransaction();
+        $this->dbStartTransaction();
 
         if($this->save()) {
 
             if($this->generateStockMovement($before, $this->quantity, $reason,  $cost)) {
 
-                DB::commit();
+                $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.added', array(
                     'stock' => $this,
@@ -472,7 +456,7 @@ class InventoryStock extends BaseModel
 
         }
 
-        DB::rollback();
+        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -487,11 +471,11 @@ class InventoryStock extends BaseModel
     {
         $this->location_id = $location->id;
 
-        DB::beginTransaction();
+        $this->dbStartTransaction();
 
         if($this->save()) {
 
-            DB::commit();
+            $this->dbCommitTransaction();
 
             $this->fireEvent('inventory.stock.moved', array(
                 'stock' => $this,
@@ -500,7 +484,7 @@ class InventoryStock extends BaseModel
             return $this;
         }
 
-        DB::rollback();
+        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -509,7 +493,7 @@ class InventoryStock extends BaseModel
     {
         $this->quantity = $movement->before;
 
-        DB::beginTransaction();
+        $this->dbStartTransaction();
 
         if($this->save()) {
 
@@ -517,7 +501,7 @@ class InventoryStock extends BaseModel
 
             if($this->generateStockMovement($movement->after, $this->quantity, $reason)) {
 
-                DB::commit();
+                $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.rollback', array(
                     'stock' => $this,
@@ -529,7 +513,7 @@ class InventoryStock extends BaseModel
 
         }
 
-        DB::rollback();
+        $this->dbRollbackTransaction();
 
         return false;
     }

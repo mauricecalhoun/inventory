@@ -2,8 +2,6 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\CoreHelper\Models\BaseModel;
-
 /**
  * Class InventoryStockMovement
  * @package Stevebauman\Inventory\Models

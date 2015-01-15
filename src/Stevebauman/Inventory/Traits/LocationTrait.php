@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Stevebauman\Inventory\Models\Location;
 
 /**
