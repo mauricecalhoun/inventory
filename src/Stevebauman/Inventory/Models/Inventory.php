@@ -361,19 +361,6 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Alias for the `take` function
-     *
-     * @param $quantity
-     * @param $location
-     * @param string $reason
-     * @return array
-     */
-    public function minus($quantity, $location, $reason = '')
-    {
-        return $this->take($quantity, $location, $reason);
-    }
-
-    /**
      * Takes the specified amount ($quantity) of stock from the specified stock locations
      *
      * @param string|int $quantity
@@ -395,6 +382,32 @@ class Inventory extends BaseModel
         }
 
         return $stocks;
+    }
+
+    /**
+     * Alias for the `take` function
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @return array
+     */
+    public function remove($quantity, $location, $reason = '')
+    {
+        return $this->take($quantity, $location, $reason);
+    }
+    
+    /**
+     * Alias for the `takeFromMany` function
+     *
+     * @param $quantity
+     * @param array $locations
+     * @param string $reason
+     * @return array
+     */
+    public function removeFromMany($quantity, $locations =  array(), $reason = '')
+    {
+        return $this->takeFromMany($quantity, $locations, $reason);
     }
 
     /**
@@ -427,20 +440,6 @@ class Inventory extends BaseModel
     }
 
     /**
-     * Alias for the `put` function
-     *
-     * @param $quantity
-     * @param $location
-     * @param string $reason
-     * @param int $cost
-     * @return array
-     */
-    public function add($quantity, $location, $reason = '', $cost = 0)
-    {
-        return $this->put($quantity, $location, $reason, $cost);
-    }
-
-    /**
      * Puts the specified amount ($quantity) of stock into the specified stock locations
      *
      * @param $quantity
@@ -463,6 +462,34 @@ class Inventory extends BaseModel
         }
 
         return $stocks;
+    }
+
+    /**
+     * Alias for the `put` function
+     *
+     * @param $quantity
+     * @param $location
+     * @param string $reason
+     * @param int $cost
+     * @return array
+     */
+    public function add($quantity, $location, $reason = '', $cost = 0)
+    {
+        return $this->put($quantity, $location, $reason, $cost);
+    }
+
+    /**
+     * Alias for the `putToMany` function
+     *
+     * @param $quantity
+     * @param array $locations
+     * @param string $reason
+     * @param int $cost
+     * @return array
+     */
+    public function addToMany($quantity, $locations = array(), $reason = '', $cost = 0)
+    {
+        return $this->putToMany($quantity, $locations, $reason, $cost);
     }
 
     /**
