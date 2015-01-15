@@ -177,6 +177,12 @@ Occurs when a location cannot be found, or the specified location is not a subcl
     * @throws InvalidLocationException
     */
     $item->putToMany($quantity, $locations = array(), $reason = '', $cost = 0);
+    
+    /**
+    * @throws InvalidLocationException
+    * @throws StockAlreadyExistsException
+    */
+    $item->moveStock($fromLocation, $toLocation);
 
 
     
