@@ -4,7 +4,7 @@
 ##Requirements
 
 - Laravel 4.* | 5.* - Not Tested
-- Etrepat/Baum 1.* (Category Management)
+- Etrepat/Baum 1.* (Category Management for Locations & Category models)
 
 ##Installation
 
@@ -104,7 +104,7 @@ We've added quantity to our stock, now lets take some away:
 Now that we've added stock to our inventory, and made some changes, all changes are automatically tracked. 
 If an exception occurs during a stock change, it is automatically rolled back using Laravel's built in database transactions.
 
-If you look at your database, inside your `inventory_stock_movements` table, you should 3 records:
+If you look at your database, inside your `inventory_stock_movements` table, you should see 3 records:
 
     | stock_id | user_id | before | after | cost | reason |
         1           1       0.00    20.00   0.00    
