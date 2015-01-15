@@ -127,20 +127,20 @@ Occurs when a stock of the item already exists at the specified location
 
 ### InvalidQuantityException
 
-Occurs when a non-numerical value is entered as the quantity, such as '30L', 'a20.0'
+Occurs when a non-numerical value is entered as the quantity, such as `'30L'`, `'a20.0'`
 
 ### InvalidLocationException
 
 Occurs when a location cannot be found, or the specified location is not a subclass or instance of Stevebauman\Inventory\Models\Location
 
-## Methods
+## Methods & Their Exceptions
 
-### All Methods
+#### All Methods
 
 Throws
     - NoUserLoggedInException (Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver)
 
-### Inventory Model Methods
+#### Inventory Model Methods
 
     $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
     
