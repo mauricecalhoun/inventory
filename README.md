@@ -113,7 +113,9 @@ If you look at your database, inside your `inventory_stock_movements` table, you
     
 ##Exceptions
 
-Using this inventory system, you have to be prepared to catch exceptions.
+Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.
+
+These exceptions exist to safeguard the validity of the inventory.
 
 Here is a list of method's along with their exceptions that they can throw.
 
@@ -137,9 +139,9 @@ Occurs when a location cannot be found, or the specified location is not a subcl
 
 #### All Methods
 
-Throws
-
-- NoUserLoggedInException
+    /**
+    * @throws NoUserLoggedInException
+    */
 
 #### Inventory Model Methods
     
@@ -149,6 +151,32 @@ Throws
     * @throws StockAlreadyExistsException
     */
     $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+    
+    /**
+    * @throws InvalidQuantityException
+    * @throws InvalidLocationException
+    * @throws NotEnoughStockException
+    */
+    $item->take($quantity, $location, $reason = '');
+    
+    /**
+    * @throws InvalidQuantityException
+    * @throws InvalidLocationException
+    * @throws NotEnoughStockException
+    */
+    $item->takeFromMany($quantity, $locations =  array(), $reason = '');
+    
+    /**
+    * @throws InvalidQuantityException
+    * @throws InvalidLocationException
+    */
+    $item->put($quantity, $location, $reason = '', $cost = 0);
+    
+    /**
+    * @throws InvalidQuantityException
+    * @throws InvalidLocationException
+    */
+    $item->putToMany($quantity, $locations = array(), $reason = '', $cost = 0);
 
 
     
