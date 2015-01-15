@@ -6,7 +6,7 @@
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
 
 - Inventory stock management
-- Inventory quantity movements tracking
+- Inventory quantity movement tracking
 - Inventory item management
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID.
