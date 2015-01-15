@@ -139,15 +139,16 @@ Occurs when a location cannot be found, or the specified location is not a subcl
 
 Throws
 
-- NoUserLoggedInException (Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver)
+- NoUserLoggedInException
 
 #### Inventory Model Methods
-
-    $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
     
-Throws
+    /**
+    * @throws InvalidQuantityException
+    * @throws InvalidLocationException
+    * @throws StockAlreadyExistsException
+    */
+    $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
 
-- StockAlreadyExistsException
-- InvalidQuantityException
-- InvalidLocationException
+
     
