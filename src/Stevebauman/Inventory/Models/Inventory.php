@@ -64,16 +64,6 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasOne location relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function location()
-    {
-        return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
-    }
-
-    /**
      * The hasOne metric relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -396,7 +386,7 @@ class Inventory extends BaseModel
     {
         return $this->take($quantity, $location, $reason);
     }
-    
+
     /**
      * Alias for the `takeFromMany` function
      *
