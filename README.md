@@ -117,29 +117,33 @@ Using this inventory system, you have to be prepared to catch exceptions.
 
 Here is a list of method's along with their exceptions that they can throw.
 
-###### NoUserLoggedInException
+### NoUserLoggedInException
 
 Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver
 
-###### StockAlreadyExistsException
+### StockAlreadyExistsException
 
 Occurs when a stock of the item already exists at the specified location
 
-###### InvalidQuantityException
+### InvalidQuantityException
 
 Occurs when a non-numerical value is entered as the quantity, such as '30L', 'a20.0'
 
-###### InvalidLocationException
+### InvalidLocationException
 
 Occurs when a location cannot be found, or the specified location is not a subclass or instance of Stevebauman\Inventory\Models\Location
 
-#### All Inventory Management Methods
+## Methods
+
+### All Methods
 
 Throws
     - NoUserLoggedInException (Occurs when a user ID cannot be retrieved from Sentry or built in Auth driver)
 
-#### $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+### Inventory Model Methods
 
+    $item->addStock($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+    
 Throws
     - StockAlreadyExistsException
     - InvalidQuantityException
