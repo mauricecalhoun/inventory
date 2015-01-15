@@ -37,6 +37,11 @@ class InventoryStock extends BaseModel
         'quantity'
     );
 
+    protected $revisionFormattedFieldNames = array(
+        'location_id' => 'Location',
+        'quantity' => 'Quantity',
+    );
+
     /**
      * The belongsTo item relationship
      *

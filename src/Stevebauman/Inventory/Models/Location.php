@@ -17,6 +17,10 @@ class Location extends Node
         'name',
     );
 
+    protected $revisionFormattedFieldNames = array(
+        'name' => 'Name',
+    );
+
     /**
      * Returns a single lined string with arrows indicating depth of the current category
      *

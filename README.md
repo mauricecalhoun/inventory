@@ -11,12 +11,6 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID.
 
-## Customization
-
-Want to use your own models and add custom relationships? No problem, just extend your model to the existing inventory model like so:
-
-
-
 ## Requirements
 
 - Laravel 4.* | 5.* - Not Tested
@@ -43,6 +37,11 @@ Run the migration
     php artisan migrate --vendor="stevebauman/inventory"
 
 You're good to go!
+
+## Customization
+
+Want to use your own models and add custom relationships? No problem, just extend your model to the existing inventory model like so:
+
 
 ## Usage
 
@@ -275,4 +274,4 @@ Occurs when a location cannot be found, or the specified location is not a subcl
 Integration with Sentry, Sentinel and Laravel's auth driver is built in, so inventory items, stocks and movements are automatically
 tagged to the current logged in user. However, you turn this off if you'd like in the config file under:
 
-    'allow_no_user' => false
+    'allow_no_user' => false //Set to true

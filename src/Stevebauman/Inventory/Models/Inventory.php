@@ -45,6 +45,17 @@ class Inventory extends BaseModel
     );
 
     /**
+     * Revisionable field names
+     *
+     * @var array
+     */
+    protected $revisionFormattedFieldNames = array(
+        'category_id' => 'Category',
+        'metric_id' => 'Metric',
+        'name' => 'Name',
+    );
+
+    /**
      * The hasOne category relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
