@@ -47,7 +47,12 @@ Run the migration:
 
     php artisan migrate
 
-Create the models:
+Create the models, but keep in mind the relationship functions need:
+
+- The exact names shown below (such as `stocks()`)
+- The exact relationship type (such as HasOne, HasMany, belongsTo etc)
+
+You are free to modify anything else.
 
 Metric:
 
