@@ -23,6 +23,12 @@ class CreateLocationsTable extends Migration
             $table->integer('depth')->nullable();
             $table->string('name');
 
+            /*
+             * This field is for scoping categories, use it if you
+             * want to store multiple nested sets on the same table
+             */
+            $table->string('belongs_to')->nullable();
+
         });
     }
 

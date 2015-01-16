@@ -22,7 +22,12 @@ class CreateCategoriesTable extends Migration
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
             $table->string('name');
-            $table->string('belongs_to');
+
+            /*
+             * This field is for scoping categories, use it if you
+             * want to store multiple nested sets on the same table
+             */
+            $table->string('belongs_to')->nullable();
 
         });
     }

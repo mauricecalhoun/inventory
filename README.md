@@ -13,6 +13,11 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID.
 
+This is a trait based implemented package. Take a look at the installation below.
+
+Unfortunately, installation isn't a simple command, but once you're done the installation,
+you'll have the freedom to do what you please with the models, migrations, and inventory management functions.
+
 ## Requirements
 
 - Laravel 4.* | 5.* - Not Tested
@@ -28,22 +33,115 @@ Include in your `composer.json` file:
 
     "stevebauman/inventory" : "1.*"
 
-Now perform a `composer update` on your project's source
+Now perform a `composer update` on your project's source:
 
 Insert the service provider in your `config/app.php` config file:
 
     'Stevebauman\Inventory\InventoryServiceProvider'
 
-Run the migration
+Publish the migration:
 
-    php artisan migrate --vendor="stevebauman/inventory"
+    php artisan migrate:publish stevebauman/inventory
 
-You're good to go!
+Run the migration:
 
-## Customization
+    php artisan migrate
 
-Want to use your own models and add custom relationships? No problem, just extend your model to the existing inventory model like so:
+Create the models:
 
+Metric:
+
+    class Metric extends Model
+    {
+        protected $table = 'metrics';
+    }
+    
+Location:
+    
+    use Baum\Node;
+    
+    class Location extends Node 
+    {
+        protected $table = 'locations';
+    }
+
+Category:
+
+    use Baum\Node;
+    
+    class Category extends Node
+    {
+        protected $table = 'categories';
+    }
+
+Inventory:
+
+    use Stevebauman\Inventory\Traits\InventoryTrait;
+    
+    class Inventory extends Model
+    {
+        protected $table = 'inventory';
+    
+        use InventoryTrait;
+        
+        public function category()
+        {
+            return $this->hasOne('Category', 'id', 'category_id');
+        }
+        
+        public function metric()
+        {
+            return $this->hasOne('Metric', 'id', 'metric_id');
+        }
+        
+        public function stocks()
+        {
+            return $this->hasMany('InventoryStock', 'inventory_id');
+        }
+    }
+    
+InventoryStock:
+
+    use Stevebauman\Inventory\Traits\InventoryStockTrait;
+    
+    class InventoryStock extends Model
+    {
+        protected $table = 'inventory_stocks';
+        
+        use InventoryStockTrait;
+    
+        public function item()
+        {
+            return $this->belongsTo('Inventory', 'inventory_id', 'id');
+        }
+
+        public function movements()
+        {
+            return $this->hasMany('InventoryStockMovement', 'stock_id');
+        }
+        
+        public function location()
+        {
+            return $this->hasOne('Location', 'id', 'location_id');
+        }
+    }
+
+InventoryStockMovement:
+
+    use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
+    
+    class InventoryStockMovement extends Model
+    {
+    
+        protected $table = 'inventory_stock_movements';
+        
+        use InventoryStockMovementTrait;
+        
+        public function stock()
+        {
+            return $this->belongsTo('InventoryStock', 'stock_id', 'id');
+        }
+    }
 
 ## Usage
 
