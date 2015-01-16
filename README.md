@@ -22,6 +22,7 @@ you'll have the freedom to do what you please with the models, migrations, and i
 
 - Laravel 4.* | 5.* - Not Tested
 - Etrepat/Baum 1.* (Category Management for Locations & Category models)
+- A `users` database table
 
 Recommended:
 
@@ -42,8 +43,6 @@ Insert the service provider in your `config/app.php` config file:
 If you want to customize the database tables, you can publish the migration and run it yourself:
 
     php artisan migrate:publish stevebauman/inventory
-
-Before running the migration, make sure you have a `users` table for foreign key relations.
 
 Run the migration:
 
