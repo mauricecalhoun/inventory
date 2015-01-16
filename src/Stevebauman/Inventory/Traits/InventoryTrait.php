@@ -1,18 +1,16 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Illuminate\Database\Eloquent\SoftDeletingTrait;
-use Stevebauman\Inventory\Traits\LocationTrait;
 
 /**
- * Class Inventory
- * @package Stevebauman\Inventory\Models
+ * Class InventoryTrait
+ * @package Stevebauman\Inventory\Traits
  */
-class Inventory extends BaseModel
-{
+trait InventoryTrait {
 
     /**
      * Soft deleting for inventory item recovery
@@ -25,185 +23,15 @@ class Inventory extends BaseModel
     use LocationTrait;
 
     /**
-     * The database table to store inventory records
-     *
-     * @var string
+     * Set's the models constructor method to automatically assign the
+     * user_id's attribute to the current logged in user
      */
-    protected $table = 'inventories';
+    use UserIdentificationTrait;
 
     /**
-     * The fillable eloquent attribute array for allowing mass assignments
-     *
-     * @var array
+     * Helpers for starting database transactions
      */
-    protected $fillable = array(
-        'user_id',
-        'metric_id',
-        'category_id',
-        'name',
-        'description'
-    );
-
-    /**
-     * Revisionable field names
-     *
-     * @var array
-     */
-    protected $revisionFormattedFieldNames = array(
-        'category_id' => 'Category',
-        'metric_id' => 'Metric',
-        'name' => 'Name',
-    );
-
-    /**
-     * The hasOne category relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function category()
-    {
-        return $this->hasOne('Stevebauman\Inventory\Models\Category', 'id', 'category_id');
-    }
-
-    /**
-     * The hasOne metric relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function metric()
-    {
-        return $this->hasOne('Stevebauman\Inventory\Models\Metric', 'id', 'metric_id');
-    }
-
-    /**
-     * The hasMany stocks relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function stocks()
-    {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id');
-    }
-
-    /**
-     * Filters query by the inputted inventory item name
-     *
-     * @param $query
-     * @param null $name
-     * @return mixed
-     */
-    public function scopeName($query, $name = NULL)
-    {
-        if ($name) {
-            return $query->where('name', 'LIKE', '%' . $name . '%');
-        }
-    }
-
-    /**
-     * Filters query by the inputted inventory item description
-     *
-     * @param $query
-     * @param null $description
-     * @return mixed
-     */
-    public function scopeDescription($query, $description = NULL)
-    {
-        if ($description) {
-            return $query->where('description', 'LIKE', '%' . $description . '%');
-        }
-    }
-
-    /**
-     * Filters query by the inputted inventory item stock quantity
-     *
-     * @param $query
-     * @param null $operator
-     * @param null $stock
-     * @return mixed
-     */
-    public function scopeStock($query, $operator = NULL, $stock = NULL)
-    {
-        if ($operator && $stock) {
-
-            return $query->whereHas('stocks', function ($query) use ($operator, $stock) {
-
-                if ($output = $this->getOperator($operator)) {
-
-                    return $query->where('quantity', $output[0], $stock);
-
-                } else {
-                    return $query;
-                }
-
-            });
-        }
-    }
-
-    /**
-     * Filters inventory results by specified category
-     *
-     * @param $query
-     * @param null $category_id
-     */
-    public function scopeCategory($query, $category_id = NULL)
-    {
-        if ($category_id) {
-
-            /*
-             * Get descendants and self inventory category nodes
-             */
-            $categories = Category::find($category_id)->getDescendantsAndSelf();
-
-            /*
-             * Perform a subquery on main query
-             */
-            $query->where(function ($query) use ($categories) {
-
-                /*
-                 * For each category, apply a orWhere query to the subquery
-                 */
-                foreach ($categories as $category) {
-                    $query->orWhere('category_id', $category->id);
-                }
-
-                return $query;
-
-            });
-        }
-    }
-
-    /**
-     * Filters inventory results by specified location
-     *
-     * @param $query
-     * @param null $location_id
-     */
-    public function scopeLocation($query, $location_id = NULL)
-    {
-        if ($location_id) {
-
-            /*
-             * Get descendants and self inventory category nodes
-             */
-            $locations = Location::find($location_id)->getDescendantsAndSelf();
-
-            /*
-             * Perform a subquery on main query
-             */
-            $query->where(function ($query) use ($locations) {
-
-                /*
-                 * For each category, apply a orWhere query to the subquery
-                 */
-                foreach ($locations as $location) {
-                    $query->orWhere('location_id', $location->id);
-                }
-
-                return $query;
-
-            });
-        }
-    }
+    use DatabaseTransactionTrait;
 
     /**
      * Mutator for showing the total current stock of the inventory item
@@ -316,7 +144,7 @@ class Inventory extends BaseModel
                 'bin' => $bin,
             );
 
-            $stock = InventoryStock::create($insert);
+            $stock = $this->stocks()->create($insert);
 
             return $stock->put($quantity, $reason, $cost);
 
@@ -512,8 +340,8 @@ class Inventory extends BaseModel
     {
         $location = $this->getLocation($location);
 
-        $stock = InventoryStock::
-        where('inventory_id', $this->id)
+        $stock = $this->stocks()
+            ->where('inventory_id', $this->id)
             ->where('location_id', $location->id)
             ->first();
 
@@ -529,6 +357,5 @@ class Inventory extends BaseModel
 
         }
     }
-
 
 }

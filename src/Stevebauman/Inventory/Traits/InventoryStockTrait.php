@@ -1,18 +1,16 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
-use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Traits\LocationTrait;
 
 /**
- * Class InventoryStock
- * @package Stevebauman\Inventory\Models
+ * Class InventoryStockTrait
+ * @package Stevebauman\Inventory\Traits
  */
-class InventoryStock extends BaseModel
-{
+trait InventoryStockTrait {
 
     /**
      * Used for easily grabbing a specified location
@@ -20,57 +18,15 @@ class InventoryStock extends BaseModel
     use LocationTrait;
 
     /**
-     * The database table to store inventory stock records
-     *
-     * @var string
+     * Set's the models constructor method to automatically assign the
+     * user_id's attribute to the current logged in user
      */
-    protected $table = 'inventory_stocks';
+    use UserIdentificationTrait;
 
     /**
-     * The fillable eloquent attribute array for allowing mass assignments
-     *
-     * @var array
+     * Helpers for starting database transactions
      */
-    protected $fillable = array(
-        'inventory_id',
-        'location_id',
-        'quantity'
-    );
-
-    protected $revisionFormattedFieldNames = array(
-        'location_id' => 'Location',
-        'quantity' => 'Quantity',
-    );
-
-    /**
-     * The belongsTo item relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function item()
-    {
-        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
-    }
-
-    /**
-     * The hasMany movements relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function movements()
-    {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStockMovement', 'stock_id');
-    }
-
-    /**
-     * The hasOne location relationship
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function location()
-    {
-        return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
-    }
+    use DatabaseTransactionTrait;
 
     /**
      * Accessor for viewing the last movement of the stock
@@ -142,7 +98,7 @@ class InventoryStock extends BaseModel
      * @param $quantity
      * @param string $reason
      * @param int $cost
-     * @return InventoryStock
+     * @return InventoryStock|InventoryStockTrait
      * @throws InvalidQuantityException
      */
     public function updateQuantity($quantity, $reason= '', $cost = 0)
@@ -255,7 +211,7 @@ class InventoryStock extends BaseModel
      * Rolls back a specific movement
      *
      * @param $movement
-     * @return $this|bool|InventoryStock
+     * @return $this|bool
      * @throws InvalidMovementException
      */
     public function rollbackMovement($movement)
@@ -349,9 +305,17 @@ class InventoryStock extends BaseModel
      */
     private function getMovementById($id)
     {
-        return InventoryStockMovement::find($id);
+        return $this->movements()->find($id);
     }
 
+    /**
+     * Processes a quantity update operation
+     *
+     * @param $quantity
+     * @param string $reason
+     * @param int $cost
+     * @return InventoryStock|InventoryStockTrait
+     */
     private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
     {
         if($quantity > $this->quantity) {
@@ -535,7 +499,6 @@ class InventoryStock extends BaseModel
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
     {
         $insert = array(
-            'user_id' => $this->getCurrentUserId(),
             'stock_id' => $this->id,
             'before' => $before,
             'after' => $after,
@@ -543,7 +506,7 @@ class InventoryStock extends BaseModel
             'cost' => $cost,
         );
 
-        return InventoryStockMovement::create($insert);
+        return $this->movements()->create($insert);
     }
 
     /**
@@ -576,7 +539,7 @@ class InventoryStock extends BaseModel
      */
     private function isMovement($object)
     {
-        return is_subclass_of($object, 'Stevebauman\Inventory\Models\InventoryStockLocation') || $object instanceof InventoryStockMovement;
+        return is_a($object, config('inventory::models.inventory_stock_movement'));
     }
 
 }
