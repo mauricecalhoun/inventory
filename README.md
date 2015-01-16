@@ -43,7 +43,7 @@ If you want to customize the database tables, you can publish the migration and 
 
     php artisan migrate:publish stevebauman/inventory
 
-* Before running the migration, make sure you have a `users` table for foreign key relations *
+Before running the migration, make sure you have a `users` table for foreign key relations.
 
 Run the migration:
 
