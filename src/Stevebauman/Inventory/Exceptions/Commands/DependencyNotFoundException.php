@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Maintenance\Exceptions\Commands;
+namespace Stevebauman\Inventory\Exceptions\Commands;
 
 
 class DependencyNotFoundException extends \Exception {}

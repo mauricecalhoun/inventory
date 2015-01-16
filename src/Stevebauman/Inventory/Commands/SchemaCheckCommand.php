@@ -3,8 +3,8 @@
 namespace Stevebauman\Inventory\Commands;
 
 use Illuminate\Support\Facades\Schema;
-use Stevebauman\Maintenance\Exceptions\Commands\DatabaseTableReservedException;
-use Stevebauman\Maintenance\Exceptions\Commands\DependencyNotFoundException;
+use Stevebauman\Inventory\Exceptions\Commands\DatabaseTableReservedException;
+use Stevebauman\Inventory\Exceptions\Commands\DependencyNotFoundException;
 use Illuminate\Console\Command;
 
 class SchemaCheckCommand extends Command {
@@ -68,13 +68,9 @@ class SchemaCheckCommand extends Command {
 
             if(!$this->tableExists($table)) {
 
-                if (!$this->confirmInstallDependency($suppliedBy)) {
+                $message = sprintf('Table: %s does not exist, it is supplied by %s', $table, $suppliedBy);
 
-                    $message = sprintf('Table: %s does not exist, it is supplied by %s', $table, $suppliedBy);
-
-                    throw new DependencyNotFoundException($message);
-
-                }
+                throw new DependencyNotFoundException($message);
 
             }
 
