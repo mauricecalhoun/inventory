@@ -39,18 +39,24 @@ Insert the service provider in your `config/app.php` config file:
 
     'Stevebauman\Inventory\InventoryServiceProvider'
 
-Publish the migration:
+If you want to customize the database tables, you can publish the migration and run it yourself:
 
     php artisan migrate:publish stevebauman/inventory
+
+* Before running the migration, make sure you have a `users` table for foreign key relations *
 
 Run the migration:
 
     php artisan migrate
+    
+Otherwise you can run the install command:
+
+    php artisan inventory:install
 
 Create the models, but keep in mind the relationship functions need:
 
 - The exact names shown below (such as `stocks()`)
-- The exact relationship type (such as HasOne, HasMany, belongsTo etc)
+- The exact relationship type (such as hasOne, hasMany, belongsTo etc)
 
 You are free to modify anything else.
 
