@@ -28,6 +28,24 @@ class InventoryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->app->bind('inventory:install', function(){
+			return new Commands\InstallCommand();
+		});
+
+		$this->app->bind('inventory:check-schema', function(){
+			return new Commands\SchemaCheckCommand();
+		});
+
+		$this->app->bind('inventory:run-migrations', function(){
+			return new Commands\RunMigrationsCommand();
+		});
+
+		$this->commands(array(
+			'inventory:install',
+			'inventory:check-schema',
+			'inventory:run-migrations',
+		));
+
 		include __DIR__ .'/../../helpers.php';
 	}
 

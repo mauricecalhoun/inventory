@@ -14,6 +14,9 @@
         "illuminate/support": "4.*",
         "baum/baum": "~1.0"
     },
+    "require-dev": {
+        "codeception/codeception": "2.*"
+    },
     "suggest": {
         "venturecraft/revisionable": "Allows the tracking of inventory stock location and category changes"
     },
