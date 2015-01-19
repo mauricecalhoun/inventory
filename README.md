@@ -3,6 +3,12 @@
 
 [![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
 
+## Status
+
+Right now, this package is in heavy development, I'd advise against implementing it at the current moment (Jan 19th, 2015).
+
+v1.0.0 will most likely be released in the coming weeks with tests and clearer instructions and documentation.
+
 ## Description
 
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
