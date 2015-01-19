@@ -8,7 +8,8 @@ use Stevebauman\Inventory\Exceptions\InvalidLocationException;
  * Class LocationTrait
  * @package Stevebauman\Inventory\Traits
  */
-trait LocationTrait {
+trait LocationTrait
+{
 
     /**
      * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
@@ -20,13 +21,9 @@ trait LocationTrait {
      */
     public function getLocation($location)
     {
-        if($this->isLocation($location)) {
+        if ($this->isLocation($location)) {
 
             return $location;
-
-        } elseif(is_numeric($location)) {
-
-            return $this->getLocationById($location);
 
         } else {
 
@@ -38,17 +35,6 @@ trait LocationTrait {
     }
 
     /**
-     * Retrieves a location by it's ID
-     *
-     * @param int|string $id
-     * @return \Illuminate\Support\Collection|null|static
-     */
-    public function getLocationById($id)
-    {
-        return Location::find($id);
-    }
-
-    /**
      * Returns true or false if the specified location is an instance of the model Location
      *
      * @param $object
@@ -56,7 +42,6 @@ trait LocationTrait {
      */
     private function isLocation($object)
     {
-        return is_subclass_of($object, 'Stevebauman\Inventory\Models\Location') || $object instanceof Location;
+        return is_subclass_of($object, 'Illuminate\Database\Eloquent\Model');
     }
-
 }

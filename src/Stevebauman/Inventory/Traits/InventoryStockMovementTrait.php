@@ -12,4 +12,10 @@ trait InventoryStockMovementTrait {
 
     use DatabaseTransactionTrait;
 
+    public function rollback($recursive = false)
+    {
+        $stock = $this->stock;
+
+        return $stock->rollback($this, $recursive);
+    }
 }

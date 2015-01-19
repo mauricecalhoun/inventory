@@ -248,6 +248,10 @@ Actually hang on, we definitely didn't drink that much, let's roll it back:
     
     $stock->rollback($movement);
     
+    // Or we can even trigger a rollback on the specific movement:
+    
+    $movement->rollback();
+    
 Now that we've added stock to our inventory, and made some changes, all changes are automatically tracked. 
 If an exception occurs during a stock change, it is automatically rolled back using Laravel's built in database transactions.
 These rollbacks are not tracked.
@@ -259,7 +263,20 @@ If you look at your database, inside your `inventory_stock_movements` table, you
        2     1           1       20.00   23.00   5.20    'I bought some'   
        3     1           1       23.00   8.00    0.00    'I drank it'
        4     1           1       8.00    23.00   0.00    'Rolled back movement ID: 3 on 2015-01-15 10:00:54'
+
+Another situation you might run into, is rolling back a specific movement and reversing all of the movements that
+occurred AFTER the inserted movement. This is called a recursive rollback. This is how it's performed:
+
+    $movement = InventoryStockMovement::find(3);
     
+    $stock = InventoryStock::find(1);
+    
+    /*
+    * Passing in true to the second argument will rollback all movements that happened after the inserted rollback,
+    * including itself.
+    */
+    $stock->rollback($movement, true);
+
 ## Exceptions
 
 Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.
@@ -373,7 +390,6 @@ Occurs when a location cannot be found, or the specified location is not a subcl
     * @throws NotEnoughStockException
     */
     $stock->hasEnoughStock($quantity = 0);
-
 
 ## Events
 

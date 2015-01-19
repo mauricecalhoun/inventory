@@ -122,22 +122,24 @@ trait InventoryStockTrait {
     }
 
     /**
-     * Rolls back the last movement, or the movement specified
+     * Rolls back the last movement, or the movement specified. If recursive is set to true,
+     * it will rollback all movements leading up to the movement specified
      *
      * @param string $movement
-     * @return $this|bool|InventoryStock
+     * @param bool $recursive
+     * @return $this|bool|InventoryStockTrait
      */
-    public function rollback($movement = '')
+    public function rollback($movement = '', $recursive = false)
     {
         if($movement) {
 
-            return $this->rollbackMovement($movement);
+            return $this->rollbackMovement($movement, $recursive);
 
         } else  {
 
             $movement = $this->getLastMovement();
 
-            if($movement) return $this->processRollbackOperation($movement);
+            if($movement) return $this->processRollbackOperation($movement, $recursive);
 
         }
 
@@ -148,14 +150,15 @@ trait InventoryStockTrait {
      * Rolls back a specific movement
      *
      * @param $movement
-     * @return $this|bool
+     * @param bool $recursive
+     * @return $this|bool|InventoryStockTrait
      * @throws InvalidMovementException
      */
-    public function rollbackMovement($movement)
+    public function rollbackMovement($movement, $recursive = false)
     {
         $movement = $this->getMovement($movement);
 
-        return $this->processRollbackOperation($movement);
+        return $this->processRollbackOperation($movement, $recursive);
     }
 
     /**
@@ -395,8 +398,18 @@ trait InventoryStockTrait {
         return false;
     }
 
-    private function processRollbackOperation($movement)
+
+    /**
+     * Processes a single rollback operation
+     *
+     * @param $movement
+     * @param bool $recursive
+     * @return $this|bool
+     */
+    private function processRollbackOperation($movement, $recursive = false)
     {
+        if($recursive) return $this->processRecursiveRollbackOperation($movement);
+
         $this->quantity = $movement->before;
 
         $this->dbStartTransaction();
@@ -422,6 +435,31 @@ trait InventoryStockTrait {
         $this->dbRollbackTransaction();
 
         return false;
+    }
+
+    /**
+     * Processes a recursive rollback operation
+     *
+     * @param $movement
+     * @return $this|array|bool|InventoryStockTrait
+     */
+    private function processRecursiveRollbackOperation($movement)
+    {
+        /*
+         * Retrieve movements that were created after the specified movement, and order them descending
+         */
+        $movements = $this->movements()->where('created_at', '>=', $movement->getOriginal('created_at'))->orderBy('created_at', 'DESC')->get();
+
+        $rollbacks = array();
+
+        foreach($movements as $movement) {
+
+            $rollbacks = $this->processRollbackOperation($movement);
+
+        }
+
+        return $rollbacks;
+
     }
 
     /**
