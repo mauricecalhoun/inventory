@@ -29,69 +29,6 @@ trait InventoryStockTrait {
     use DatabaseTransactionTrait;
 
     /**
-     * Accessor for viewing the last movement of the stock
-     *
-     * @return null|string
-     */
-    public function getLastMovementAttribute()
-    {
-        if ($this->movements->count() > 0) {
-
-            $movement = $this->movements->first();
-
-            if ($movement->after > $movement->before) {
-
-                return sprintf('<b>%s</b> (Stock was added - %s) - <b>Reason:</b> %s', $movement->change, $movement->created_at, $movement->reason);
-
-            } else {
-
-                return sprintf('<b>%s</b> (Stock was removed - %s) - <b>Reason:</b> %s', $movement->change, $movement->created_at, $movement->reason);
-
-            }
-
-        }
-
-        return NULL;
-    }
-
-    /**
-     * Accessor for viewing the user responsible for the last
-     * movement
-     *
-     * @return null|string
-     */
-    public function getLastMovementByAttribute()
-    {
-        if ($this->movements->count() > 0) {
-
-            $movement = $this->movements->first();
-
-            if ($movement->user) {
-
-                return $movement->user->full_name;
-
-            } else {
-
-                return NULL;
-
-            }
-
-        }
-
-        return NULL;
-    }
-
-    /**
-     * Accessor for viewing the quantity combined with the item metric
-     *
-     * @return string
-     */
-    public function getQuantityMetricAttribute()
-    {
-        return $this->attributes['quantity'] . ' ' . $this->item->metric->name;
-    }
-
-    /**
      * Performs a quantity update. Automatically determining depending on the quantity entered if stock is being taken
      * or added
      *
@@ -275,7 +212,7 @@ trait InventoryStockTrait {
      * is an instance of the model InventoryStockMovement, if a numeric value is entered, it is retrieved by it's ID
      *
      * @param $movement
-     * @return \Illuminate\Support\Collection|null|InventoryStock|static
+     * @return \Illuminate\Support\Collection|null|static
      * @throws InvalidMovementException
      */
     public function getMovement($movement)
@@ -532,14 +469,14 @@ trait InventoryStockTrait {
     }
 
     /**
-     * Returns true or false if the specified movement is an instance of the model InventoryStockMovement
+     * Returns true or false if the specified movement is a subclass of an eloquent model
      *
      * @param $object
      * @return bool
      */
     private function isMovement($object)
     {
-        return is_a($object, config('inventory::models.inventory_stock_movement'));
+        return is_subclass_of($object, 'Illuminate\Database\Eloquent\Model');
     }
 
 }

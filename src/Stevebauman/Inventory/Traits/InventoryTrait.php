@@ -34,36 +34,6 @@ trait InventoryTrait {
     use DatabaseTransactionTrait;
 
     /**
-     * Mutator for showing the total current stock of the inventory item
-     *
-     * @return int|string
-     */
-    public function getCurrentStockAttribute()
-    {
-        $stock = $this->getTotalStock();
-
-        if ($this->hasMetric()) {
-            return sprintf('%s %s', $stock, $this->getMetricSymbol());
-        }
-
-        return $stock;
-    }
-
-    /**
-     * Mutator for showing the inventories metric symbol
-     *
-     * @return null|string
-     */
-    public function getMetricSymbolAttribute()
-    {
-        if ($this->hasMetric()) {
-            return $this->getMetricSymbol();
-        }
-
-        return NULL;
-    }
-
-    /**
      * Returns the total sum of the current stock
      *
      * @return mixed

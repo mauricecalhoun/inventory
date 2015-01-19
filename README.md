@@ -234,7 +234,7 @@ We've added quantity to our stock, now lets take some away:
     */
     $stock->remove(15, $reason);
     
-Actually hang on, we definitely didn't take that much, let's roll it back:
+Actually hang on, we definitely didn't drink that much, let's roll it back:
 
     $stock->rollback();
     
@@ -385,3 +385,120 @@ Integration with Sentry, Sentinel and Laravel's auth driver is built in, so inve
 tagged to the current logged in user. However, you turn this off if you'd like in the config file under:
 
     'allow_no_user' => false //Set to true
+    
+## Misc Functions and Uses
+
+#### Helpful Scopes
+
+How do I scope an item by it's category and include the results from deeper categories?
+
+Place this inside your `Inventory` model. You can also use this implementation for scoping Locations on the `InventoryStock` model.
+
+    /**
+     * Filters inventory results by specified category
+     *
+     * @return object
+     */
+    public function scopeCategory($query, $category_id = NULL)
+    {
+        if ($category_id) {
+        
+            /*
+             * Get descendants and self inventory category nodes
+             */
+            $categories = $this->category()->find($category_id)->getDescendantsAndSelf();
+            
+            /*
+             * Perform a subquery on main query
+             */
+            $query->where(function ($query) use ($categories) {
+            
+                /*
+                 * For each category, apply a orWhere query to the subquery
+                 */
+                foreach ($categories as $category) {
+                    $query->orWhere('category_id', $category->id);
+                }
+                
+                return $query;
+                
+            });
+        }
+    }
+    
+Using this will effectively allow you to see all of the inventory from a parent category.
+
+#### Helpful Accessors
+
+How do I show the last movement for a stock record?
+
+You can simply create 2 Accessors. Place this accessor on the `InventoryStock` model:
+
+    /**
+     * Accessor for viewing the last movement of the stock
+     *
+     * @return null|string
+     */
+    public function getLastMovementAttribute()
+    {
+        if ($this->movements->count() > 0) {
+
+            $movement = $this->movements->first();
+
+            if ($movement->after > $movement->before) {
+
+                return sprintf('<b>%s</b> (Stock was added - %s) - <b>Reason:</b> %s', $movement->change, $movement->created_at, $movement->reason);
+
+            } else if ($movement->before > $movement->after) {
+
+                return sprintf('<b>%s</b> (Stock was removed - %s) - <b>Reason:</b> %s', $movement->change, $movement->created_at, $movement->reason);
+
+            }
+            else{
+
+                return sprintf('<b>%s</b> (No Change - %s) - <b>Reason:</b> %s', $movement->change, $movement->created_at, $movement->reason);
+
+            }
+
+        }
+
+        return NULL;
+    }
+    
+Place this accessor on the `InventoryStockMovement` model:
+
+    /**
+     * Returns the change of a stock
+     *
+     * @return string
+     */
+    public function getChangeAttribute()
+    {
+        if ($this->before > $this->after) {
+
+            return sprintf('- %s', $this->before - $this->after);
+
+        } else if($this->after > $this->before) {
+
+            return sprintf('+ %s', $this->after - $this->before);
+
+        } else {
+            return 'None';
+        }
+    }
+    
+Now, inside your view to display stock records you can use:
+
+    @if($stocks->count() > 0)
+    
+        @foreach($stocks as $stock)
+    
+            {{ $stock->last_movement }} // Will display in format '+ 20 (Stock was Added) - Reason: Stock check'
+    
+        @endforeach
+    
+    @else
+        
+        There are no stocks to display for this item.
+        
+    @endif
