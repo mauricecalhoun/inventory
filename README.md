@@ -7,7 +7,7 @@
 
 Right now, this package is in heavy development, I'd advise against implementing it at the current moment (Jan 19th, 2015).
 
-v1.0.0 will most likely be released in the coming weeks with tests and clearer instructions and documentation.
+v1.0.0 will most likely be released in the coming weeks with tests, clearer instructions, and documentation.
 
 ## Description
 
