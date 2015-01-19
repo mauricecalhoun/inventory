@@ -276,6 +276,11 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
     * including itself.
     */
     $stock->rollback($movement, true);
+    
+    /*
+    * Or on the movement itself:
+    */
+    $movement->rollback(true);
 
 ## Exceptions
 
