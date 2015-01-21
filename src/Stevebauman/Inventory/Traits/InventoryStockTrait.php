@@ -172,7 +172,9 @@ trait InventoryStockTrait {
     {
         if($this->isPositive($quantity)) return true;
 
-        $message = sprintf('Quantity %s is invalid', $quantity);
+        $message = trans('inventory::exceptions.InvalidQuantityException', array(
+            'quantity' => $quantity,
+        ));
 
         throw new InvalidQuantityException($message);
     }
@@ -191,7 +193,10 @@ trait InventoryStockTrait {
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
-        $message = sprintf('Not enough stock. Tried to take %s but only %s is available', $quantity, $this->quantity);
+        $message = trans('inventory::exceptions.NotEnoughStockException', array(
+            'quantity' => $quantity,
+            'available' => $this->quantity,
+        ));
 
         throw new NotEnoughStockException($message);
     }
@@ -230,7 +235,9 @@ trait InventoryStockTrait {
 
         } else {
 
-            $message = sprintf('Movement %s is invalid', $movement);
+            $message = trans('inventory::exceptions.InvalidMovementException', array(
+                'movement' => $movement,
+            ));
 
             throw new InvalidMovementException($message);
 

@@ -2,15 +2,20 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-
 trait UserIdentificationTrait {
 
+    /**
+     * Overrides the models boot function to set the user ID automatically
+     * to every new record
+     */
     public static function boot()
     {
         parent::boot();
 
-        parent::creating(function($record){
+        parent::creating(function($record) {
+
             $record->user_id = parent::getCurrentUserId();
+
         });
     }
 
@@ -26,21 +31,39 @@ trait UserIdentificationTrait {
     protected static function getCurrentUserId()
     {
         try {
-            if (class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry')
-                || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel')
-            ) {
-                return ($class::check()) ? $class::getUser()->id : null;
-            } elseif (Auth::check()) {
+
+            if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || $class = class_exists('\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
+
+                return ($class::check()) ?: $class::getUser()->id;
+
+            } elseif (\Auth::check()){
+
                 return Auth::user()->getAuthIdentifier();
+
+            } else {
+
             }
+
         } catch (\Exception $e) {
+
         }
+
+        /*
+         * Getting the current user ID is unavailable, so we'll check
+         * if we're allowed to return no user ID to the model. If not we'll throw an exception
+         */
         if (config('inventory::allow_no_user')) {
+
             return NULL;
+
         } else {
-            $message = 'Cannot retrieve user ID';
+
+            $message = trans('inventory::exceptions.NoUserLoggedInException');
+
             throw new NoUserLoggedInException($message);
+
         }
+
     }
 
 }

@@ -27,7 +27,9 @@ trait LocationTrait
 
         } else {
 
-            $message = sprintf('Location %s is invalid', $location);
+            $message = trans('inventory::exceptions.InvalidLocationException', array(
+                'location' => $location,
+            ));
 
             throw new InvalidLocationException($message);
 

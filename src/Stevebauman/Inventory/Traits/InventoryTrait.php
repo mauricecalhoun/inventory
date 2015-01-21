@@ -97,7 +97,9 @@ trait InventoryTrait {
 
             if ($this->getStockFromLocation($location)) {
 
-                $message = sprintf('Stock already exists on location %s', $location->name);
+                $message = trans('inventory::exceptions.StockAlreadyExistsException', array(
+                    'location' => $location->name,
+                ));
 
                 throw new StockAlreadyExistsException($message);
 
@@ -321,7 +323,9 @@ trait InventoryTrait {
 
         } else {
 
-            $message = sprintf('No stock was found from location %s', $location->name);
+            $message = trans('inventory::exceptions.StockNotFoundException', array(
+                'location' => $location->name,
+            ));
 
             throw new StockNotFoundException($message);
 
