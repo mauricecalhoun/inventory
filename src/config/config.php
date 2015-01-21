@@ -16,6 +16,14 @@ return array(
     'allow_duplicate_movements' => true,
 
     /*
+     * When set to true, this will reverse the cost in the rolled back movement.
+     *
+     * For example, if the movement's cost that is being rolled back is 500, the rolled back
+     * movement will be -500.
+     */
+    'rollback_cost' => true,
+
+    /*
      * Default reason to give when creating a new inventory stock
      */
     'default_stock_first_reason' => trans('inventory::reasons.first_record'),

@@ -33,7 +33,7 @@ trait InventoryStockTrait {
      *
      * @var
      */
-    public $beforeQuantity = 0;
+    private $beforeQuantity = 0;
 
     /**
      * Stores the reason for updating / creating a stock
@@ -114,6 +114,9 @@ trait InventoryStockTrait {
         }
     }
 
+    /**
+     * Generates a stock movement after a stock is updated
+     */
     public function postUpdate()
     {
         $this->generateStockMovement($this->beforeQuantity, $this->quantity, $this->reason, $this->cost);
@@ -143,11 +146,12 @@ trait InventoryStockTrait {
      *
      * @param $quantity
      * @param string $reason
-     * @return InventoryStock
+     * @param int $cost
+     * @return $this|bool|InventoryStockTrait
      */
-    public function remove($quantity, $reason= '')
+    public function remove($quantity, $reason= '', $cost = 0)
     {
-        return $this->take($quantity, $reason);
+        return $this->take($quantity, $reason, $cost);
     }
 
     /**
@@ -155,15 +159,16 @@ trait InventoryStockTrait {
      *
      * @param $quantity
      * @param string $reason
-     * @return InventoryStock
+     * @param int $cost
+     * @return $this|bool|InventoryStockTrait
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    public function take($quantity, $reason = '')
+    public function take($quantity, $reason = '', $cost = 0)
     {
         if($this->isValidQuantity($quantity) && $this->hasEnoughStock($quantity)) {
 
-            return $this->processTakeOperation($quantity, $reason);
+            return $this->processTakeOperation($quantity, $reason, $cost);
 
         }
     }
@@ -366,7 +371,7 @@ trait InventoryStockTrait {
 
             $taking = $this->quantity - $quantity;
 
-            return $this->take($taking, $reason);
+            return $this->take($taking, $reason, $cost);
 
         }
     }
@@ -376,9 +381,10 @@ trait InventoryStockTrait {
      *
      * @param $taking
      * @param string $reason
+     * @param int $cost
      * @return $this|bool
      */
-    private function processTakeOperation($taking, $reason = '')
+    private function processTakeOperation($taking, $reason = '', $cost = 0)
     {
         $left = $this->quantity - $taking;
 
@@ -394,6 +400,8 @@ trait InventoryStockTrait {
         $this->quantity = $left;
 
         $this->setReason($reason);
+
+        $this->setCost($cost);
 
         $this->dbStartTransaction();
 
@@ -513,6 +521,14 @@ trait InventoryStockTrait {
 
         $this->setReason($reason);
 
+        if(config('inventory::rollback_cost')) {
+
+            $this->setCost($movement->cost);
+
+            $this->reverseCost();
+
+        }
+
         $this->dbStartTransaction();
 
         if($this->save()) {
@@ -587,6 +603,22 @@ trait InventoryStockTrait {
     private function setCost($cost = 0)
     {
         $this->cost = $cost;
+    }
+
+    /**
+     * Reverses the cost of a movement
+     */
+    private function reverseCost()
+    {
+        if($this->isPositive($this->cost)) {
+
+            $this->setCost(-abs($this->cost));
+
+        } else {
+
+            $this->setCost(abs($this->cost));
+
+        }
     }
 
     /**

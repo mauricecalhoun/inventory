@@ -12,4 +12,5 @@ return array(
     'change' => 'Stock Adjustment',
 
     'rollback' => 'Rolled back to movement ID: :id on :date',
+
 );
