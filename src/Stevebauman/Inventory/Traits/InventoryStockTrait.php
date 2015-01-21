@@ -29,6 +29,97 @@ trait InventoryStockTrait {
     use DatabaseTransactionTrait;
 
     /**
+     * Stores the quantity before an update
+     *
+     * @var
+     */
+    public $beforeQuantity = 0;
+
+    /**
+     * Stores the reason for updating / creating a stock
+     *
+     * @var string
+     */
+    public $reason = '';
+
+    /**
+     * Stores the cost for updating a stock
+     *
+     * @var int
+     */
+    public $cost = 0;
+
+    /**
+     * Overrides the models boot function to set the user ID automatically
+     * to every new record
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        parent::creating(function($model) {
+
+            $model->user_id = $model->getCurrentUserId();
+
+            /*
+             * Check if a reason has been set, if not let's retrieve the default first entry reason
+             */
+            if(!$model->reason) $model->reason = trans('inventory::reasons.first_record');
+
+        });
+
+        parent::created(function($model) {
+
+            $model->postCreate();
+
+        });
+
+        parent::updating(function($model) {
+
+            /*
+             * Retrieve the original quantity before it was updated,
+             * so we can create generate an update with it
+             */
+            $model->beforeQuantity = $model->getOriginal('quantity');
+
+            /*
+             * Check if a reason has been set, if not let's retrieve the default change reason
+             */
+            if(!$model->reason) $model->reason = trans('inventory::reasons.change');
+
+        });
+
+        parent::updated(function($model) {
+
+            $model->postUpdate();
+
+        });
+    }
+
+    /**
+     * Generates a stock movement on the creation of a stock
+     */
+    public function postCreate()
+    {
+        /*
+         * Only create a first record movement if one isn't created already
+         */
+        if(!$this->getLastMovement()) {
+
+            /*
+             * Generate the movement
+             */
+            $this->generateStockMovement(0, $this->quantity, $this->reason, $this->cost);
+
+        }
+    }
+
+    public function postUpdate()
+    {
+        $this->generateStockMovement($this->beforeQuantity, $this->quantity, $this->reason, $this->cost);
+    }
+
+    /**
      * Performs a quantity update. Automatically determining depending on the quantity entered if stock is being taken
      * or added
      *
@@ -289,8 +380,6 @@ trait InventoryStockTrait {
      */
     private function processTakeOperation($taking, $reason = '')
     {
-        $before = $this->quantity;
-
         $left = $this->quantity - $taking;
 
         /*
@@ -304,21 +393,19 @@ trait InventoryStockTrait {
 
         $this->quantity = $left;
 
+        $this->setReason($reason);
+
         $this->dbStartTransaction();
 
         if($this->save()) {
 
-            if($this->generateStockMovement($before, $this->quantity, $reason)) {
+            $this->dbCommitTransaction();
 
-                $this->dbCommitTransaction();
+            $this->fireEvent('inventory.stock.taken', array(
+                'stock' => $this,
+            ));
 
-                $this->fireEvent('inventory.stock.taken', array(
-                    'stock' => $this,
-                ));
-
-                return $this;
-
-            }
+            return $this;
 
         }
 
@@ -342,7 +429,7 @@ trait InventoryStockTrait {
 
         $total = $putting + $before;
 
-        if($total == $this->quatity) {
+        if($total == $this->quantity) {
 
             if(!config('inventory::allow_duplicate_movements')) {
 
@@ -354,21 +441,21 @@ trait InventoryStockTrait {
 
         $this->quantity = $total;
 
+        $this->setReason($reason);
+
+        $this->setCost($cost);
+
         $this->dbStartTransaction();
 
         if($this->save()) {
 
-            if($this->generateStockMovement($before, $this->quantity, $reason,  $cost)) {
+            $this->dbCommitTransaction();
 
-                $this->dbCommitTransaction();
+            $this->fireEvent('inventory.stock.added', array(
+                'stock' => $this,
+            ));
 
-                $this->fireEvent('inventory.stock.added', array(
-                    'stock' => $this,
-                ));
-
-                return  $this;
-
-            }
+            return  $this;
 
         }
 
@@ -419,23 +506,24 @@ trait InventoryStockTrait {
 
         $this->quantity = $movement->before;
 
+        $reason = trans('inventory::reasons.rollback', array(
+            'id' => $movement->id,
+            'date' => $movement->created_at,
+        ));
+
+        $this->setReason($reason);
+
         $this->dbStartTransaction();
 
         if($this->save()) {
 
-            $reason = sprintf('Rolled back to movement ID: %s on %s', $movement->id, $movement->created_at);
+            $this->dbCommitTransaction();
 
-            if($this->generateStockMovement($movement->after, $this->quantity, $reason)) {
+            $this->fireEvent('inventory.stock.rollback', array(
+                'stock' => $this,
+            ));
 
-                $this->dbCommitTransaction();
-
-                $this->fireEvent('inventory.stock.rollback', array(
-                    'stock' => $this,
-                ));
-
-                return $this;
-
-            }
+            return $this;
 
         }
 
@@ -489,6 +577,26 @@ trait InventoryStockTrait {
         );
 
         return $this->movements()->create($insert);
+    }
+
+    /**
+     * Sets the cost attribute
+     *
+     * @param int $cost
+     */
+    private function setCost($cost = 0)
+    {
+        $this->cost = $cost;
+    }
+
+    /**
+     * Sets the reason attribute
+     *
+     * @param string $reason
+     */
+    private function setReason($reason = '')
+    {
+        $this->reason = $reason;
     }
 
     /**

@@ -5,21 +5,6 @@ namespace Stevebauman\Inventory\Traits;
 trait UserIdentificationTrait {
 
     /**
-     * Overrides the models boot function to set the user ID automatically
-     * to every new record
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        parent::creating(function($record) {
-
-            $record->user_id = parent::getCurrentUserId();
-
-        });
-    }
-
-    /**
      * Attempt to find the user id of the currently logged in user
      * Supports Cartalyst Sentry/Sentinel based authentication, as well as stock Auth
      *

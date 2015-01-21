@@ -126,6 +126,15 @@ InventoryStock:
     {
         protected $table = 'inventory_stocks';
         
+        protected $fillable = array(
+            'inventory_id',
+            'location_id',
+            'quantity',
+            'aisle',
+            'row',
+            'bin',
+        );
+        
         use InventoryStockTrait;
     
         public function item()
@@ -152,6 +161,15 @@ InventoryStockMovement:
     {
     
         protected $table = 'inventory_stock_movements';
+        
+        protected $fillable = array(
+            'stock_id',
+            'user_id',
+            'before',
+            'after',
+            'cost',
+            'reason',
+        );
         
         use InventoryStockMovementTrait;
         
@@ -202,10 +220,16 @@ Now we can add stock to our inventory by supplying a number (int or string), and
     $item->createStockOnLocation(20, $location);
     
     /*
-    * If we know the location ID we want to add the stock to, we can also use ID's
+    * Or we can create a stock manually. This will automatically create a stock movement.
+    * If you want to set the cost and reason for the creation of the stock, be sure to do so
     */
-    $item->createStockOnLocation(20, 1);
-    $item->createStockOnLocation(20, '1');
+    $stock = new InventoryStock;
+    $stock->inventory_id = $item->id;
+    $stock->location_id = $location->id;
+    $stock->quantity = 20;
+    $stock->cost = '5.20';
+    $stock->reason = 'I bought some';
+    $stock->save();
     
 So, we've successfully added stock to our inventory item, now let's add some more quantity to it:
 

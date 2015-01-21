@@ -34,6 +34,21 @@ trait InventoryTrait {
     use DatabaseTransactionTrait;
 
     /**
+     * Overrides the models boot function to set the user ID automatically
+     * to every new record
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        parent::creating(function($record) {
+
+            $record->user_id = parent::getCurrentUserId();
+
+        });
+    }
+
+    /**
      * Returns the total sum of the current stock
      *
      * @return mixed
@@ -119,7 +134,6 @@ trait InventoryTrait {
             $stock = $this->stocks()->create($insert);
 
             return $stock->put($quantity, $reason, $cost);
-
         }
     }
 
