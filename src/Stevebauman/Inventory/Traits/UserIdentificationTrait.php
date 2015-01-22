@@ -23,7 +23,7 @@ trait UserIdentificationTrait {
 
             } elseif (\Auth::check()){
 
-                return Auth::user()->getAuthIdentifier();
+                return \Auth::user()->getAuthIdentifier();
 
             } else {
 
