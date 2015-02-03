@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="../../../bootstrap/autoload.php"
+         bootstrap="vendor/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -10,6 +10,15 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+    <filter>
+        <whitelist>
+            <directory>src/Stevebauman/Invenotry</directory>
+            <exclude>
+                <file>src/Stevebauman/Inventory/InventoryServiceProvider.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+
     <testsuites>
         <testsuite name="Package Test Suite">
             <directory suffix=".php">./tests/</directory>

@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
+
 trait UserIdentificationTrait {
 
     /**
@@ -15,33 +17,33 @@ trait UserIdentificationTrait {
      */
     protected static function getCurrentUserId()
     {
-        try {
-
-            if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || $class = class_exists('\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
-
-                return ($class::check()) ?: $class::getUser()->id;
-
-            } elseif (\Auth::check()){
-
-                return \Auth::user()->getAuthIdentifier();
-
-            } else {
-
-            }
-
-        } catch (\Exception $e) {
-
-        }
-
         /*
-         * Getting the current user ID is unavailable, so we'll check
-         * if we're allowed to return no user ID to the model. If not we'll throw an exception
+         * Check if we're allowed to return no user ID to the model. If not we'll throw an exception if
+         * we can't grab the current authenticated user with sentry/sentinel/auth
          */
         if (config('inventory::allow_no_user')) {
 
             return NULL;
 
         } else {
+
+            try {
+
+                if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || $class = class_exists('\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
+
+                    if($class::check()) return $class::getUser()->id;
+
+                } elseif (class_exists('Illuminate\Auth')){
+
+                    if(\Auth::check()) return \Auth::user()->getAuthIdentifier();
+
+                } else {
+
+                }
+
+            } catch (\Exception $e) {
+
+            }
 
             $message = trans('inventory::exceptions.NoUserLoggedInException');
 

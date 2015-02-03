@@ -15,17 +15,21 @@
         "baum/baum": "~1.0"
     },
     "require-dev": {
-        "codeception/codeception": "2.*"
+        "codeception/codeception": "2.0.*"
     },
     "suggest": {
         "venturecraft/revisionable": "Allows the tracking of inventory stock location and category changes"
     },
     "autoload": {
         "classmap": [
-            "src/migrations"
+            "src",
+            "tests"
         ],
         "psr-0": {
-            "Stevebauman\\Inventory\\": "src/"
+            "Stevebauman\\Inventory\\": [
+                "src",
+                "tests"
+            ]
         }
     },
     "minimum-stability": "stable"

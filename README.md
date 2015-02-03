@@ -215,7 +215,7 @@ Now we have our inventory item created. We have to add stock, but to add stock w
     $location->name = 'Warehouse';
     $location->save();
     
-Now we can add stock to our inventory by supplying a number (int or string), and the location (int, string or Location):
+Now we can add stock to our inventory by supplying a number (int or string), and the location (Location object):
 
     $item->createStockOnLocation(20, $location);
     
