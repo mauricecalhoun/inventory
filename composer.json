@@ -22,13 +22,11 @@
     },
     "autoload": {
         "classmap": [
-            "src",
-            "tests"
+            "src"
         ],
         "psr-0": {
             "Stevebauman\\Inventory\\": [
-                "src",
-                "tests"
+                "src"
             ]
         }
     },
