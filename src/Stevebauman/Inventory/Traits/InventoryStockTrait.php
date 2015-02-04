@@ -221,11 +221,11 @@ trait InventoryStockTrait {
      * Rolls back the last movement, or the movement specified. If recursive is set to true,
      * it will rollback all movements leading up to the movement specified
      *
-     * @param string $movement
+     * @param $movement
      * @param bool $recursive
      * @return $this|bool|InventoryStockTrait
      */
-    public function rollback($movement = '', $recursive = false)
+    public function rollback($movement, $recursive = false)
     {
         if($movement) {
 

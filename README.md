@@ -2,6 +2,7 @@
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
 [![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/stevebauman/inventory/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
 [![Latest Unstable Version](https://poser.pugx.org/stevebauman/inventory/v/unstable.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
 
