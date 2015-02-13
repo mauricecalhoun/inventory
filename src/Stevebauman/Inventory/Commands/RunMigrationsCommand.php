@@ -20,8 +20,16 @@ class RunMigrationsCommand extends Command {
      */
     protected $description = 'Runs the inventory migrations';
 
+    /**
+     * Execute the command
+     *
+     * @return void
+     */
     public function fire()
     {
+        /*
+         * Call the package migration
+         */
         $this->call('migrate', array('--env' => $this->option('env'), '--package' => 'stevebauman/inventory' ) );
     }
 

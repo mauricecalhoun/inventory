@@ -64,12 +64,44 @@ Otherwise you can run the install command:
 
     php artisan inventory:install
 
+## I don't need to customize my models
+
+If you don't need to create & customize your models, I've included pre-built models.
+
+If you'd like to use them you'll have include them in your use statements:
+
+    use Stevebauman\Inventory\Models\Inventory;
+    
+    class InventoryController extends BaseController
+    {
+        /*
+        * Holds the inventory model
+        *
+        * @var Inventory
+        */
+        protected $inventory;
+    
+        public function __construct(Inventory $inventory)
+        {
+            $this->inventory = $inventory;
+        }
+        
+        public function create()
+        {
+            $inventory = new Inventory;
+            
+            // etc...
+        }
+    }
+
+## I want to customize my models
+
 Create the models, but keep in mind the relationship functions need:
 
 - The exact names shown below (such as `stocks()`)
 - The exact relationship type (such as hasOne, hasMany, belongsTo etc)
 
-You are free to modify anything else.
+You are free to modify anything else (such as table names, model names, namespace etc!).
 
 Metric:
 
