@@ -31,7 +31,7 @@ trait InventoryStockTrait {
     /**
      * Stores the quantity before an update
      *
-     * @var
+     * @var int|string
      */
     private $beforeQuantity = 0;
 
@@ -45,13 +45,15 @@ trait InventoryStockTrait {
     /**
      * Stores the cost for updating a stock
      *
-     * @var int
+     * @var int|string
      */
     public $cost = 0;
 
     /**
      * Overrides the models boot function to set the user ID automatically
      * to every new record
+     *
+     * @return void
      */
     public static function boot()
     {
@@ -98,6 +100,8 @@ trait InventoryStockTrait {
 
     /**
      * Generates a stock movement on the creation of a stock
+     *
+     * @return void
      */
     public function postCreate()
     {
@@ -116,6 +120,8 @@ trait InventoryStockTrait {
 
     /**
      * Generates a stock movement after a stock is updated
+     *
+     * @return void
      */
     public function postUpdate()
     {
@@ -343,7 +349,7 @@ trait InventoryStockTrait {
     /**
      * Retrieves a movement by the specified ID
      *
-     * @param $id
+     * @param int|string $id
      * @return \Illuminate\Support\Collection|null|static
      */
     private function getMovementById($id)
@@ -354,9 +360,9 @@ trait InventoryStockTrait {
     /**
      * Processes a quantity update operation
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
      * @return InventoryStock|InventoryStockTrait
      */
     private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
@@ -379,9 +385,9 @@ trait InventoryStockTrait {
     /**
      * Processes removing quantity from the current stock
      *
-     * @param $taking
+     * @param int|string $taking
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
      * @return $this|bool
      */
     private function processTakeOperation($taking, $reason = '', $cost = 0)
@@ -389,12 +395,20 @@ trait InventoryStockTrait {
         $left = $this->quantity - $taking;
 
         /*
-         * Check if the amount left is already the amount that is on the record
+         * If the updated total and the beginning total are the same, we'll check if
+         * duplicate movements are allowed
          */
         if($left == $this->quantity) {
+
+            /*
+             * If duplicate movements aren't allowed, we'll return the current record
+             */
             if(!config('inventory::allow_duplicate_movements')) {
+
                 return $this;
+
             }
+
         }
 
         $this->quantity = $left;
@@ -426,9 +440,9 @@ trait InventoryStockTrait {
     /**
      * Processes adding quantity to current stock
      *
-     * @param $putting
+     * @param int|string $putting
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
      * @return $this|bool|mixed
      */
     private function processPutOperation($putting, $reason = '', $cost = 0)
@@ -437,8 +451,15 @@ trait InventoryStockTrait {
 
         $total = $putting + $before;
 
+        /*
+         * If the updated total and the beginning total are the same, we'll check if
+         * duplicate movements are allowed
+         */
         if($total == $this->quantity) {
 
+            /*
+             * If duplicate movements aren't allowed, we'll return the current record
+             */
             if(!config('inventory::allow_duplicate_movements')) {
 
                 return $this;
@@ -473,7 +494,8 @@ trait InventoryStockTrait {
     }
 
     /**
-     * Processes the stock moving from one location to another
+     * Processes the stock moving from it's current location,
+     * to the specified location
      *
      * @param $location
      * @return bool
@@ -559,7 +581,11 @@ trait InventoryStockTrait {
         /*
          * Retrieve movements that were created after the specified movement, and order them descending
          */
-        $movements = $this->movements()->where('created_at', '>=', $movement->getOriginal('created_at'))->orderBy('created_at', 'DESC')->get();
+        $movements = $this
+            ->movements()
+            ->where('created_at', '>=', $movement->getOriginal('created_at'))
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         $rollbacks = array();
 
@@ -598,7 +624,7 @@ trait InventoryStockTrait {
     /**
      * Sets the cost attribute
      *
-     * @param int $cost
+     * @param int|string $cost
      */
     private function setCost($cost = 0)
     {
@@ -607,6 +633,8 @@ trait InventoryStockTrait {
 
     /**
      * Reverses the cost of a movement
+     *
+     * @return void
      */
     private function reverseCost()
     {
@@ -625,6 +653,7 @@ trait InventoryStockTrait {
      * Sets the reason attribute
      *
      * @param string $reason
+     * @return void
      */
     private function setReason($reason = '')
     {
