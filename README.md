@@ -483,7 +483,7 @@ tagged to the current logged in user. However, you turn this off if you'd like i
 
 #### Helpful Scopes
 
-How do I scope an item by it's category and include the results from deeper categories?
+######How do I scope an item by it's category and include the results from deeper categories?
 
 Place this inside your `Inventory` model. You can also use this implementation for scoping Locations on the `InventoryStock` model.
 
@@ -523,7 +523,7 @@ Using this will effectively allow you to see all of the inventory from a parent 
 
 #### Helpful Accessors
 
-How do I show the last movement for a stock record?
+######How do I show the last movement for a stock record?
 
 You can simply create 2 Accessors. Place this accessor on the `InventoryStock` model:
 
