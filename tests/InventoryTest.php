@@ -2,7 +2,7 @@
 
 use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
-use Stevebauman\Maintenance\Models\Category;
+use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\InventoryStockMovement;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
