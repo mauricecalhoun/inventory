@@ -88,7 +88,7 @@ If you'd like to use them you'll have include them in your use statements:
         
         public function create()
         {
-            $inventory = new $this->inventory;
+            $item = new $this->inventory;
             
             // etc...
         }
