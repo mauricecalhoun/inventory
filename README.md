@@ -21,7 +21,9 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 - Inventory quantity movement tracking
 - Inventory item management
 
-All movements, stocks and inventory items are automatically given the current logged in user's ID.
+All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
+such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
+during a inventory change, it will be rolled back automatically.
 
 This is a trait based implemented package. Take a look at the installation below.
 
@@ -218,11 +220,15 @@ Now we have our inventory item created. We have to add stock, but to add stock w
     $location->save();
     
 Now we can add stock to our inventory by supplying a number (int or string), and the location (Location object):
-
+    
+    /*
+    * Creating a stock will automatically create a stock movement, no matter which method is used below.
+    */
+    
     $item->createStockOnLocation(20, $location);
     
     /*
-    * Or we can create a stock manually. This will automatically create a stock movement.
+    * Or we can create a stock manually.
     * If you want to set the cost and reason for the creation of the stock, be sure to do so
     */
     $stock = new InventoryStock;
@@ -248,7 +254,7 @@ So, we've successfully added stock to our inventory item, now let's add some mor
     $cost = '5.20';
     
     /*
-    * Remember, your adding the amount of your metric, in this case Litres
+    * Remember, you're adding the amount of your metric, in this case Litres
     */
     $stock->put(3, $reason, $cost);
     
