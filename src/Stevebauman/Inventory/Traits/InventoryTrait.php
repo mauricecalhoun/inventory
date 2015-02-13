@@ -4,18 +4,12 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 /**
  * Class InventoryTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventoryTrait {
-
-    /**
-     * Soft deleting for inventory item recovery
-     */
-    use SoftDeletingTrait;
 
     /**
      * Location helper functions
