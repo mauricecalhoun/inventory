@@ -15,14 +15,16 @@
         "baum/baum": "~1.0"
     },
     "require-dev": {
-        "codeception/codeception": "2.0.*"
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "0.9.*"
     },
     "suggest": {
         "venturecraft/revisionable": "Allows the tracking of inventory stock location and category changes"
     },
     "autoload": {
         "classmap": [
-            "src"
+            "src",
+            "tests"
         ],
         "psr-0": {
             "Stevebauman\\Inventory\\": [

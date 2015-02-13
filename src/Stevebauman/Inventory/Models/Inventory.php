@@ -12,7 +12,7 @@ class Inventory extends BaseModel {
 
     use InventoryTrait;
 
-    protected $table = 'inventory';
+    protected $table = 'inventories';
 
     /**
      * The hasOne category relationship
