@@ -24,9 +24,8 @@ you can simply use the built in models.
 
 ## Requirements
 
-- Laravel 4.* | 5.* - Not Tested
-- Etrepat/Baum 1.* (Category Management for Locations & Category models)
-- A `users` database table
+- Laravel 4.* | 5.* - Compatibility is underway
+- Laravel's Auth, Sentry or Sentinel if you need automatic accountability
 
 Recommended:
 
