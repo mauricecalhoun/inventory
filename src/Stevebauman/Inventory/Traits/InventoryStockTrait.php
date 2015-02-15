@@ -630,7 +630,7 @@ trait InventoryStockTrait {
      * @return static
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
-    {die();
+    {
         $insert = array(
             'stock_id' => $this->id,
             'before' => $before,
