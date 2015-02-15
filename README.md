@@ -339,8 +339,7 @@ Actually hang on, we definitely didn't drink that much, let's roll it back:
     $movement->rollback();
     
 Now that we've added stock to our inventory, and made some changes, all changes are automatically tracked. 
-If an exception occurs during a stock change, it is automatically rolled back using Laravel's built in database transactions.
-These rollbacks are not tracked.
+If an exception occurs during a stock change, it is automatically reversed using Laravel's built in database transactions.
 
 If you look at your database, inside your `inventory_stock_movements` table, you should see 4 records:
 
