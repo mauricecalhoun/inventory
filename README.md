@@ -7,14 +7,6 @@
 [![Latest Unstable Version](https://poser.pugx.org/stevebauman/inventory/v/unstable.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
 
-## Status
-
-<del>Right now, this package is in heavy development, I'd advise against implementing it at the current moment (Jan 19th, 2015).</del>
-
-This package is stable, however contains no tests. 
-
-v1.0.0 will most likely be released in the coming weeks with tests, clearer instructions, and documentation.
-
 ## Description
 
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:

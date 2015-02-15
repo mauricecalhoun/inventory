@@ -24,21 +24,27 @@ class InventoryServiceProvider extends ServiceProvider {
 
 		} else {
 
+			$this->loadTranslationsFrom(__DIR__.'/../../lang', 'inventory');
+
 			$this->publishes([
 				__DIR__ . '/../../config/config.php' => config_path('inventory.php'),
 			], 'config');
 
+			$this->publishes([
+				__DIR__ . '/../../migrations/' => base_path('/database/migrations'),
+			], 'migrations');
+
 		}
 
-		$this->app->bind('inventory:install', function(){
+		$this->app->bind('inventory:install', function() {
 			return new Commands\InstallCommand();
 		});
 
-		$this->app->bind('inventory:check-schema', function(){
+		$this->app->bind('inventory:check-schema', function() {
 			return new Commands\SchemaCheckCommand();
 		});
 
-		$this->app->bind('inventory:run-migrations', function(){
+		$this->app->bind('inventory:run-migrations', function() {
 			return new Commands\RunMigrationsCommand();
 		});
 

@@ -481,7 +481,7 @@ trait InventoryStockTrait {
             /*
              * If duplicate movements aren't allowed, we'll return the current record
              */
-            if(!config('inventory::allow_duplicate_movements')) {
+            if(!$this->allowDuplicateMovementsEnabled()) {
 
                 return $this;
 
@@ -564,7 +564,7 @@ trait InventoryStockTrait {
 
         $this->setReason($reason);
 
-        if(config('inventory::rollback_cost')) {
+        if($this->rollbackCostEnabled()) {
 
             $this->setCost($movement->cost);
 
@@ -712,6 +712,30 @@ trait InventoryStockTrait {
     private function isMovement($object)
     {
         return is_subclass_of($object, 'Illuminate\Database\Eloquent\Model');
+    }
+
+    /**
+     * Returns true/false from the configuration file determining
+     * whether or not stock movements can have the same before and after
+     * quantities
+     *
+     * @return bool
+     */
+    private function allowDuplicateMovementsEnabled()
+    {
+        return config('inventory::allow_duplicate_movements');
+    }
+
+    /**
+     * Returns true/false from the configuration file determining
+     * whether or not to rollback costs when a rollback occurs on
+     * a stock
+     *
+     * @return bool
+     */
+    private function rollbackCostEnabled()
+    {
+        return config('inventory::rollback_cost');
     }
 
 }
