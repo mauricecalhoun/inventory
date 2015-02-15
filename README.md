@@ -111,10 +111,11 @@ If you'd like to use them you'll have include them in your use statements:
 
 ### I want to customize my models
 
-Create the models, but keep in mind the relationship functions need:
+Create the models, but keep in mind the models need:
 
-- The exact names shown below (such as `stocks()`)
-- The exact relationship type (such as hasOne, hasMany, belongsTo etc)
+- The shown fillable attribute arrays
+- The shown relationship names (such as `stocks()`)
+- The shown relationship type (such as hasOne, hasMany, belongsTo etc)
 
 You are free to modify anything else (such as table names, model names, namespace etc!).
 
