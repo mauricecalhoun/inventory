@@ -233,8 +233,6 @@ InventoryStockMovement:
 
 ## Usage
 
-Using inventory is exactly like using ordinary Laravel models, and that's because they all extend the Laravel model class.
-
 First you'll have to create a metric that your Inventory is measured by:
 
     $metric = new Metric;
