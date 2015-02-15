@@ -24,7 +24,7 @@ you can simply use the built in models.
 
 ## Requirements
 
-- Laravel 4.* | 5.* - Compatibility is underway
+- Laravel 4.* | 5.* - <em>Compatibility is underway</em>
 - Laravel's Auth, Sentry or Sentinel if you need automatic accountability
 
 Recommended:
