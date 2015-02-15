@@ -19,18 +19,16 @@ v1.0.0 will most likely be released in the coming weeks with tests, clearer inst
 
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
 
-- Inventory stock management
-- Inventory quantity movement tracking
 - Inventory item management
+- Inventory stock management
+- Inventory stock movement tracking
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
 during a inventory change, it will be rolled back automatically.
 
-This is a trait based implemented package. Take a look at the installation below.
-
-Unfortunately, installation isn't a simple command, but once you're done the installation,
-you'll have the freedom to do what you please with the models, migrations, and inventory management functions.
+Depending on your needs, you may use the built in traits for customizing and creating your own models, or
+you can simply use the built in models.
 
 ## Requirements
 
@@ -42,15 +40,15 @@ Recommended:
 
 - Venturecraft/Revisionable (For tracking Category and Location changes to stocks)
 
-## Installation
+## Installation (Laravel 4)
 
-Include in your `composer.json` file:
+Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.*"
+    "stevebauman/inventory" : "1.0.*"
 
-Now perform a `composer update` on your project's source:
+Now perform a `composer update` on your project's source.
 
-Insert the service provider in your `config/app.php` config file:
+Then insert the service provider in your `app/config/app.php` config file:
 
     'Stevebauman\Inventory\InventoryServiceProvider'
 
@@ -58,15 +56,39 @@ If you want to customize the database tables, you can publish the migration and 
 
     php artisan migrate:publish stevebauman/inventory
 
-Run the migration:
+And then run the migration:
 
     php artisan migrate
     
 Otherwise you can run the install command:
 
     php artisan inventory:install
+    
+## Installation (Laravel 5)
 
-## I don't need to customize my models
+Include in your `composer.json` file:
+
+    "stevebauman/inventory" : "1.0.*"
+
+Now perform a `composer update` on your project's source.
+
+Then insert the service provider in your `config/app.php` config file:
+
+    'Stevebauman\Inventory\InventoryServiceProvider'
+    
+Either publish the assets to customize the database tables using:
+
+    php artisan vendor:publish
+   
+And then run the migrations:
+
+    php artisan migrate
+    
+Or use the inventory install command:
+
+    php artisan inventory:install
+
+### I don't need to customize my models
 
 If you don't need to create & customize your models, I've included pre-built models.
 
@@ -96,7 +118,7 @@ If you'd like to use them you'll have include them in your use statements:
         }
     }
 
-## I want to customize my models
+### I want to customize my models
 
 Create the models, but keep in mind the relationship functions need:
 
