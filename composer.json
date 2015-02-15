@@ -1,6 +1,6 @@
 {
     "name": "stevebauman/inventory",
-    "description": "Inventory management using Laravel 4",
+    "description": "Inventory management using Laravel 4 / 5",
     "keywords": ["laravel", "inventory", "inventory-management"],
     "authors": [
         {

@@ -15,7 +15,17 @@ class InventoryTest extends FunctionalTestCase {
     public function setUp()
     {
         parent::setUp();
+
         Eloquent::unguard();
+
+        InventoryStockMovement::flushEventListeners();
+        InventoryStockMovement::boot();
+
+        InventoryStock::flushEventListeners();
+        InventoryStock::boot();
+
+        Inventory::flushEventListeners();
+        Inventory::boot();
     }
 
     public function testMetricCreation()

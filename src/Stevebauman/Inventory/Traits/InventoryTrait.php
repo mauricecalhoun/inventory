@@ -28,6 +28,27 @@ trait InventoryTrait {
     use DatabaseTransactionTrait;
 
     /**
+     * The hasOne category relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    abstract public function category();
+
+    /**
+     * The hasOne metric relationship
+     *
+     * @return mixed
+     */
+    abstract public function metric();
+
+    /**
+     * The hasMany stocks relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    abstract public function stocks();
+
+    /**
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      */

@@ -50,6 +50,27 @@ trait InventoryStockTrait {
     public $cost = 0;
 
     /**
+     * The hasOne location relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    abstract public function location();
+
+    /**
+     * The belongsTo item relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    abstract public function item();
+
+    /**
+     * The hasMany movements relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    abstract public function movements();
+
+    /**
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      *
@@ -609,7 +630,7 @@ trait InventoryStockTrait {
      * @return static
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
-    {
+    {die();
         $insert = array(
             'stock_id' => $this->id,
             'before' => $before,

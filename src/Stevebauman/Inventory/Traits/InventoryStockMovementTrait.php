@@ -13,6 +13,13 @@ trait InventoryStockMovementTrait {
     use DatabaseTransactionTrait;
 
     /**
+     * The belongsTo stock relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    abstract public function stock();
+
+    /**
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      */

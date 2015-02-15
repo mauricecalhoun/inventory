@@ -12,22 +12,24 @@ class InventoryServiceProvider extends ServiceProvider {
 	protected $defer = false;
 
 	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('stevebauman/inventory');
-	}
-
-	/**
 	 * Register the service provider.
 	 *
 	 * @return void
 	 */
 	public function register()
 	{
+		if(method_exists($this, 'package')) {
+
+			$this->package('stevebauman/inventory');
+
+		} else {
+
+			$this->publishes([
+				__DIR__ . '/../../config/config.php' => config_path('inventory.php'),
+			], 'config');
+
+		}
+
 		$this->app->bind('inventory:install', function(){
 			return new Commands\InstallCommand();
 		});
