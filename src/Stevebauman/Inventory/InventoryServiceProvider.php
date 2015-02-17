@@ -24,8 +24,7 @@ class InventoryServiceProvider extends ServiceProvider {
 
 		} else {
 
-			$this->loadTranslationsFrom(__DIR__.'/../../lang', 'inventory');
-
+			
 			$this->publishes([
 				__DIR__ . '/../../config/config.php' => config_path('inventory.php'),
 			], 'config');
@@ -55,6 +54,18 @@ class InventoryServiceProvider extends ServiceProvider {
 		));
 
 		include __DIR__ .'/../../helpers.php';
+	}
+	
+	/**
+	 * Boot the service provider.
+	 *
+	 * @return void
+	 */
+	public function boot()
+	{
+		if(!method_exists($this, 'package')) {
+			$this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
+		}
 	}
 
 	/**
