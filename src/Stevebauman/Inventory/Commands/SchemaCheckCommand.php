@@ -27,7 +27,7 @@ class SchemaCheckCommand extends Command {
      * Holds the database tables that must be present before install
      */
     protected $dependencies = array(
-        'users' => 'Sentry, Sentinel or Laravel Auth',
+        'users' => 'Sentry, Sentinel or Laravel',
     );
 
     /*

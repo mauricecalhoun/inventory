@@ -13,6 +13,13 @@ class InventoryServiceProvider extends ServiceProvider {
 	public static $packageConfigSeparator = '::';
 
 	/**
+	 * The laravel version number. This is used for the install commands
+	 *
+	 * @var int
+	 */
+	public static $laravelVersion = 4;
+
+	/**
 	 * Indicates if loading of the provider is deferred.
 	 *
 	 * @var bool
@@ -33,6 +40,8 @@ class InventoryServiceProvider extends ServiceProvider {
 		} else {
 
 			$this::$packageConfigSeparator = '.';
+
+			$this::$laravelVersion = 5;
 
 			$this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
 
