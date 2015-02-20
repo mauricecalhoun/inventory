@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
@@ -425,7 +426,7 @@ trait InventoryStockTrait {
             /*
              * If duplicate movements aren't allowed, we'll return the current record
              */
-            if(!config('inventory::allow_duplicate_movements')) {
+            if(!$this->allowDuplicateMovementsEnabled()) {
 
                 return $this;
 
@@ -724,7 +725,7 @@ trait InventoryStockTrait {
      */
     private function allowDuplicateMovementsEnabled()
     {
-        return config('inventory::allow_duplicate_movements');
+        return config('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_duplicate_movements');
     }
 
     /**
@@ -736,7 +737,7 @@ trait InventoryStockTrait {
      */
     private function rollbackCostEnabled()
     {
-        return config('inventory::rollback_cost');
+        return config('inventory'. InventoryServiceProvider::$packageConfigSeparator .'rollback_cost');
     }
 
 }

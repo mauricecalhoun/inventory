@@ -5,6 +5,14 @@ use Illuminate\Support\ServiceProvider;
 class InventoryServiceProvider extends ServiceProvider {
 
 	/**
+	 * Stores the package configuration separator
+	 * for Laravel 5 compatibility
+	 *
+	 * @var string
+	 */
+	public static $packageConfigSeparator = '::';
+
+	/**
 	 * Indicates if loading of the provider is deferred.
 	 *
 	 * @var bool
@@ -23,6 +31,8 @@ class InventoryServiceProvider extends ServiceProvider {
 			$this->package('stevebauman/inventory');
 
 		} else {
+
+			$this::$packageConfigSeparator = '.';
 
 			$this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
 
