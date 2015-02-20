@@ -383,7 +383,7 @@ Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Aut
 
 ### NotEnoughStockException
 
-Occurs when you're trying to take more stock than available. Use a try catch block when processing take/remove actions:
+Occurs when you're trying to take more stock than available. Use a try/catch block when processing take/remove actions:
     
     try {
     
@@ -399,12 +399,39 @@ Occurs when you're trying to take more stock than available. Use a try catch blo
 
 ### StockAlreadyExistsException
 
-Occurs when a stock of the item already exists at the specified location
+Occurs when a stock of the item already exists at the specified location. Use a try/catch block when processing move actions:
+
+    try {
+    
+        $stock->moveTo($location);
+        
+        return "Successfully moved stock to $location->name";
+        
+    } catch(Stevebauman\Inventory\Exceptions\StockAlreadyExistsException) {
+        
+        return "Stock already exists at this location. Please try again."
+        
+    }
 
 ### InvalidQuantityException
 
 Occurs when a non-numerical value is entered as the quantity, such as `'30L'`, `'a20.0'`. Strings (as long as they're numeric), 
-integers and doubles/decimals are always valid.
+integers and doubles/decimals are always valid. You can use laravel's built in validation to prevent this exception from
+occurring, or you can use a try/catch block when processing actions involving quantity:
+
+    try {
+        
+        $quantity = '20 Litres'; //This will cause an exception
+        
+        $stock->add($quantity);
+        
+        return "Successfully added $quantity";
+        
+    } catch(Stevebauman\Inventory\Exceptions\InvalidQuantityException) {
+        
+        return "The quantity you entered is invalid. Please try again."
+        
+    }
 
 ### InvalidLocationException
 
