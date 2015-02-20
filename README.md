@@ -33,9 +33,6 @@
     <li><a href="#auth-integration">Auth Integration</a></li>
     <li><a href="#misc-functions-and-uses">Misc Functions and Uses</a></li>
 </ul>
-* 
-* [Installation - Laravel 4](#installation-laravel-4)
-* [Installation - Laravel 5](#installation-laravel-5)
 
 ## Description
 
