@@ -23,14 +23,4 @@ return array(
      */
     'rollback_cost' => true,
 
-    /*
-     * Default reason to give when creating a new inventory stock
-     */
-    'default_stock_first_reason' => trans('inventory::reasons.first_record'),
-
-    /*
-     * Default reason to give when changing a stock quantity
-     */
-    'default_stock_change_reason' => trans('inventory::reasons.change'),
-
 );

@@ -12,11 +12,11 @@ class InventoryServiceProvider extends ServiceProvider {
 	protected $defer = false;
 
 	/**
-	 * Register the service provider.
+	 * Boot the service provider.
 	 *
 	 * @return void
 	 */
-	public function register()
+	public function boot()
 	{
 		if(method_exists($this, 'package')) {
 
@@ -24,7 +24,8 @@ class InventoryServiceProvider extends ServiceProvider {
 
 		} else {
 
-			
+			$this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
+
 			$this->publishes([
 				__DIR__ . '/../../config/config.php' => config_path('inventory.php'),
 			], 'config');
@@ -34,7 +35,15 @@ class InventoryServiceProvider extends ServiceProvider {
 			], 'migrations');
 
 		}
+	}
 
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function register()
+	{
 		$this->app->bind('inventory:install', function() {
 			return new Commands\InstallCommand();
 		});
@@ -54,18 +63,6 @@ class InventoryServiceProvider extends ServiceProvider {
 		));
 
 		include __DIR__ .'/../../helpers.php';
-	}
-	
-	/**
-	 * Boot the service provider.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		if(!method_exists($this, 'package')) {
-			$this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
-		}
 	}
 
 	/**

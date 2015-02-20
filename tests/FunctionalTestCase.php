@@ -4,8 +4,11 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
 {
+
     public function setUp()
     {
+        parent::setUp();
+
         $this->configureDatabase();
         $this->migrateTables();
     }
