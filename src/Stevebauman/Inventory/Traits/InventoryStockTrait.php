@@ -268,7 +268,7 @@ trait InventoryStockTrait {
 
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -314,7 +314,8 @@ trait InventoryStockTrait {
     public function hasEnoughStock($quantity = 0)
     {
         /**
-         * Using double equals for validation of complete value only, not variable type
+         * Using double equals for validation of complete value only, not variable type. For example:
+         * '20' (string) equals 20 (int)
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
