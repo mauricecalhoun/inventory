@@ -6,6 +6,7 @@
 [![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
 [![Latest Stable Version](https://poser.pugx.org/stevebauman/inventory/v/stable.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![Latest Unstable Version](https://poser.pugx.org/stevebauman/inventory/v/unstable.svg)](https://packagist.org/packages/stevebauman/inventory)
+[![Total Downloads](https://poser.pugx.org/stevebauman/inventory/downloads.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
 
 ## Description
