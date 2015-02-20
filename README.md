@@ -12,26 +12,26 @@
 ## Index
 
 <ul>
-    <li>[Description](#description)</li>
+    <li><a href="#description">Description</a></li>
     <li>
         Installation
         <ul>
-            <li>[Laravel 4](#installation-laravel-4)</li>
-            <li>[Laravel 5](#installation-laravel-5)</li>
+            <li><a href="#installation-laravel-4">Laravel 4</a></li>
+            <li><a href="#installation-laravel-5">Laravel 5</a></li>
         </ul>
     </li>
     <li>
         Customization
         <ul>
-            <li>[I don't need to customize my models](#i-dont-need-to-customize-my-models)</li>
-            <li>[I need to customize my models](#i-want-to-customize-my-models)</li>
+            <li><a href="#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
+            <li><a href="#i-want-to-customize-my-models">I need to customize my models</a></li>
         </ul>
     </li>
-    <li>[Usage](#usage)</li>
-    <li>[Exceptions](#exceptions)</li>
-    <li>[Events](#events)</li>
-    <li>[Auth Integration](#auth-integration)</li>
-    <li>[Misc Functions](#misc-functions-and-uses)</li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#exceptions">Exceptions</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#auth-integration">Auth Integration</a></li>
+    <li><a href="#misc-functions-and-uses">Misc Functions and Uses</a></li>
 </ul>
 * 
 * [Installation - Laravel 4](#installation-laravel-4)
