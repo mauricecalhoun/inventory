@@ -9,6 +9,34 @@
 [![Total Downloads](https://poser.pugx.org/stevebauman/inventory/downloads.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
 
+## Index
+
+<ul>
+    <li>[Description](#description)</li>
+    <li>
+        Installation
+        <ul>
+            <li>[Laravel 4](#installation-laravel-4)</li>
+            <li>[Laravel 5](#installation-laravel-5)</li>
+        </ul>
+    </li>
+    <li>
+        Customization
+        <ul>
+            <li>[I don't need to customize my models](#i-dont-need-to-customize-my-models)</li>
+            <li>[I need to customize my models](#i-want-to-customize-my-models)</li>
+        </ul>
+    </li>
+    <li>[Usage](#usage)</li>
+    <li>[Exceptions](#exceptions)</li>
+    <li>[Events](#events)</li>
+    <li>[Auth Integration](#auth-integration)</li>
+    <li>[Misc Functions](#misc-functions-and-uses)</li>
+</ul>
+* 
+* [Installation - Laravel 4](#installation-laravel-4)
+* [Installation - Laravel 5](#installation-laravel-5)
+
 ## Description
 
 Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
