@@ -381,17 +381,27 @@ Here is a list of method's along with their exceptions that they can throw.
 
 Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Auth driver
 
+### NotEnoughStockException
+
+Occurs when you're trying to take more stock than available. Use `$stock->hasEnoughStock($quantity)` in a try catch block
+to make sure there is always enough stock.
+
 ### StockAlreadyExistsException
 
 Occurs when a stock of the item already exists at the specified location
 
 ### InvalidQuantityException
 
-Occurs when a non-numerical value is entered as the quantity, such as `'30L'`, `'a20.0'`
+Occurs when a non-numerical value is entered as the quantity, such as `'30L'`, `'a20.0'`. Strings (as long as they're numeric), 
+integers and doubles/decimals are always valid.
 
 ### InvalidLocationException
 
-Occurs when a location cannot be found, or the specified location is not a subclass or instance of Stevebauman\Inventory\Models\Location
+Occurs when a location cannot be found, or the specified location is not a subclass or instance of Illuminate\Database\Eloquent\Model
+
+### InvalidMovementException
+
+Occurs when a movement cannot be found, or the specified movement is not a subclass or instance of Illuminate\Database\Eloquent\Model
 
 ## Methods & Their Exceptions
 
