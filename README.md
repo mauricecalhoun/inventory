@@ -383,8 +383,19 @@ Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Aut
 
 ### NotEnoughStockException
 
-Occurs when you're trying to take more stock than available. Use `$stock->hasEnoughStock($quantity)` in a try catch block
-to make sure there is always enough stock.
+Occurs when you're trying to take more stock than available. Use a try catch block when processing take/remove actions:
+    
+    try {
+    
+        $stock->take($quantity);
+        
+        return "Successfully removed $quantity";
+        
+    } catch(Stevebauman\Inventory\Exceptions\NotEnoughStockException) {
+        
+        return "There wasn't enough stock to perform this action. Please try again."
+        
+    }
 
 ### StockAlreadyExistsException
 
