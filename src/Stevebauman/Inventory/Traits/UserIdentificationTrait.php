@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
+use Illuminate\Support\Facades\Lang;
 
 trait UserIdentificationTrait {
 
@@ -45,7 +46,7 @@ trait UserIdentificationTrait {
 
             }
 
-            $message = trans('inventory::exceptions.NoUserLoggedInException');
+            $message = Lang::get('inventory::exceptions.NoUserLoggedInException');
 
             throw new NoUserLoggedInException($message);
 

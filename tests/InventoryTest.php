@@ -6,6 +6,7 @@ use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\InventoryStockMovement;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -143,6 +144,113 @@ class InventoryTest extends FunctionalTestCase {
         $stock->moveTo($newLocation);
 
         $this->assertEquals(2, $stock->location_id);
+    }
+
+    public function testCreateStockOnLocation()
+    {
+        $this->testInventoryCreation();
+
+        $this->testLocationCreation();
+
+        $item = Inventory::find(1);
+
+        $location = Location::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $item->createStockOnLocation(10, $location);
+
+        $stock = InventoryStock::find(1);
+
+        $this->assertEquals(10, $stock->quantity);
+    }
+
+    public function testInvalidLocationException()
+    {
+        $this->testInventoryStockCreation();
+
+        $item = Inventory::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
+
+        $item->getStockFromLocation('testing');
+    }
+
+    public function testInvalidMovementException()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidMovementException');
+
+        $stock->getMovement('testing');
+    }
+
+    public function testInvalidQuantityException()
+    {
+        $this->testInventoryCreation();
+
+        $this->testLocationCreation();
+
+        $item = Inventory::find(1);
+
+        $location = Location::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $item->createStockOnLocation('invalid quantity', $location);
+    }
+
+    public function testNotEnoughStockException()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+
+        $stock->take(1000);
+    }
+
+    public function testStockAlreadyExistsException()
+    {
+        $this->testInventoryStockCreation();
+
+        $location = Location::find(1);
+
+        $item = Inventory::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
+
+        $item->createStockOnLocation(1, $location);
+    }
+
+    public function testStockNotFoundException()
+    {
+        $this->testInventoryCreation();
+
+        $this->testLocationCreation();
+
+        $item = Inventory::find(1);
+
+        $location = Location::find(1);
+
+        Lang::shouldReceive('get')->once();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
+
+        $item->getStockFromLocation($location);
     }
 
 }

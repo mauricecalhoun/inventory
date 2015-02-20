@@ -5,6 +5,7 @@ namespace Stevebauman\Inventory\Traits;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class InventoryStockTrait
@@ -87,7 +88,7 @@ trait InventoryStockTrait {
             /*
              * Check if a reason has been set, if not let's retrieve the default first entry reason
              */
-            if(!$model->reason) $model->reason = trans('inventory::reasons.first_record');
+            if(!$model->reason) $model->reason = Lang::get('inventory::reasons.first_record');
 
         });
 
@@ -108,7 +109,7 @@ trait InventoryStockTrait {
             /*
              * Check if a reason has been set, if not let's retrieve the default change reason
              */
-            if(!$model->reason) $model->reason = trans('inventory::reasons.change');
+            if(!$model->reason) $model->reason = Lang::get('inventory::reasons.change');
 
         });
 
@@ -295,7 +296,7 @@ trait InventoryStockTrait {
     {
         if($this->isPositive($quantity)) return true;
 
-        $message = trans('inventory::exceptions.InvalidQuantityException', array(
+        $message = Lang::get('inventory::exceptions.InvalidQuantityException', array(
             'quantity' => $quantity,
         ));
 
@@ -316,7 +317,7 @@ trait InventoryStockTrait {
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
-        $message = trans('inventory::exceptions.NotEnoughStockException', array(
+        $message = Lang::get('inventory::exceptions.NotEnoughStockException', array(
             'quantity' => $quantity,
             'available' => $this->quantity,
         ));
@@ -358,7 +359,7 @@ trait InventoryStockTrait {
 
         } else {
 
-            $message = trans('inventory::exceptions.InvalidMovementException', array(
+            $message = Lang::get('inventory::exceptions.InvalidMovementException', array(
                 'movement' => $movement,
             ));
 
@@ -557,7 +558,7 @@ trait InventoryStockTrait {
 
         $this->quantity = $movement->before;
 
-        $reason = trans('inventory::reasons.rollback', array(
+        $reason = Lang::get('inventory::reasons.rollback', array(
             'id' => $movement->id,
             'date' => $movement->created_at,
         ));

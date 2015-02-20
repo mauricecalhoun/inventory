@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidLocationException;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class LocationTrait
@@ -27,7 +28,7 @@ trait LocationTrait
 
         } else {
 
-            $message = trans('inventory::exceptions.InvalidLocationException', array(
+            $message = Lang::get('inventory::exceptions.InvalidLocationException', array(
                 'location' => $location,
             ));
 

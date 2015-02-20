@@ -4,6 +4,7 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class InventoryTrait
@@ -127,7 +128,7 @@ trait InventoryTrait {
 
             if ($this->getStockFromLocation($location)) {
 
-                $message = trans('inventory::exceptions.StockAlreadyExistsException', array(
+                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
                     'location' => $location->name,
                 ));
 
@@ -352,7 +353,7 @@ trait InventoryTrait {
 
         } else {
 
-            $message = trans('inventory::exceptions.StockNotFoundException', array(
+            $message = Lang::get('inventory::exceptions.StockNotFoundException', array(
                 'location' => $location->name,
             ));
 
