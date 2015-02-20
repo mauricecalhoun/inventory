@@ -165,6 +165,55 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals(10, $stock->quantity);
     }
 
+    public function testTakeFromManyLocations()
+    {
+        $this->testInventoryStockCreation();
+
+        $item = Inventory::find(1);
+
+        $location = Location::find(1);
+
+        $item->takeFromManyLocations(10, array($location));
+
+        $stock = InventoryStock::find(1);
+
+        $this->assertEquals(10, $stock->quantity);
+    }
+
+    public function testAddToManyLocations()
+    {
+        $this->testInventoryStockCreation();
+
+        $item = Inventory::find(1);
+
+        $location = Location::find(1);
+
+        $item->addToManyLocations(10, array($location));
+
+        $stock = InventoryStock::find(1);
+
+        $this->assertEquals(30, $stock->quantity);
+    }
+
+    public function testMoveItemStock()
+    {
+        $this->testInventoryStockCreation();
+
+        $locationFrom = Location::find(1);
+
+        $locationTo = new Location();
+        $locationTo->name = 'New Location';
+        $locationTo->save();
+
+        $item = Inventory::find(1);
+
+        $item->moveStock($locationFrom, $locationTo);
+
+        $stock = InventoryStock::find(1);
+
+        $this->assertEquals(2, $stock->location_id);
+    }
+
     public function testInvalidLocationException()
     {
         $this->testInventoryStockCreation();
@@ -206,6 +255,17 @@ class InventoryTest extends FunctionalTestCase {
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $item->createStockOnLocation('invalid quantity', $location);
+    }
+
+    public function testUpdateStockQuantity()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        $stock->updateQuantity(10);
+
+        $this->assertEquals(10, $stock->quantity);
     }
 
     public function testNotEnoughStockException()
