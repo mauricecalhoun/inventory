@@ -404,7 +404,8 @@ Here is a list of method's along with their exceptions that they can throw.
 
 ### NoUserLoggedInException
 
-Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Auth driver
+Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Auth driver 
+(doesn't apply when `allow_no_user` is enabled)
 
 ### NotEnoughStockException
 
