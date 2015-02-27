@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Inventory : Inventory Management for Laravel 4 / 5">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Inventory</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/stevebauman/inventory">View on GitHub</a>
+
+          <h1 id="project_title">Inventory</h1>
+          <h2 id="project_tagline">Inventory Management for Laravel 4 / 5</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/stevebauman/inventory/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/stevebauman/inventory/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><img src="https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg" alt="Inventory Banner"></p>
+
+<p><a href="https://codeclimate.com/github/stevebauman/inventory"><img src="https://codeclimate.com/github/stevebauman/inventory/badges/gpa.svg" alt="Code Climate"></a>
+<a href="https://travis-ci.org/stevebauman/inventory"><img src="https://travis-ci.org/stevebauman/inventory.svg?branch=master" alt="Travis CI"></a>
+<a href="https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master"><img src="https://scrutinizer-ci.com/g/stevebauman/inventory/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://packagist.org/packages/stevebauman/inventory"><img src="https://poser.pugx.org/stevebauman/inventory/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/stevebauman/inventory"><img src="https://poser.pugx.org/stevebauman/inventory/v/unstable.svg" alt="Latest Unstable Version"></a>
+<a href="https://packagist.org/packages/stevebauman/inventory"><img src="https://poser.pugx.org/stevebauman/inventory/downloads.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/stevebauman/inventory"><img src="https://poser.pugx.org/stevebauman/inventory/license.svg" alt="License"></a></p>
+
+<h2>
+<a id="index" class="anchor" href="#index" aria-hidden="true"><span class="octicon octicon-link"></span></a>Index</h2>
+
+<ul>
+    <li><a href="#description">Description</a></li>
+    <li>
+        Installation
+        <ul>
+            <li><a href="#installation-laravel-4">Laravel 4</a></li>
+            <li><a href="#installation-laravel-5">Laravel 5</a></li>
+        </ul>
+    </li>
+    <li>
+        Customization
+        <ul>
+            <li><a href="#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
+            <li><a href="#i-want-to-customize-my-models">I need to customize my models</a></li>
+        </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#exceptions">Exceptions</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#auth-integration">Auth Integration</a></li>
+    <li><a href="#misc-functions-and-uses">Misc Functions and Uses</a></li>
+</ul>
+
+<h2>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
+
+<p>Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:</p>
+
+<ul>
+<li>Inventory item management</li>
+<li>Inventory stock management</li>
+<li>Inventory stock movement tracking</li>
+</ul>
+
+<p>All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
+such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
+during a inventory change, it will be rolled back automatically.</p>
+
+<p>Depending on your needs, you may use the built in traits for customizing and creating your own models, or
+you can simply use the built in models.</p>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>Laravel 4.* | 5.*</li>
+<li>Laravel's Auth, Sentry or Sentinel if you need automatic accountability</li>
+</ul>
+
+<p>Recommended:</p>
+
+<ul>
+<li>Venturecraft/Revisionable (For tracking Category and Location changes to stocks)</li>
+</ul>
+
+<h2>
+<a id="installation-laravel-4" class="anchor" href="#installation-laravel-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation (Laravel 4)</h2>
+
+<p>Add inventory to your <code>composer.json</code> file:</p>
+
+<pre><code>"stevebauman/inventory" : "1.0.*"
+</code></pre>
+
+<p>Now perform a <code>composer update</code> on your project's source.</p>
+
+<p>Then insert the service provider in your <code>app/config/app.php</code> config file:</p>
+
+<pre><code>'Stevebauman\Inventory\InventoryServiceProvider'
+</code></pre>
+
+<p>If you want to customize the database tables, you can publish the migration and run it yourself:</p>
+
+<pre><code>php artisan migrate:publish stevebauman/inventory
+</code></pre>
+
+<p>And then run the migration:</p>
+
+<pre><code>php artisan migrate
+</code></pre>
+
+<p>Otherwise you can run the install command:</p>
+
+<pre><code>php artisan inventory:install
+</code></pre>
+
+<h2>
+<a id="installation-laravel-5" class="anchor" href="#installation-laravel-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation (Laravel 5)</h2>
+
+<p>Include in your <code>composer.json</code> file:</p>
+
+<pre><code>"stevebauman/inventory" : "1.0.*"
+</code></pre>
+
+<p>Now perform a <code>composer update</code> on your project's source.</p>
+
+<p>Then insert the service provider in your <code>config/app.php</code> config file:</p>
+
+<pre><code>'Stevebauman\Inventory\InventoryServiceProvider'
+</code></pre>
+
+<p>Either publish the assets to customize the database tables using:</p>
+
+<pre><code>php artisan vendor:publish
+</code></pre>
+
+<p>And then run the migrations:</p>
+
+<pre><code>php artisan migrate
+</code></pre>
+
+<p>Or use the inventory install command:</p>
+
+<pre><code>php artisan inventory:install
+</code></pre>
+
+<h3>
+<a id="i-dont-need-to-customize-my-models" class="anchor" href="#i-dont-need-to-customize-my-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>I don't need to customize my models</h3>
+
+<p>If you don't need to create &amp; customize your models, I've included pre-built models.</p>
+
+<p>If you'd like to use them you'll have include them in your use statements:</p>
+
+<pre><code>use Stevebauman\Inventory\Models\Inventory;
+
+class InventoryController extends BaseController
+{
+    /*
+    * Holds the inventory model
+    *
+    * @var Inventory
+    */
+    protected $inventory;
+
+    public function __construct(Inventory $inventory)
+    {
+        $this-&gt;inventory = $inventory;
+    }
+
+    public function create()
+    {
+        $item = new $this-&gt;inventory;
+
+        // etc...
+    }
+}
+</code></pre>
+
+<h3>
+<a id="i-want-to-customize-my-models" class="anchor" href="#i-want-to-customize-my-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>I want to customize my models</h3>
+
+<p>Create the models, but keep in mind the models need:</p>
+
+<ul>
+<li>The shown fillable attribute arrays</li>
+<li>The shown relationship names (such as <code>stocks()</code>)</li>
+<li>The shown relationship type (such as hasOne, hasMany, belongsTo etc)</li>
+</ul>
+
+<p>You are free to modify anything else (such as table names, model names, namespace etc!).</p>
+
+<p>Metric:</p>
+
+<pre><code>class Metric extends Model
+{
+    protected $table = 'metrics';
+}
+</code></pre>
+
+<p>Location:</p>
+
+<pre><code>use Baum\Node;
+
+class Location extends Node 
+{
+    protected $table = 'locations';
+}
+</code></pre>
+
+<p>Category:</p>
+
+<pre><code>use Baum\Node;
+
+class Category extends Node
+{
+    protected $table = 'categories';
+}
+</code></pre>
+
+<p>Inventory:</p>
+
+<pre><code>use Stevebauman\Inventory\Traits\InventoryTrait;
+
+class Inventory extends Model
+{
+    protected $table = 'inventory';
+
+    use InventoryTrait;
+
+    public function category()
+    {
+        return $this-&gt;hasOne('Category', 'id', 'category_id');
+    }
+
+    public function metric()
+    {
+        return $this-&gt;hasOne('Metric', 'id', 'metric_id');
+    }
+
+    public function stocks()
+    {
+        return $this-&gt;hasMany('InventoryStock', 'inventory_id');
+    }
+}
+</code></pre>
+
+<p>InventoryStock:</p>
+
+<pre><code>use Stevebauman\Inventory\Traits\InventoryStockTrait;
+
+class InventoryStock extends Model
+{
+    protected $table = 'inventory_stocks';
+
+    protected $fillable = array(
+        'inventory_id',
+        'location_id',
+        'quantity',
+        'aisle',
+        'row',
+        'bin',
+    );
+
+    use InventoryStockTrait;
+
+    public function item()
+    {
+        return $this-&gt;belongsTo('Inventory', 'inventory_id', 'id');
+    }
+
+    public function movements()
+    {
+        return $this-&gt;hasMany('InventoryStockMovement', 'stock_id');
+    }
+
+    public function location()
+    {
+        return $this-&gt;hasOne('Location', 'id', 'location_id');
+    }
+}
+</code></pre>
+
+<p>InventoryStockMovement:</p>
+
+<pre><code>use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
+
+class InventoryStockMovement extends Model
+{
+
+    protected $table = 'inventory_stock_movements';
+
+    protected $fillable = array(
+        'stock_id',
+        'user_id',
+        'before',
+        'after',
+        'cost',
+        'reason',
+    );
+
+    use InventoryStockMovementTrait;
+
+    public function stock()
+    {
+        return $this-&gt;belongsTo('InventoryStock', 'stock_id', 'id');
+    }
+}
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>First you'll have to create a metric that your Inventory is measured by:</p>
+
+<pre><code>$metric = new Metric;
+
+$metric-&gt;name = 'Litres';
+$metric-&gt;symbol = 'L';
+$metric-&gt;save();
+</code></pre>
+
+<p>Now, create a category to store the inventory record under:</p>
+
+<pre><code>$category = new Category;
+
+$category-&gt;name = 'Drinks';
+$category-&gt;save();
+</code></pre>
+
+<p>Then, you'll create an inventory record, and assign the metric and category we just created:</p>
+
+<pre><code>$item = new Inventory;
+
+$item-&gt;metric_id = $metric-&gt;id;
+$item-&gt;category_id = $category-&gt;id;
+$item-&gt;name = 'Milk';
+$item-&gt;description = 'Delicious milk';
+$item-&gt;save();
+</code></pre>
+
+<p>Now we have our inventory item created. We have to add stock, but to add stock we need to create a Location to bind the stock to:</p>
+
+<pre><code>$location = new Location;
+
+$location-&gt;name = 'Warehouse';
+$location-&gt;save();
+</code></pre>
+
+<p>Now we can add stock to our inventory by supplying a number (int or string), and the location (Location object):</p>
+
+<pre><code>/*
+* Creating a stock will automatically create a stock movement, no matter which method is used below.
+*/
+
+$item-&gt;createStockOnLocation(20, $location);
+
+/*
+* Or we can create a stock manually.
+* If you want to set the cost and reason for the creation of the stock, be sure to do so
+*/
+$stock = new InventoryStock;
+$stock-&gt;inventory_id = $item-&gt;id;
+$stock-&gt;location_id = $location-&gt;id;
+$stock-&gt;quantity = 20;
+$stock-&gt;cost = '5.20';
+$stock-&gt;reason = 'I bought some';
+$stock-&gt;save();
+</code></pre>
+
+<p>So, we've successfully added stock to our inventory item, now let's add some more quantity to it:</p>
+
+<pre><code>$location = Location::find(1);
+
+$item = Inventory::find(1);
+
+$stock = $item-&gt;getStockFromLocation($location);
+
+/*
+* Reason and cost are always optional
+*/
+$reason = 'I bought some';
+$cost = '5.20';
+
+/*
+* Remember, you're adding the amount of your metric, in this case Litres
+*/
+$stock-&gt;put(3, $reason, $cost);
+
+/*
+* Or you can use the add, they both perform the same function
+*/
+$stock-&gt;add(3, $reason, $cost);
+</code></pre>
+
+<p>We've added quantity to our stock, now lets take some away:</p>
+
+<pre><code>$reason = 'I drank it';
+
+$stock-&gt;take(15, $reason);
+
+/*
+* Or you can use remove, they both perform the same function
+*/
+$stock-&gt;remove(15, $reason);
+</code></pre>
+
+<p>Actually hang on, we definitely didn't drink that much, let's roll it back:</p>
+
+<pre><code>$stock-&gt;rollback();
+
+/*
+* We can also rollback specific movements, this is recommended 
+* so you know which movement you're rolling back. You may want to
+* rollback the last movement, but if a movement is created during a rollback,
+* it won't take this into account.
+*/
+$movement = InventoryStockMovement::find(2);
+
+$stock-&gt;rollback($movement);
+
+// Or we can even trigger a rollback on the specific movement:
+
+$movement-&gt;rollback();
+</code></pre>
+
+<p>Now that we've added stock to our inventory, and made some changes, all changes are automatically tracked. 
+If an exception occurs during a stock change, it is automatically reversed using Laravel's built in database transactions.</p>
+
+<p>If you look at your database, inside your <code>inventory_stock_movements</code> table, you should see 4 records:</p>
+
+<pre><code>| id | stock_id | user_id | before | after | cost | reason |
+   1     1           1       0.00    20.00   0.00    
+   2     1           1       20.00   23.00   5.20    'I bought some'   
+   3     1           1       23.00   8.00    0.00    'I drank it'
+   4     1           1       8.00    23.00   0.00    'Rolled back movement ID: 3 on 2015-01-15 10:00:54'
+</code></pre>
+
+<p>Another situation you might run into, is rolling back a specific movement and reversing all of the movements that
+occurred AFTER the inserted movement. This is called a recursive rollback. This is how it's performed:</p>
+
+<pre><code>$movement = InventoryStockMovement::find(3);
+
+$stock = InventoryStock::find(1);
+
+/*
+* Passing in true to the second argument will rollback all movements that happened after the inserted rollback,
+* including itself.
+*/
+$stock-&gt;rollback($movement, true);
+
+/*
+* Or on the movement itself:
+*/
+$movement-&gt;rollback(true);
+</code></pre>
+
+<h2>
+<a id="exceptions" class="anchor" href="#exceptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exceptions</h2>
+
+<p>Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.</p>
+
+<p>These exceptions exist to safeguard the validity of the inventory.</p>
+
+<p>Here is a list of method's along with their exceptions that they can throw.</p>
+
+<h3>
+<a id="nouserloggedinexception" class="anchor" href="#nouserloggedinexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>NoUserLoggedInException</h3>
+
+<p>Occurs when a user ID cannot be retrieved from Sentry, Sentinel, or built in Auth driver 
+(doesn't apply when <code>allow_no_user</code> is enabled)</p>
+
+<h3>
+<a id="notenoughstockexception" class="anchor" href="#notenoughstockexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>NotEnoughStockException</h3>
+
+<p>Occurs when you're trying to take more stock than available. Use a try/catch block when processing take/remove actions:</p>
+
+<pre><code>try {
+
+    $stock-&gt;take($quantity);
+
+    return "Successfully removed $quantity";
+
+} catch(Stevebauman\Inventory\Exceptions\NotEnoughStockException) {
+
+    return "There wasn't enough stock to perform this action. Please try again."
+
+}
+</code></pre>
+
+<h3>
+<a id="stockalreadyexistsexception" class="anchor" href="#stockalreadyexistsexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>StockAlreadyExistsException</h3>
+
+<p>Occurs when a stock of the item already exists at the specified location. Use a try/catch block when processing move actions:</p>
+
+<pre><code>try {
+
+    $stock-&gt;moveTo($location);
+
+    return "Successfully moved stock to $location-&gt;name";
+
+} catch(Stevebauman\Inventory\Exceptions\StockAlreadyExistsException) {
+
+    return "Stock already exists at this location. Please try again."
+
+}
+</code></pre>
+
+<h3>
+<a id="invalidquantityexception" class="anchor" href="#invalidquantityexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>InvalidQuantityException</h3>
+
+<p>Occurs when a non-numerical value is entered as the quantity, such as <code>'30L'</code>, <code>'a20.0'</code>. Strings (as long as they're numeric), 
+integers and doubles/decimals are always valid. You can use laravel's built in validation to prevent this exception from
+occurring, or you can use a try/catch block when processing actions involving quantity:</p>
+
+<pre><code>try {
+
+    $quantity = '20 Litres'; //This will cause an exception
+
+    $stock-&gt;add($quantity);
+
+    return "Successfully added $quantity";
+
+} catch(Stevebauman\Inventory\Exceptions\InvalidQuantityException) {
+
+    return "The quantity you entered is invalid. Please try again."
+
+}
+</code></pre>
+
+<h3>
+<a id="invalidlocationexception" class="anchor" href="#invalidlocationexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>InvalidLocationException</h3>
+
+<p>Occurs when a location cannot be found, or the specified location is not a subclass or instance of Illuminate\Database\Eloquent\Model</p>
+
+<h3>
+<a id="invalidmovementexception" class="anchor" href="#invalidmovementexception" aria-hidden="true"><span class="octicon octicon-link"></span></a>InvalidMovementException</h3>
+
+<p>Occurs when a movement cannot be found, or the specified movement is not a subclass or instance of Illuminate\Database\Eloquent\Model</p>
+
+<h2>
+<a id="methods--their-exceptions" class="anchor" href="#methods--their-exceptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods &amp; Their Exceptions</h2>
+
+<h4>
+<a id="all-methods" class="anchor" href="#all-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>All Methods</h4>
+
+<p>All methods used on the inventory can throw a <code>NoUserLoggedInException</code> if <code>allow_no_user</code> is disabled inside the configuration.</p>
+
+<pre><code>/**
+* @throws NoUserLoggedInException 
+*/
+</code></pre>
+
+<h4>
+<a id="inventory-model-methods" class="anchor" href="#inventory-model-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inventory Model Methods</h4>
+
+<pre><code>/**
+* @throws InvalidQuantityException
+* @throws InvalidLocationException
+* @throws StockAlreadyExistsException
+*/
+$item-&gt;createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL);
+
+/**
+* @throws InvalidQuantityException
+* @throws InvalidLocationException
+* @throws NotEnoughStockException
+*/
+$item-&gt;takeFromLocation($quantity, $location, $reason = '');
+$item-&gt;removeFromLocation($quantity, $locations =  array(), $reason = '');
+
+/**
+* @throws InvalidQuantityException
+* @throws InvalidLocationException
+* @throws NotEnoughStockException
+*/
+$item-&gt;takeFromManyLocations($quantity, $locations =  array(), $reason = '');
+$item-&gt;removeFromManyLocations($quantity, $locations =  array(), $reason = '');
+
+/**
+* @throws InvalidQuantityException
+* @throws InvalidLocationException
+*/
+$item-&gt;putToLocation($quantity, $location, $reason = '', $cost = 0);
+$item-&gt;addToLocation($quantity, $location, $reason = '', $cost = 0);
+
+/**
+* @throws InvalidQuantityException
+* @throws InvalidLocationException
+*/
+$item-&gt;putToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0);
+$item-&gt;addToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0);
+
+/**
+* @throws InvalidLocationException
+* @throws StockAlreadyExistsException
+*/
+$item-&gt;moveStock($fromLocation, $toLocation);
+
+/**
+* @throws InvalidLocationException
+* @throws StockNotFoundException
+*/
+$item-&gt;getStockFromLocation($location);
+</code></pre>
+
+<h4>
+<a id="inventory-stock-model-methods" class="anchor" href="#inventory-stock-model-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inventory Stock Model Methods</h4>
+
+<pre><code>/**
+* @throws InvalidQuantityException
+*/
+$stock-&gt;updateQuantity($quantity, $reason= '', $cost = 0);
+
+/**
+* @throws InvalidQuantityException
+* @throws NotEnoughStockException
+*/
+$stock-&gt;take($quantity, $reason = '');
+$stock-&gt;remove($quantity, $reason= '');
+
+/**
+* @throws InvalidQuantityException
+*/
+$stock-&gt;add($quantity, $reason = '', $cost = 0);
+$stock-&gt;put($quantity, $reason = '', $cost = 0);
+
+/**
+* @throws InvalidLocationException
+* @throws StockAlreadyExistsException
+*/
+$stock-&gt;moveTo($location);
+
+/**
+* @throws NotEnoughStockException
+*/
+$stock-&gt;hasEnoughStock($quantity = 0);
+</code></pre>
+
+<h4>
+<a id="inventory-stock-movement-model-methods" class="anchor" href="#inventory-stock-movement-model-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inventory Stock Movement Model Methods</h4>
+
+<pre><code>/**
+* @throws InvalidMovementException
+*/
+$movement-&gt;rollback($recursive = false);
+</code></pre>
+
+<h2>
+<a id="events" class="anchor" href="#events" aria-hidden="true"><span class="octicon octicon-link"></span></a>Events</h2>
+
+<p>Most inventory operations will trigger events that you are free to do what you please with. Here is a list of methods
+and their events:</p>
+
+<pre><code>/*
+* Triggers 'inventory.stock.taken', the stock record is passed into this event
+*/
+$item-&gt;takeFromLocation($quantity, $location);
+$item-&gt;takeFromManyLocations($quantity, $locations = array());
+$item-&gt;removeFromLocation($quantity, $location);
+$item-&gt;removeFromManyLocations($quantity, $locations = array());
+$stock-&gt;take($quantity);
+$stock-&gt;remove($quantity);
+
+/*
+* Triggers 'inventory.stock.added', the stock record is passed into this event
+*/
+$item-&gt;addToLocation($quantity, $location);
+$item-&gt;addToManyLocations($quantity, $locations = array());
+$item-&gt;putToLocation($quantity, $location);
+$item-&gt;putToManyLocations($quantity, $locations = array());
+$stock-&gt;put($quantity);
+$stock-&gt;add($quantity);
+
+/*
+* Triggers 'inventory.stock.moved', the stock record is passed into this event
+*/
+$item-&gt;moveStock($fromLocation, $toLocation);
+$stock-&gt;moveTo($location);
+
+/*
+* Triggers 'inventory.stock.rollback', the stock record is passed into this event
+*/
+$stock-&gt;rollback();
+$stock-&gt;rollback($movement, $recursive = true);
+$movement-&gt;rollback();
+$movement-&gt;rollback($recursive = true);
+</code></pre>
+
+<h2>
+<a id="auth-integration" class="anchor" href="#auth-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auth Integration</h2>
+
+<p>Integration with Sentry, Sentinel and Laravel's auth driver is built in, so inventory items, stocks and movements are automatically
+tagged to the current logged in user. However, you turn this off if you'd like in the config file under:</p>
+
+<pre><code>'allow_no_user' =&gt; false //Set to true
+</code></pre>
+
+<h2>
+<a id="misc-functions-and-uses" class="anchor" href="#misc-functions-and-uses" aria-hidden="true"><span class="octicon octicon-link"></span></a>Misc Functions and Uses</h2>
+
+<h4>
+<a id="helpful-scopes" class="anchor" href="#helpful-scopes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Helpful Scopes</h4>
+
+<h6>
+<a id="how-do-i-scope-an-item-by-its-category-and-include-the-results-from-deeper-categories" class="anchor" href="#how-do-i-scope-an-item-by-its-category-and-include-the-results-from-deeper-categories" aria-hidden="true"><span class="octicon octicon-link"></span></a>How do I scope an item by it's category and include the results from deeper categories?</h6>
+
+<p>Place this inside your <code>Inventory</code> model. You can also use this implementation for scoping Locations on the <code>InventoryStock</code> model.</p>
+
+<pre><code>/**
+ * Filters inventory results by specified category
+ *
+ * @return object
+ */
+public function scopeCategory($query, $category_id = NULL)
+{
+    if ($category_id) {
+
+        /*
+         * Get descendants and self inventory category nodes
+         */
+        $categories = $this-&gt;category()-&gt;find($category_id)-&gt;getDescendantsAndSelf();
+
+        /*
+         * Perform a subquery on main query
+         */
+        $query-&gt;where(function ($query) use ($categories) {
+
+            /*
+             * For each category, apply a orWhere query to the subquery
+             */
+            foreach ($categories as $category) {
+                $query-&gt;orWhere('category_id', $category-&gt;id);
+            }
+
+            return $query;
+
+        });
+    }
+}
+</code></pre>
+
+<p>Using this will effectively allow you to see all of the inventory from a parent category.</p>
+
+<h4>
+<a id="helpful-accessors" class="anchor" href="#helpful-accessors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Helpful Accessors</h4>
+
+<h6>
+<a id="how-do-i-show-the-last-movement-for-a-stock-record" class="anchor" href="#how-do-i-show-the-last-movement-for-a-stock-record" aria-hidden="true"><span class="octicon octicon-link"></span></a>How do I show the last movement for a stock record?</h6>
+
+<p>You can simply create 2 Accessors. Place this accessor on the <code>InventoryStock</code> model:</p>
+
+<pre><code>/**
+ * Accessor for viewing the last movement of the stock
+ *
+ * @return null|string
+ */
+public function getLastMovementAttribute()
+{
+    if ($this-&gt;movements-&gt;count() &gt; 0) {
+
+        $movement = $this-&gt;movements-&gt;first();
+
+        if ($movement-&gt;after &gt; $movement-&gt;before) {
+
+            return sprintf('&lt;b&gt;%s&lt;/b&gt; (Stock was added - %s) - &lt;b&gt;Reason:&lt;/b&gt; %s', $movement-&gt;change, $movement-&gt;created_at, $movement-&gt;reason);
+
+        } else if ($movement-&gt;before &gt; $movement-&gt;after) {
+
+            return sprintf('&lt;b&gt;%s&lt;/b&gt; (Stock was removed - %s) - &lt;b&gt;Reason:&lt;/b&gt; %s', $movement-&gt;change, $movement-&gt;created_at, $movement-&gt;reason);
+
+        }
+        else{
+
+            return sprintf('&lt;b&gt;%s&lt;/b&gt; (No Change - %s) - &lt;b&gt;Reason:&lt;/b&gt; %s', $movement-&gt;change, $movement-&gt;created_at, $movement-&gt;reason);
+
+        }
+
+    }
+
+    return NULL;
+}
+</code></pre>
+
+<p>Place this accessor on the <code>InventoryStockMovement</code> model:</p>
+
+<pre><code>/**
+ * Returns the change of a stock
+ *
+ * @return string
+ */
+public function getChangeAttribute()
+{
+    if ($this-&gt;before &gt; $this-&gt;after) {
+
+        return sprintf('- %s', $this-&gt;before - $this-&gt;after);
+
+    } else if($this-&gt;after &gt; $this-&gt;before) {
+
+        return sprintf('+ %s', $this-&gt;after - $this-&gt;before);
+
+    } else {
+        return 'None';
+    }
+}
+</code></pre>
+
+<p>Now, inside your view to display stock records you can use:</p>
+
+<pre><code>@if($stocks-&gt;count() &gt; 0)
+
+    @foreach($stocks as $stock)
+
+        {{ $stock-&gt;last_movement }} // Will display in format '+ 20 (Stock was Added) - Reason: Stock check'
+
+    @endforeach
+
+@else
+
+    There are no stocks to display for this item.
+
+@endif
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Inventory maintained by <a href="https://github.com/stevebauman">stevebauman</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
