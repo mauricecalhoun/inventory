@@ -559,6 +559,13 @@ All methods used on the inventory can throw a `NoUserLoggedInException` if `allo
     */
     $stock->hasEnoughStock($quantity = 0);
 
+#### Inventory Stock Movement Model Methods
+
+    /**
+    * @throws InvalidMovementException
+    */
+    $movement->rollback($recursive = false);
+
 ## Events
 
 Most inventory operations will trigger events that you are free to do what you please with. Here is a list of methods
