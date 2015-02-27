@@ -471,8 +471,10 @@ Occurs when a movement cannot be found, or the specified movement is not a subcl
 
 #### All Methods
 
+All methods used on the inventory can throw a `NoUserLoggedInException` if it is enabled inside the configuration.
+
     /**
-    * @throws NoUserLoggedInException
+    * @throws NoUserLoggedInException 
     */
 
 #### Inventory Model Methods
