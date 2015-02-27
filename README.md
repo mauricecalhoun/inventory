@@ -587,6 +587,14 @@ and their events:
     */
     $item->moveStock($fromLocation, $toLocation);
     $stock->moveTo($location);
+    
+    /*
+    * Triggers 'inventory.stock.rollback', the stock record is passed into this event
+    */
+    $stock->rollback();
+    $stock->rollback($movement, $recursive = true);
+    $movement->rollback();
+    $movement->rollback($recursive = true);
 
 ## Auth Integration
 
