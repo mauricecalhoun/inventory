@@ -34,6 +34,9 @@ class SchemaCheckCommand extends Command {
      * Holds the required database tables necessary to install
      */
     protected $reserved = array(
+        'metrics',
+        'locations',
+        'categories'
         'inventory',
         'inventory_stocks',
         'inventory_stock_movements',
