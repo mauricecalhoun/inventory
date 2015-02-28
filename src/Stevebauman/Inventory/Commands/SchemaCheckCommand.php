@@ -36,7 +36,7 @@ class SchemaCheckCommand extends Command {
     protected $reserved = array(
         'metrics',
         'locations',
-        'categories'
+        'categories',
         'inventory',
         'inventory_stocks',
         'inventory_stock_movements',
