@@ -4,8 +4,12 @@ namespace Stevebauman\Inventory\Commands;
 
 use Illuminate\Console\Command;
 
-class InstallCommand extends Command {
-
+/**
+ * Class InstallCommand
+ * @package Stevebauman\Inventory\Commands
+ */
+class InstallCommand extends Command
+{
 	/**
 	 * The console command name.
 	 *
@@ -37,5 +41,4 @@ class InstallCommand extends Command {
 
 		$this->info('Inventory has been successfully installed');
 	}
-
 }

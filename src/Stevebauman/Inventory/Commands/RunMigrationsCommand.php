@@ -2,11 +2,15 @@
 
 namespace Stevebauman\Inventory\Commands;
 
-use Illuminate\Console\Command;
 use Stevebauman\Inventory\InventoryServiceProvider;
+use Illuminate\Console\Command;
 
-class RunMigrationsCommand extends Command {
-
+/**
+ * Class RunMigrationsCommand
+ * @package Stevebauman\Inventory\Commands
+ */
+class RunMigrationsCommand extends Command
+{
     /**
      * The console command name.
      *
@@ -42,17 +46,14 @@ class RunMigrationsCommand extends Command {
                 '--package' => 'stevebauman/inventory'
             ));
 
-        } else {
-
+        } else
+        {
             $this->call('vendor:publish', array(
                 '--provider' => 'Stevebauman\Inventory\InventoryServiceProvider',
                 '--tag' => 'migrations'
             ));
 
             $this->call('migrate');
-
         }
-
     }
-
 }
