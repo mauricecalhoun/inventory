@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * Class BaseModel
  * @package Stevebauman\Inventory\Models
  */
-class BaseModel extends Eloquent {
-
-}
+class BaseModel extends Eloquent {}

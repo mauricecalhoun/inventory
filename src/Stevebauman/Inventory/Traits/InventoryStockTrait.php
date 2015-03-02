@@ -6,6 +6,7 @@ use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -163,10 +164,9 @@ trait InventoryStockTrait {
      */
     public function updateQuantity($quantity, $reason= '', $cost = 0)
     {
-        if($this->isValidQuantity($quantity)) {
-
+        if($this->isValidQuantity($quantity))
+        {
             return $this->processUpdateQuantityOperation($quantity, $reason, $cost);
-
         }
     }
 
@@ -726,7 +726,7 @@ trait InventoryStockTrait {
      */
     private function allowDuplicateMovementsEnabled()
     {
-        return config('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_duplicate_movements');
+        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_duplicate_movements');
     }
 
     /**
@@ -738,7 +738,7 @@ trait InventoryStockTrait {
      */
     private function rollbackCostEnabled()
     {
-        return config('inventory'. InventoryServiceProvider::$packageConfigSeparator .'rollback_cost');
+        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'rollback_cost');
     }
 
 }

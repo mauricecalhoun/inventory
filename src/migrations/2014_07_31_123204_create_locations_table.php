@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateLocationsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,8 +12,8 @@ class CreateLocationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('locations', function (Blueprint $table) {
-
+        Schema::create('locations', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->timestamps();
             $table->integer('parent_id')->nullable()->index();

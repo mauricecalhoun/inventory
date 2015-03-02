@@ -8,8 +8,8 @@ use Stevebauman\Inventory\Traits\InventoryTrait;
  * Class Inventory
  * @package Stevebauman\Inventory\Models
  */
-class Inventory extends BaseModel {
-
+class Inventory extends BaseModel
+{
     use InventoryTrait;
 
     protected $table = 'inventories';
@@ -40,6 +40,16 @@ class Inventory extends BaseModel {
     public function metric()
     {
         return $this->hasOne('Stevebauman\Inventory\Models\Metric', 'id', 'metric_id');
+    }
+
+    /**
+     * The hasOne sku relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function sku()
+    {
+        return $this->hasOne('Stevebauman\Inventory\Models\InventorySku', 'inventory_id', 'id');
     }
 
     /**

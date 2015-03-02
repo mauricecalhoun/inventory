@@ -4,13 +4,16 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
+use Stevebauman\Inventory\InventoryServiceProvider;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
  * Class InventoryTrait
  * @package Stevebauman\Inventory\Traits
  */
-trait InventoryTrait {
+trait InventoryTrait
+{
 
     /**
      * Location helper functions
@@ -43,6 +46,13 @@ trait InventoryTrait {
     abstract public function metric();
 
     /**
+     * The hasOne SKU relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    abstract public function sku();
+
+    /**
      * The hasMany stocks relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -57,10 +67,21 @@ trait InventoryTrait {
     {
         parent::boot();
 
-        parent::creating(function($record) {
-
+        /*
+         * Assign the current users ID while the item
+         * is being created
+         */
+        parent::creating(function($record)
+        {
             $record->user_id = parent::getCurrentUserId();
+        });
 
+        /*
+         * Generate the items SKU once it's created
+         */
+        parent::created(function($record)
+        {
+            $record->generateSku();
         });
     }
 
@@ -81,7 +102,21 @@ trait InventoryTrait {
      */
     public function hasMetric()
     {
-        return ($this->metric ? true : false);
+        if($this->metric()->first()) return true;
+
+        return false;
+    }
+
+    /**
+     * Returns true/false if the current item has an SKU
+     *
+     * @return bool
+     */
+    public function hasSku()
+    {
+        if($this->sku()->first()) return true;
+
+        return false;
     }
 
     /**
@@ -124,20 +159,18 @@ trait InventoryTrait {
     {
         $location = $this->getLocation($location);
 
-        try {
-
-            if ($this->getStockFromLocation($location)) {
-
+        try
+        {
+            if ($this->getStockFromLocation($location))
+            {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
                     'location' => $location->name,
                 ));
 
                 throw new StockAlreadyExistsException($message);
-
             }
-
-        } catch (StockNotFoundException $e) {
-
+        } catch (StockNotFoundException $e)
+        {
             $insert = array(
                 'inventory_id' => $this->id,
                 'location_id' => $location->id,
@@ -360,6 +393,120 @@ trait InventoryTrait {
             throw new StockNotFoundException($message);
 
         }
+    }
+
+    /**
+     * Returns the item's SKU
+     *
+     * @return null|string
+     */
+    public function getSku()
+    {
+        if($this->hasSku())
+        {
+            $prefix = $this->sku->prefix;
+            $code = $this->sku->code;
+
+            return $prefix.$code;
+        }
+
+        return NULL;
+    }
+
+    /**
+     * Laravel accessor for the current items SKU
+     *
+     * @return null|string
+     */
+    public function getSkuAttribute()
+    {
+        return $this->getSku();
+    }
+
+    /**
+     * Generates an item SKU record
+     *
+     * @return bool|mixed
+     */
+    public function generateSku()
+    {
+        if($this->hasSku()) return $this->sku;
+
+        /*
+         * Get the set SKU code length from the configuration file
+         */
+        $codeLength = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_code_length');
+
+        /*
+         * Get the set SKU prefix length from the configuration file
+         */
+        $prefixLength = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_prefix_length');
+
+        /*
+         * Trim the category name to remove blank spaces, then
+         * grab the first 3 letters of the string, and uppercase them
+         */
+        $prefix = strtoupper(substr(trim($this->category->name), 0, $prefixLength));
+
+        /*
+         * Create the numerical code to accompany the prefix
+         */
+        $code = str_pad($this->id, $codeLength, '0', STR_PAD_LEFT);
+
+        /*
+         * Process the generation
+         */
+        return $this->processSkuGeneration($this->id, $prefix, $code);
+    }
+
+    /**
+     * Regenerates the current items SKU by deleting its current SKU
+     * and creating another
+     *
+     * @return bool|mixed
+     */
+    public function regenerateSku()
+    {
+        if($this->hasSku()) $this->sku()->delete();
+
+        return $this->generateSku();
+    }
+
+    /**
+     * Processes an SKU generation covered by database transactions
+     *
+     * @param int|string $inventoryId
+     * @param string $prefix
+     * @param string $code
+     * @return bool|mixed
+     */
+    private function processSkuGeneration($inventoryId, $prefix, $code)
+    {
+        $this->dbStartTransaction();
+
+        try
+        {
+            $insert = array(
+                'inventory_id' => $inventoryId,
+                'prefix' => $prefix,
+                'code' => $code,
+            );
+
+            $record = $this->sku()->create($insert);
+
+            if ($record)
+            {
+                $this->dbCommitTransaction();
+
+                return $record;
+            }
+        }
+        catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
 }

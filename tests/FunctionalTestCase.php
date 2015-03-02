@@ -165,5 +165,23 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onDelete('set null');
 
         });
+
+        DB::schema()->create('inventory_skus', function ($table)
+        {
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('inventory_id')->unsigned();
+            $table->string('prefix', 3);
+            $table->string('code', 20);
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')
+                ->onUpdate('restrict')
+                ->onDelete('cascade');
+
+            /*
+             * Make sure each SKU is unique
+             */
+            $table->unique(array('prefix', 'code'));
+        });
     }
 }

@@ -5,7 +5,9 @@ use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\InventoryStockMovement;
 use Stevebauman\Inventory\Models\InventoryStock;
+use Stevebauman\Inventory\Models\InventorySku;
 use Stevebauman\Inventory\Models\Inventory;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +79,15 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals(null, $inventory->user_id);
         $this->assertEquals(1, $inventory->category_id);
         $this->assertEquals(1, $inventory->metric_id);
+    }
+
+    public function testInventoryHasMetric()
+    {
+        $this->testInventoryCreation();
+
+        $item = Inventory::find(1);
+
+        $this->assertTrue($item->hasMetric());
     }
 
     public function testInventoryStockCreation()
@@ -311,6 +322,55 @@ class InventoryTest extends FunctionalTestCase {
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
 
         $item->getStockFromLocation($location);
+    }
+
+    public function testInventorySkuGeneration()
+    {
+        $this->testInventoryCreation();
+
+        $item = Inventory::find(1);
+
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
+
+        $item->generateSku();
+
+        $sku = InventorySku::first();
+
+        $this->assertEquals($sku->inventory_id, 1);
+        $this->assertEquals($sku->prefix, 'DRI');
+        $this->assertEquals($sku->code, '00001');
+    }
+
+    public function testInventorySkuRegeneration()
+    {
+        $this->testInventorySkuGeneration();
+
+        $item = Inventory::find(1);
+
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
+
+        $item->regenerateSku();
+
+        $sku = InventorySku::first();
+
+        $this->assertEquals($sku->id, 2);
+    }
+
+    public function testInventoryHasSku()
+    {
+        $this->testInventorySkuGeneration();
+
+        $item = Inventory::find(1);
+
+        $this->assertTrue($item->hasSku());
     }
 
 }

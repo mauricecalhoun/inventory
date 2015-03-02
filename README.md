@@ -394,6 +394,42 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
     */
     $movement->rollback(true);
 
+## Asking Questions
+
+There are some built in 'questions' you can ask your retrieved records. Many more are coming, but for now, here is a list:
+
+####Inventory
+
+    $item = Inventory::find(1);
+    
+    /*
+    * Returns true/false it the total stock of the item is greater than 0
+    */
+    $item->isInStock();
+    
+    /*
+    * Returns true/false if the item has a metric assigned to it
+    */
+    $item->hasMetric();
+
+####Stock
+
+    $stock = InventoryStock::find(1);
+    
+    /*
+    * Returns true if the quantity entered is less than or equal to the amount of available stock.
+    *
+    * This will throw a Stevebauman\Inventory\Exceptions\NotEnoughStockException if there is not enough
+    */
+    $stock->hasEnoughStock($quantity = 0);
+    
+    /*
+    * Returns true if the quantity entered is a valid quantity for updating the stock with.
+    *
+    * This will throw a Stevebauman\Inventory\Exceptions\InvalidQuantityException if it is not valid
+    */
+    $stock->isValidQuantity($quantity);
+    
 ## Exceptions
 
 Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.

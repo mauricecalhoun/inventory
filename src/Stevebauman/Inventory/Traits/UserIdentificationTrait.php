@@ -4,6 +4,7 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 trait UserIdentificationTrait {
@@ -23,7 +24,7 @@ trait UserIdentificationTrait {
          * Check if we're allowed to return no user ID to the model. If not we'll throw an exception if
          * we can't grab the current authenticated user with sentry/sentinel/auth
          */
-        if (config('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_no_user')) {
+        if (Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_no_user')) {
 
             return NULL;
 

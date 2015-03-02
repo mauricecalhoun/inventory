@@ -6,8 +6,8 @@ namespace Stevebauman\Inventory\Models;
  * Class Metric
  * @package Stevebauman\Inventory\Models
  */
-class Metric extends BaseModel {
-
+class Metric extends BaseModel
+{
     protected $table = 'metrics';
 
     /**

@@ -8,8 +8,8 @@ use Baum\Node;
  * Class Category
  * @package Stevebauman\Inventory\Models
  */
-class Category extends Node {
-
+class Category extends Node
+{
     protected $table = 'categories';
 
     protected $fillable = array(
@@ -17,5 +17,4 @@ class Category extends Node {
     );
 
     protected $scoped = array('belongs_to');
-
 }

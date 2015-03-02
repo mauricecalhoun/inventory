@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMetricsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,10 +12,11 @@ class CreateMetricsTable extends Migration
      */
     public function up()
     {
-        Schema::create('metrics', function (Blueprint $table) {
-
+        Schema::create('metrics', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->timestamps();
+
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');

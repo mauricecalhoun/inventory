@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventoryTables extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,8 +12,8 @@ class CreateInventoryTables extends Migration
      */
     public function up()
     {
-        Schema::create('inventories', function (Blueprint $table) {
-
+        Schema::create('inventories', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->timestamps();
             $table->softDeletes();
@@ -38,10 +37,11 @@ class CreateInventoryTables extends Migration
 
         });
 
-        Schema::create('inventory_stocks', function (Blueprint $table) {
-
+        Schema::create('inventory_stocks', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->timestamps();
+
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('inventory_id')->unsigned();
             $table->integer('location_id')->unsigned();
@@ -51,7 +51,7 @@ class CreateInventoryTables extends Migration
             $table->string('bin')->nullable();
 
             /*
-             * This allows only one stock to be created
+             * This allows only one inventory stock to be created
              * on a single location
              */
             $table->unique(array('inventory_id', 'location_id'));
@@ -70,10 +70,11 @@ class CreateInventoryTables extends Migration
 
         });
 
-        Schema::create('inventory_stock_movements', function (Blueprint $table) {
-
+        Schema::create('inventory_stock_movements', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->timestamps();
+
             $table->integer('stock_id')->unsigned();
             $table->integer('user_id')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
