@@ -77,13 +77,25 @@ trait InventoryTrait
         });
 
         /*
+         * Check if SKU generation is enabled in the configuration
+         */
+        $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled');
+
+        /*
          * Generate the items SKU once it's created
          */
-        parent::created(function($record)
+        parent::created(function($record) use($skusEnabled)
         {
-            $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled');
-
             if($skusEnabled) $record->generateSku();
+        });
+
+        /*
+         * Generate an SKU if the item has been assigned a category,
+         * this will not overwrite any SKU the item had previously
+         */
+        parent::updated(function($record) use($skusEnabled)
+        {
+            if($skusEnabled && $record->category_id != NULL) $record->generateSku();
         });
     }
 

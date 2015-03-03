@@ -83,25 +83,23 @@ trait InventoryStockTrait {
     {
         parent::boot();
 
-        parent::creating(function($model) {
-
+        parent::creating(function($model)
+        {
             $model->user_id = $model->getCurrentUserId();
 
             /*
              * Check if a reason has been set, if not let's retrieve the default first entry reason
              */
             if(!$model->reason) $model->reason = Lang::get('inventory::reasons.first_record');
-
         });
 
-        parent::created(function($model) {
-
+        parent::created(function($model)
+        {
             $model->postCreate();
-
         });
 
-        parent::updating(function($model) {
-
+        parent::updating(function($model)
+        {
             /*
              * Retrieve the original quantity before it was updated,
              * so we can create generate an update with it
@@ -112,13 +110,11 @@ trait InventoryStockTrait {
              * Check if a reason has been set, if not let's retrieve the default change reason
              */
             if(!$model->reason) $model->reason = Lang::get('inventory::reasons.change');
-
         });
 
-        parent::updated(function($model) {
-
+        parent::updated(function($model)
+        {
             $model->postUpdate();
-
         });
     }
 
