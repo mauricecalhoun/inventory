@@ -81,12 +81,7 @@ trait InventoryTrait
          */
         parent::created(function($record)
         {
-            /*
-             * Check if SKU generation is enabled in the configuration
-             */
-            $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled');
-
-            if($skusEnabled) $record->generateSku();
+            $record->generateSku();
         });
 
         /*
@@ -95,12 +90,7 @@ trait InventoryTrait
          */
         parent::updated(function($record)
         {
-            /*
-             * Check if SKU generation is enabled in the configuration
-             */
-            $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled');
-
-            if($skusEnabled && $record->category_id != NULL) $record->generateSku();
+            if($record->category_id != NULL) $record->generateSku();
         });
     }
 
@@ -451,6 +441,13 @@ trait InventoryTrait
      */
     public function generateSku()
     {
+        $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled', false);
+
+        /*
+         * Make sure sku generation is enabled, if not we'll return false.
+         */
+        if(!$skusEnabled) return false;
+
         /*
          * If the item already has an SKU, we'll return it
          */

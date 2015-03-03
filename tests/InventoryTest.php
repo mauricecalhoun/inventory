@@ -339,8 +339,19 @@ class InventoryTest extends FunctionalTestCase {
 
         $item = Inventory::find(1);
 
+        /*
+         * SKU generation is enabled
+         */
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        /*
+         * SKU code limit
+         */
         Config::shouldReceive('get')->once()->andReturn(5);
 
+        /*
+         * SKU prefix limit
+         */
         Config::shouldReceive('get')->once()->andReturn(3);
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
@@ -368,6 +379,24 @@ class InventoryTest extends FunctionalTestCase {
 
         $item = Inventory::find(1);
 
+        /*
+         * SKU generation is enabled
+         */
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        /*
+         * SKU code limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        /*
+         * SKU prefix limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        /*
+         * Generate the SKU
+         */
         $item->generateSku();
 
         $this->assertEquals('D00001', $item->getSku());
@@ -379,8 +408,19 @@ class InventoryTest extends FunctionalTestCase {
 
         $item = Inventory::find(1);
 
+        /*
+         * SKU generation is enabled
+         */
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        /*
+         * SKU code limit
+         */
         Config::shouldReceive('get')->once()->andReturn(5);
 
+        /*
+         * SKU prefix limit
+         */
         Config::shouldReceive('get')->once()->andReturn(3);
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();

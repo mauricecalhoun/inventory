@@ -21,6 +21,12 @@
         </ul>
     </li>
     <li>
+            Updates
+            <ul>
+                <li><a href="#installation-laravel-4">Updating from 1.0.* to 1.1.*</a></li>
+            </ul>
+        </li>
+    <li>
         Customization
         <ul>
             <li><a href="#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
@@ -62,7 +68,7 @@ Recommended:
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.0.*"
+    "stevebauman/inventory" : "1.1.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -86,7 +92,7 @@ Otherwise you can run the install command:
 
 Include in your `composer.json` file:
 
-    "stevebauman/inventory" : "1.0.*"
+    "stevebauman/inventory" : "1.1.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -105,6 +111,39 @@ And then run the migrations:
 Or use the inventory install command:
 
     php artisan inventory:install
+
+## Updates
+
+### Updating from 1.0.* to 1.1.*
+
+1.1.* brings automatic SKU generation for better item management. This adds some new functions, traits, and a new database table.
+<b>Nothing</b> has been removed.
+
+You will need to republish the configuration files for any upgrade path to enable SKU generation.
+
+#### I did not customize my migrations
+If you have <b>not</b> modified the migrations and installed inventory from the supplied command, all you need to run is:
+
+    php artisan inventory:run-migrations
+    
+This will run the new migration.
+
+#### I customized my migrations
+If you <b>have</b> modified the migrations and ran them yourself, you will have to republish the migrations using:
+
+##### Laravel 4:
+
+    php artisan migrate:publish --package="stevebauman/inventory"
+
+##### Laravel 5:
+
+    php artisan vendor:publish
+
+Don't worry, laravel won't overwrite migrations that already exist, and then run:
+
+    php artisan migrate
+    
+This will run the new available migration.
 
 ### I don't need to customize my models
 
@@ -195,6 +234,21 @@ Inventory:
         {
             return $this->hasMany('InventoryStock', 'inventory_id');
         }
+    }
+    
+InventorySku:
+
+    use Stevebauman\Inventory\Traits\InventorySkuTrait;
+    
+    class InventorySku extends Model
+    {
+        protected $table = 'inventory_skus';
+        
+        protected $fillable = array(
+            'inventory_id',
+            'prefix',
+            'code',
+        );
     }
     
 InventoryStock:
@@ -394,6 +448,8 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
     */
     $movement->rollback(true);
 
+
+
 ## Asking Questions
 
 There are some built in 'questions' you can ask your retrieved records. Many more are coming, but for now, here is a list:
@@ -411,6 +467,11 @@ There are some built in 'questions' you can ask your retrieved records. Many mor
     * Returns true/false if the item has a metric assigned to it
     */
     $item->hasMetric();
+    
+    /*
+    * Returns true/false if the item has an SKU
+    */
+    $item->hasSku();
 
 ####Stock
 
@@ -429,7 +490,75 @@ There are some built in 'questions' you can ask your retrieved records. Many mor
     * This will throw a Stevebauman\Inventory\Exceptions\InvalidQuantityException if it is not valid
     */
     $stock->isValidQuantity($quantity);
+
+## SKU Generation
+
+In update `1.1.*`, automatic SKU generation was added, however if you'd like to generate SKU's yourself, you can do so
+by disabling it inside the configuration.
+
+### What is an SKU?
+
+From Google:
+
+'Stock Keeping Unit - SKU' A store's or catalog's product and service identification code, often portrayed 
+as a machine-readable bar code that helps the item to be tracked for inventory.
+
+### How does inventory create the SKU?
+
+Inventory creates the SKU by grabbing the first 3 (three) characters of the item's category name, and then assigning a
+code by using the items ID. For example, an item with the category named 'Drinks' and an item ID of 1 (one), this will be generated:
+
+    DRI00001
+
+Both the prefix and the code are customizable in the configuration file.
+
+### What happens when an inventory item doesn't have a category?
+
+If an inventory item does not have a category, no SKU is generated. Once you assign a category to the inventory, 
+it will automatically be generated.
+
+### What happens if the category name is short?
+
+If the categories name is below the number of characters set in the configuration file, then the prefix is just shorter.
+For example, an item with a category named 'D', and an item ID of 1 (one), this will be generated:
+
+    D00001
+
+### How do I get the SKU from an item?
+
+Easy, just ask the item using the laravel accessor:
+
+    $item = Inventory::find(1);
     
+    $item->sku;
+    
+Or use the method:
+
+    $item->getSku();
+
+### How do I regenerate an SKU?
+
+Regenerating an SKU will delete the previous items SKU and create another. This is useful if you changed the items category.
+You can perform this like so:
+
+    $item = Inventory::find(1);
+        
+    $item->regenerateSku();
+
+### How do I generate an SKU myself?
+
+First, disable SKU generation in the configuration file, then generate an sku like so:
+
+    $item = Inventory::find(1);
+            
+    $item->generateSku();
+
+If an item already has an SKU, or SKU generation was successful, it will return the current SKU record.
+
+If an item does not have a category, it will return false.
+
+If SKU generation is disabled, or creating an SKU failed, it will return false.
+
 ## Exceptions
 
 Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.
