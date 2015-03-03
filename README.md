@@ -766,6 +766,12 @@ Most inventory operations will trigger events that you are free to do what you p
 and their events:
 
     /*
+    * Triggers 'inventory.sku.generated', the item record is passed into this event
+    */
+    $item->generateSku();
+    $item->regenerateSku();
+
+    /*
     * Triggers 'inventory.stock.taken', the stock record is passed into this event
     */
     $item->takeFromLocation($quantity, $location);

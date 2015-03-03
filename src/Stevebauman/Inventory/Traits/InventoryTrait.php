@@ -449,14 +449,14 @@ trait InventoryTrait
         if(!$skusEnabled) return false;
 
         /*
-         * If the item already has an SKU, we'll return it
-         */
-        if($this->hasSku()) return $this->sku;
-
-        /*
          * If the item doesn't have a category, we can't create an SKU. We'll return false.
          */
         if(!$this->hasCategory()) return false;
+
+        /*
+         * If the item already has an SKU, we'll return it
+         */
+        if($this->hasSku()) return $this->sku;
 
         /*
          * Get the set SKU code length from the configuration file
@@ -524,6 +524,10 @@ trait InventoryTrait
             if ($record)
             {
                 $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.sku.generated', array(
+                    'item' => $this,
+                ));
 
                 return $record;
             }
