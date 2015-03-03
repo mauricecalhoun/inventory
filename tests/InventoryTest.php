@@ -345,6 +345,22 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals($sku->code, '00001');
     }
 
+    public function testInventorySkuGenerationForSmallCategoryName()
+    {
+        $this->testInventoryCreation();
+
+        $category = Category::find(1);
+
+        $category->name = 'D';
+        $category->save();
+
+        $item = Inventory::find(1);
+
+        $item->generateSku();
+
+        $this->assertEquals('D00001', $item->getSku());
+    }
+
     public function testInventorySkuRegeneration()
     {
         $this->testInventorySkuGeneration();
