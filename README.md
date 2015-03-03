@@ -223,9 +223,9 @@ Inventory:
     
     class Inventory extends Model
     {
-        protected $table = 'inventory';
-    
         use InventoryTrait;
+    
+        protected $table = 'inventory';
         
         public function category()
         {
@@ -249,6 +249,8 @@ InventorySku:
     
     class InventorySku extends Model
     {
+        use InventorySkuTrait;
+    
         protected $table = 'inventory_skus';
         
         protected $fillable = array(
@@ -264,6 +266,8 @@ InventoryStock:
     
     class InventoryStock extends Model
     {
+        use InventoryStockTrait;
+    
         protected $table = 'inventory_stocks';
         
         protected $fillable = array(
@@ -274,8 +278,6 @@ InventoryStock:
             'row',
             'bin',
         );
-        
-        use InventoryStockTrait;
     
         public function item()
         {
@@ -299,7 +301,8 @@ InventoryStockMovement:
     
     class InventoryStockMovement extends Model
     {
-    
+        use InventoryStockMovementTrait;
+        
         protected $table = 'inventory_stock_movements';
         
         protected $fillable = array(
@@ -310,8 +313,6 @@ InventoryStockMovement:
             'cost',
             'reason',
         );
-        
-        use InventoryStockMovementTrait;
         
         public function stock()
         {
