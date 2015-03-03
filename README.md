@@ -139,7 +139,7 @@ Once you have done that, you will need to add the `sku()` relationship method on
         return $this->hasOne('InventorySku', 'inventory_id', 'id');
     }
     
-Now you're all set!
+Now you're all set for the migrations.
 
 #### I did not customize my migrations
 If you have <b>not</b> modified the migrations and installed inventory from the supplied command, all you need to run is:
