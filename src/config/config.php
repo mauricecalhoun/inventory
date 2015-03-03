@@ -37,7 +37,9 @@ return array(
     'skus_enabled' => true,
 
     /*
-     * The sku prefix length, not including the code
+     * The sku prefix length, not including the code for example:
+     *
+     * An item with a category named 'Sauce', the sku prefix generated will be: SAU
      *
      * MAX is 3, unless you have edited the migration itself
      *
@@ -48,7 +50,7 @@ return array(
     /*
      * The sku code length, not including prefix for example:
      *
-     * An item with a category named 'Sauce', the sku generated will be: SAU00001
+     * An item with an ID of 1 (one) the sku code will be: 00001
      *
      * MAX is 20, unless you have edited the migration itself
      *

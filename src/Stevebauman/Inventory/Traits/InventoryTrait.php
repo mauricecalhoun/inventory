@@ -81,7 +81,9 @@ trait InventoryTrait
          */
         parent::created(function($record)
         {
-            $record->generateSku();
+            $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled');
+
+            if($skusEnabled) $record->generateSku();
         });
     }
 
@@ -115,6 +117,18 @@ trait InventoryTrait
     public function hasSku()
     {
         if($this->sku()->first()) return true;
+
+        return false;
+    }
+
+    /**
+     * Returns true/false if the current item has a category
+     *
+     * @return bool
+     */
+    public function hasCategory()
+    {
+        if($this->category()->first()) return true;
 
         return false;
     }
@@ -197,20 +211,14 @@ trait InventoryTrait
      */
     public function takeFromLocation($quantity, $location, $reason = '')
     {
-        if (is_array($location)) {
-
+        if (is_array($location))
+        {
             return $this->takeFromManyLocations($quantity, $location, $reason);
-
-        } else {
-
+        } else
+        {
             $stock = $this->getStockFromLocation($location);
 
-            if ($stock->take($quantity, $reason)) {
-
-                return $this;
-
-            }
-
+            if ($stock->take($quantity, $reason)) return $this;
         }
     }
 
@@ -227,12 +235,11 @@ trait InventoryTrait
     {
         $stocks = array();
 
-        foreach ($locations as $location) {
-
+        foreach ($locations as $location)
+        {
             $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->take($quantity, $reason);
-
         }
 
         return $stocks;
@@ -276,20 +283,14 @@ trait InventoryTrait
      */
     public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
-        if (is_array($location)) {
-
+        if (is_array($location))
+        {
             return $this->putToManyLocations($quantity, $location);
-
-        } else {
-
+        } else
+        {
             $stock = $this->getStockFromLocation($location);
 
-            if ($stock->put($quantity, $reason, $cost)) {
-
-                return $this;
-
-            }
-
+            if ($stock->put($quantity, $reason, $cost)) return $this;
         }
     }
 
@@ -307,12 +308,11 @@ trait InventoryTrait
     {
         $stocks = array();
 
-        foreach ($locations as $location) {
-
+        foreach ($locations as $location)
+        {
             $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->put($quantity, $reason, $cost);
-
         }
 
         return $stocks;
@@ -380,18 +380,16 @@ trait InventoryTrait
             ->where('location_id', $location->id)
             ->first();
 
-        if ($stock) {
-
+        if ($stock)
+        {
             return $stock;
-
-        } else {
-
+        } else
+        {
             $message = Lang::get('inventory::exceptions.StockNotFoundException', array(
                 'location' => $location->name,
             ));
 
             throw new StockNotFoundException($message);
-
         }
     }
 
@@ -424,13 +422,25 @@ trait InventoryTrait
     }
 
     /**
-     * Generates an item SKU record
+     * Generates an item SKU record.
+     *
+     * If an item already has an SKU, the SKU record will be returned.
+     *
+     * If an item does not have a category, it will return false.
      *
      * @return bool|mixed
      */
     public function generateSku()
     {
+        /*
+         * If the item already has an SKU, we'll return it
+         */
         if($this->hasSku()) return $this->sku;
+
+        /*
+         * If the item doesn't have a category, we can't create an SKU. We'll return false.
+         */
+        if(!$this->hasCategory()) return false;
 
         /*
          * Get the set SKU code length from the configuration file
@@ -449,7 +459,8 @@ trait InventoryTrait
         $prefix = strtoupper(substr(trim($this->category->name), 0, $prefixLength));
 
         /*
-         * Create the numerical code to accompany the prefix
+         * Create the numerical code by the items ID
+         * to accompany the prefix and pad left zeros
          */
         $code = str_pad($this->id, $codeLength, '0', STR_PAD_LEFT);
 
