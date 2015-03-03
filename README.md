@@ -90,6 +90,10 @@ Otherwise you can run the install command:
 
     php artisan inventory:install
     
+Be sure to publish the configuration if you'd like to customize inventory:
+    
+    php artisan config:publish stevebauman/inventory
+    
 ## Installation (Laravel 5)
 
 Include in your `composer.json` file:
