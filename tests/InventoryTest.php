@@ -373,4 +373,46 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertTrue($item->hasSku());
     }
 
+    public function testInventoryDoesNotHaveSku()
+    {
+        $this->testInventorySkuGeneration();
+
+        $item = Inventory::find(1);
+        $item->sku()->delete();
+
+        $this->assertFalse($item->hasSku());
+    }
+
+    public function testInventoryHasCategory()
+    {
+        $this->testInventoryCreation();
+
+        $item = Inventory::find(1);
+
+        $this->assertTrue($item->hasCategory());
+    }
+
+    public function testInventoryDoesNotHaveCategory()
+    {
+        $this->testInventoryCreation();
+
+        $item = Inventory::find(1);
+        $item->category_id = NULL;
+        $item->save();
+
+        $this->assertFalse($item->hasCategory());
+    }
+
+    public function testInventorySkuGenerationFalse()
+    {
+        $this->testInventoryCreation();
+
+        $item = Inventory::find(1);
+
+        $item->category_id = NULL;
+        $item->save();
+
+        $this->assertFalse($item->generateSku());
+    }
+
 }
