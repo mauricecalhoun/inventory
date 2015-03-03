@@ -49,6 +49,7 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 - Inventory item management
 - Inventory stock management
 - Inventory stock movement tracking
+- Inventory SKU generation
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
