@@ -34,6 +34,8 @@
         </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#asking-questions">Asking Questions</a></li>
+    <li><a href="#sku-generation">SKU Generation</a></li>
     <li><a href="#exceptions">Exceptions</a></li>
     <li><a href="#events">Events</a></li>
     <li><a href="#auth-integration">Auth Integration</a></li>
