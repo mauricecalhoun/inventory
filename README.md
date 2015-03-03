@@ -128,6 +128,19 @@ Or use the inventory install command:
 
 You will need to republish the configuration files for any upgrade path to enable SKU generation.
 
+Once you have run the migrations with one of the paths shown below, you will have to create the 
+new `InventorySku` model shown in the <a href="#i-want-to-customize-my-models">I need to customize my models</a>
+installation if you have created your own models.
+
+Once you have done that, you will need to add the `sku()` relationship method on your `Inventory` model:
+
+    public function sku()
+    {
+        return $this->hasOne('InventorySku', 'inventory_id', 'id');
+    }
+    
+Now you're all set!
+
 #### I did not customize my migrations
 If you have <b>not</b> modified the migrations and installed inventory from the supplied command, all you need to run is:
 
@@ -235,6 +248,11 @@ Inventory:
         public function metric()
         {
             return $this->hasOne('Metric', 'id', 'metric_id');
+        }
+        
+        public function sku()
+        {
+            return $this->hasOne('InventorySku', 'inventory_id', 'id');
         }
         
         public function stocks()
