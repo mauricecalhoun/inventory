@@ -225,6 +225,15 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals(2, $stock->location_id);
     }
 
+    public function testInventoryGetTotalStock()
+    {
+        $this->testInventoryStockCreation();
+
+        $item = Inventory::find(1);
+
+        $this->assertEquals(20, $item->getTotalStock());
+    }
+
     public function testInvalidLocationException()
     {
         $this->testInventoryStockCreation();
@@ -351,8 +360,11 @@ class InventoryTest extends FunctionalTestCase {
 
         $category = Category::find(1);
 
-        $category->name = 'D';
-        $category->save();
+        $update = array(
+            'name' => 'D',
+        );
+
+        $category->update($update);
 
         $item = Inventory::find(1);
 
@@ -439,8 +451,8 @@ class InventoryTest extends FunctionalTestCase {
 
         $expected = 'DRI00001';
 
-        $this->assertEquals('DRI00001', $item->sku);
-        $this->assertEquals('DRI00001', $item->getSku());
+        $this->assertEquals($expected, $item->sku);
+        $this->assertEquals($expected, $item->getSku());
     }
 
 }
