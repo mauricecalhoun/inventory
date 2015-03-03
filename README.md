@@ -766,7 +766,8 @@ Most inventory operations will trigger events that you are free to do what you p
 and their events:
 
     /*
-    * Triggers 'inventory.sku.generated', the item record is passed into this event
+    * Triggers 'inventory.sku.generated', the item record is passed into this event. This is only triggered
+    * if a the record for the sku is actually created.
     */
     $item->generateSku();
     $item->regenerateSku();
