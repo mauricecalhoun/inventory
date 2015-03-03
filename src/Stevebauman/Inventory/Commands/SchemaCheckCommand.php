@@ -43,6 +43,7 @@ class SchemaCheckCommand extends Command
         'locations',
         'categories',
         'inventory',
+        'inventory_skus',
         'inventory_stocks',
         'inventory_stock_movements',
     );
