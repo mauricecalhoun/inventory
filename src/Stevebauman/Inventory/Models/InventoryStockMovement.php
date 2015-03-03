@@ -8,8 +8,8 @@ use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
  * Class InventoryStockMovement
  * @package Stevebauman\Inventory\Models
  */
-class InventoryStockMovement extends BaseModel {
-
+class InventoryStockMovement extends BaseModel
+{
     use InventoryStockMovementTrait;
 
     protected $table = 'inventory_stock_movements';
