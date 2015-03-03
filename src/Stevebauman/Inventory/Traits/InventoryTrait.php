@@ -402,8 +402,10 @@ trait InventoryTrait
     {
         if($this->hasSku())
         {
-            $prefix = $this->sku->prefix;
-            $code = $this->sku->code;
+            $sku = $this->sku()->first();
+
+            $prefix = $sku->prefix;
+            $code = $sku->code;
 
             return $prefix.$code;
         }

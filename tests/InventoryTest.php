@@ -415,4 +415,16 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertFalse($item->generateSku());
     }
 
+    public function testInventoryGetSku()
+    {
+        $this->testInventorySkuGeneration();
+
+        $item = Inventory::find(1);
+
+        $expected = 'DRI00001';
+
+        $this->assertEquals('DRI00001', $item->sku);
+        $this->assertEquals('DRI00001', $item->getSku());
+    }
+
 }
