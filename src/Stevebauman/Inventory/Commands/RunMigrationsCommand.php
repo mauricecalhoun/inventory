@@ -2,7 +2,6 @@
 
 namespace Stevebauman\Inventory\Commands;
 
-use Stevebauman\Inventory\InventoryServiceProvider;
 use Illuminate\Console\Command;
 
 /**
@@ -32,28 +31,8 @@ class RunMigrationsCommand extends Command
      */
     public function fire()
     {
-        /*
-         * We'll check for the laravel version so we know which commands
-         * to run
-         */
-        if(InventoryServiceProvider::$laravelVersion === 4)
-        {
-            /*
-             * Call the package migration
-             */
-            $this->call('migrate', array(
-                '--env' => $this->option('env'),
-                '--package' => 'stevebauman/inventory'
-            ));
-
-        } else
-        {
-            $this->call('vendor:publish', array(
-                '--provider' => 'Stevebauman\Inventory\InventoryServiceProvider',
-                '--tag' => 'migrations'
-            ));
-
-            $this->call('migrate');
-        }
+        $this->call('migrate', array(
+            '--path' => 'vendor/stevebauman/inventory/src/migrations',
+        ));
     }
 }
