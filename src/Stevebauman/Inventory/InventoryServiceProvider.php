@@ -2,7 +2,14 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class InventoryServiceProvider extends ServiceProvider {
+class InventoryServiceProvider extends ServiceProvider
+{
+    /**
+     * Inventory version
+     *
+     * @var string
+     */
+    const VERSION = '1.1.0';
 
 	/**
 	 * Stores the package configuration separator
