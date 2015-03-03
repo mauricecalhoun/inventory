@@ -23,7 +23,7 @@
     <li>
             Updates
             <ul>
-                <li><a href="#installation-laravel-4">Updating from 1.0.* to 1.1.*</a></li>
+                <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
             </ul>
         </li>
     <li>
