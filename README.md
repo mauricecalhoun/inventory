@@ -588,6 +588,8 @@ If an item does not have a category, it will return false.
 
 If SKU generation is disabled, or creating an SKU failed, it will return false.
 
+If the item's category name is blank or empty, it will return false.
+
 ### How do I find an item by it's SKU?
 
 Use the method `findBySku($sku = '')` on your inventory model like so:
