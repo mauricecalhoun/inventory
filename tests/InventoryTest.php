@@ -514,4 +514,32 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals('Milk', $item->name);
     }
 
+    public function testInventorySkuBlankCategoryName()
+    {
+        $this->testInventorySkuGeneration();
+
+        $category = Category::find(1);
+
+        $category->update(array('name' => '     '));
+
+        /*
+         * SKU generation is enabled
+         */
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        /*
+         * SKU code limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        /*
+         * SKU prefix limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        $item = Inventory::find(1);
+
+        $this->assertFalse($item->regenerateSku());
+    }
+
 }

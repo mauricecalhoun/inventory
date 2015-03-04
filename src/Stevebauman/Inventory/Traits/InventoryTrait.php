@@ -494,14 +494,9 @@ trait InventoryTrait
         $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled', false);
 
         /*
-         * Make sure sku generation is enabled, if not we'll return false.
+         * Make sure sku generation is enabled and the item has a category, if not we'll return false.
          */
-        if(!$skusEnabled) return false;
-
-        /*
-         * If the item doesn't have a category, we can't create an SKU. We'll return false.
-         */
-        if(!$this->hasCategory()) return false;
+        if(!$skusEnabled || !$this->hasCategory()) return false;
 
         /*
          * If the item already has an SKU, we'll return it
@@ -525,15 +520,24 @@ trait InventoryTrait
         $prefix = strtoupper(substr(trim($this->category->name), 0, $prefixLength));
 
         /*
-         * Create the numerical code by the items ID
-         * to accompany the prefix and pad left zeros
+         * We'll make sure the prefix length is greater than zero before we try and
+         * generate an SKU
          */
-        $code = str_pad($this->id, $codeLength, '0', STR_PAD_LEFT);
+        if(strlen(trim($prefix)) > 0)
+        {
+            /*
+             * Create the numerical code by the items ID
+             * to accompany the prefix and pad left zeros
+             */
+            $code = str_pad($this->id, $codeLength, '0', STR_PAD_LEFT);
 
-        /*
-         * Process the generation
-         */
-        return $this->processSkuGeneration($this->id, $prefix, $code);
+            /*
+             * Process the generation
+             */
+            return $this->processSkuGeneration($this->id, $prefix, $code);
+        }
+
+        return false;
     }
 
     /**

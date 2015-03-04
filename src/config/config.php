@@ -43,6 +43,8 @@ return array(
      *
      * MAX is 3, unless you have edited the migration itself
      *
+     * DO NOT change this value after production
+     *
      * @var int
      */
     'sku_prefix_length' => 3,
@@ -50,12 +52,14 @@ return array(
     /*
      * The sku code length, not including prefix for example:
      *
-     * An item with an ID of 1 (one) the sku code will be: 00001
+     * An item with an ID of 1 (one) the sku code will be: 000001
      *
      * MAX is 20, unless you have edited the migration itself
      *
+     * DO NOT change this value after production
+     *
      * @var int
      */
-    'sku_code_length' => 5,
+    'sku_code_length' => 6,
 
 );
