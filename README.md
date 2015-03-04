@@ -588,6 +588,17 @@ If an item does not have a category, it will return false.
 
 If SKU generation is disabled, or creating an SKU failed, it will return false.
 
+### How do I find an item by it's SKU?
+
+Use the method `findBySku($sku = '')` on your inventory model like so:
+
+    $item = Inventory::findBySku('DRI00001');
+    
+HEADS UP! If you have created inventory items, and changed your configuration values `sku_prefix_length` & `sku_code_length`,
+This function will not return the item. These configuration values must be kept constant, and should not be changed on the fly
+after production. This is because the `findBySku` method strips the string into two parts (the prefix and the code). It
+needs these lengths to property separate them two strings.
+
 ## Exceptions
 
 Using this inventory system, you have to be prepared to catch exceptions. Of course with Laravel's great built in validation, most of these should not be encountered.
