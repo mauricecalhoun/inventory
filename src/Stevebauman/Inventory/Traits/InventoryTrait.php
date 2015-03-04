@@ -548,9 +548,35 @@ trait InventoryTrait
      */
     public function regenerateSku()
     {
-        if($this->hasSku()) $this->sku()->delete();
+        if($this->hasSku())
+        {
+            /*
+             * Capture current SKU
+             */
+            $previousSku = $this->sku()->first();
 
-        return $this->generateSku();
+            /*
+             * Delete current SKU
+             */
+            $this->sku()->delete();
+
+            /*
+             * Try to generate a new SKU
+             */
+            $newSku = $this->generateSku();
+
+            /*
+             * New sku generation successful, return it
+             */
+            if($newSku) return $newSku;
+
+            /*
+             * Failed generating a new sku, we'll restore the old one
+             */
+            return $this->processSkuGeneration($this->id, $previousSku->prefix, $previousSku->code);
+        }
+
+        return false;
     }
 
     /**

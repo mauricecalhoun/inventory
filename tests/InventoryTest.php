@@ -539,7 +539,12 @@ class InventoryTest extends FunctionalTestCase {
 
         $item = Inventory::find(1);
 
-        $this->assertFalse($item->regenerateSku());
+        $item->regenerateSku();
+
+        /*
+         * SKU generation will fail and the previous will be restored
+         */
+        $this->assertEquals('DRI00001', $item->sku);
     }
 
 }
