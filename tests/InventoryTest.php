@@ -495,4 +495,23 @@ class InventoryTest extends FunctionalTestCase {
         $this->assertEquals($expected, $item->getSku());
     }
 
+    public function testInventoryFindBySku()
+    {
+        $this->testInventorySkuGeneration();
+
+        /*
+         * Prefix length
+         */
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        /*
+         * Code length
+         */
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        $item = Inventory::findBySku('DRI00001');
+
+        $this->assertEquals('Milk', $item->name);
+    }
+
 }

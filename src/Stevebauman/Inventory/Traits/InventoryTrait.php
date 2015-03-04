@@ -95,6 +95,56 @@ trait InventoryTrait
     }
 
     /**
+     * Returns an item record by the specified SKU code
+     *
+     * @param string $sku
+     * @return bool
+     */
+    public static function findBySku($sku)
+    {
+        $prefixLength = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator . 'sku_prefix_length');
+
+        $codeLength = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator . 'sku_code_length');
+
+        /*
+         * Separate the prefix from the specified sku
+         * by using the length from the configuration
+         */
+        $prefix = substr($sku, 0, $prefixLength);
+
+        /*
+         * Separate the code from the specified sku
+         */
+        $code = substr($sku, -$codeLength);
+
+        /*
+         * Create a new static instance
+         */
+        $instance = new static;
+
+        /*
+         * Try and find the SKU record
+         */
+        $sku = $instance
+            ->sku()
+            ->getRelated()
+            ->where('prefix', $prefix)
+            ->where('code', $code)
+            ->first();
+
+        /*
+         * Check if the SKU was found, and if an item is attached to the SKU
+         * we'll return it
+         */
+        if($sku && $sku->item()) return $sku->item;
+
+        /*
+         * Return false on failure
+         */
+        return false;
+    }
+
+    /**
      * Returns the total sum of the current stock
      *
      * @return mixed
@@ -456,7 +506,7 @@ trait InventoryTrait
         /*
          * If the item already has an SKU, we'll return it
          */
-        if($this->hasSku()) return $this->sku;
+        if($this->hasSku()) return $this->sku()->first();
 
         /*
          * Get the set SKU code length from the configuration file
