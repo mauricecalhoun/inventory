@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Lang;
  */
 trait InventoryTrait
 {
-
     /**
      * Location helper functions
      */
@@ -612,5 +611,4 @@ trait InventoryTrait
 
         return false;
     }
-
 }

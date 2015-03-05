@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Lang;
  */
 trait LocationTrait
 {
-
     /**
      * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
      * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID
@@ -22,18 +21,16 @@ trait LocationTrait
      */
     public function getLocation($location)
     {
-        if ($this->isLocation($location)) {
-
+        if ($this->isLocation($location))
+        {
             return $location;
-
-        } else {
-
+        } else
+        {
             $message = Lang::get('inventory::exceptions.InvalidLocationException', array(
                 'location' => $location,
             ));
 
             throw new InvalidLocationException($message);
-
         }
     }
 

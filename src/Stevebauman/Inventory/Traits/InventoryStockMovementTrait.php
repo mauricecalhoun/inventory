@@ -6,8 +6,8 @@ namespace Stevebauman\Inventory\Traits;
  * Class InventoryStockMovementTrait
  * @package Stevebauman\Inventory\Traits
  */
-trait InventoryStockMovementTrait {
-
+trait InventoryStockMovementTrait
+{
     use UserIdentificationTrait;
 
     use DatabaseTransactionTrait;
@@ -27,10 +27,9 @@ trait InventoryStockMovementTrait {
     {
         parent::boot();
 
-        parent::creating(function($record) {
-
+        parent::creating(function($record)
+        {
             $record->user_id = parent::getCurrentUserId();
-
         });
     }
 

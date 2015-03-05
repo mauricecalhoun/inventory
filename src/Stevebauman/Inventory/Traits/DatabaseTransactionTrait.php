@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Event;
  * Class DatabaseTransactionTrait
  * @package Stevebauman\Inventory\Traits
  */
-trait DatabaseTransactionTrait {
-
+trait DatabaseTransactionTrait
+{
     /**
      * Alias for firing events easily that implement this trait
      *
@@ -52,5 +52,4 @@ trait DatabaseTransactionTrait {
     {
         return DB::rollback();
     }
-
 }

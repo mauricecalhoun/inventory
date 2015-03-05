@@ -1,7 +1,13 @@
-<?php namespace Stevebauman\Inventory;
+<?php
+
+namespace Stevebauman\Inventory;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class InventoryServiceProvider
+ * @package Stevebauman\Inventory
+ */
 class InventoryServiceProvider extends ServiceProvider
 {
     /**
@@ -9,7 +15,7 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.1';
 
 	/**
 	 * Stores the package configuration separator
@@ -40,12 +46,14 @@ class InventoryServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-		if(method_exists($this, 'package')) {
-
+        /*
+         * If the package method exists, we're using Laravel 4, if not, we're on 5
+         */
+		if(method_exists($this, 'package'))
+        {
 			$this->package('stevebauman/inventory');
-
-		} else {
-
+		} else
+        {
 			$this::$packageConfigSeparator = '.';
 
 			$this::$laravelVersion = 5;
@@ -59,7 +67,6 @@ class InventoryServiceProvider extends ServiceProvider
 			$this->publishes([
 				__DIR__ . '/../../migrations/' => base_path('/database/migrations'),
 			], 'migrations');
-
 		}
 	}
 
@@ -70,24 +77,39 @@ class InventoryServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
+        /*
+         * Bind the install command
+         */
 		$this->app->bind('inventory:install', function() {
 			return new Commands\InstallCommand();
 		});
 
+        /*
+         * Bind the check-schema command
+         */
 		$this->app->bind('inventory:check-schema', function() {
 			return new Commands\SchemaCheckCommand();
 		});
 
+        /*
+         * Bind the run migrations command
+         */
 		$this->app->bind('inventory:run-migrations', function() {
 			return new Commands\RunMigrationsCommand();
 		});
 
+        /*
+         * Register the commands
+         */
 		$this->commands(array(
 			'inventory:install',
 			'inventory:check-schema',
 			'inventory:run-migrations',
 		));
 
+        /*
+         * Include the helpers file
+         */
 		include __DIR__ .'/../../helpers.php';
 	}
 
