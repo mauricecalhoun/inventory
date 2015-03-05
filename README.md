@@ -574,6 +574,8 @@ If the categories name is below the number of characters set in the configuratio
 For example, an item with a category named 'D', and an item ID of 1 (one), this will be generated:
 
     D00001
+    
+A category name needs to be at least 1 (one) character in length to generate a valid SKU.
 
 ### How do I get the SKU from an item?
 
