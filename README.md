@@ -560,7 +560,7 @@ code by using the items ID. For example, an item with the category named 'Drinks
 
 Both the prefix and the code are customizable in the configuration file.
 
-The columns `prefix`, and `code` are bound by a unique constraint on the `inventory_skus` database table to ensure they are
+The column `code` is bound by a unique constraint on the `inventory_skus` database table to ensure they are
 always unique.
 
 ### What happens when an inventory item doesn't have a category?
