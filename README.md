@@ -72,7 +72,7 @@ Recommended:
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.1.*"
+    "stevebauman/inventory" : "1.2.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -100,7 +100,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
 
 Include in your `composer.json` file:
 
-    "stevebauman/inventory" : "1.1.*"
+    "stevebauman/inventory" : "1.2.*"
 
 Now perform a `composer update` on your project's source.
 
