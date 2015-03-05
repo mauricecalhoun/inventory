@@ -595,12 +595,6 @@ If the item's category name is blank or empty, it will return false.
 Use the method `findBySku($sku = '')` on your inventory model like so:
 
     $item = Inventory::findBySku('DRI00001');
-    
-HEADS UP! If you have created inventory items, and changed your configuration values `sku_prefix_length` & `sku_code_length`,
-This function will not return the item. These configuration values must be kept constant, and should not be changed on the fly
-after production. This is because the `findBySku` method strips the string into two parts (the prefix and the code). It
-needs these lengths to properly separate the string. Using regex for this separation does not exist
-since there is a possibility of category names containing integers.
 
 ## Exceptions
 
