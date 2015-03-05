@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class InventoryTest extends FunctionalTestCase {
-
+class InventoryTest extends FunctionalTestCase
+{
     public function setUp()
     {
         parent::setUp();
