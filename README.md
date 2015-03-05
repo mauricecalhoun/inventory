@@ -24,6 +24,7 @@
             Updates
             <ul>
                 <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
+                <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
             </ul>
         </li>
     <li>
@@ -164,6 +165,27 @@ Don't worry, laravel won't overwrite migrations that already exist, and then run
     php artisan migrate
     
 This will run the new available migration.
+
+### Updating from 1.1.* to 1.2.*
+
+1.2.* combines the the `prefix` and `code` column on the `inventory_skus` table. This allows for easier searching and
+maintainability. <b>Nothing</b> has been removed besides the `prefix` column on the included migration.
+
+A new configuration option named `sku_separator` is now included. This means you can now choose what separates the prefix
+from the code. For example, a `sku_separator` with a hyphen (-) inserted, the SKU generated might look like this:
+
+    DRI-00001
+
+Due to the removal of the database column, all you should need to do is remove the `prefix` column from the `inventory_skus`
+database table. However this means you'll need to regenerate all of your SKU's unfortunately. You can perform this by looping
+through your inventory items and using the method `regenerateSku()`:
+
+    $items = Inventory::all();
+    
+    foreach($items as $item)
+    {
+        $item->regenerateSku();
+    }
 
 ### I don't need to customize my models
 
