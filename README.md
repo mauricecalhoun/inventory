@@ -295,7 +295,6 @@ InventorySku:
         
         protected $fillable = array(
             'inventory_id',
-            'prefix',
             'code',
         );
     }
