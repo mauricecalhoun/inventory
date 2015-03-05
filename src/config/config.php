@@ -41,10 +41,6 @@ return array(
      *
      * An item with a category named 'Sauce', the sku prefix generated will be: SAU
      *
-     * MAX is 3, unless you have edited the migration itself
-     *
-     * DO NOT change this value after production
-     *
      * @var int
      */
     'sku_prefix_length' => 3,
@@ -54,12 +50,18 @@ return array(
      *
      * An item with an ID of 1 (one) the sku code will be: 000001
      *
-     * MAX is 20, unless you have edited the migration itself
-     *
-     * DO NOT change this value after production
-     *
      * @var int
      */
     'sku_code_length' => 6,
+
+    /*
+     * The sku separator for use in separating the prefix from the code.
+     *
+     * For example, if a hyphen (-) is inserted in the string below, a possible
+     * SKU might be 'DRI-00001'
+     *
+     * @var string
+     */
+    'sku_separator' => '',
 
 );

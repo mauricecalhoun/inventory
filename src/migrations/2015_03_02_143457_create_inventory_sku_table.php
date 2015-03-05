@@ -17,8 +17,7 @@ class CreateInventorySkuTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->integer('inventory_id')->unsigned();
-            $table->string('prefix', 3);
-            $table->string('code', 20);
+            $table->string('code');
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')
@@ -27,7 +26,7 @@ class CreateInventorySkuTable extends Migration
             /*
              * Make sure each SKU is unique
              */
-            $table->unique(array('prefix', 'code'));
+            $table->unique(array('code'));
         });
 	}
 

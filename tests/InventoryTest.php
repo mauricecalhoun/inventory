@@ -354,6 +354,11 @@ class InventoryTest extends FunctionalTestCase
          */
         Config::shouldReceive('get')->once()->andReturn(3);
 
+        /*
+         * SKU separator
+         */
+        Config::shouldReceive('get')->once()->andReturn('');
+
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
 
         $item->generateSku();
@@ -361,8 +366,7 @@ class InventoryTest extends FunctionalTestCase
         $sku = InventorySku::first();
 
         $this->assertEquals($sku->inventory_id, 1);
-        $this->assertEquals($sku->prefix, 'DRI');
-        $this->assertEquals($sku->code, '00001');
+        $this->assertEquals($sku->code, 'DRI00001');
     }
 
     public function testInventorySkuGenerationForSmallCategoryName()
@@ -393,6 +397,11 @@ class InventoryTest extends FunctionalTestCase
          * SKU prefix limit
          */
         Config::shouldReceive('get')->once()->andReturn(3);
+
+        /*
+         * SKU separator
+         */
+        Config::shouldReceive('get')->once()->andReturn('');
 
         /*
          * Generate the SKU
@@ -499,16 +508,6 @@ class InventoryTest extends FunctionalTestCase
     {
         $this->testInventorySkuGeneration();
 
-        /*
-         * Prefix length
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        /*
-         * Code length
-         */
-        Config::shouldReceive('get')->once()->andReturn(5);
-
         $item = Inventory::findBySku('DRI00001');
 
         $this->assertEquals('Milk', $item->name);
@@ -537,6 +536,11 @@ class InventoryTest extends FunctionalTestCase
          */
         Config::shouldReceive('get')->once()->andReturn(3);
 
+        /*
+         * SKU separator
+         */
+        Config::shouldReceive('get')->once()->andReturn('');
+
         $item = Inventory::find(1);
 
         $item->regenerateSku();
@@ -545,6 +549,37 @@ class InventoryTest extends FunctionalTestCase
          * SKU generation will fail and the previous will be restored
          */
         $this->assertEquals('DRI00001', $item->sku);
+    }
+
+    public function testInventorySkuSeparator()
+    {
+        $this->testInventorySkuGeneration();
+
+        /*
+         * SKU generation is enabled
+         */
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        /*
+         * SKU code limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(5);
+
+        /*
+         * SKU prefix limit
+         */
+        Config::shouldReceive('get')->once()->andReturn(3);
+
+        /*
+         * SKU separator
+         */
+        Config::shouldReceive('get')->once()->andReturn('-');
+
+        $item = Inventory::find(1);
+
+        $item->regenerateSku();
+
+        $this->assertEquals($item->getSku(), 'DRI-00001');
     }
 
 }

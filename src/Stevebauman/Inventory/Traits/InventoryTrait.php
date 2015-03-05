@@ -102,21 +102,6 @@ trait InventoryTrait
      */
     public static function findBySku($sku)
     {
-        $prefixLength = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator . 'sku_prefix_length');
-
-        $codeLength = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator . 'sku_code_length');
-
-        /*
-         * Separate the prefix from the specified sku
-         * by using the length from the configuration
-         */
-        $prefix = substr($sku, 0, $prefixLength);
-
-        /*
-         * Separate the code from the specified sku
-         */
-        $code = substr($sku, -$codeLength);
-
         /*
          * Create a new static instance
          */
@@ -128,8 +113,7 @@ trait InventoryTrait
         $sku = $instance
             ->sku()
             ->getRelated()
-            ->where('prefix', $prefix)
-            ->where('code', $code)
+            ->where('code', $sku)
             ->first();
 
         /*
@@ -461,10 +445,7 @@ trait InventoryTrait
         {
             $sku = $this->sku()->first();
 
-            $prefix = $sku->prefix;
-            $code = $sku->code;
-
-            return $prefix.$code;
+            return $sku->code;
         }
 
         return NULL;
@@ -514,6 +495,17 @@ trait InventoryTrait
         $prefixLength = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_prefix_length');
 
         /*
+         * Get the set SKU separator
+         */
+        $skuSeparator = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_separator');
+
+        /*
+         * Make sure we trim empty spaces in the separator if it's a string, otherwise we'll
+         * set it to NULL
+         */
+        $skuSeparator = (is_string($skuSeparator) ? trim($skuSeparator) : NULL);
+
+        /*
          * Trim the category name to remove blank spaces, then
          * grab the first 3 letters of the string, and uppercase them
          */
@@ -523,7 +515,7 @@ trait InventoryTrait
          * We'll make sure the prefix length is greater than zero before we try and
          * generate an SKU
          */
-        if(strlen(trim($prefix)) > 0)
+        if(strlen($prefix) > 0)
         {
             /*
              * Create the numerical code by the items ID
@@ -534,9 +526,12 @@ trait InventoryTrait
             /*
              * Process the generation
              */
-            return $this->processSkuGeneration($this->id, $prefix, $code);
+            return $this->processSkuGeneration($this->id, $prefix.$skuSeparator.$code);
         }
 
+        /*
+         * Always return false on generation failure
+         */
         return false;
     }
 
@@ -573,7 +568,7 @@ trait InventoryTrait
             /*
              * Failed generating a new sku, we'll restore the old one
              */
-            return $this->processSkuGeneration($this->id, $previousSku->prefix, $previousSku->code);
+            return $this->processSkuGeneration($this->id, $previousSku->code);
         }
 
         return false;
@@ -583,11 +578,10 @@ trait InventoryTrait
      * Processes an SKU generation covered by database transactions
      *
      * @param int|string $inventoryId
-     * @param string $prefix
      * @param string $code
      * @return bool|mixed
      */
-    private function processSkuGeneration($inventoryId, $prefix, $code)
+    private function processSkuGeneration($inventoryId, $code)
     {
         $this->dbStartTransaction();
 
@@ -595,7 +589,6 @@ trait InventoryTrait
         {
             $insert = array(
                 'inventory_id' => $inventoryId,
-                'prefix' => $prefix,
                 'code' => $code,
             );
 

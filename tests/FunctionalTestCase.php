@@ -171,7 +171,6 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
             $table->increments('id');
             $table->timestamps();
             $table->integer('inventory_id')->unsigned();
-            $table->string('prefix', 3);
             $table->string('code', 20);
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
@@ -181,7 +180,7 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
             /*
              * Make sure each SKU is unique
              */
-            $table->unique(array('prefix', 'code'));
+            $table->unique(array('code'));
         });
     }
 }
