@@ -566,7 +566,7 @@ always unique.
 ### What happens when an inventory item doesn't have a category?
 
 If an inventory item does not have a category, no SKU is generated. Once you assign a category to the inventory, 
-it will automatically be generated.
+it will be automatically generated.
 
 ### What happens if the category name is short?
 
