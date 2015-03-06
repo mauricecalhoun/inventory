@@ -25,8 +25,9 @@
             <ul>
                 <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
                 <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
+                <li><a href="#upcoming-updates">Upcoming Updates</a></li>
             </ul>
-        </li>
+    </li>
     <li>
         Customization
         <ul>
@@ -186,6 +187,21 @@ through your inventory items and using the method `regenerateSku()`:
     {
         $item->regenerateSku();
     }
+
+### Upcoming Updates
+
+1.3.* will bring inventory suppliers. This will be a `belongsToMany` relationship meaning inventory items can have many suppliers
+and suppliers can have many inventory items.
+
+Helper functions on both the `SupplierTrait` and `InventoryTrait` will be added to make removing and adding suppliers as
+easy as possible.
+
+This will be released in the coming days. Nothing will be removed from this release, and upgrading will follow the method used
+in 1.0.* to 1.1.* (running another migration).
+
+### Looking Ahead
+
+Above 1.3.*, Inventory Assemblies may be implemented in the near future, allowing the generation of a 'Bill of Materials' list.
 
 ### I don't need to customize my models
 
