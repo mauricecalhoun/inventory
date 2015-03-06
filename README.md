@@ -795,7 +795,7 @@ and their events:
 
     /*
     * Triggers 'inventory.sku.generated', the item record is passed into this event. 
-    * This is only triggered if a the record for the sku is actually created.
+    * This is only triggered if the record for the sku is actually created.
     */
     $item->generateSku();
     $item->regenerateSku();
