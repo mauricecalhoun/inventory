@@ -39,6 +39,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#asking-questions">Asking Questions</a></li>
     <li><a href="#sku-generation">SKU Generation</a></li>
+    <li><a href="#suppliers">Suppliers</a></li>
     <li><a href="#exceptions">Exceptions</a></li>
     <li><a href="#events">Events</a></li>
     <li><a href="#auth-integration">Auth Integration</a></li>
@@ -215,6 +216,10 @@ If you're using custom migrations you will need to re-publish the inventory migr
 ##### Laravel 5:
 
     php artisan vendor:publish
+   
+Then run the migration using:
+
+    php artisan migrate
 
 ### Upcoming Updates
 
@@ -549,8 +554,6 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
     */
     $movement->rollback(true);
 
-
-
 ## Asking Questions
 
 There are some built in 'questions' you can ask your retrieved records. Many more are coming, but for now, here is a list:
@@ -672,6 +675,73 @@ If the item's category name is blank or empty, it will return false.
 Use the method `findBySku($sku = '')` on your inventory model like so:
 
     $item = Inventory::findBySku('DRI00001');
+
+## Suppliers
+
+In update 1.3 you can now add Suppliers easily to an inventory item.
+
+First we'll create a supplier:
+
+    $supplier = new Supplier;
+    
+    //Mandatory fields
+    $supplier->name = 'Drink Supplier';
+    
+    //Optional fields
+    $supplier->address = '123 Fake Street';
+    $supplier->postal_code = 'N8J 2K7';
+    $supplier->zip_code = '12345';
+    $supplier->country = 'Canada';
+    $supplier->region = 'Ontario';
+    $supplier->city = 'London';
+    $supplier->contact_title = 'Manager';
+    $supplier->contact_name = 'John Doe';
+    $supplier->contact_phone = '555 555-5555';
+    $supplier->contact_fax = '555 555-5555';
+    $supplier->contact_email = 'john.doe@email.com';
+    
+    $supplier->save();
+    
+Now we can add the supplier to an item using the `Inventory` model helper function `addSupplier($supplier)`:
+
+    $item = Inventory::find(1);
+    
+    $item->addSupplier($supplier);
+    
+    //Or we can use the suppliers ID
+    $item->addSupplier(1);
+    
+    //Adding multiple suppliers at once
+    $item->addSuppliers(array($supplier));
+    
+We can also remove suppliers using:
+
+    $item->removeSupplier($supplier);
+    
+    //Or we can use the suppliers ID
+    $item->removeSupplier(1);
+    
+    //Removing multiple suppliers at once
+    $item->removeSuppliers(array($supplier));
+    
+    //Removing all suppliers from an item
+    $item->removeAllSuppliers();
+
+The inverse can also be done on the supplier model:
+
+    $supplier->addItem($item);
+    $supplier->addItem(1);
+    
+    $supplier->addItems(array($item));
+    $supplier->addItems(array(1, 2, 3));
+    
+    $supplier->removeItem($item);
+    $supplier->removeItem(1);
+    
+    $supplier->removeItems(array($item));
+    $supplier->removeItems(array(1, 2, 3));
+    
+    $supplier->removeAllItems();
 
 ## Exceptions
 
