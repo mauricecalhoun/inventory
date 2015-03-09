@@ -169,7 +169,7 @@ trait InventoryTrait
      */
     public function hasSku()
     {
-        if($this->sku()->first()) return true;
+        if($this->sku()->first() > 0) return true;
 
         return false;
     }
@@ -181,7 +181,7 @@ trait InventoryTrait
      */
     public function hasCategory()
     {
-        if($this->category()->first()) return true;
+        if($this->category()->count() > 0) return true;
 
         return false;
     }
