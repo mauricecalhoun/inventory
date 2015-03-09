@@ -225,6 +225,9 @@ Then run the migration using:
 
 Above 1.3.*, Inventory Assemblies may be implemented in the near future, allowing the generation of a 'Bill of Materials' list.
 
+A status/state system may also be implemented allowing the setting of a status of an inventory item such as being back ordered
+or sold.
+
 ### I don't need to customize my models
 
 If you don't need to create & customize your models, I've included pre-built models.
