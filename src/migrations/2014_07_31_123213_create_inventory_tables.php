@@ -34,7 +34,6 @@ class CreateInventoryTables extends Migration
             $table->foreign('metric_id')->references('id')->on('metrics')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
-
         });
 
         Schema::create('inventory_stocks', function (Blueprint $table)
@@ -67,7 +66,6 @@ class CreateInventoryTables extends Migration
             $table->foreign('location_id')->references('id')->on('locations')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
-
         });
 
         Schema::create('inventory_stock_movements', function (Blueprint $table)
@@ -89,7 +87,6 @@ class CreateInventoryTables extends Migration
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
-
         });
     }
 
@@ -100,9 +97,9 @@ class CreateInventoryTables extends Migration
      */
     public function down()
     {
-        Schema::drop('inventory_stock_movements');
-        Schema::drop('inventory_stocks');
-        Schema::drop('inventories');
+        Schema::dropIfExists('inventory_stock_movements');
+        Schema::dropIfExists('inventory_stocks');
+        Schema::dropIfExists('inventories');
     }
 
 }

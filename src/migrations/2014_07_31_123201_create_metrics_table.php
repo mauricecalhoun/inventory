@@ -24,7 +24,6 @@ class CreateMetricsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
-
         });
     }
 
@@ -35,7 +34,7 @@ class CreateMetricsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('metrics');
+        Schema::dropIfExists('metrics');
     }
 
 }

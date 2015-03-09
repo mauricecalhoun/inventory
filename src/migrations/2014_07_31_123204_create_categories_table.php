@@ -28,7 +28,6 @@ class CreateCategoriesTable extends Migration
              * want to store multiple nested sets on the same table
              */
             $table->string('belongs_to')->nullable();
-
         });
     }
 
@@ -39,7 +38,7 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('categories');
+        Schema::dropIfExists('categories');
     }
 
 }

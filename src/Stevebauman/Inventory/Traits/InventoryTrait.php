@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\InventoryServiceProvider;
@@ -18,6 +19,11 @@ trait InventoryTrait
      * Location helper functions
      */
     use LocationTrait;
+
+    /**
+     * Verification helper functions
+     */
+    use VerifyTrait;
 
     /**
      * Set's the models constructor method to automatically assign the
@@ -57,6 +63,13 @@ trait InventoryTrait
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     abstract public function stocks();
+
+    /**
+     * The belongsToMany suppliers relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    abstract public function suppliers();
 
     /**
      * Overrides the models boot function to set the user ID automatically
@@ -574,6 +587,111 @@ trait InventoryTrait
     }
 
     /**
+     * Adds all of the specified suppliers inside the array to
+     * the current inventory item
+     *
+     * @param array $suppliers
+     * @return bool
+     */
+    public function addSuppliers($suppliers = array())
+    {
+        foreach($suppliers as $supplier)
+        {
+            $this->addSupplier($supplier);
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes all suppliers from the current item
+     *
+     * @return bool
+     */
+    public function removeAllSuppliers()
+    {
+        $suppliers = $this->suppliers()->get();
+
+        foreach($suppliers as $supplier)
+        {
+            $this->removeSupplier($supplier);
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes all of the specified suppliers inside the array from
+     * the current inventory item
+     *
+     * @param array $suppliers
+     * @return bool
+     */
+    public function removeSuppliers($suppliers = array())
+    {
+        foreach($suppliers as $supplier)
+        {
+            $this->removeSupplier($supplier);
+        }
+
+        return true;
+    }
+
+    /**
+     * Adds the specified supplier to the current inventory item
+     *
+     * @param $supplier
+     * @return bool
+     * @throws InvalidSupplierException
+     */
+    public function addSupplier($supplier)
+    {
+        $supplier = $this->getSupplier($supplier);
+
+        return $this->processSupplierAttach($supplier);
+    }
+
+    /**
+     * Removes the specified supplier from the current inventory item
+     *
+     * @param $supplier
+     * @return bool
+     * @throws InvalidSupplierException
+     */
+    public function removeSupplier($supplier)
+    {
+        $supplier = $this->getSupplier($supplier);
+
+        return $this->processSupplierDetach($supplier);
+    }
+
+    /**
+     * Retrieves a supplier from the specified variable
+     *
+     * @param $supplier
+     * @return mixed
+     * @throws InvalidSupplierException
+     */
+    public function getSupplier($supplier)
+    {
+        if($this->isNumeric($supplier))
+        {
+            return $this->getSupplierById($supplier);
+
+        } else if($this->isModel($supplier))
+        {
+            return $supplier;
+        } else
+        {
+            $message = Lang::get('inventory::exceptions.InvalidSupplierException', array(
+                'supplier' => $supplier,
+            ));
+
+            throw new InvalidSupplierException($message);
+        }
+    }
+
+    /**
      * Processes an SKU generation covered by database transactions
      *
      * @param int|string $inventoryId
@@ -610,5 +728,76 @@ trait InventoryTrait
         }
 
         return false;
+    }
+
+    /**
+     * Processes attaching a supplier to an inventory item
+     *
+     * @param $supplier
+     * @return bool
+     */
+    private function processSupplierAttach($supplier)
+    {
+        $this->dbStartTransaction();
+
+        try
+        {
+            $this->suppliers()->attach($supplier);
+
+            $this->dbCommitTransaction();
+
+            $this->fireEvent('inventory.supplier.attached', array(
+                'item' => $this,
+                'supplier' => $supplier,
+            ));
+
+            return true;
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Processes detaching a supplier
+     *
+     * @param $supplier
+     * @return bool
+     */
+    private function processSupplierDetach($supplier)
+    {
+        $this->dbStartTransaction();
+
+        try
+        {
+            $this->suppliers()->detach($supplier);
+
+            $this->dbCommitTransaction();
+
+            $this->fireEvent('inventory.supplier.detached', array(
+                'item' => $this,
+                'supplier' => $supplier,
+            ));
+
+            return true;
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns a supplier by the specified ID
+     *
+     * @param $id
+     * @return mixed
+     */
+    private function getSupplierById($id)
+    {
+        return $this->suppliers()->find($id);
     }
 }

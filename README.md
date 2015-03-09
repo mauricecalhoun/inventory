@@ -190,7 +190,7 @@ through your inventory items and using the method `regenerateSku()`:
 
 ### Upcoming Updates
 
-1.3.* will bring inventory suppliers. This will be a `belongsToMany` relationship meaning inventory items can have many suppliers
+1.3.* will bring inventory suppliers. This will be a `belongsToMany` relationship, meaning inventory items can have many suppliers
 and suppliers can have many inventory items.
 
 Helper functions on both the `SupplierTrait` and `InventoryTrait` will be added to make removing and adding suppliers as

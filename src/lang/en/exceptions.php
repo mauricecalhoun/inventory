@@ -11,6 +11,10 @@ return array(
 
     'InvalidMovementException' => 'Movement :movement is invalid',
 
+    'InvalidSupplierException' => 'Supplier :supplier is invalid',
+
+    'InvalidItemException' => 'Item :item is invalid',
+
     'InvalidQuantityException' => 'Quantity :quantity is invalid',
 
     'NotEnoughStockException' => 'Not enough stock. Tried to take :quantity but only :available is available',

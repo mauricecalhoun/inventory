@@ -62,4 +62,13 @@ class Inventory extends BaseModel
         return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
     }
 
+    /**
+     * The belongsToMany suppliers relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function suppliers()
+    {
+        return $this->belongsToMany('Stevebauman\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+    }
 }

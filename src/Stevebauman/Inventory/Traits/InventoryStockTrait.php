@@ -21,6 +21,11 @@ trait InventoryStockTrait
     use LocationTrait;
 
     /**
+     * Verification helper functions
+     */
+    use VerifyTrait;
+
+    /**
      * Set's the models constructor method to automatically assign the
      * user_id's attribute to the current logged in user
      */
@@ -342,7 +347,7 @@ trait InventoryStockTrait
      */
     public function getMovement($movement)
     {
-        if($this->isMovement($movement))
+        if($this->isModel($movement))
         {
             return $movement;
         } elseif(is_numeric($movement))
@@ -419,18 +424,22 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        if($this->save())
+        try
         {
-            $this->dbCommitTransaction();
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.stock.taken', array(
-                'stock' => $this,
-            ));
+                $this->fireEvent('inventory.stock.taken', array(
+                    'stock' => $this,
+                ));
 
-            return $this;
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
         }
-
-        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -463,18 +472,22 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        if($this->save())
+        try
         {
-            $this->dbCommitTransaction();
+            if ($this->save())
+            {
+                $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.stock.added', array(
-                'stock' => $this,
-            ));
+                $this->fireEvent('inventory.stock.added', array(
+                    'stock' => $this,
+                ));
 
-            return $this;
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
         }
-
-        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -492,18 +505,22 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        if($this->save())
+        try
         {
-            $this->dbCommitTransaction();
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.stock.moved', array(
-                'stock' => $this,
-            ));
+                $this->fireEvent('inventory.stock.moved', array(
+                    'stock' => $this,
+                ));
 
-            return $this;
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
         }
-
-        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -538,18 +555,22 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        if($this->save())
+        try
         {
-            $this->dbCommitTransaction();
+            if ($this->save())
+            {
+                $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.stock.rollback', array(
-                'stock' => $this,
-            ));
+                $this->fireEvent('inventory.stock.rollback', array(
+                    'stock' => $this,
+                ));
 
-            return $this;
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
         }
-
-        $this->dbRollbackTransaction();
 
         return false;
     }
@@ -635,39 +656,6 @@ trait InventoryStockTrait
     private function setReason($reason = '')
     {
         $this->reason = $reason;
-    }
-
-    /**
-     * Returns true or false if the number inserted is positive
-     *
-     * @param $number
-     * @return bool
-     */
-    private function isPositive($number)
-    {
-        if($this->isNumeric($number)) return ($number >= 0 ? true : false);
-    }
-
-    /**
-     * Returns true or false if the number specified is numeric
-     *
-     * @param int $number
-     * @return bool
-     */
-    private function isNumeric($number)
-    {
-        return (is_numeric($number) ? true : false);
-    }
-
-    /**
-     * Returns true or false if the specified movement is a subclass of an eloquent model
-     *
-     * @param $object
-     * @return bool
-     */
-    private function isMovement($object)
-    {
-        return is_subclass_of($object, 'Illuminate\Database\Eloquent\Model');
     }
 
     /**

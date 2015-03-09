@@ -27,7 +27,6 @@ class CreateLocationsTable extends Migration
              * want to store multiple nested sets on the same table
              */
             $table->string('belongs_to')->nullable();
-
         });
     }
 
@@ -38,7 +37,7 @@ class CreateLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('locations');
+        Schema::dropIfExists('locations');
     }
 
 }
