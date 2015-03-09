@@ -157,7 +157,7 @@ trait InventoryTrait
      */
     public function hasMetric()
     {
-        if($this->metric()->first()) return true;
+        if($this->metric()->count() > 0) return true;
 
         return false;
     }
