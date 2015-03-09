@@ -101,5 +101,4 @@ class CreateInventoryTables extends Migration
         Schema::dropIfExists('inventory_stocks');
         Schema::dropIfExists('inventories');
     }
-
 }

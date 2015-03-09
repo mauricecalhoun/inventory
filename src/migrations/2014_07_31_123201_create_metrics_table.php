@@ -36,5 +36,4 @@ class CreateMetricsTable extends Migration
     {
         Schema::dropIfExists('metrics');
     }
-
 }

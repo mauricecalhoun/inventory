@@ -3,8 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInventorySupplierTables extends Migration {
-
+class CreateInventorySupplierTables extends Migration
+{
 	/**
 	 * Run the migrations.
 	 *
@@ -59,5 +59,4 @@ class CreateInventorySupplierTables extends Migration {
 		Schema::dropIfExists('inventory_suppliers');
         Schema::dropIfExists('suppliers');
 	}
-
 }

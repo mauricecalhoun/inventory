@@ -39,5 +39,4 @@ class CreateInventorySkuTable extends Migration
 	{
         Schema::dropIfExists('inventory_skus');
 	}
-
 }
