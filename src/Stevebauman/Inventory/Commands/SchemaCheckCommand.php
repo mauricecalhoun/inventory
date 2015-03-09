@@ -42,10 +42,12 @@ class SchemaCheckCommand extends Command
         'metrics',
         'locations',
         'categories',
+        'suppliers',
         'inventory',
         'inventory_skus',
         'inventory_stocks',
         'inventory_stock_movements',
+        'inventory_suppliers',
     );
 
     /**
