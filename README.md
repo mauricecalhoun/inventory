@@ -1,11 +1,11 @@
 ![Inventory Banner]
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
+
 [![Code Climate](https://codeclimate.com/github/stevebauman/inventory/badges/gpa.svg)](https://codeclimate.com/github/stevebauman/inventory)
 [![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/stevebauman/inventory/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/stevebauman/inventory/v/stable.svg)](https://packagist.org/packages/stevebauman/inventory)
-[![Latest Unstable Version](https://poser.pugx.org/stevebauman/inventory/v/unstable.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![Total Downloads](https://poser.pugx.org/stevebauman/inventory/downloads.svg)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
 
@@ -25,6 +25,7 @@
             <ul>
                 <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
                 <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
+                <li><a href="#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
                 <li><a href="#upcoming-updates">Upcoming Updates</a></li>
             </ul>
     </li>
@@ -188,18 +189,34 @@ through your inventory items and using the method `regenerateSku()`:
         $item->regenerateSku();
     }
 
+### Updating from 1.2.* to 1.3.*
+
+1.3.* brings inventory suppliers. This is a basic informational upgrade, meaning all this update brings is <em>more</em>
+information to your inventory.
+
+If you're using the prebuilt models, you won't have to do anything besides run the new migration using the command:
+
+    php artisan inventory:run-migrations
+    
+However if you're using custom models, you will have to create a new model named `Supplier` with the information supplied
+in the install process, as well as add the new relationship method to your Inventory model below:
+
+    public function suppliers()
+    {
+        return $this->belongsToMany('Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+    }
+
+If you're using custom migrations you will need to re-publish the inventory migrations using:
+
+##### Laravel 4:
+
+    php artisan migrate:publish --package="stevebauman/inventory"
+
+##### Laravel 5:
+
+    php artisan vendor:publish
+
 ### Upcoming Updates
-
-1.3.* will bring inventory suppliers. This will be a `belongsToMany` relationship, meaning inventory items can have many suppliers
-and suppliers can have many inventory items.
-
-Helper functions on both the `SupplierTrait` and `InventoryTrait` will be added to make removing and adding suppliers as
-easy as possible.
-
-This will be released in the coming days. Nothing will be removed from this release, and upgrading will follow the method used
-in 1.0.* to 1.1.* (running another migration).
-
-### Looking Ahead
 
 Above 1.3.*, Inventory Assemblies may be implemented in the near future, allowing the generation of a 'Bill of Materials' list.
 
@@ -268,6 +285,22 @@ Category:
         protected $table = 'categories';
     }
 
+Supplier:
+
+    use Stevebauman\Inventory\Traits\SupplierTrait;
+    
+    class Supplier extends BaseModel
+    {
+        use SupplierTrait;
+    
+        protected $table = 'suppliers';
+        
+         public function items()
+        {
+            return $this->belongsToMany('Inventory', 'inventory_suppliers', 'supplier_id')->withTimestamps();
+        }
+    }
+
 Inventory:
 
     use Stevebauman\Inventory\Traits\InventoryTrait;
@@ -296,6 +329,11 @@ Inventory:
         public function stocks()
         {
             return $this->hasMany('InventoryStock', 'inventory_id');
+        }
+        
+        public function suppliers()
+        {
+            return $this->belongsToMany('Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
         }
     }
     
