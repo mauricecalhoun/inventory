@@ -12,7 +12,7 @@
 >
     <filter>
         <whitelist>
-            <directory>src/Stevebauman/Invenotry</directory>
+            <directory>src/Stevebauman/Inventory</directory>
             <exclude>
                 <file>src/Stevebauman/Inventory/InventoryServiceProvider.php</file>
             </exclude>
