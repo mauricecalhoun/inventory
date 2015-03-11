@@ -643,7 +643,7 @@ Easy, just ask the item using the laravel accessor:
 
     $item = Inventory::find(1);
     
-    $item->sku;
+    $item->sku_code;
     
 Or use the method:
 
