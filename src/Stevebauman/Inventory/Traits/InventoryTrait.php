@@ -132,7 +132,7 @@ trait InventoryTrait
          * Check if the SKU was found, and if an item is attached to the SKU
          * we'll return it
          */
-        if($sku && $sku->item()) return $sku->item;
+        if($sku && $sku->item) return $sku->item;
 
         /*
          * Return false on failure
