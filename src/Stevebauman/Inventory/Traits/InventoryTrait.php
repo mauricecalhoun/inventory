@@ -472,10 +472,7 @@ trait InventoryTrait
      */
     public function getSku()
     {
-        if($this->skusEnabled() && $this->hasSku())
-        {
-            return $this->sku->code;
-        }
+        if($this->skusEnabled() && $this->hasSku()) return $this->sku->code;
 
         return NULL;
     }
