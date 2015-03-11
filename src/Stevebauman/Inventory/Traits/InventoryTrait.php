@@ -612,10 +612,7 @@ trait InventoryTrait
      */
     public function addSuppliers($suppliers = array())
     {
-        foreach($suppliers as $supplier)
-        {
-            $this->addSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->addSupplier($supplier);
 
         return true;
     }
@@ -629,10 +626,7 @@ trait InventoryTrait
     {
         $suppliers = $this->suppliers()->get();
 
-        foreach($suppliers as $supplier)
-        {
-            $this->removeSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
 
         return true;
     }
@@ -646,10 +640,7 @@ trait InventoryTrait
      */
     public function removeSuppliers($suppliers = array())
     {
-        foreach($suppliers as $supplier)
-        {
-            $this->removeSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
 
         return true;
     }
