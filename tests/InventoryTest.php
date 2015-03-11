@@ -50,6 +50,7 @@ class InventoryTest extends FunctionalTestCase
     {
         $location = Location::create(array(
             'name' => 'Warehouse',
+            'belongs_to' => ''
         ));
 
         $this->assertEquals('Warehouse', $location->name);
@@ -84,6 +85,18 @@ class InventoryTest extends FunctionalTestCase
         $item = Inventory::find(1);
 
         $this->assertTrue($item->hasMetric());
+    }
+
+    public function testInventoryDoesNotHaveMetric()
+    {
+        $this->testInventoryCreation();
+
+        $metric = Metric::find(1);
+        $metric->delete();
+
+        $item = Inventory::find(1);
+
+        $this->assertFalse($item->hasMetric());
     }
 
     public function testInventoryCreateStockOnLocation()
@@ -141,4 +154,5 @@ class InventoryTest extends FunctionalTestCase
 
         $this->assertFalse($item->hasCategory());
     }
+
 }

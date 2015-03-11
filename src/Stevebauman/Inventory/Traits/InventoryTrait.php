@@ -157,7 +157,7 @@ trait InventoryTrait
      */
     public function hasMetric()
     {
-        if($this->metric()->count() > 0) return true;
+        if($this->metric) return true;
 
         return false;
     }
@@ -169,7 +169,7 @@ trait InventoryTrait
      */
     public function hasSku()
     {
-        if($this->sku()->count() > 0) return true;
+        if($this->sku) return true;
 
         return false;
     }
@@ -181,7 +181,7 @@ trait InventoryTrait
      */
     public function hasCategory()
     {
-        if($this->category()->count() > 0) return true;
+        if($this->category) return true;
 
         return false;
     }
@@ -193,7 +193,9 @@ trait InventoryTrait
      */
     public function getMetricSymbol()
     {
-        return $this->metric->symbol;
+        if($this->hasMetric()) return $this->metric->symbol;
+
+        return null;
     }
 
     /**
@@ -228,6 +230,9 @@ trait InventoryTrait
 
         try
         {
+            /*
+             * We want to make sure stock doesn't exist on the specified location already
+             */
             if ($this->getStockFromLocation($location))
             {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
@@ -238,6 +243,9 @@ trait InventoryTrait
             }
         } catch (StockNotFoundException $e)
         {
+            /*
+             * A stock record wasn't found on this location, we'll create one
+             */
             $insert = array(
                 'inventory_id' => $this->id,
                 'location_id' => $location->id,
@@ -247,8 +255,15 @@ trait InventoryTrait
                 'bin' => $bin,
             );
 
+            /*
+             * We'll perform a create so a 'first' movement is generated
+             */
             $stock = $this->stocks()->create($insert);
 
+            /*
+             * Now we'll 'put' the inserted quantity onto the generated stock
+             * and return the results
+             */
             return $stock->put($quantity, $reason, $cost);
         }
     }
@@ -264,6 +279,10 @@ trait InventoryTrait
      */
     public function takeFromLocation($quantity, $location, $reason = '')
     {
+        /*
+         * If the specified location is an array, we must be taking from
+         * multiple locations
+         */
         if (is_array($location))
         {
             return $this->takeFromManyLocations($quantity, $location, $reason);
@@ -453,11 +472,9 @@ trait InventoryTrait
      */
     public function getSku()
     {
-        if($this->hasSku())
+        if($this->skusEnabled() && $this->hasSku())
         {
-            $sku = $this->sku()->first();
-
-            return $sku->code;
+            return $this->sku->code;
         }
 
         return NULL;
@@ -468,7 +485,7 @@ trait InventoryTrait
      *
      * @return null|string
      */
-    public function getSkuAttribute()
+    public function getSkuCodeAttribute()
     {
         return $this->getSku();
     }
@@ -484,17 +501,15 @@ trait InventoryTrait
      */
     public function generateSku()
     {
-        $skusEnabled = Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled', false);
-
         /*
          * Make sure sku generation is enabled and the item has a category, if not we'll return false.
          */
-        if(!$skusEnabled || !$this->hasCategory()) return false;
+        if(!$this->skusEnabled() || !$this->hasCategory()) return false;
 
         /*
          * If the item already has an SKU, we'll return it
          */
-        if($this->hasSku()) return $this->sku()->first();
+        if($this->hasSku()) return $this->sku;
 
         /*
          * Get the set SKU code length from the configuration file
@@ -521,7 +536,7 @@ trait InventoryTrait
          * Trim the category name to remove blank spaces, then
          * grab the first 3 letters of the string, and uppercase them
          */
-        $prefix = strtoupper(substr(trim($this->category->name), 0, $prefixLength));
+        $prefix = strtoupper(substr(trim($this->category->name), 0, intval($prefixLength)));
 
         /*
          * We'll make sure the prefix length is greater than zero before we try and
@@ -549,23 +564,25 @@ trait InventoryTrait
 
     /**
      * Regenerates the current items SKU by deleting its current SKU
-     * and creating another
+     * and creating another. This will also generate an SKU if one does not exist
      *
      * @return bool|mixed
      */
     public function regenerateSku()
     {
-        if($this->hasSku())
+        $sku = $this->sku()->first();
+
+        if($sku)
         {
             /*
              * Capture current SKU
              */
-            $previousSku = $this->sku()->first();
+            $previousSku = $sku;
 
             /*
              * Delete current SKU
              */
-            $this->sku()->delete();
+            $sku->delete();
 
             /*
              * Try to generate a new SKU
@@ -583,7 +600,10 @@ trait InventoryTrait
             return $this->processSkuGeneration($this->id, $previousSku->code);
         }
 
-        return false;
+        /*
+         * Always generate an SKU if one doesn't exist
+         */
+        return $this->generateSku();
     }
 
     /**
@@ -799,5 +819,16 @@ trait InventoryTrait
     private function getSupplierById($id)
     {
         return $this->suppliers()->find($id);
+    }
+
+    /**
+     * Returns the configuration option for the enablement of automatic
+     * SKU generation
+     *
+     * @return mixed
+     */
+    private function skusEnabled()
+    {
+        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled', false);
     }
 }

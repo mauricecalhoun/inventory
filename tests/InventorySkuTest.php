@@ -23,7 +23,7 @@ class InventorySkuTest extends InventoryTest
         /*
          * SKU code limit
          */
-        Config::shouldReceive('get')->once()->andReturn(5);
+        Config::shouldReceive('get')->once()->andReturn(6);
 
         /*
          * SKU prefix limit
@@ -43,8 +43,8 @@ class InventorySkuTest extends InventoryTest
 
         $sku = InventorySku::first();
 
-        $this->assertEquals($sku->inventory_id, 1);
-        $this->assertEquals($sku->code, 'DRI00001');
+        $this->assertEquals(1, $sku->inventory_id);
+        $this->assertEquals('DRI000001', $sku->code);
     }
 
     public function testInventorySkuGenerationForSmallCategoryName()
@@ -69,7 +69,7 @@ class InventorySkuTest extends InventoryTest
         /*
          * SKU code limit
          */
-        Config::shouldReceive('get')->once()->andReturn(5);
+        Config::shouldReceive('get')->once()->andReturn(6);
 
         /*
          * SKU prefix limit
@@ -86,7 +86,12 @@ class InventorySkuTest extends InventoryTest
          */
         $item->generateSku();
 
-        $this->assertEquals('D00001', $item->getSku());
+        /*
+         * Get the sku code
+         */
+        $sku = $item->sku()->first()->code;
+
+        $this->assertEquals('D000001', $sku);
     }
 
     public function testInventorySkuRegeneration()
@@ -96,14 +101,9 @@ class InventorySkuTest extends InventoryTest
         $item = Inventory::find(1);
 
         /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
          * SKU code limit
          */
-        Config::shouldReceive('get')->once()->andReturn(5);
+        Config::shouldReceive('get')->once()->andReturn(6);
 
         /*
          * SKU prefix limit
@@ -132,8 +132,10 @@ class InventorySkuTest extends InventoryTest
     {
         $this->testInventorySkuGeneration();
 
+        $sku = InventorySku::first();
+        $sku->delete();
+
         $item = Inventory::find(1);
-        $item->sku()->delete();
 
         $this->assertFalse($item->hasSku());
     }
@@ -156,9 +158,9 @@ class InventorySkuTest extends InventoryTest
 
         $item = Inventory::find(1);
 
-        $expected = 'DRI00001';
+        $expected = 'DRI000001';
 
-        $this->assertEquals($expected, $item->sku);
+        $this->assertEquals($expected, $item->sku->code);
         $this->assertEquals($expected, $item->getSku());
     }
 
@@ -166,7 +168,7 @@ class InventorySkuTest extends InventoryTest
     {
         $this->testInventorySkuGeneration();
 
-        $item = Inventory::findBySku('DRI00001');
+        $item = Inventory::findBySku('DRI000001');
 
         $this->assertEquals('Milk', $item->name);
     }
@@ -179,6 +181,8 @@ class InventorySkuTest extends InventoryTest
 
         $category->update(array('name' => '     '));
 
+        $item = Inventory::find(1);
+
         /*
          * SKU generation is enabled
          */
@@ -187,7 +191,7 @@ class InventorySkuTest extends InventoryTest
         /*
          * SKU code limit
          */
-        Config::shouldReceive('get')->once()->andReturn(5);
+        Config::shouldReceive('get')->once()->andReturn(6);
 
         /*
          * SKU prefix limit
@@ -199,14 +203,14 @@ class InventorySkuTest extends InventoryTest
          */
         Config::shouldReceive('get')->once()->andReturn('');
 
-        $item = Inventory::find(1);
-
-        $item->regenerateSku();
+        $sku = $item->regenerateSku();
 
         /*
          * SKU generation will fail and the previous will be restored
+         * with new ID
          */
-        $this->assertEquals('DRI00001', $item->sku);
+        $this->assertEquals(2, $sku->id);
+        $this->assertEquals('DRI000001', $sku->code);
     }
 
     public function testInventorySkuSeparator()
@@ -221,7 +225,7 @@ class InventorySkuTest extends InventoryTest
         /*
          * SKU code limit
          */
-        Config::shouldReceive('get')->once()->andReturn(5);
+        Config::shouldReceive('get')->once()->andReturn(6);
 
         /*
          * SKU prefix limit
@@ -235,8 +239,9 @@ class InventorySkuTest extends InventoryTest
 
         $item = Inventory::find(1);
 
-        $item->regenerateSku();
+        $sku = $item->regenerateSku();
 
-        $this->assertEquals($item->getSku(), 'DRI-00001');
+        $this->assertEquals(2, $sku->id);
+        $this->assertEquals('DRI-000001', $sku->code);
     }
 }
