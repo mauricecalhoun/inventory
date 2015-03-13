@@ -24,7 +24,7 @@ interface StateableInterface
     const STATE_ORDERED_RECEIVED_PARTIAL = 'order-received-partial';
 
     //Inventory Management states
-    const STATE_INVENTORY_ONHOLD = 'inventory-on-hold';
+    const STATE_INVENTORY_ON_HOLD = 'inventory-on-hold';
     const STATE_INVENTORY_RELEASED = 'inventory-released';
     const STATE_INVENTORY_RELEASED_PARTIAL = 'inventory-released-partial';
 

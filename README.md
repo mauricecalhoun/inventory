@@ -78,7 +78,7 @@ Recommended:
 
 If you're using the traits from this package to customize your install, that means you have complete flexibility over your own
 models, methods (excluding relationship names/type), database tables, property names, and attributes. You can set your
-own base model, and if you don't like the way a method is performed just override it. 
+own base model, and if you don't like the way a method is performed just override it.
 
 Sit back and relax, it's nice to have control.
 
