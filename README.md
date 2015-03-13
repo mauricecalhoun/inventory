@@ -1,7 +1,6 @@
 ![Inventory Banner]
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
-
 [![Code Climate](https://codeclimate.com/github/stevebauman/inventory/badges/gpa.svg)](https://codeclimate.com/github/stevebauman/inventory)
 [![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/stevebauman/inventory/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
@@ -13,6 +12,8 @@
 
 <ul>
     <li><a href="#description">Description</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#benefits">Benefits</a></li>
     <li>
         Installation
         <ul>
@@ -55,6 +56,7 @@ Inventory is bare-bones inventory solution. It provides the basics of inventory 
 - Inventory stock movement tracking
 - Inventory SKU generation
 - Inventory supplier management
+- Inventory transaction management
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
@@ -71,6 +73,14 @@ you can simply use the built in models.
 Recommended:
 
 - Venturecraft/Revisionable (For tracking Category and Location changes to stocks)
+
+## Benefits
+
+If you're using the traits from this package to customize your install, that means you have complete flexibility over your own
+models, methods (excluding relationship names/type), database tables, property names, and attributes. You can set your
+own base model, and if you don't like the way a method is performed just override it. 
+
+Sit back and relax, it's nice to have control.
 
 ## Installation (Laravel 4)
 

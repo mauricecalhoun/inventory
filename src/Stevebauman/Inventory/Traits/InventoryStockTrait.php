@@ -374,13 +374,15 @@ trait InventoryStockTrait
      * Creates and returns a new un-saved stock transaction
      * instance with the current stock ID attached.
      *
+     * @param string $name
      * @return mixed
      */
-    public function newTransaction()
+    public function newTransaction($name = '')
     {
         $transaction = $this->transactions()->getRelated();
 
         $transaction->stock_id = $this->id;
+        $transaction->name = $name;
 
         return $transaction;
     }

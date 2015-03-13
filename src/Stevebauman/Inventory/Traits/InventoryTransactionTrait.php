@@ -208,6 +208,11 @@ trait InventoryTransactionTrait
          */
         if($quantity)
         {
+            $this->validatePreviousState(array(
+                NULL,
+                $this::STATE_OPENED,
+            ), $this::STATE_COMMERCE_SOLD);
+
             $stock = $this->getStockRecord();
 
             /*
@@ -241,6 +246,15 @@ trait InventoryTransactionTrait
             }
         } else
         {
+            /*
+             * Make sure the previous state of the transaction was opened, reserved, or back ordered
+             */
+            $this->validatePreviousState(array(
+                $this::STATE_OPENED,
+                $this::STATE_COMMERCE_RESERVED,
+                $this::STATE_COMMERCE_BACK_ORDERED
+            ), $this::STATE_COMMERCE_SOLD);
+
             try
             {
                 /*
@@ -523,7 +537,7 @@ trait InventoryTransactionTrait
             self::STATE_COMMERCE_SOLD,
             self::STATE_COMMERCE_RETURNED,
             self::STATE_COMMERCE_RETURNED_PARTIAL,
-            self::STATE_COMMERCE_RESERVERD,
+            self::STATE_COMMERCE_RESERVED,
             self::STATE_COMMERCE_BACK_ORDERED,
             self::STATE_ORDERED_PENDING,
             self::STATE_ORDERED_RECEIVED,

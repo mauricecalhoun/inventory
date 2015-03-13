@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
@@ -38,7 +39,7 @@ class InventoryTransactionTest extends InventoryStockTest
 
         $transaction = $stock->newTransaction();
 
-        $transaction->state = InventoryTransaction::STATE_COMMERCE_RESERVERD;
+        $transaction->state = InventoryTransaction::STATE_COMMERCE_RESERVED;
     }
 
     public function testInventoryTransactionCheckout()
@@ -48,6 +49,10 @@ class InventoryTransactionTest extends InventoryStockTest
         $stock = InventoryStock::find(1);
 
         $transaction = $stock->newTransaction();
+
+        DB::shouldReceive('startTransaction')->once();
+
+        DB::shouldReceive('commit')->once();
 
         $transaction->checkout(5);
 
