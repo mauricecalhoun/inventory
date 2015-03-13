@@ -32,7 +32,7 @@ interface StateableInterface
     const STATE_CANCELLED = 'cancelled';
     const STATE_OPENED = 'opened';
 
-    public function checkout($quantity);
+    public function checkout($quantity = NULL, $backOrder = false);
 
     public function sold($quantity = NULL);
 

@@ -125,8 +125,10 @@ trait InventoryTransactionTrait
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      * @throws StockNotFoundException
      */
-    public function checkout($quantity)
+    public function checkout($quantity = NULL, $backOrder = false)
     {
+        //TODO when quantity is null we are checking out from a reservation
+        //TODO when quantity is set and backOrder is true then we are creating a back order if quantity is insufficient
         /*
          * Only a transaction that has a previous state of opened or null
          * is allowed to use the checkout function
@@ -551,7 +553,11 @@ trait InventoryTransactionTrait
      */
     public function backOrder($quantity)
     {
-
+        $this->validatePreviousState(array(
+            NULL,
+            $this::STATE_OPENED,
+            $this::STATE_COMMERCE_RESERVED,
+        ), $this::STATE_COMMERCE_BACK_ORDER);
     }
 
     /**
