@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 
@@ -259,6 +260,9 @@ trait InventoryTransactionTrait
      */
     public function soldAmount($quantity)
     {
+        /*
+         * Only allow a previous state of null or opened
+         */
         $this->validatePreviousState(array(
             NULL,
             $this::STATE_OPENED,
@@ -317,13 +321,18 @@ trait InventoryTransactionTrait
     {
         if($quantity)
         {
+            /*
+             * Quantity was specified, we must be
+             * returning a partial amount of quantity
+             */
             return $this->returnedPartial($quantity);
         } else
         {
+            /*
+             * Looks like we're returning all of the stock
+             */
             return $this->returnedAll();
         }
-
-        return false;
     }
 
     /**
@@ -350,12 +359,109 @@ trait InventoryTransactionTrait
 
         $stock->isValidQuantity($quantity);
 
+        /*
+         * Only allow partial returns when the transaction state is
+         * reserved, checkout, or returned partial
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_RESERVED,
+            $this::STATE_COMMERCE_CHECKOUT,
+            $this::STATE_COMMERCE_RETURNED_PARTIAL,
+        ), $this::STATE_COMMERCE_RETURNED_PARTIAL);
+
+        /*
+         * Retrieve the previous state for returning the transaction
+         * to it's original state
+         */
+        $previousState = $this->state;
+
+        /*
+         * Set a new state so a history record is created
+         */
+        $this->state = $this::STATE_COMMERCE_RETURNED_PARTIAL;
+
+        /*
+         * Set the new left-over quantity from removing
+         * the amount returned
+         */
+        $this->quantity = $this->quantity - $quantity;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->put($quantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.returned.partial', array(
+                    'transaction' => $this,
+                ));
+
+                return $this->returnedPartialPreviousState($previousState);
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
 
         return false;
     }
 
+    /**
+     * Marks a transaction as returned and places the stock that
+     * was taken back into the inventory.
+     *
+     * @return $this|bool
+     * @throws InvalidTransactionStateException
+     * @throws StockNotFoundException
+     */
     public function returnedAll()
     {
+        /*
+         * Only allow returns when the transaction state is
+         * reserved, checkout, or returned partial
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_RESERVED,
+            $this::STATE_COMMERCE_CHECKOUT,
+            $this::STATE_COMMERCE_RETURNED_PARTIAL,
+        ), $this::STATE_COMMERCE_RETURNED);
+
+        $stock = $this->getStockRecord();
+
+        /*
+         * Set the state to returned
+         */
+        $this->state = $this::STATE_COMMERCE_RETURNED;
+
+        /*
+         * Set the quantity to zero because we are
+         * returning all of the stock
+         */
+        $this->quantity = 0;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            $originalQuantity = $this->getOriginal('quantity');
+
+            if($stock->put($originalQuantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.returned', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
         return false;
     }
 
@@ -366,11 +472,70 @@ trait InventoryTransactionTrait
      *
      * @param $quantity
      * @param bool $backOrder
-     * @return mixed
+     * @return $this|bool|mixed
+     * @throws InvalidTransactionStateException
+     * @throws NotEnoughStockException
+     * @throws StockNotFoundException
      */
     public function reserved($quantity, $backOrder = false)
     {
+        /*
+         * Only allow a previous state of null, opened, back ordered, and checkout
+         *
+         * @TODO: Validate against a checkout since when checking out, a quantity is
+         * already taken from the stock, there's no need to take it again
+         */
+        $this->validatePreviousState(array(
+            NULL,
+            $this::STATE_OPENED,
+            $this::STATE_COMMERCE_BACK_ORDERED,
+            $this::STATE_COMMERCE_CHECKOUT,
+        ), $this::STATE_COMMERCE_RESERVED);
 
+        $stock = $this->getStockRecord();
+
+        try
+        {
+            /*
+             * If backOrder is true when a stock isn't sufficient for
+             * the reservation, we'll catch the exception and return a back order
+             */
+            $stock->hasEnoughStock($quantity);
+        } catch(NotEnoughStockException $e)
+        {
+            if($backOrder) return $this->backOrder($quantity);
+
+            /*
+             * Looks like the user doesn't want to automatically
+             * create a back-order. We'll throw the exception
+             */
+            throw new NotEnoughStockException($e);
+        }
+
+        $this->state = $this::STATE_COMMERCE_RESERVED;
+
+        $this->quantity = $quantity;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->take($quantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.reserved', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -522,6 +687,36 @@ trait InventoryTransactionTrait
         $this->validateStateIsAvailable($state);
 
         $this->attributes['state'] = $state;
+    }
+
+    /**
+     * Returns a transaction to its previous specified state when a returned
+     * partial is called. This is to allow a transaction to continue functioning normally
+     * since only a partial amount of the transaction was returned, therefore it is still open.
+     *
+     * @param $previousState
+     * @return $this|bool
+     */
+    private function returnedPartialPreviousState($previousState)
+    {
+        $this->state = $previousState;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**

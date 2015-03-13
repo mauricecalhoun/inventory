@@ -234,10 +234,12 @@ Then run the migration using:
 
 ### Upcoming Updates
 
-Above 1.3.*, Inventory Assemblies may be implemented in the near future, allowing the generation of a 'Bill of Materials' list.
+`1.4.*` will bring Inventory Transactions. Transactions will allow you to reserve, hold, checkout, sell, order, and do many other
+useful things easily with your inventory. Most importantly it will allow you to track the history of each transaction, and who
+triggered it (if enabled). Upgrading will just be running or publishing another migration (depending on your setup), 
+and you will need to add a couple of relationship methods on your current models.
 
-A status/state system may also be implemented allowing the setting of a status of an inventory item such as being back ordered
-or sold.
+`1.5.*` will bring Inventory Assemblies. More information coming on this when it's in development after `1.4.*`.
 
 ### I don't need to customize my models
 
