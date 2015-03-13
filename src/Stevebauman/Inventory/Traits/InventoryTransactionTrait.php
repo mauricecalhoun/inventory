@@ -348,16 +348,6 @@ trait InventoryTransactionTrait
     public function returnedPartial($quantity)
     {
         /*
-         * Only allow partial returns when the transaction state is
-         * reserved, checkout, or returned partial
-         */
-        $this->validatePreviousState(array(
-            $this::STATE_COMMERCE_RESERVED,
-            $this::STATE_COMMERCE_CHECKOUT,
-            $this::STATE_COMMERCE_RETURNED_PARTIAL,
-        ), $this::STATE_COMMERCE_RETURNED_PARTIAL);
-
-        /*
          * If the inserted quantity is equal to or greater than
          * the quantity inside the transaction,
          * they must be returning all of the stock
@@ -366,6 +356,16 @@ trait InventoryTransactionTrait
         {
             return $this->returnedAll();
         }
+
+        /*
+         * Only allow partial returns when the transaction state is
+         * reserved, checkout, or returned partial
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_RESERVED,
+            $this::STATE_COMMERCE_CHECKOUT,
+            $this::STATE_COMMERCE_RETURNED_PARTIAL,
+        ), $this::STATE_COMMERCE_RETURNED_PARTIAL);
 
         $stock = $this->getStockRecord();
 
