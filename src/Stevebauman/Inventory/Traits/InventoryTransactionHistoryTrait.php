@@ -3,15 +3,15 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Class InventorySkuTrait
+ * Class InventoryTransactionHistoryTrait
  * @package Stevebauman\Inventory\Traits
  */
-trait InventorySkuTrait
+trait InventoryTransactionHistoryTrait
 {
     /**
-     * The belongsTo inventory item relationship
+     * The belongsTo stock relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    abstract public function item();
+    abstract public function transaction();
 }

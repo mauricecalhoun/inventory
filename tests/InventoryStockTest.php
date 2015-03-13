@@ -100,6 +100,17 @@ class InventoryStockTest extends InventoryTest
         $this->assertEquals(10, $stock->quantity);
     }
 
+    public function testUpdateStockQuantityFailure()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $stock->updateQuantity(-100);
+    }
+
     public function testNotEnoughStockException()
     {
         $this->testInventoryStockCreation();
@@ -214,5 +225,16 @@ class InventoryStockTest extends InventoryTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
 
         $item->getStockFromLocation('testing');
+    }
+
+    public function testInventoryStockNewTransaction()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        $transaction = $stock->newTransaction();
+
+        $this->assertInstanceOf('Stevebauman\Inventory\Interfaces\StateableInterface', $transaction);
     }
 }
