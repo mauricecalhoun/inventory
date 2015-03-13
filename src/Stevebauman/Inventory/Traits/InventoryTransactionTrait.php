@@ -127,10 +127,29 @@ trait InventoryTransactionTrait
      */
     public function checkout($quantity)
     {
+        /*
+         * Only a transaction that has a previous state of opened or null
+         * is allowed to use the checkout function
+         */
+        $this->validatePreviousState(array(
+            NULL,
+            $this::STATE_OPENED,
+        ), $this::STATE_COMMERCE_CHECKOUT);
+
+        /*
+         * Get the stock record
+         */
         $stock = $this->getStockRecord();
 
+        /*
+         * Validate the quantity
+         */
         $stock->isValidQuantity($quantity);
 
+        /*
+         * Make sure there is enough stock
+         * of the specified quantity
+         */
         $stock->hasEnoughStock($quantity);
 
         $this->quantity = $quantity;
@@ -141,6 +160,11 @@ trait InventoryTransactionTrait
 
         try
         {
+            /*
+             * Process both the stock and the transaction. Both need to pass
+             * to proceed. Otherwise they will be both rolled back if an
+             * exception occurs.
+             */
             if($stock->take($quantity, 'Stock transaction: Checked out') && $this->save())
             {
                 $this->dbCommitTransaction();
@@ -171,20 +195,58 @@ trait InventoryTransactionTrait
      */
     public function sold($quantity = NULL)
     {
+        /*
+         * Mark the current state sold
+         */
+        $this->state = InventoryTransaction::STATE_COMMERCE_SOLD;
+
+        $this->dbStartTransaction();
+
+        /*
+         * If a quantity is specified, we must be using a new transaction, so we'll
+         * set the quantity attribute
+         */
         if($quantity)
         {
             $stock = $this->getStockRecord();
 
-            $stock->take($quantity);
+            /*
+             * Validate the quantity
+             */
+            $stock->isValidQuantity($quantity);
+
+            /*
+             * Make sure there is enough stock
+             * of the specified quantity
+             */
+            $stock->hasEnoughStock($quantity);
 
             $this->quantity = $quantity;
 
-            $this->state = InventoryTransaction::STATE_COMMERCE_SOLD;
-
-            $this->dbStartTransaction();
-
             try
             {
+                if($stock->take($quantity) && $this->save())
+                {
+                    $this->dbCommitTransaction();
+
+                    $this->fireEvent('inventory.transaction.sold', array(
+                        'transaction' => $this,
+                    ));
+
+                    return $this;
+                }
+            } catch(\Exception $e)
+            {
+                $this->dbRollbackTransaction();
+            }
+        } else
+        {
+            try
+            {
+                /*
+                 * This transaction has previous history and is being marked sold.
+                 * All we need to do is save it since we've already changed the state.
+                 */
                 if($this->save())
                 {
                     $this->dbCommitTransaction();
@@ -199,14 +261,9 @@ trait InventoryTransactionTrait
             {
                 $this->dbRollbackTransaction();
             }
-
-            return false;
-        } else
-        {
-            $movement = $this->getLastHistoryRecord();
-
-
         }
+
+        return false;
     }
 
     /**
@@ -306,6 +363,15 @@ trait InventoryTransactionTrait
     }
 
     /**
+     * Opens back up a transaction. This must be used when a transaction already has history since
+     * when a transaction is created it is already marked opened.
+     */
+    public function open()
+    {
+
+    }
+
+    /**
      * Cancels any transaction and returns or removes stock depending on the last state
      *
      * @return mixed
@@ -383,6 +449,27 @@ trait InventoryTransactionTrait
     }
 
     /**
+     * Returns true if the current state equals at least one
+     * of the allowed states in the array. Throws an exception otherwise.
+     *
+     * @param array $allowedStates
+     * @param string $toState
+     * @return bool
+     * @throws InvalidTransactionStateException
+     */
+    private function validatePreviousState($allowedStates = array(), $toState)
+    {
+        if(!in_array($this->state, $allowedStates))
+        {
+            $message = "Transaction state: $this->state cannot be changed to a: $toState state.";
+
+            throw new InvalidTransactionStateException($message);
+        }
+
+        return true;
+    }
+
+    /**
      * Returns true if the specified state is valid, throws an
      * exception otherwise
      *
@@ -394,7 +481,7 @@ trait InventoryTransactionTrait
     {
         if(!in_array($state, $this->getAvailableStates()))
         {
-            $message = "State: $state is an invalid state.";
+            $message = "State: $state is an invalid state, and cannot be used.";
 
             throw new InvalidTransactionStateException($message);
         }
