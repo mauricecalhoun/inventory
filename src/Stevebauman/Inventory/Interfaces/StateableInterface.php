@@ -38,7 +38,7 @@ interface StateableInterface
 
     public function returned($quantity = NULL);
 
-    public function reserved($quantity, $backOrder = false);
+    public function reserved($quantity = NULL, $backOrder = false);
 
     public function backOrder($quantity);
 

@@ -197,53 +197,50 @@ trait InventoryTransactionTrait
     public function sold($quantity = NULL)
     {
         /*
-         * Mark the current state sold
-         */
-        $this->state = InventoryTransaction::STATE_COMMERCE_SOLD;
-
-        /*
          * If a quantity is specified, we must be using a new transaction, so we'll
          * set the quantity attribute
          */
-        if($quantity)
-        {
-            return $this->soldAmount($quantity);
-        } else
+        if($quantity) return $this->soldAmount($quantity);
+
+        /*
+         * Make sure the previous state of the transaction was
+         * checked out, opened, reserved, returned/partially returned or back ordered
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_OPENED,
+            $this::STATE_COMMERCE_CHECKOUT,
+            $this::STATE_COMMERCE_RESERVED,
+            $this::STATE_COMMERCE_BACK_ORDERED,
+            $this::STATE_COMMERCE_RETURNED,
+            $this::STATE_COMMERCE_RETURNED_PARTIAL,
+        ), $this::STATE_COMMERCE_SOLD);
+
+        /*
+         * Mark the current state sold
+         */
+        $this->state = $this::STATE_COMMERCE_SOLD;
+
+        $this->dbStartTransaction();
+
+        try
         {
             /*
-             * Make sure the previous state of the transaction was
-             * opened, reserved, returned/partially returned or back ordered
+             * This transaction has previous history and is being marked sold.
+             * All we need to do is save it since we've already changed the state.
              */
-            $this->validatePreviousState(array(
-                $this::STATE_OPENED,
-                $this::STATE_COMMERCE_RESERVED,
-                $this::STATE_COMMERCE_BACK_ORDERED,
-                $this::STATE_COMMERCE_RETURNED,
-                $this::STATE_COMMERCE_RETURNED_PARTIAL,
-            ), $this::STATE_COMMERCE_SOLD);
-
-            $this->dbStartTransaction();
-
-            try
+            if($this->save())
             {
-                /*
-                 * This transaction has previous history and is being marked sold.
-                 * All we need to do is save it since we've already changed the state.
-                 */
-                if($this->save())
-                {
-                    $this->dbCommitTransaction();
+                $this->dbCommitTransaction();
 
-                    $this->fireEvent('inventory.transaction.sold', array(
-                        'transaction' => $this,
-                    ));
+                $this->fireEvent('inventory.transaction.sold', array(
+                    'transaction' => $this,
+                ));
 
-                    return $this;
-                }
-            } catch(\Exception $e)
-            {
-                $this->dbRollbackTransaction();
+                return $this;
             }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
         }
 
         return false;
@@ -267,6 +264,11 @@ trait InventoryTransactionTrait
             NULL,
             $this::STATE_OPENED,
         ), $this::STATE_COMMERCE_SOLD);
+
+        /*
+         * Mark the current state sold
+         */
+        $this->state = InventoryTransaction::STATE_COMMERCE_SOLD;
 
         $stock = $this->getStockRecord();
 
@@ -420,9 +422,10 @@ trait InventoryTransactionTrait
     {
         /*
          * Only allow returns when the transaction state is
-         * reserved, checkout, or returned partial
+         * sold, reserved, checkout, or returned partial
          */
         $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_SOLD,
             $this::STATE_COMMERCE_RESERVED,
             $this::STATE_COMMERCE_CHECKOUT,
             $this::STATE_COMMERCE_RETURNED_PARTIAL,
@@ -468,22 +471,20 @@ trait InventoryTransactionTrait
     /**
      * Reserves the specified amount of quantity for a reservation for commerce.
      * If backOrder is true then the state will be set to back-order if the specified
-     * quantity is unavailable to be reserved. Otherwise it will throw an exception
+     * quantity is unavailable to be reserved. Otherwise it will throw an exception. If reserved is called
+     * from being checked out we'll make sure we don't take any inventory.
      *
-     * @param $quantity
+     * @param null $quantity
      * @param bool $backOrder
      * @return $this|bool|mixed
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
-    public function reserved($quantity, $backOrder = false)
+    public function reserved($quantity = NULL, $backOrder = false)
     {
         /*
          * Only allow a previous state of null, opened, back ordered, and checkout
-         *
-         * @TODO: Validate against a checkout since when checking out, a quantity is
-         * already taken from the stock, there's no need to take it again
          */
         $this->validatePreviousState(array(
             NULL,
@@ -491,6 +492,8 @@ trait InventoryTransactionTrait
             $this::STATE_COMMERCE_BACK_ORDERED,
             $this::STATE_COMMERCE_CHECKOUT,
         ), $this::STATE_COMMERCE_RESERVED);
+
+        if($this->state === $this::STATE_COMMERCE_CHECKOUT) return $this->reservedFromCheckout();
 
         $stock = $this->getStockRecord();
 
@@ -702,6 +705,33 @@ trait InventoryTransactionTrait
         $this->state = $previousState;
 
         $this->dbStartTransaction();
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Changes the status of the current transaction to reserved, not taking
+     * any stock from the inventory since the checkout would have removed the stock
+     * already.
+     *
+     * @return $this|bool
+     */
+    private function reservedFromCheckout()
+    {
+        $this->state = $this::STATE_COMMERCE_RESERVED;
 
         try
         {

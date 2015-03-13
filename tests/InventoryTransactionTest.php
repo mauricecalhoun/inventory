@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
@@ -18,13 +17,23 @@ class InventoryTransactionTest extends InventoryStockTest
         InventoryTransactionHistory::boot();
     }
 
-    public function testInventoryTransactionSetStateFailure()
+    /**
+     * Returns a new stock transaction for easier testing
+     *
+     * @return mixed
+     */
+    protected function newTransaction()
     {
         $this->testInventoryStockCreation();
 
         $stock = InventoryStock::find(1);
 
-        $transaction = $stock->newTransaction();
+        return $stock->newTransaction();
+    }
+
+    public function testInventoryTransactionSetStateFailure()
+    {
+        $transaction = $this->newTransaction();
 
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
@@ -33,56 +42,8 @@ class InventoryTransactionTest extends InventoryStockTest
 
     public function testInventoryTransactionSetStateSuccess()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
-
-        $transaction = $stock->newTransaction();
+        $transaction = $this->newTransaction();
 
         $transaction->state = InventoryTransaction::STATE_COMMERCE_RESERVED;
-    }
-
-    public function testInventoryTransactionCheckout()
-    {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
-
-        $transaction = $stock->newTransaction();
-
-        DB::shouldReceive('startTransaction')->once();
-
-        DB::shouldReceive('commit')->once();
-
-        $transaction->checkout(5);
-
-        $this->assertEquals(5, $transaction->quantity);
-        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
-    }
-
-    public function testInventoryTransactionCheckoutFailure()
-    {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
-
-        $transaction = $stock->newTransaction();
-
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
-
-        $transaction->checkout(5000);
-    }
-
-    public function testInventoryTransactionQuantityFailure()
-    {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
-
-        $transaction = $stock->newTransaction();
-
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
-
-        $transaction->checkout('30as');
     }
 }
