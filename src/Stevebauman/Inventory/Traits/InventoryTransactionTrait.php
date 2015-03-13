@@ -12,6 +12,14 @@ use Stevebauman\Inventory\Models\InventoryTransaction;
  */
 trait InventoryTransactionTrait
 {
+    /*
+     * Provides user identification
+     */
+    use UserIdentificationTrait;
+
+    /*
+     * Provides database transactions
+     */
     use DatabaseTransactionTrait;
 
     /**
@@ -40,6 +48,8 @@ trait InventoryTransactionTrait
 
         parent::creating(function($model)
         {
+            $model->user_id = $model->getCurrentUserId();
+
             if(!$model->beforeState) $model->beforeState = $model::STATE_OPENED;
         });
 
