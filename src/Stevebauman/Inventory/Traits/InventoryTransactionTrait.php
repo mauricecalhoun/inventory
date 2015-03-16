@@ -651,7 +651,6 @@ trait InventoryTransactionTrait
         $this->validatePreviousState(array(
             NULL,
             $this::STATE_OPENED,
-            $this::STATE_COMMERCE_RESERVED,
         ), $this::STATE_COMMERCE_BACK_ORDERED);
 
         $stock = $this->getStockRecord();
@@ -787,6 +786,8 @@ trait InventoryTransactionTrait
         $received = $this->quantity;
 
         $this->quantity = 0;
+
+        $this->state = $this::STATE_ORDERED_RECEIVED;
 
         $this->dbStartTransaction();
 
