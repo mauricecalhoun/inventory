@@ -1019,13 +1019,37 @@ trait InventoryTransactionTrait
         return false;
     }
 
+    /**
+     * Removes the specified quantity from the stock for the current transaction.
+     *
+     * If the transaction state is current on-hold, and a quantity is given then a partial-remove
+     * will be triggered and the remaining quantity will be on-hold. If no quantity is given, then
+     * this will set the transaction state to removed and the stock will be permanently removed from
+     * the current stock.
+     *
+     * If the transaction state was open or null, and a quantity is given, then the specified quantity
+     * is permanently removed from the stock.
+     *
+     * @param null $quantity
+     * @throws InvalidQuantityException
+     * @throws InvalidTransactionStateException
+     * @throws NotEnoughStockException
+     * @return $this|bool|InventoryTransactionTrait
+     */
     public function remove($quantity = NULL)
     {
-        if($quantity) return $this->releasePartial($quantity);
+        if($quantity) return $this->removePartial($quantity);
 
-        return $this->releaseAll();
+        return $this->removeAll();
     }
 
+    /**
+     * Permanently removes all of the transaction quantity from the stock. Since
+     * the stock was already removed with the on-hold method, the removed state
+     * is an 'end of the line' state, and cannot be recovered or reversed.
+     *
+     * @throws InvalidTransactionStateException
+     */
     public function removeAll()
     {
         /*
@@ -1034,6 +1058,29 @@ trait InventoryTransactionTrait
         $this->validatePreviousState(array(
             $this::STATE_INVENTORY_ON_HOLD,
         ), $this::STATE_INVENTORY_REMOVED);
+
+        $this->state = $this::STATE_INVENTORY_REMOVED;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.removed', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -1128,15 +1175,6 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Opens back up a transaction. This must be used when a transaction already has history since
-     * when a transaction is created it is already marked opened.
-     */
-    public function open()
-    {
-
-    }
-
-    /**
      * Cancels any transaction and returns or removes stock depending on the last state.
      *
      * Transactions with states of opened, checkout, reserved,
@@ -1157,6 +1195,44 @@ trait InventoryTransactionTrait
             $this::STATE_ORDERED_PENDING,
             $this::STATE_INVENTORY_ON_HOLD
         ), $this::STATE_CANCELLED);
+
+        $stock = $this->getStockRecord();
+
+        switch($this->state)
+        {
+            case $this::STATE_COMMERCE_CHECKOUT:
+                $stock->put($this->quantity, 'Checkout transaction cancelled');
+                break;
+            case $this::STATE_COMMERCE_RESERVED:
+                $stock->put($this->quantity, 'Reservation transaction cancelled');
+                break;
+            case $this::STATE_INVENTORY_ON_HOLD:
+                $stock->put($this->quantity, 'On hold transaction was cancelled');
+                break;
+        }
+
+        $this->state = $this::STATE_CANCELLED;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.cancelled', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
