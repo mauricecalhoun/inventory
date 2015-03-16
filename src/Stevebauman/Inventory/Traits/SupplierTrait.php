@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidItemException;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class SupplierTrait

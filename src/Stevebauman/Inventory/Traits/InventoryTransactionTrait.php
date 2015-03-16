@@ -76,6 +76,19 @@ trait InventoryTransactionTrait
     }
 
     /**
+     * Returns all transactions by the specified state
+     *
+     * @param $state
+     * @return mixed
+     */
+    public static function getByState($state)
+    {
+        $instance = new static;
+
+        return $instance->where('state', $state)->get();
+    }
+
+    /**
      * Generates a transaction history record after a transaction has been created
      *
      * @return void
@@ -348,7 +361,7 @@ trait InventoryTransactionTrait
         /*
          * Mark the current state sold
          */
-        $this->state = InventoryTransaction::STATE_COMMERCE_SOLD;
+        $this->state = $this::STATE_COMMERCE_SOLD;
 
         $stock = $this->getStockRecord();
 

@@ -24,9 +24,7 @@ class InventoryTransactionTest extends InventoryStockTest
      */
     protected function newTransaction()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         return $stock->newTransaction();
     }
@@ -45,5 +43,16 @@ class InventoryTransactionTest extends InventoryStockTest
         $transaction = $this->newTransaction();
 
         $transaction->state = InventoryTransaction::STATE_COMMERCE_RESERVED;
+    }
+
+    public function testInventoryTransactionGetByState()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->reserved(2);
+
+        $results = InventoryTransaction::getByState(InventoryTransaction::STATE_COMMERCE_RESERVED);
+
+        $this->assertEquals(1, $results->count());
     }
 }

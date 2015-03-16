@@ -27,51 +27,68 @@ class InventoryTest extends FunctionalTestCase
         Inventory::boot();
     }
 
-    public function testMetricCreation()
+    protected function newInventory()
     {
-        $metric = Metric::create(array(
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        return Inventory::create(array(
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'name' => 'Milk',
+            'description' => 'Delicious Milk',
+        ));
+    }
+
+
+    protected function newMetric()
+    {
+        return Metric::create(array(
             'name' => 'Litres',
             'symbol' => 'L'
         ));
+    }
+
+    protected function newLocation()
+    {
+        return Location::create(array(
+            'name' => 'Warehouse',
+            'belongs_to' => ''
+        ));
+    }
+
+    protected function newCategory()
+    {
+        return Category::create(array(
+            'name' => 'Drinks'
+        ));
+    }
+
+    public function testMetricCreation()
+    {
+        $metric = $this->newMetric();
 
         $this->assertEquals('Litres', $metric->name);
     }
 
     public function testCategoryCreation()
     {
-        $category = Category::create(array(
-            'name' => 'Drinks'
-        ));
+        $category = $this->newCategory();
 
         $this->assertEquals('Drinks', $category->name);
     }
 
     public function testLocationCreation()
     {
-        $location = Location::create(array(
-            'name' => 'Warehouse',
-            'belongs_to' => ''
-        ));
+        $location = $this->newLocation();
 
         $this->assertEquals('Warehouse', $location->name);
     }
 
     public function testInventoryCreation()
     {
-        $this->testMetricCreation();
-
-        $this->testCategoryCreation();
-
-        $metric = Metric::find(1);
-
-        $category = Category::find(1);
-
-        $inventory = Inventory::create(array(
-            'metric_id' => $metric->id,
-            'category_id' => $category->id,
-            'name' => 'Milk',
-            'description' => 'Delicious Milk',
-        ));
+        $inventory = $this->newInventory();
 
         $this->assertEquals(null, $inventory->user_id);
         $this->assertEquals(1, $inventory->category_id);
@@ -80,34 +97,26 @@ class InventoryTest extends FunctionalTestCase
 
     public function testInventoryHasMetric()
     {
-        $this->testInventoryCreation();
-
-        $item = Inventory::find(1);
+        $item = $this->newInventory();
 
         $this->assertTrue($item->hasMetric());
     }
 
     public function testInventoryDoesNotHaveMetric()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
         $metric = Metric::find(1);
         $metric->delete();
-
-        $item = Inventory::find(1);
 
         $this->assertFalse($item->hasMetric());
     }
 
     public function testInventoryCreateStockOnLocation()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
-        $this->testLocationCreation();
-
-        $item = Inventory::find(1);
-
-        $location = Location::find(1);
+        $location = $this->newLocation();
 
         Lang::shouldReceive('get')->once();
 
@@ -120,13 +129,9 @@ class InventoryTest extends FunctionalTestCase
 
     public function testInventoryInvalidQuantityException()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
-        $this->testLocationCreation();
-
-        $item = Inventory::find(1);
-
-        $location = Location::find(1);
+        $location = $this->newLocation();
 
         Lang::shouldReceive('get')->once();
 
@@ -137,16 +142,14 @@ class InventoryTest extends FunctionalTestCase
 
     public function testInventoryHasCategory()
     {
-        $this->testInventoryCreation();
-
-        $item = Inventory::find(1);
+        $item = $this->newInventory();
 
         $this->assertTrue($item->hasCategory());
     }
 
     public function testInventoryDoesNotHaveCategory()
     {
-        $this->testInventoryCreation();
+        $this->newInventory();
 
         $item = Inventory::find(1);
         $item->category_id = NULL;
