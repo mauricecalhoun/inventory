@@ -52,5 +52,7 @@ interface StateableInterface
 
     public function release($quantity = NULL);
 
+    public function remove($quantity = NULL);
+
     public function cancel();
 }

@@ -1019,6 +1019,114 @@ trait InventoryTransactionTrait
         return false;
     }
 
+    public function remove($quantity = NULL)
+    {
+        if($quantity) return $this->releasePartial($quantity);
+
+        return $this->releaseAll();
+    }
+
+    public function removeAll()
+    {
+        /*
+         * Only allow the previous state of on hold
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_INVENTORY_ON_HOLD,
+        ), $this::STATE_INVENTORY_REMOVED);
+    }
+
+    /**
+     *
+     *
+     * @param $quantity
+     * @return $this|bool
+     * @throws InvalidTransactionStateException
+     * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
+     * @throws StockNotFoundException
+     */
+    public function removePartial($quantity)
+    {
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        /*
+         * If a partial remove is called and quantity is given, then we are removing
+         * a partial amount from the on hold transaction. Otherwise we are just processing
+         * a transaction for removing a quantity from the current stock
+         */
+        if($this->isOnHold())
+        {
+            if($quantity == $this->quantity || $quantity > $this->quantity) return $this->removeAll();
+
+            $this->validatePreviousState(array(
+                $this::STATE_INVENTORY_ON_HOLD,
+            ), $this::STATE_INVENTORY_REMOVED_PARTIAL);
+
+            $left = $this->quantity - $quantity;
+
+            $this->quantity = $left;
+
+            $previousState = $this->state;
+
+            $this->state = $this::STATE_INVENTORY_REMOVED_PARTIAL;
+
+            $this->dbStartTransaction();
+
+            try
+            {
+                if($this->save())
+                {
+                    $this->dbCommitTransaction();
+
+                    $this->fireEvent('inventory.transaction.removed-partial', array(
+                        'transaction' => $this,
+                    ));
+
+                    return $this->returnToPreviousState($previousState);
+                }
+            } catch(\Exception $e)
+            {
+                $this->dbRollbackTransaction();
+            }
+        } else
+        {
+            /*
+             * We must be processing a pure removal transaction, make sure
+             * previous state was null or opened
+             */
+            $this->validatePreviousState(array(
+                NULL,
+                $this::STATE_OPENED,
+            ), $this::STATE_INVENTORY_REMOVED);
+
+            $stock->hasEnoughStock($quantity);
+
+            $this->dbStartTransaction();
+
+            try
+            {
+                if($stock->take($quantity) && $this->save())
+                {
+                    $this->dbCommitTransaction();
+
+                    $this->fireEvent('inventory.transaction.removed', array(
+                        'transaction' => $this,
+                    ));
+
+                    return $this;
+                }
+            } catch(\Exception $e)
+            {
+                $this->dbRollbackTransaction();
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Opens back up a transaction. This must be used when a transaction already has history since
      * when a transaction is created it is already marked opened.
