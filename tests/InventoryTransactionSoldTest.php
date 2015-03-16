@@ -14,7 +14,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_SOLD, $transaction->state);
     }
 
-    public function testInventoryTransactionSoldQuantityFailure()
+    public function testInventoryTransactionSoldNotEnoughStockFailure()
     {
         $transaction = $this->newTransaction();
 
@@ -23,7 +23,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
         $transaction->sold(5000);
     }
 
-    public function testInventoryTransactionSoldQuantityFormatFailure()
+    public function testInventoryTransactionSoldInvalidQuantityFailure()
     {
         $transaction = $this->newTransaction();
 
@@ -70,5 +70,33 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RETURNED, $transaction->state);
+    }
+
+    public function testInventoryTransactionSoldAmount()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->soldAmount(5);
+
+        $this->assertEquals(5, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_SOLD, $transaction->state);
+    }
+
+    public function testInventoryTransactionSoldAmountInvalidQuantityFailure()
+    {
+        $transaction = $this->newTransaction();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $transaction->soldAmount('40a');
+    }
+
+    public function testInventoryTransactionSoldAmountNotEnoughStockFailure()
+    {
+        $transaction = $this->newTransaction();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+
+        $transaction->soldAmount(5000);
     }
 }
