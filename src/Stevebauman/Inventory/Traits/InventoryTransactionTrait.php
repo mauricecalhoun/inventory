@@ -892,7 +892,7 @@ trait InventoryTransactionTrait
 
         $stock->isValidQuantity($quantity);
 
-        $stock->hasEnoughStockException($quantity);
+        $stock->hasEnoughStock($quantity);
 
         $this->quantity = $quantity;
 
@@ -1224,6 +1224,7 @@ trait InventoryTransactionTrait
                 break;
         }
 
+        $this->quantity = 0;
         $this->state = $this::STATE_CANCELLED;
 
         $this->dbStartTransaction();
