@@ -23,4 +23,53 @@ class InventoryTransactionCancelledTest extends InventoryTransactionTest
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
     }
+
+    public function testInventoryTransactionCancelAfterCheckout()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->checkout(5)->cancel();
+
+        $this->assertEquals(0, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+    }
+
+    public function testInventoryTransactionCancelAfterBackOrder()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->backOrder(500)->cancel();
+
+        $this->assertEquals(0, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+    }
+
+    public function testInventoryTransactionCancelAfterOrdered()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->ordered(500)->cancel();
+
+        $this->assertEquals(0, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+    }
+
+    public function testInventoryTransactionCancelAfterOpened()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->cancel();
+
+        $this->assertEquals(0, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+    }
+
+    public function testInventoryTransactionCancelAfterCancelFailure()
+    {
+        $transaction = $this->newTransaction();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+
+        $transaction->cancel()->cancel();
+    }
 }

@@ -652,7 +652,7 @@ trait InventoryTransactionTrait
             NULL,
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_RESERVED,
-        ), $this::STATE_COMMERCE_BACK_ORDER);
+        ), $this::STATE_COMMERCE_BACK_ORDERED);
 
         $stock = $this->getStockRecord();
 
@@ -1201,6 +1201,7 @@ trait InventoryTransactionTrait
     public function cancel()
     {
         $this->validatePreviousState(array(
+            NULL,
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_CHECKOUT,
             $this::STATE_COMMERCE_RESERVED,
