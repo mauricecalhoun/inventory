@@ -1075,6 +1075,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_REMOVED;
 
+        $this->quantity = 0;
+
         $this->dbStartTransaction();
 
         try
@@ -1164,6 +1166,10 @@ trait InventoryTransactionTrait
             ), $this::STATE_INVENTORY_REMOVED);
 
             $stock->hasEnoughStock($quantity);
+
+            $this->state = $this::STATE_INVENTORY_REMOVED;
+
+            $this->quantity = $quantity;
 
             $this->dbStartTransaction();
 
@@ -1458,6 +1464,8 @@ trait InventoryTransactionTrait
             self::STATE_INVENTORY_ON_HOLD,
             self::STATE_INVENTORY_RELEASED,
             self::STATE_INVENTORY_RELEASED_PARTIAL,
+            self::STATE_INVENTORY_REMOVED,
+            self::STATE_INVENTORY_REMOVED_PARTIAL,
             self::STATE_CANCELLED,
             self::STATE_OPENED,
         );

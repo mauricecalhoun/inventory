@@ -29,6 +29,17 @@ class InventoryTransactionTest extends InventoryStockTest
         return $stock->newTransaction();
     }
 
+    public function testInventoryTransactionStockNotFoundException()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->stock_id = 15;
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
+
+        $transaction->getStockRecord();
+    }
+
     public function testInventoryTransactionSetStateFailure()
     {
         $transaction = $this->newTransaction();
