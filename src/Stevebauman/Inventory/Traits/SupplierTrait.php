@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Exceptions\InvalidItemException;
 
 /**
