@@ -95,7 +95,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventorySkuRegeneration()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $item = Inventory::find(1);
 
@@ -120,7 +120,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventoryHasSku()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $item = Inventory::find(1);
 
@@ -129,7 +129,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventoryDoesNotHaveSku()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $sku = InventorySku::first();
         $sku->delete();
@@ -141,9 +141,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventorySkuGenerationFalse()
     {
-        $this->testInventoryCreation();
-
-        $item = Inventory::find(1);
+        $item = $this->newInventory();
 
         $item->category_id = NULL;
         $item->save();
