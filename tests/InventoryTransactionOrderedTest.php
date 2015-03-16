@@ -43,4 +43,22 @@ class InventoryTransactionOrderedTest extends InventoryTransactionTest
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_ORDERED_RECEIVED, $transaction->state);
     }
+
+    public function testInventoryTransactionOrderedInvalidQuantityException()
+    {
+        $transaction = $this->newTransaction();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $transaction->ordered('40a');
+    }
+
+    public function testInventoryTransactionOrderedInvalidTransactionStateException()
+    {
+        $transaction = $this->newTransaction();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+
+        $transaction->reserved(5)->ordered(10);
+    }
 }
