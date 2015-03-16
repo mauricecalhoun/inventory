@@ -172,6 +172,28 @@ trait InventoryTransactionTrait
     }
 
     /**
+     * Returns true or false depending if the
+     * current state of the transaction is an order
+     *
+     * @return bool
+     */
+    public function isOrder()
+    {
+        return ($this->state === $this::STATE_ORDERED_PENDING ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is on-hold
+     *
+     * @return bool
+     */
+    public function isOnHold()
+    {
+        return ($this->state === $this::STATE_INVENTORY_ON_HOLD ? true : false);
+    }
+
+    /**
      * Checks out the specified amount of quantity from the stock,
      * waiting to be sold.
      *
@@ -456,7 +478,7 @@ trait InventoryTransactionTrait
                     'transaction' => $this,
                 ));
 
-                return $this->returnedPartialPreviousState($previousState);
+                return $this->returnToPreviousState($previousState);
             }
         } catch(\Exception $e)
         {
@@ -550,7 +572,7 @@ trait InventoryTransactionTrait
             $this::STATE_COMMERCE_CHECKOUT,
         ), $this::STATE_COMMERCE_RESERVED);
 
-        if($this->state === $this::STATE_COMMERCE_CHECKOUT) return $this->reservedFromCheckout();
+        if($this->isCheckout()) return $this->reservedFromCheckout();
 
         $stock = $this->getStockRecord();
 
@@ -608,6 +630,7 @@ trait InventoryTransactionTrait
      * @param $quantity
      * @throws InvalidQuantityException
      * @throws StockIsSufficientException
+     * @throws InvalidTransactionStateException
      * @return mixed
      */
     public function backOrder($quantity)
@@ -668,11 +691,49 @@ trait InventoryTransactionTrait
      * The received or cancel method must be used after this is performed.
      *
      * @param $quantity
+     * @throws InvalidQuantityException
+     * @throws InvalidTransactionStateException
      * @return mixed
      */
     public function ordered($quantity)
     {
+        /*
+         * Only allow previous states of null, opened, and partially received order
+         */
+        $this->validatePreviousState(array(
+            NULL,
+            $this::STATE_OPENED,
+            $this::STATE_ORDERED_RECEIVED_PARTIAL,
+        ), $this::STATE_ORDERED_PENDING);
 
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        $this->quantity = $quantity;
+
+        $this->state = $this::STATE_ORDERED_PENDING;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.ordered', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -686,7 +747,116 @@ trait InventoryTransactionTrait
      */
     public function received($quantity = NULL)
     {
+        if($quantity) return $this->receivedPartial($quantity);
 
+        return $this->receivedAll();
+    }
+
+    /**
+     * Marks an order transaction as received, placing all the quantity from
+     * the transaction into the stock
+     *
+     * @return bool|$this
+     * @throws InvalidTransactionStateException
+     * @throws StockNotFoundException
+     */
+    public function receivedAll()
+    {
+        /*
+         * Only allow the previous state of ordered
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_ORDERED_PENDING,
+        ), $this::STATE_ORDERED_RECEIVED);
+
+        $stock = $this->getStockRecord();
+
+        $received = $this->quantity;
+
+        $this->quantity = 0;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->put($received) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.order-received', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Marks an order transaction as received-partial, placing
+     * the specified quantity into the stock and returning the
+     * transaction to the previous ordered state with the remaining stock
+     * to receive.
+     *
+     * If the quantity specified is greater or equal to the amount
+     * ordered, this will mark the transaction as received all and place the quantity
+     * of the transaction into the stock.
+     *
+     * @param $quantity
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidTransactionStateException
+     * @throws InvalidQuantityException
+     */
+    public function receivedPartial($quantity)
+    {
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->receivedAll();
+
+        /*
+         * Only allow the previous state of ordered
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_ORDERED_PENDING,
+        ), $this::STATE_ORDERED_RECEIVED_PARTIAL);
+
+        /*
+         * Get the left over amount of quantity still to
+         * be received
+         */
+        $left = $this->quantity - $quantity;
+
+        $this->quantity = $left;
+
+        $previousState = $this->state;
+
+        $this->state = $this::STATE_ORDERED_RECEIVED_PARTIAL;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->put($quantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.received.partial');
+
+                return $this->returnToPreviousState($previousState);
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -694,11 +864,47 @@ trait InventoryTransactionTrait
      * the quantity from the stock and hold it inside the transaction until further action is taken.
      *
      * @param $quantity
+     * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
      * @return mixed
      */
     public function hold($quantity)
     {
+        $this->validatePreviousState(array(
+            NULL,
+            $this::STATE_OPENED,
+        ), $this::STATE_INVENTORY_ON_HOLD);
 
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        $stock->hasEnoughStockException($quantity);
+
+        $this->quantity = $quantity;
+
+        $this->state = $this::STATE_INVENTORY_ON_HOLD;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->take($quantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.on-hold', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -708,11 +914,109 @@ trait InventoryTransactionTrait
      * held stock
      *
      * @param $quantity
+     * @throws InvalidTransactionStateException
      * @return mixed
      */
     public function release($quantity = NULL)
     {
+        if($quantity) return $this->releasePartial($quantity);
 
+        return $this->releaseAll();
+    }
+
+    /**
+     * Releases an on-hold inventory transaction, placing all the quantity
+     * in the transaction back into the stock
+     *
+     * @return $this|bool
+     * @throws InvalidTransactionStateException
+     * @throws StockNotFoundException
+     */
+    public function releaseAll()
+    {
+        /*
+         * Only allow the previous state of on-hold
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_INVENTORY_ON_HOLD,
+        ), $this::STATE_INVENTORY_RELEASED);
+
+        $stock = $this->getStockRecord();
+
+        $released = $this->quantity;
+
+        $this->quantity = 0;
+
+        $this->state = $this::STATE_INVENTORY_RELEASED;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->put($released) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.released', array(
+                    'transaction' => $this,
+                ));
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $quantity
+     * @return bool|$this
+     * @throws InvalidTransactionStateException
+     * @throws StockNotFoundException
+     */
+    public function releasePartial($quantity)
+    {
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->releaseAll();
+
+        $this->validatePreviousState(array(
+            $this::STATE_INVENTORY_ON_HOLD,
+        ), $this::STATE_INVENTORY_RELEASED);
+
+        $left = $this->quantity - $quantity;
+
+        $this->quantity = $left;
+
+        $previousState = $this->state;
+
+        $this->state = $this::STATE_INVENTORY_RELEASED_PARTIAL;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($stock->put($quantity) && $this->save())
+            {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.transaction.released-partial', array(
+                    'transaction' => $this,
+                ));
+
+                return $this->returnToPreviousState($previousState);
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
     }
 
     /**
@@ -822,7 +1126,7 @@ trait InventoryTransactionTrait
      * @param $previousState
      * @return $this|bool
      */
-    private function returnedPartialPreviousState($previousState)
+    private function returnToPreviousState($previousState)
     {
         $this->state = $previousState;
 

@@ -27,6 +27,8 @@ interface StateableInterface
     const STATE_INVENTORY_ON_HOLD = 'inventory-on-hold';
     const STATE_INVENTORY_RELEASED = 'inventory-released';
     const STATE_INVENTORY_RELEASED_PARTIAL = 'inventory-released-partial';
+    const STATE_INVENTORY_REMOVED = 'inventory-removed';
+    const STATE_INVENTORY_REMOVED_PARTIAL = 'inventory-removed-partial';
 
     //Global states
     const STATE_CANCELLED = 'cancelled';
