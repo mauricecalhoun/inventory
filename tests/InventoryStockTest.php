@@ -76,6 +76,34 @@ class InventoryStockTest extends InventoryTest
         $this->assertEquals(2, $stock->location_id);
     }
 
+    public function testStockIsValidQuantitySuccess()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        $this->assertTrue($stock->isValidQuantity(500));
+        $this->assertTrue($stock->isValidQuantity(5,000));
+        $this->assertTrue($stock->isValidQuantity('500'));
+        $this->assertTrue($stock->isValidQuantity('500.00'));
+        $this->assertTrue($stock->isValidQuantity('500.0'));
+        $this->assertTrue($stock->isValidQuantity('1.500'));
+        $this->assertTrue($stock->isValidQuantity('15000000'));
+    }
+
+    public function testStockIsValidQuantityFailure()
+    {
+        $this->testInventoryStockCreation();
+
+        $stock = InventoryStock::find(1);
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $stock->isValidQuantity('40a');
+        $stock->isValidQuantity('5,000');
+        $stock->isValidQuantity('5.000.00');
+    }
+
     public function testInvalidMovementException()
     {
         $this->testInventoryStockCreation();

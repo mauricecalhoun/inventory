@@ -49,7 +49,7 @@
 
 ## Description
 
-Inventory is bare-bones inventory solution. It provides the basics of inventory management such as:
+Inventory is bare-bones, fully tested inventory solution. It provides the basics of inventory management such as:
 
 - Inventory item management
 - Inventory stock management

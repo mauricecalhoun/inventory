@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
+use Stevebauman\Inventory\Exceptions\StockIsSufficientException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 
@@ -114,6 +115,61 @@ trait InventoryTransactionTrait
      * @return mixed
      */
     abstract public function histories();
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is a checkout
+     *
+     * @return bool
+     */
+    public function isCheckout()
+    {
+        return ($this->state === $this::STATE_COMMERCE_CHECKOUT ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is reserved
+     *
+     * @return bool
+     */
+    public function isReservation()
+    {
+        return ($this->state === $this::STATE_COMMERCE_RESERVED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is a back order
+     *
+     * @return bool
+     */
+    public function isBackOrder()
+    {
+        return ($this->state === $this::STATE_COMMERCE_BACK_ORDERED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is a return
+     *
+     * @return bool
+     */
+    public function isReturn()
+    {
+        return ($this->state === $this::STATE_COMMERCE_RETURNED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is sold
+     *
+     * @return bool
+     */
+    public function isSold()
+    {
+        return ($this->state === $this::STATE_COMMERCE_SOLD ? true : false);
+    }
 
     /**
      * Checks out the specified amount of quantity from the stock,
@@ -354,16 +410,14 @@ trait InventoryTransactionTrait
          * the quantity inside the transaction,
          * they must be returning all of the stock
          */
-        if($quantity == $this->quantity || $quantity > $this->quantity)
-        {
-            return $this->returnedAll();
-        }
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->returnedAll();
 
         /*
          * Only allow partial returns when the transaction state is
-         * reserved, checkout, or returned partial
+         * sold, reserved, checkout, or returned partial
          */
         $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_SOLD,
             $this::STATE_COMMERCE_RESERVED,
             $this::STATE_COMMERCE_CHECKOUT,
             $this::STATE_COMMERCE_RETURNED_PARTIAL,
@@ -480,6 +534,7 @@ trait InventoryTransactionTrait
      * @param bool $backOrder
      * @return $this|bool|mixed
      * @throws InvalidTransactionStateException
+     * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
@@ -498,6 +553,8 @@ trait InventoryTransactionTrait
         if($this->state === $this::STATE_COMMERCE_CHECKOUT) return $this->reservedFromCheckout();
 
         $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
 
         try
         {
@@ -549,6 +606,8 @@ trait InventoryTransactionTrait
      * being created when unnecessary
      *
      * @param $quantity
+     * @throws InvalidQuantityException
+     * @throws StockIsSufficientException
      * @return mixed
      */
     public function backOrder($quantity)
@@ -558,6 +617,50 @@ trait InventoryTransactionTrait
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_RESERVED,
         ), $this::STATE_COMMERCE_BACK_ORDER);
+
+        $stock = $this->getStockRecord();
+
+        $stock->isValidQuantity($quantity);
+
+        try
+        {
+            /*
+             * This should always throw NotEnoughStockException to be able to
+             * create a back-order transaction
+             */
+            $stock->hasEnoughStock($quantity);
+
+            $message = "Cannot back-order quantity: $quantity. There is sufficient stock to perform this transaction.";
+
+            throw new StockIsSufficientException($message);
+
+        } catch(NotEnoughStockException $e)
+        {
+            $this->dbStartTransaction();
+
+            try
+            {
+                $this->state = $this::STATE_COMMERCE_BACK_ORDERED;
+
+                $this->quantity = $quantity;
+
+                if($this->save())
+                {
+                    $this->dbCommitTransaction();
+
+                    $this->fireEvent('inventory.transaction.back-ordered', array(
+                        'transaction' => $this,
+                    ));
+
+                    return $this;
+                }
+            } catch(\Exception $e)
+            {
+                $this->dbRollbackTransaction();
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -622,13 +725,26 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Cancels any transaction and returns or removes stock depending on the last state
+     * Cancels any transaction and returns or removes stock depending on the last state.
+     *
+     * Transactions with states of opened, checkout, reserved,
+     * back ordered, ordered-pending, and inventory on hold CAN be cancelled
+     *
+     * Transactions with states such as sold, returned, order-received,
+     * and inventory released CAN NOT be cancelled.
      *
      * @return mixed
      */
     public function cancel()
     {
-
+        $this->validatePreviousState(array(
+            $this::STATE_OPENED,
+            $this::STATE_COMMERCE_CHECKOUT,
+            $this::STATE_COMMERCE_RESERVED,
+            $this::STATE_COMMERCE_BACK_ORDERED,
+            $this::STATE_ORDERED_PENDING,
+            $this::STATE_INVENTORY_ON_HOLD
+        ), $this::STATE_CANCELLED);
     }
 
     /**

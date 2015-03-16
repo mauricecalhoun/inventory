@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\DB;
 
 class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 {
-
     public function testInventoryTransactionCheckout()
     {
         $transaction = $this->newTransaction();
@@ -18,6 +17,24 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+    }
+
+    public function testInventoryTransactionIsCheckout()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->checkout(5);
+
+        $this->assertTrue($transaction->isCheckout());
+    }
+
+    public function testInventoryTransactionIsNotCheckout()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->reserved(5);
+
+        $this->assertFalse($transaction->isCheckout());
     }
 
     public function testInventoryTransactionCheckoutFailure()
@@ -150,18 +167,14 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RETURNED, $transaction->state);
     }
 
-    /*
-     * This fails because a partial return is not possible after something has been sold.
-     *
-     * That would be like drinking half of a drink and allowing it to be returned into stock
-     */
-    public function testInventoryTransactionCheckoutSoldAndReturnedPartialFailure()
+    public function testInventoryTransactionCheckoutSoldAndReturnedPartial()
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
-
         $transaction->checkout(5)->reserved()->sold()->returned(3);
+
+        $this->assertEquals(2,$transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_SOLD, $transaction->state);
     }
 
     /**
