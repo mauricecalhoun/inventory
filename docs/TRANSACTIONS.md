@@ -1,8 +1,8 @@
 ## Transactions
 
 In update 1.4.*, inventory transactions were implemented. Transactions are a way of securely managing stock levels, and have
-several different uses depending on the situation. Every transaction automatically creates a history trail, so you're able
-to see the complete history of each transaction.
+several different uses depending on the situation. Every transaction automatically creates a history trail with user accountability, 
+so you're able to see the complete history of each transaction and who performed what for each state change.
 
 ### Creating a transaction
 
@@ -145,3 +145,5 @@ Only transactions that are opened, checked out, reserved, back ordered, ordered,
         
         // Cancel an on-hold transaction, this will return the stock into the inventory
         $transaction->hold(5)->cancel();
+
+A cancelled transaction cannot be reopened to be used for something else. A new transaction must be created.
