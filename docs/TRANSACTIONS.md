@@ -147,3 +147,5 @@ Only transactions that are opened, checked out, reserved, back ordered, ordered,
         $transaction->hold(5)->cancel();
 
 A cancelled transaction cannot be reopened to be used for something else. A new transaction must be created.
+
+### Transaction Method List
