@@ -11,9 +11,13 @@
 ## Index
 
 <ul>
-    <li><a href="#description">Description</a></li>
-    <li><a href="#requirements">Requirements</a></li>
-    <li><a href="#benefits">Benefits</a></li>
+    <li>
+        <a href="#description">Description</a>
+        <ul>
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+        </ul>
+    </li>
     <li>
         <a href="docs/INSTALLATION.md">Installation</a>
         <ul>
