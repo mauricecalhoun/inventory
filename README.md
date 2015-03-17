@@ -24,7 +24,7 @@
             <li><a href="docs/INSTALLATION.md#installation-laravel-4">Laravel 4</a></li>
             <li><a href="docs/INSTALLATION.md#installation-laravel-5">Laravel 5</a></li>
             <li>
-                Customized Install
+                <a href="docs/INSTALLATION.md#customize-installation">Customize Installation</a>
                 <ul>
                     <li><a href="docs/INSTALLATION.md#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
                     <li><a href="docs/INSTALLATION.md#i-want-to-customize-my-models">I need to customize my models</a></li>

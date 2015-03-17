@@ -1,4 +1,6 @@
-## Installation (Laravel 4)
+## Installation
+
+### Installation (Laravel 4)
 
 Add inventory to your `composer.json` file:
 
@@ -26,7 +28,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
     
     php artisan config:publish stevebauman/inventory
     
-## Installation (Laravel 5)
+### Installation (Laravel 5)
 
 Include in your `composer.json` file:
 
@@ -49,6 +51,8 @@ And then run the migrations:
 Or use the inventory install command:
 
     php artisan inventory:install
+
+## Customize Installation
 
 ### I don't need to customize my models
 
