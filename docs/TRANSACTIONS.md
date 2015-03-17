@@ -1,7 +1,8 @@
 ## Transactions
 
 In update 1.4.*, inventory transactions were implemented. Transactions are a way of securely managing stock levels, and have
-several different uses depending on the situation.
+several different uses depending on the situation. Every transaction automatically creates a history trail, so you're able
+to see the complete history of each transaction.
 
 ### Creating a transaction
 
@@ -11,7 +12,7 @@ To create a new transaction, all you need is the inventory stock record,and then
     
     $transaction = $stock->newTransaction();
     
-Transactions are never saved unless you specifically call for it (using the typical `save()` method), or perform a transaction method.
+Transactions are never saved unless you call a transaction method, or specifically call for it (using the typical eloquent `save()` method).
 
 ### Commerce Transactions
 
@@ -28,10 +29,10 @@ This will remove 5 drinks from the stock so it is reserved for the user. The qua
 
 So the user has now reserved 5 drinks. Now they would like to purchase it. This is easy to do with a transaction:
 
+    //For tracking a user placing it inside their checkout
     $transaction->checkout()->sold();
     
-    //Or
-    
+    //Or just mark it as sold
     $transaction->sold();
 
 ### Inventory Management Transactions
