@@ -76,7 +76,7 @@ during a inventory change, it will be rolled back automatically.
 Depending on your needs, you may use the built in traits for customizing and creating your own models, or
 you can simply use the built in models.
 
-## Requirements
+### Requirements
 
 - Laravel 4.* | 5.*
 - Laravel's Auth, Sentry or Sentinel if you need automatic accountability
@@ -85,7 +85,7 @@ Recommended:
 
 - Venturecraft/Revisionable (For tracking Category and Location changes to stocks)
 
-## Benefits
+### Benefits
 
 If you're using the traits from this package to customize your install, that means you have complete flexibility over your own
 models, methods (excluding relationship names/type), database tables, property names, and attributes. You can set your
