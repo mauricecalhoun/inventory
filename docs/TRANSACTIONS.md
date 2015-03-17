@@ -79,3 +79,69 @@ If you insert a quantity greater or equal to the amount inside the order, it wil
         
 It doesn't matter how much you've placed inside the received function because you've only ordered 5, therefore you will only
 received a maximum of 5 inside your stock.
+
+#### Holding / Removing / Releasing Stock
+
+If a certain amount of stock needs to be held for something (an example might be a certain amount of nuts and bolts for a maintenance job), then this
+is easily possible using the transaction method `hold($quantity)`:
+
+    $stock = InventoryStock::find(1);
+            
+    $transaction = $stock->newTransaction();
+    
+    $transaction->hold(20);
+
+When we perform a hold, it removes the quantity from the stock, and inserts it into the transaction. Once we perform a hold,
+we have access to do certain things with it:
+
+We can release a certain amount of quantity, which will return the amount of quantity specified back into the stock, and then
+return the transaction back into a 'hold' state, with the remainder of the stock.
+
+    $transaction->release(5);
+    echo $transaction->quantity; //Returns 15
+
+Using the method `release()` without specifying a quantity will release all of the quantity on the transaction and insert
+it back into the stock.
+
+    $transaction->release();
+    echo $transaction->quantity; //Returns 0
+    
+    //Or
+    $transaction->releaseAll();
+
+If the held quantity was used, we can use the `remove($quantity)` method to permanently remove the stock:
+
+    $transaction->remove(5);
+    echo $transaction->quantity; //Returns 15
+    
+Or if we used all of the stock, we can use the `remove()` method without specifying a quantity:
+
+    $transaction->remove();
+    echo $transaction->quantity; //Returns 0
+    
+    //Or
+    $transaction->removeAll();
+    
+If the quantity in either methods (`release($quantity)` or `remove($quantity)`) exceed the amount of quantity inside the
+transaction, this will just perform a total `releaseAll()`, or `removeAll()`. No extra stock will be removed/released.
+    
+#### Cancelling a transaction
+
+Only transactions that are opened, checked out, reserved, back ordered, ordered, and on-hold can be cancelled. Here's an example:
+
+        $transaction = $stock->newTransaction();
+        
+        // Cancel an open transaction
+        $transaction->cancel();
+        
+        // Cancel a checked out transaction, this will return the stock into the inventory
+        $transaction->checkout(5)->cancel();
+        
+        // Cancel a reserved transaction, this will return the stock into the inventory
+        $transaction->reserved(5)->cancel();
+        
+        // Cancel an ordered transaction
+        $transaction->ordered(5)->cancel();
+        
+        // Cancel an on-hold transaction, this will return the stock into the inventory
+        $transaction->hold(5)->cancel();
