@@ -6,7 +6,7 @@ so you're able to see the complete history of each transaction and who performed
 
 ### Creating a transaction
 
-To create a new transaction, all you need is the inventory stock record,and then call `newTransaction()` on the model record:
+To create a new transaction, all you need is the inventory stock record, and then call `newTransaction()` on the model record:
 
     $stock = InventoryStock::find(1);
     
