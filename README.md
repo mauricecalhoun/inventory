@@ -38,6 +38,7 @@
             <li><a href="docs/UPDATES.md#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
             <li><a href="docs/UPDATES.md#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
             <li><a href="docs/UPDATES.md#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
+            <li><a href="docs/UPDATES.md#updating-from-13-to-14">Updating from 1.3.* to 1.4.*</a></li>
             <li><a href="docs/UPDATES.md#upcoming-updates">Upcoming Updates</a></li>
         </ul>
     </li>
@@ -59,7 +60,7 @@
 
 ## Description
 
-Inventory is bare-bones, fully tested inventory solution. It provides the basics of inventory management such as:
+Inventory is a fully tested Laravel inventory solution. It provides the basics of inventory management using Eloquent such as:
 
 - Inventory item management
 - Inventory stock management
@@ -91,4 +92,3 @@ models, methods (excluding relationship names/type), database tables, property n
 own base model, and if you don't like the way a method is performed just override it.
 
 Sit back and relax, it's nice to have control.
-

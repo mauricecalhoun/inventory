@@ -227,7 +227,7 @@ trait InventoryTransactionTrait
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      * @throws StockNotFoundException
      */
-    public function checkout($quantity = NULL, $backOrder = false)
+    public function checkout($quantity = NULL)
     {
         /*
          * Only allow a transaction that has a previous state of null, opened and reserved
@@ -706,6 +706,55 @@ trait InventoryTransactionTrait
                 $this->dbRollbackTransaction();
             }
         }
+
+        return false;
+    }
+
+    /**
+     * Fills a back order by trying to remove the transaction quantity
+     * from the stock. This will return false if there was not enough stock
+     * to fill the back order, or an exception occurred.
+     *
+     * @return $this|bool
+     * @throws InvalidTransactionStateException
+     * @throws StockNotFoundException
+     */
+    public function fillBackOrder()
+    {
+        /*
+         * Only allow a previous state of back-ordered
+         */
+        $this->validatePreviousState(array(
+            $this::STATE_COMMERCE_BACK_ORDERED,
+        ), $this::STATE_COMMERCE_BACK_ORDER_FILLED);
+
+        $stock = $this->getStockRecord();
+
+        $this->state = $this::STATE_COMMERCE_BACK_ORDER_FILLED;
+
+        $this->dbStartTransaction();
+
+        try
+        {
+            $stock->hasEnoughStock($this->quantity);
+
+            try
+            {
+                $reason = "Back order filled for transaction ID: $this->id";
+
+                if($stock->take($this->quantity, $reason) && $this->save())
+                {
+                    $this->dbCommitTransaction();
+
+                    $this->fireEvent('inventory.transaction.back-order.filled');
+
+                    return $this;
+                }
+            } catch(\Exception $e)
+            {
+                $this->dbRollbackTransaction();
+            }
+        } catch(NotEnoughStockException $e) {}
 
         return false;
     }
@@ -1496,6 +1545,7 @@ trait InventoryTransactionTrait
             self::STATE_COMMERCE_RETURNED_PARTIAL,
             self::STATE_COMMERCE_RESERVED,
             self::STATE_COMMERCE_BACK_ORDERED,
+            self::STATE_COMMERCE_BACK_ORDER_FILLED,
             self::STATE_ORDERED_PENDING,
             self::STATE_ORDERED_RECEIVED,
             self::STATE_ORDERED_RECEIVED_PARTIAL,

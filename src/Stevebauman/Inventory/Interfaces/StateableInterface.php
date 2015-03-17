@@ -17,6 +17,7 @@ interface StateableInterface
     const STATE_COMMERCE_RETURNED_PARTIAL = 'commerce-returned-partial';
     const STATE_COMMERCE_RESERVED = 'commerce-reserved';
     const STATE_COMMERCE_BACK_ORDERED = 'commerce-back-ordered';
+    const STATE_COMMERCE_BACK_ORDER_FILLED = 'commerce-back-order-filled';
 
     //Inventory Order states
     const STATE_ORDERED_PENDING = 'order-on-order';
@@ -34,7 +35,7 @@ interface StateableInterface
     const STATE_CANCELLED = 'cancelled';
     const STATE_OPENED = 'opened';
 
-    public function checkout($quantity = NULL, $backOrder = false);
+    public function checkout($quantity = NULL);
 
     public function sold($quantity = NULL);
 

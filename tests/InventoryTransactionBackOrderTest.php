@@ -14,6 +14,22 @@ class InventoryTransactionBackOrderTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_BACK_ORDERED, $transaction->state);
     }
 
+    public function testInventoryTransactionBackOrderFilled()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->backOrder(25);
+
+        $stock = $transaction->getStockRecord();
+
+        $stock->put(5);
+
+        $transaction->fillBackOrder();
+
+        $this->assertEquals(25, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_BACK_ORDER_FILLED, $transaction->state);
+    }
+
     public function testInventoryTransactionBackOrderSufficientStockException()
     {
         $transaction = $this->newTransaction();
