@@ -96,6 +96,45 @@ Then run the migration using:
 
     php artisan migrate
 
+### Updating from 1.3.* to 1.4.*
+
+1.4.* beings inventory transactions. This offers a large amount of useful functionality for managing your inventory
+effectively.
+
+If you're using the prebuilt models, you won't have to do anything besides run the new migration using the command:
+
+    php artisan inventory:run-migrations
+   
+However if you've created/customized your own models, you'll have to follow the installation process and create the new `InventoryTransaction`
+and `InventoryTransactionHistory` models shown <a href="docs/INSTALLATION.md#i-want-to-customize-my-models">here</a>.
+
+Then, if you haven't customized the database tables you'll have to run the migrations using:
+
+    php artisan inventory:run-migrations
+    
+If you have customized the included migrations, you'll have to publish the new ones using:
+
+##### Laravel 4:
+
+    php artisan migrate:publish --package="stevebauman/inventory"
+
+##### Laravel 5:
+
+    php artisan vendor:publish
+    
+Then run the migration using:
+
+    php artisan migrate
+    
+On your `InventoryStock` model, you'll have to add another `hasMany` relationship named `transactions()` shown here:
+
+    public function transactions()
+    {
+        return $this->hasMany('InventoryTransaction', 'stock_id', 'id');
+    }
+
+Now you're good to go to use the new update!
+
 ### Upcoming Updates
 
 `1.4.*` will bring Inventory Transactions. Transactions will allow you to reserve, hold, checkout, sell, order, and do many other

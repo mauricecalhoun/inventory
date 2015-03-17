@@ -212,6 +212,11 @@ InventoryStock:
             return $this->hasMany('InventoryStockMovement', 'stock_id');
         }
         
+        public function transactions()
+        {
+            return $this->hasMany('InventoryTransaction', 'stock_id', 'id');
+        }
+        
         public function location()
         {
             return $this->hasOne('Location', 'id', 'location_id');
@@ -241,4 +246,50 @@ InventoryStockMovement:
         {
             return $this->belongsTo('InventoryStock', 'stock_id', 'id');
         }
+    }
+    
+InventoryTransaction:
+    
+    use Stevebauman\Inventory\Traits\InventoryTransactionTrait;
+    use Stevebauman\Inventory\Interfaces\StateableInterface;
+    
+    class InventoryTransaction extends BaseModel implements StateableInterface
+    {
+        use InventoryTransactionTrait;
+    
+        protected $table = 'inventory_transactions';
+    
+        protected $fillable = array(
+            'user_id',
+            'stock_id',
+            'name',
+            'state',
+            'quantity',
+        );
+    
+        public function stock()
+        {
+            return $this->belongsTo('InventoryStock', 'stock_id', 'id');
+        }
+
+        public function histories()
+        {
+            return $this->hasMany('InventoryTransactionHistory', 'transaction_id', 'id');
+        }
+    }
+    
+InventoryTransactionHistory:
+
+    class InventoryTransactionHistory extends BaseModel
+    {
+        protected $table = 'inventory_transaction_histories';
+    
+        protected $fillable = array(
+            'user_id',
+            'transaction_id',
+            'state_before',
+            'state_after',
+            'quantity_before',
+            'quantity_after',
+        );
     }
