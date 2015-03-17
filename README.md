@@ -15,26 +15,26 @@
     <li><a href="#requirements">Requirements</a></li>
     <li><a href="#benefits">Benefits</a></li>
     <li>
-        Installation
+        <a href="docs/INSTALLATION.md">Installation</a>
         <ul>
             <li><a href="docs/INSTALLATION.md#installation-laravel-4">Laravel 4</a></li>
             <li><a href="docs/INSTALLATION.md#installation-laravel-5">Laravel 5</a></li>
+            <li>
+                Customized Install
+                <ul>
+                    <li><a href="docs/INSTALLATION.md#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
+                    <li><a href="docs/INSTALLATION.md#i-want-to-customize-my-models">I need to customize my models</a></li>
+                </ul>
+            </li>
         </ul>
     </li>
     <li>
-            Updates
-            <ul>
-                <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
-                <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
-                <li><a href="#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
-                <li><a href="#upcoming-updates">Upcoming Updates</a></li>
-            </ul>
-    </li>
-    <li>
-        Customization
+        Updates
         <ul>
-            <li><a href="#i-dont-need-to-customize-my-models">I don't need to customize my models</a></li>
-            <li><a href="#i-want-to-customize-my-models">I need to customize my models</a></li>
+            <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
+            <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
+            <li><a href="#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
+            <li><a href="#upcoming-updates">Upcoming Updates</a></li>
         </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
