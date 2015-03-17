@@ -29,22 +29,28 @@
         </ul>
     </li>
     <li>
-        Updates
+        <a href="docs/UPDATES.md">Updates</a>
         <ul>
-            <li><a href="#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
-            <li><a href="#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
-            <li><a href="#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
-            <li><a href="#upcoming-updates">Upcoming Updates</a></li>
+            <li><a href="docs/UPDATES.md#updating-from-10-to-11">Updating from 1.0.* to 1.1.*</a></li>
+            <li><a href="docs/UPDATES.md#updating-from-11-to-12">Updating from 1.1.* to 1.2.*</a></li>
+            <li><a href="docs/UPDATES.md#updating-from-12-to-13">Updating from 1.2.* to 1.3.*</a></li>
+            <li><a href="docs/UPDATES.md#upcoming-updates">Upcoming Updates</a></li>
         </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#asking-questions">Asking Questions</a></li>
-    <li><a href="#sku-generation">SKU Generation</a></li>
-    <li><a href="#suppliers">Suppliers</a></li>
-    <li><a href="#exceptions">Exceptions</a></li>
-    <li><a href="#events">Events</a></li>
-    <li><a href="#auth-integration">Auth Integration</a></li>
-    <li><a href="#misc-functions-and-uses">Misc Functions and Uses</a></li>
+    <li>
+        <a href="docs/USAGE.md">Usage</a>
+        <ul>
+            <li><a href="docs/USAGE.md#asking-questions">Asking Questions</a></li>
+            <li><a href="docs/USAGE.md#sku-generation">SKU Generation</a></li>
+            <li><a href="docs/USAGE.md#suppliers">Suppliers</a></li>
+            <li><a href="docs/USAGE.md#exceptions">Exceptions</a></li>
+            <li><a href="docs/USAGE.md#auth-integration">Auth Integration</a></li>
+            <li><a href="docs/USAGE.md#misc-functions-and-uses">Misc Functions and Uses</a></li>
+        </ul>
+    </li>
+    <li><a href="docs/TRANSACTIONS.md#events">Transactions</a></li>
+    <li><a href="docs/EVENTS.md#events">Events</a></li>
+    
 </ul>
 
 ## Description
