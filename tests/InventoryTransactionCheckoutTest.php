@@ -191,4 +191,14 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 
         $transaction->checkout(5)->reserved()->sold()->returned()->reserved();
     }
+
+    public function testInventoryTransactionCheckoutReserved()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->reserved(5)->checkout();
+
+        $this->assertEquals(5, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+    }
 }

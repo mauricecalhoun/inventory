@@ -22,6 +22,10 @@ class InventoryTransactionCancelledTest extends InventoryTransactionTest
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals(20, $stock->quantity);
     }
 
     public function testInventoryTransactionCancelAfterCheckout()
@@ -32,6 +36,10 @@ class InventoryTransactionCancelledTest extends InventoryTransactionTest
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_CANCELLED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals(20, $stock->quantity);
     }
 
     public function testInventoryTransactionCancelAfterBackOrder()

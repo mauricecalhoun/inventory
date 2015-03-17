@@ -186,6 +186,17 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
+     * current state of the transaction is cancelled
+     *
+     * @return bool
+     */
+    public function isCancelled()
+    {
+        return ($this->state === $this::STATE_CANCELLED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
      * current state of the transaction is an order
      *
      * @return bool
@@ -218,16 +229,17 @@ trait InventoryTransactionTrait
      */
     public function checkout($quantity = NULL, $backOrder = false)
     {
-        //TODO when quantity is null we are checking out from a reservation
-        //TODO when quantity is set and backOrder is true then we are creating a back order if quantity is insufficient
         /*
-         * Only a transaction that has a previous state of opened or null
-         * is allowed to use the checkout function
+         * Only allow a transaction that has a previous state of null, opened and reserved
+         * to use the checkout function
          */
         $this->validatePreviousState(array(
             NULL,
             $this::STATE_OPENED,
+            $this::STATE_COMMERCE_RESERVED,
         ), $this::STATE_COMMERCE_CHECKOUT);
+
+        if($this->isReservation()) return $this->checkoutFromReserved();
 
         /*
          * Get the stock record
@@ -1355,15 +1367,41 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Changes the status of the current transaction to reserved, not taking
-     * any stock from the inventory since the checkout would have removed the stock
-     * already.
+     * Changes the state of the current transaction to reserved. This
+     * will not take any stock from the inventory since a checkout already
+     * does this.
      *
      * @return $this|bool
      */
     private function reservedFromCheckout()
     {
         $this->state = $this::STATE_COMMERCE_RESERVED;
+
+        try
+        {
+            if($this->save())
+            {
+                $this->dbCommitTransaction();
+
+                return $this;
+            }
+        } catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Changes the state of the current transaction to checkout. This will not
+     * take any stock from the inventory since a reservation already does this.
+     *
+     * @return $this|bool
+     */
+    private function checkoutFromReserved()
+    {
+        $this->state = $this::STATE_COMMERCE_CHECKOUT;
 
         try
         {
