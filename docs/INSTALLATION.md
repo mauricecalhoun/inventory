@@ -284,8 +284,12 @@ InventoryTransaction:
     
 InventoryTransactionHistory:
 
+    use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
+    
     class InventoryTransactionHistory extends BaseModel
     {
+        use InventoryTransactionHistoryTrait;
+        
         protected $table = 'inventory_transaction_histories';
     
         protected $fillable = array(
@@ -296,4 +300,9 @@ InventoryTransactionHistory:
             'quantity_before',
             'quantity_after',
         );
+    
+        public function transaction()
+        {
+            return $this->belongsTo('InventoryTransaction', 'transaction_id', 'id');
+        }
     }
