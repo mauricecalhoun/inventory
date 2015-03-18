@@ -728,7 +728,7 @@ trait InventoryTransactionTrait
                 {
                     $this->dbCommitTransaction();
 
-                    $this->fireEvent('inventory.transaction.back-ordered', array(
+                    $this->fireEvent('inventory.transaction.back-order', array(
                         'transaction' => $this,
                     ));
 
@@ -891,7 +891,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.transaction.order-received', array(
+                $this->fireEvent('inventory.transaction.received', array(
                     'transaction' => $this,
                 ));
 
@@ -1001,7 +1001,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.transaction.on-hold', array(
+                $this->fireEvent('inventory.transaction.hold', array(
                     'transaction' => $this,
                 ));
 
@@ -1113,7 +1113,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.transaction.released-partial', array(
+                $this->fireEvent('inventory.transaction.released.partial', array(
                     'transaction' => $this,
                 ));
 
@@ -1238,7 +1238,7 @@ trait InventoryTransactionTrait
                 {
                     $this->dbCommitTransaction();
 
-                    $this->fireEvent('inventory.transaction.removed-partial', array(
+                    $this->fireEvent('inventory.transaction.removed.partial', array(
                         'transaction' => $this,
                     ));
 

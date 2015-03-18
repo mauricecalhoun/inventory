@@ -137,4 +137,8 @@ Now you're good to go to use the new update!
 
 ### Upcoming Updates
 
-`1.5.*` will bring Inventory Assemblies. More information coming on this when it's in development after `1.4.*`.
+`1.5.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may
+also be assemblies. This will allow the generation of a 'bill of materials' list for an assembly, and many more useful
+functions.
+
+`1.6.*` will bring Inventory Kits. More on this update once `1.5.*` is released.

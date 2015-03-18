@@ -162,22 +162,22 @@ transaction, this will just perform a total `releaseAll()`, or `removeAll()`. No
 
 Only transactions that are opened, checked out, reserved, back ordered, ordered, and on-hold can be cancelled. Here's an example:
 
-        $transaction = $stock->newTransaction();
-        
-        // Cancel an open transaction
-        $transaction->cancel();
-        
-        // Cancel a checked out transaction, this will return the stock into the inventory
-        $transaction->checkout(5)->cancel();
-        
-        // Cancel a reserved transaction, this will return the stock into the inventory
-        $transaction->reserved(5)->cancel();
-        
-        // Cancel an ordered transaction
-        $transaction->ordered(5)->cancel();
-        
-        // Cancel an on-hold transaction, this will return the stock into the inventory
-        $transaction->hold(5)->cancel();
+    $transaction = $stock->newTransaction();
+    
+    // Cancel an open transaction
+    $transaction->cancel();
+    
+    // Cancel a checked out transaction, this will return the stock into the inventory
+    $transaction->checkout(5)->cancel();
+    
+    // Cancel a reserved transaction, this will return the stock into the inventory
+    $transaction->reserved(5)->cancel();
+    
+    // Cancel an ordered transaction
+    $transaction->ordered(5)->cancel();
+    
+    // Cancel an on-hold transaction, this will return the stock into the inventory
+    $transaction->hold(5)->cancel();
 
 A cancelled transaction cannot be reopened to be used for something else. A new transaction must be created.
 
@@ -267,6 +267,13 @@ These are easy to guard against however, you can just place the transaction meth
         return "There wasn't enough stock to reserve: $quantity";
     }
 
+States can be set manually, however it's definitely not recommended. Setting a state manually may throw an
+`Stevebauman\Inventory\Exceptions\InvalidTransactionStateException`, if the state is not one of the constants
+shown above. For example:
+
+    // This will fail
+    $transaction->state = 'custom state';
+
 ### Transaction Method List
 
 #### Generic method list
@@ -302,8 +309,6 @@ These are easy to guard against however, you can just place the transaction meth
     public function sold($quantity = NULL);
     
     public function soldAmount($quantity);
-    
-    public function soldAll();
     
     public function returned($quantity = NULL);
     

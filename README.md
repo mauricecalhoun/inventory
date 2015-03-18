@@ -48,14 +48,13 @@
             <li><a href="docs/USAGE.md#asking-questions">Asking Questions</a></li>
             <li><a href="docs/USAGE.md#sku-generation">SKU Generation</a></li>
             <li><a href="docs/USAGE.md#suppliers">Suppliers</a></li>
+            <li><a href="docs/TRANSACTIONS.md#events">Transactions</a></li>
+            <li><a href="docs/EVENTS.md#events">Events</a></li>
             <li><a href="docs/USAGE.md#exceptions">Exceptions</a></li>
             <li><a href="docs/USAGE.md#auth-integration">Auth Integration</a></li>
             <li><a href="docs/USAGE.md#misc-functions-and-uses">Misc Functions and Uses</a></li>
         </ul>
     </li>
-    <li><a href="docs/TRANSACTIONS.md#events">Transactions</a></li>
-    <li><a href="docs/EVENTS.md#events">Events</a></li>
-    
 </ul>
 
 ## Description
