@@ -274,6 +274,21 @@ shown above. For example:
     // This will fail
     $transaction->state = 'custom state';
 
+Transaction methods cannot be called twice on each-other, for example:
+
+    // Throws InvalidTransactionStateException
+    $transaction->cancel()->cancel();
+    $transaction->hold(10)->hold(10);
+    
+    //etc.
+    
+To prevent this, use the method questions on the transaction, for example:
+
+    if( ! $transaction->isCancelled())
+    {
+        $transaction->cancel();
+    }
+ 
 ### Transaction Method List
 
 #### Generic method list
