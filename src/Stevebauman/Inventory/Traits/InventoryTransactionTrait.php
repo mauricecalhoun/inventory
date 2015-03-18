@@ -208,6 +208,17 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
+     * current state of the transaction is a received order
+     *
+     * @return bool
+     */
+    public function isOrderReceived()
+    {
+        return ($this->state === $this::STATE_ORDERED_RECEIVED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
      * current state of the transaction is on-hold
      *
      * @return bool
@@ -215,6 +226,28 @@ trait InventoryTransactionTrait
     public function isOnHold()
     {
         return ($this->state === $this::STATE_INVENTORY_ON_HOLD ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is released inventory
+     *
+     * @return bool
+     */
+    public function isReleased()
+    {
+        return ($this->state === $this::STATE_INVENTORY_RELEASED ? true : false);
+    }
+
+    /**
+     * Returns true or false depending if the
+     * current state of the transaction is removed inventory
+     *
+     * @return bool
+     */
+    public function isRemoved()
+    {
+        return ($this->state === $this::STATE_INVENTORY_REMOVED ? true : false);
     }
 
     /**

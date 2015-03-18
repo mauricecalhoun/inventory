@@ -137,9 +137,4 @@ Now you're good to go to use the new update!
 
 ### Upcoming Updates
 
-`1.4.*` will bring Inventory Transactions. Transactions will allow you to reserve, hold, checkout, sell, order, and do many other
-useful things easily with your inventory. Most importantly it will allow you to track the history of each transaction, and who
-triggered it (if enabled). Upgrading will just be running or publishing another migration (depending on your setup), 
-and you will need to add a couple of relationship methods on your current models.
-
 `1.5.*` will bring Inventory Assemblies. More information coming on this when it's in development after `1.4.*`.

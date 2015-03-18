@@ -24,6 +24,10 @@ a certain amount of stock is reserved for a user who requests it. For example, i
     $transaction = $stock->newTransaction();
     
     $transaction->reserved(5);
+    
+    echo $transaction->state; //Returns 'commerce-reserved'
+    
+    $transaction->isReserved(); // Returns true
 
 This will remove 5 drinks from the stock so it is reserved for the user. The quantity is then stored inside the transaction.
 
@@ -34,6 +38,10 @@ So the user has now reserved 5 drinks. Now they would like to purchase it. This 
     
     //Or just mark it as sold
     $transaction->sold();
+    
+    echo $transaction->state; //Returns 'commerce-sold'
+        
+    $transaction->isSold(); // Returns true
 
 ### Inventory Management Transactions
 
@@ -51,6 +59,10 @@ If you've placed an order for more stock on a particular item, a typical order t
     $transaction = $stock->newTransaction();
     
     $transaction->ordered(5);
+    
+    echo $transaction->state; //Returns 'order-on-order'
+            
+    $transaction->isOrder(); // Returns true
     
 This would place the quantity inside the transaction. Once you've received the order, you can then call the received method
 on the transaction:
@@ -76,6 +88,10 @@ If you insert a quantity greater or equal to the amount inside the order, it wil
     $transaction->ordered(5);
     
     $transaction->received(5000);
+    
+    echo $transaction->state; //Returns 'order-received'
+            
+    $transaction->isOrderReceived(); // Returns true
         
 It doesn't matter how much you've placed inside the received function because you've only ordered 5, therefore you will only
 received a maximum of 5 inside your stock.
@@ -90,6 +106,10 @@ is easily possible using the transaction method `hold($quantity)`:
     $transaction = $stock->newTransaction();
     
     $transaction->hold(20);
+    
+    echo $transaction->state; //Returns 'inventory-on-hold'
+            
+    $transaction->isOnHold(); // Returns true
 
 When we perform a hold, it removes the quantity from the stock, and inserts it into the transaction. Once we perform a hold,
 we have access to do certain things with it:
@@ -108,11 +128,20 @@ it back into the stock.
     
     //Or
     $transaction->releaseAll();
+    
+    echo $transaction->state; //Returns 'inventory-released'
+            
+    $transaction->isReleased(); // Returns true
 
 If the held quantity was used, we can use the `remove($quantity)` method to permanently remove the stock:
 
     $transaction->remove(5);
+    
     echo $transaction->quantity; //Returns 15
+    
+    echo $transaction->state; //Returns 'inventory-on-hold'
+            
+    $transaction->isOnHold(); // Returns true
     
 Or if we used all of the stock, we can use the `remove()` method without specifying a quantity:
 
@@ -121,6 +150,10 @@ Or if we used all of the stock, we can use the `remove()` method without specify
     
     //Or
     $transaction->removeAll();
+    
+    echo $transaction->state; //Returns 'inventory-removed'
+            
+    $transaction->isRemoved(); // Returns true
     
 If the quantity in either methods (`release($quantity)` or `remove($quantity)`) exceed the amount of quantity inside the
 transaction, this will just perform a total `releaseAll()`, or `removeAll()`. No extra stock will be removed/released.
@@ -168,6 +201,7 @@ You also <b>can not</b> mix inventory orders with inventory holds/releasing/remo
 
 Transactions must be kept within their 'scope of use', and a new transaction must be created if a new operation
 needs to take place.
+
 
 ### Transaction Method List
 
