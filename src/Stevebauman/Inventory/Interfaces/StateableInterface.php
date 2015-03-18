@@ -39,21 +39,41 @@ interface StateableInterface
 
     public function sold($quantity = NULL);
 
+    public function soldAmount($quantity);
+
     public function returned($quantity = NULL);
+
+    public function returnedPartial($quantity);
+
+    public function returnedAll();
 
     public function reserved($quantity = NULL, $backOrder = false);
 
     public function backOrder($quantity);
 
+    public function fillBackOrder();
+
     public function ordered($quantity);
 
     public function received($quantity = NULL);
+
+    public function receivedPartial($quantity);
+
+    public function receivedAll();
 
     public function hold($quantity);
 
     public function release($quantity = NULL);
 
+    public function releasePartial($quantity);
+
+    public function releaseAll();
+
     public function remove($quantity = NULL);
+
+    public function removePartial($quantity);
+
+    public function removeAll();
 
     public function cancel();
 }
