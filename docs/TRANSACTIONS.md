@@ -181,6 +181,35 @@ Only transactions that are opened, checked out, reserved, back ordered, ordered,
 
 A cancelled transaction cannot be reopened to be used for something else. A new transaction must be created.
 
+### Retrieving transactions based on state
+
+If you'd like to get all inventory transactions based on their state, this can be easily performed like so:
+
+    $transactions = InventoryTransaction::getByState($state);
+
+All states are defined as `const` on the `InventoryTransactionTrait` which is placed on your `InventoryTransaction` model.
+These constants can therefore be accessed easily like so:
+
+    $state = InventoryTransaction::STATE_COMMERCE_CHECKOUT;
+    $state = InventoryTransaction::STATE_COMMERCE_SOLD;
+    $state = InventoryTransaction::STATE_COMMERCE_RETURNED;
+    $state = InventoryTransaction::STATE_COMMERCE_RETURNED_PARTIAL;
+    $state = InventoryTransaction::STATE_COMMERCE_RESERVED;
+    $state = InventoryTransaction::STATE_COMMERCE_BACK_ORDERED;
+    $state = InventoryTransaction::STATE_COMMERCE_BACK_ORDER_FILLED;
+
+    $state = InventoryTransaction::STATE_ORDERED_PENDING;
+    $state = InventoryTransaction::STATE_ORDERED_RECEIVED;
+    $state = InventoryTransaction::STATE_ORDERED_RECEIVED_PARTIAL;
+
+    $state = InventoryTransaction::STATE_INVENTORY_ON_HOLD;
+    $state = InventoryTransaction::STATE_INVENTORY_RELEASED;
+    $state = InventoryTransaction::STATE_INVENTORY_RELEASED_PARTIAL;
+    $state = InventoryTransaction::STATE_INVENTORY_REMOVED;
+    $state = InventoryTransaction::STATE_INVENTORY_REMOVED_PARTIAL;
+
+    $transactions = InventoryTransaction::getByState($state);
+
 ### Precautions
 
 The methods above are only interchangeable in their own departments. For example, the methods below will all fail:
@@ -211,7 +240,7 @@ if the quantity supplied is invalid. For example, these would all throw the abov
     $transaction->reserved('12..0');
     
 With any method that requires a removal of stock from the inventory, a `Stevebauman\Inventort\Exceptions\NotEnoughStockException` will
-be thrown if the quantity supplied is over the amount inside the inventory. For example, these would all throw the above exception:
+be thrown if the quantity supplied is over the amount inside the current stock. For example, these would all throw the above exception:
 
     $stock->put(100);
     
