@@ -42,7 +42,7 @@ Inventory management transactions are for managing inventory effectively. This i
 - Handling orders, such as how much was ordered, how much was received
 - Handling stock that was removed or on hold, and how much quantity was removed
 
-#### Ordering
+#### Orders
 
 If you've placed an order for more stock on a particular item, a typical order transaction would look like this:
 
@@ -125,7 +125,7 @@ Or if we used all of the stock, we can use the `remove()` method without specify
 If the quantity in either methods (`release($quantity)` or `remove($quantity)`) exceed the amount of quantity inside the
 transaction, this will just perform a total `releaseAll()`, or `removeAll()`. No extra stock will be removed/released.
     
-#### Cancelling a transaction
+### Cancelling a transaction
 
 Only transactions that are opened, checked out, reserved, back ordered, ordered, and on-hold can be cancelled. Here's an example:
 
@@ -148,4 +148,97 @@ Only transactions that are opened, checked out, reserved, back ordered, ordered,
 
 A cancelled transaction cannot be reopened to be used for something else. A new transaction must be created.
 
+### Precautions
+
+The methods above are only interchangeable in their own departments. For example, the methods below will all fail:
+
+     //All will throw exception InvalidTransactionStateException
+     
+    $transaction->ordered(5)->reserved();
+    $transaction->reserved(5)->ordered(15);
+    $transaction->backOrder(5)->release();
+    $transaction->received(15)->sold();
+
+You <b>can not</b> mix commerce transactions with inventory management transactions, and vice versa.
+
+You also <b>can not</b> mix inventory orders with inventory holds/releasing/removed functions. For example:
+
+    //Will throw exception InvalidTransactionStateException  
+    $transaction->ordered(10)->hold();
+
+Transactions must be kept within their 'scope of use', and a new transaction must be created if a new operation
+needs to take place.
+
 ### Transaction Method List
+
+#### Generic method list
+    
+    public function isCheckout();
+     
+    public function isReservation();
+        
+    public function isBackOrder();
+        
+    public function isReturn();
+        
+    public function isSold();
+        
+    public function isCancelled();
+
+    public function isOrder();
+        
+    public function isOnHold();
+    
+    public function hasStock();
+    
+    public function getHistory();
+    
+    public function getLastHistoryRecord();
+    
+    public function cancel();
+
+#### Commerce Transaction method list
+
+    public function checkout($quantity = NULL);
+
+    public function sold($quantity = NULL);
+    
+    public function soldAmount($quantity);
+    
+    public function soldAll();
+    
+    public function returned($quantity = NULL);
+    
+    public function returnedPartial($quantity);
+    
+    public function returnedAll();
+
+    public function reserved($quantity = NULL, $backOrder = false);
+
+    public function backOrder($quantity);
+
+#### Inventory Order Transaction method list
+
+    public function ordered($quantity);
+
+    public function received($quantity = NULL);
+    
+    public function receivedPartial($quantity);
+    
+    public function receivedAll();
+
+#### Inventory Management method list
+
+    public function hold($quantity);
+
+    public function release($quantity = NULL);
+    
+    public function releasePartial($quantity);
+    
+    public function releaseAll();
+
+    public function remove($quantity = NULL);
+
+    public function removePartial($quantity);
+    
+    public function removeAll();
