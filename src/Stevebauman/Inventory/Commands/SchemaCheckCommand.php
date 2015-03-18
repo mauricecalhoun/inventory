@@ -48,6 +48,8 @@ class SchemaCheckCommand extends Command
         'inventory_stocks',
         'inventory_stock_movements',
         'inventory_suppliers',
+        'inventory_transactions',
+        'inventory_transaction_histories',
     );
 
     /**

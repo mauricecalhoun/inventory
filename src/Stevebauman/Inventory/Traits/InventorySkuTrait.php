@@ -13,8 +13,5 @@ trait InventorySkuTrait
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function item()
-    {
-        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
-    }
+    abstract public function item();
 }

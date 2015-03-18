@@ -9,32 +9,33 @@ use Stevebauman\Inventory\Models\Inventory;
 
 class InventoryStockTest extends InventoryTest
 {
-    public function testInventoryStockCreation()
+    protected function newInventoryStock()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
-        $this->testLocationCreation();
-
-        $location = Location::find(1);
-
-        $inventory = Inventory::find(1);
+        $location = $this->newLocation();
 
         $stock = new InventoryStock;
-        $stock->inventory_id = $inventory->id;
+        $stock->inventory_id = $item->id;
         $stock->location_id = $location->id;
         $stock->quantity = 20;
         $stock->cost = '5.20';
         $stock->reason = 'I bought some';
         $stock->save();
 
+        return $stock;
+    }
+
+    public function testInventoryStockCreation()
+    {
+        $stock = $this->newInventoryStock();
+
         $this->assertEquals(20, $stock->quantity);
     }
 
     public function testStockPut()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
         Event::shouldReceive('fire')->once();
@@ -46,9 +47,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testStockTake()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
         Event::shouldReceive('fire')->once();
@@ -60,9 +59,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testStockMove()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         $newLocation = Location::create(array(
             'name' => 'New Location'
@@ -76,11 +73,33 @@ class InventoryStockTest extends InventoryTest
         $this->assertEquals(2, $stock->location_id);
     }
 
+    public function testStockIsValidQuantitySuccess()
+    {
+        $stock = $this->newInventoryStock();
+
+        $this->assertTrue($stock->isValidQuantity(500));
+        $this->assertTrue($stock->isValidQuantity(5,000));
+        $this->assertTrue($stock->isValidQuantity('500'));
+        $this->assertTrue($stock->isValidQuantity('500.00'));
+        $this->assertTrue($stock->isValidQuantity('500.0'));
+        $this->assertTrue($stock->isValidQuantity('1.500'));
+        $this->assertTrue($stock->isValidQuantity('15000000'));
+    }
+
+    public function testStockIsValidQuantityFailure()
+    {
+        $stock = $this->newInventoryStock();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $stock->isValidQuantity('40a');
+        $stock->isValidQuantity('5,000');
+        $stock->isValidQuantity('5.000.00');
+    }
+
     public function testInvalidMovementException()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         Lang::shouldReceive('get')->once();
 
@@ -91,20 +110,25 @@ class InventoryStockTest extends InventoryTest
 
     public function testUpdateStockQuantity()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         $stock->updateQuantity(10);
 
         $this->assertEquals(10, $stock->quantity);
     }
 
+    public function testUpdateStockQuantityFailure()
+    {
+        $stock = $this->newInventoryStock();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $stock->updateQuantity(-100);
+    }
+
     public function testNotEnoughStockException()
     {
-        $this->testInventoryStockCreation();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         Lang::shouldReceive('get')->once();
 
@@ -115,7 +139,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testStockAlreadyExistsException()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $location = Location::find(1);
 
@@ -130,13 +154,9 @@ class InventoryStockTest extends InventoryTest
 
     public function testStockNotFoundException()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
-        $this->testLocationCreation();
-
-        $item = Inventory::find(1);
-
-        $location = Location::find(1);
+        $location = $this->newLocation();
 
         Lang::shouldReceive('get')->once();
 
@@ -147,7 +167,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testInventoryTakeFromManyLocations()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $item = Inventory::find(1);
 
@@ -162,7 +182,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testInventoryAddToManyLocations()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $item = Inventory::find(1);
 
@@ -177,7 +197,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testInventoryMoveItemStock()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $locationFrom = Location::find(1);
 
@@ -196,7 +216,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testInventoryGetTotalStock()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $item = Inventory::find(1);
 
@@ -205,7 +225,7 @@ class InventoryStockTest extends InventoryTest
 
     public function testInventoryInvalidLocationException()
     {
-        $this->testInventoryStockCreation();
+        $this->newInventoryStock();
 
         $item = Inventory::find(1);
 
@@ -214,5 +234,16 @@ class InventoryStockTest extends InventoryTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
 
         $item->getStockFromLocation('testing');
+    }
+
+    public function testInventoryStockNewTransaction()
+    {
+        $this->newInventoryStock();
+
+        $stock = InventoryStock::find(1);
+
+        $transaction = $stock->newTransaction();
+
+        $this->assertInstanceOf('Stevebauman\Inventory\Interfaces\StateableInterface', $transaction);
     }
 }

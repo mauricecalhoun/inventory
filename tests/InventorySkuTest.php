@@ -9,12 +9,15 @@ use Stevebauman\Inventory\Models\InventorySku;
 
 class InventorySkuTest extends InventoryTest
 {
+    protected function newInventorySku()
+    {
+        $item = $this->newInventory();
+
+        return $item->generateSku();
+    }
+
     public function testInventorySkuGeneration()
     {
-        $this->testInventoryCreation();
-
-        $item = Inventory::find(1);
-
         /*
          * SKU generation is enabled
          */
@@ -39,9 +42,7 @@ class InventorySkuTest extends InventoryTest
 
         Event::shouldReceive('fire')->once();
 
-        $item->generateSku();
-
-        $sku = InventorySku::first();
+        $sku = $this->newInventorySku();
 
         $this->assertEquals(1, $sku->inventory_id);
         $this->assertEquals('DRI000001', $sku->code);
@@ -49,7 +50,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventorySkuGenerationForSmallCategoryName()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
         $category = Category::find(1);
 
@@ -58,8 +59,6 @@ class InventorySkuTest extends InventoryTest
         );
 
         $category->update($update);
-
-        $item = Inventory::find(1);
 
         /*
          * SKU generation is enabled
@@ -96,7 +95,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventorySkuRegeneration()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $item = Inventory::find(1);
 
@@ -121,7 +120,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventoryHasSku()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $item = Inventory::find(1);
 
@@ -130,7 +129,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventoryDoesNotHaveSku()
     {
-        $this->testInventorySkuGeneration();
+        $this->newInventorySku();
 
         $sku = InventorySku::first();
         $sku->delete();
@@ -142,9 +141,7 @@ class InventorySkuTest extends InventoryTest
 
     public function testInventorySkuGenerationFalse()
     {
-        $this->testInventoryCreation();
-
-        $item = Inventory::find(1);
+        $item = $this->newInventory();
 
         $item->category_id = NULL;
         $item->save();

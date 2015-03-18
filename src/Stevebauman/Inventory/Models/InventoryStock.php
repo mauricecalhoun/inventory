@@ -44,6 +44,16 @@ class InventoryStock extends BaseModel
     }
 
     /**
+     * The hasMany transactions relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany('Stevebauman\Inventory\Models\InventoryTransaction', 'stock_id', 'id');
+    }
+
+    /**
      * The hasOne location relationship
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

@@ -79,6 +79,13 @@ trait InventoryStockTrait
     abstract public function movements();
 
     /**
+     * The hasMany transactions relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    abstract public function transactions();
+
+    /**
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      *
@@ -248,11 +255,11 @@ trait InventoryStockTrait
      * Rolls back the last movement, or the movement specified. If recursive is set to true,
      * it will rollback all movements leading up to the movement specified
      *
-     * @param $movement
+     * @param null $movement
      * @param bool $recursive
      * @return $this|bool|InventoryStockTrait
      */
-    public function rollback($movement, $recursive = false)
+    public function rollback($movement = NULL, $recursive = false)
     {
         if($movement)
         {
@@ -361,6 +368,23 @@ trait InventoryStockTrait
 
             throw new InvalidMovementException($message);
         }
+    }
+
+    /**
+     * Creates and returns a new un-saved stock transaction
+     * instance with the current stock ID attached.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function newTransaction($name = '')
+    {
+        $transaction = $this->transactions()->getRelated();
+
+        $transaction->stock_id = $this->id;
+        $transaction->name = $name;
+
+        return $transaction;
     }
 
     /**

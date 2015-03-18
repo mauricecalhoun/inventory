@@ -211,5 +211,52 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+
+        DB::schema()->create('inventory_transactions', function ($table)
+        {
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('stock_id')->unsigned();
+            $table->string('name')->nullable();
+            $table->string('state');
+            $table->decimal('quantity', 8, 2)->default(0);
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('set null');
+
+            $table->foreign('stock_id')->references('id')->on('inventory_stocks')
+                ->onUpdate('restrict')
+                ->onDelete('cascade');
+        });
+
+        DB::schema()->create('inventory_transaction_histories', function ($table)
+        {
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('transaction_id')->unsigned();
+
+            /*
+             * Allows tracking states for each transaction
+             */
+            $table->string('state_before');
+            $table->string('state_after');
+
+            /*
+             * Allows tracking the quantities of each transaction
+             */
+            $table->string('quantity_before');
+            $table->string('quantity_after');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('set null');
+
+            $table->foreign('transaction_id')->references('id')->on('inventory_transactions')
+                ->onUpdate('restrict')
+                ->onDelete('cascade');
+        });
     }
 }
