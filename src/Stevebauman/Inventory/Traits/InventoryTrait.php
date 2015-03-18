@@ -132,7 +132,7 @@ trait InventoryTrait
          * Check if the SKU was found, and if an item is attached to the SKU
          * we'll return it
          */
-        if($sku && $sku->item()) return $sku->item;
+        if($sku && $sku->item) return $sku->item;
 
         /*
          * Return false on failure
@@ -472,10 +472,7 @@ trait InventoryTrait
      */
     public function getSku()
     {
-        if($this->skusEnabled() && $this->hasSku())
-        {
-            return $this->sku->code;
-        }
+        if($this->skusEnabled() && $this->hasSku()) return $this->sku->code;
 
         return NULL;
     }
@@ -615,10 +612,7 @@ trait InventoryTrait
      */
     public function addSuppliers($suppliers = array())
     {
-        foreach($suppliers as $supplier)
-        {
-            $this->addSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->addSupplier($supplier);
 
         return true;
     }
@@ -632,10 +626,7 @@ trait InventoryTrait
     {
         $suppliers = $this->suppliers()->get();
 
-        foreach($suppliers as $supplier)
-        {
-            $this->removeSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
 
         return true;
     }
@@ -649,10 +640,7 @@ trait InventoryTrait
      */
     public function removeSuppliers($suppliers = array())
     {
-        foreach($suppliers as $supplier)
-        {
-            $this->removeSupplier($supplier);
-        }
+        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
 
         return true;
     }
