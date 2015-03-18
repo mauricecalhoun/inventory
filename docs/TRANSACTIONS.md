@@ -202,6 +202,41 @@ You also <b>can not</b> mix inventory orders with inventory holds/releasing/remo
 Transactions must be kept within their 'scope of use', and a new transaction must be created if a new operation
 needs to take place.
 
+With any method that requires a quantity, a `Stevebauman\Inventort\Exceptions\InvalidQuantityException` will be thrown
+if the quantity supplied is invalid. For example, these would all throw the above exception:
+
+    $transaction->reserved('120 pieces');
+    $transaction->reserved('120a');
+    $transaction->reserved('a120');
+    $transaction->reserved('12..0');
+    
+With any method that requires a removal of stock from the inventory, a `Stevebauman\Inventort\Exceptions\NotEnoughStockException` will
+be thrown if the quantity supplied is over the amount inside the inventory. For example, these would all throw the above exception:
+
+    $stock->put(100);
+    
+    $transaction = $stock->newTransaction();
+    
+    //Fails
+    $transaction->reserve(101);
+    $transaction->hold(101);
+    $transaction->remove(101);
+    $transaction->checkout(101);
+
+These are easy to guard against however, you can just place the transaction methods inside a try/catch block like so:
+
+    $quantity = '101a';
+
+    try
+    {
+        $transaction->reserve('$quantity);
+    } catch(Stevebauman\Inventort\Exceptions\InvalidQuantityException $e)
+    {
+        return 'Invalid quantity was supplied. Please enter a valid quantity.';
+    } catch(Stevebauman\Inventort\Exceptions\NotEnoughStockException $e)
+    {
+        return "There wasn't enough stock to reserve: $quantity";
+    }
 
 ### Transaction Method List
 
