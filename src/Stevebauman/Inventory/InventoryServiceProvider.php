@@ -54,18 +54,35 @@ class InventoryServiceProvider extends ServiceProvider
             $this->package('stevebauman/inventory');
         } else
         {
+            /*
+             * Set the proper configuration separator since
+             * retrieving configuration values in packages
+             * changed from '::' to '.'
+             */
             $this::$packageConfigSeparator = '.';
 
+            /*
+             * Set the local inventory laravel version for easy checking
+             */
             $this::$laravelVersion = 5;
 
+            /*
+             * Load the inventory translations from the inventory lang folder
+             */
             $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
 
+            /*
+             * Assign the configuration as publishable, and tag it as 'config'
+             */
             $this->publishes([
                 __DIR__ . '/../../config/config.php' => config_path('inventory.php'),
             ], 'config');
 
+            /*
+             * Assign the migrations as publishable, and tag it as 'migrations'
+             */
             $this->publishes([
-                __DIR__ . '/../../migrations/' => base_path('/database/migrations'),
+                __DIR__ . '/../../migrations/' => base_path('database/migrations'),
             ], 'migrations');
         }
     }

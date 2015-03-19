@@ -14,6 +14,12 @@ To create a new transaction, all you need is the inventory stock record, and the
     
 Transactions are never saved unless you call a transaction method, or specifically call for it (using the typical eloquent `save()` method).
 
+### Naming your transaction
+
+To name your transaction, just put a name inside the `newTransaction()` function like so:
+
+    $transaction = $stock->newTransaction('Order transaction');
+
 ### Commerce Transactions
 
 Commerce transactions are meant for handling an e-commerce based site. These are particularly useful for making sure

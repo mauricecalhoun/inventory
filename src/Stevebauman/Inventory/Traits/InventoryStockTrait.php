@@ -290,7 +290,8 @@ trait InventoryStockTrait
     }
 
     /**
-     * Returns true or false if the specified quantity is valid
+     * Returns true if the specified quantity is valid, throws
+     * InvalidQuantityException otherwise.
      *
      * @param $quantity
      * @return bool
@@ -308,7 +309,8 @@ trait InventoryStockTrait
     }
 
     /**
-     * Returns true or false if there is enough stock for the specified quantity being taken
+     * Returns true if there is enough stock for the specified quantity being taken.
+     * Throws NotEnoughStockException otherwise.
      *
      * @param int $quantity
      * @return bool
@@ -381,6 +383,10 @@ trait InventoryStockTrait
     {
         $transaction = $this->transactions()->getRelated();
 
+        /*
+         * Set the transaction attributes so they don't
+         * need to be set manually
+         */
         $transaction->stock_id = $this->id;
         $transaction->name = $name;
 

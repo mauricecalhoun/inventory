@@ -70,7 +70,7 @@ Inventory is a fully tested Laravel inventory solution. It provides the basics o
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
-during a inventory change, it will be rolled back automatically.
+during an inventory change, it will be rolled back automatically.
 
 Depending on your needs, you may use the built in traits for customizing and creating your own models, or
 you can simply use the built in models.
