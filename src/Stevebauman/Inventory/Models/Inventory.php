@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Stevebauman\Inventory\Traits\HasAssembliesTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
 /**
@@ -12,6 +13,8 @@ class Inventory extends BaseModel
 {
     use InventoryTrait;
 
+    use HasAssembliesTrait;
+
     protected $table = 'inventories';
 
     protected $fillable = array(
@@ -19,7 +22,8 @@ class Inventory extends BaseModel
         'category_id',
         'metric_id',
         'name',
-        'description'
+        'description',
+        'is_assembly',
     );
 
     /**
@@ -60,6 +64,16 @@ class Inventory extends BaseModel
     public function stocks()
     {
         return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+    }
+
+    /**
+     * The hasMany assemblies relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assemblies()
+    {
+        return $this->hasMany('Stevebauman\Inventory\Models\InventoryAssembly', 'inventory_id');
     }
 
     /**

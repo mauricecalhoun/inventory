@@ -2,12 +2,33 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Illuminate\Support\Facades\Lang;
+
 /**
  * Class VerifyTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait VerifyTrait
 {
+    /**
+     * Returns true or false if the specified quantity is valid
+     *
+     * @param $quantity
+     * @return bool
+     * @throws InvalidQuantityException
+     */
+    public function isValidQuantity($quantity)
+    {
+        if($this->isPositive($quantity)) return true;
+
+        $message = Lang::get('inventory::exceptions.InvalidQuantityException', array(
+            'quantity' => $quantity,
+        ));
+
+        throw new InvalidQuantityException($message);
+    }
+
     /**
      * Returns true/false if the number specified is numeric
      *

@@ -29,14 +29,46 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
         $db->setAsGlobal();
     }
 
-    public function migrateTables()
+    protected function migrateTables()
+    {
+        $this->migrateUserTable();
+
+        $this->migrateMetricTable();
+
+        $this->migrateCategoryTable();
+
+        $this->migrateLocationTable();
+
+        $this->migrateInventoryTable();
+
+        $this->migrateInventoryStockTable();
+
+        $this->migrateInventoryStockMovementTable();
+
+        $this->migrateInventorySkuTable();
+
+        $this->migrateInventorySupplierTables();
+
+        $this->migrateInventoryTransactionTable();
+
+        $this->migrateInventoryTransactionHistoryTable();
+
+        $this->migrateInventoryAssemblyColumn();
+
+        $this->migrateInventoryAssemblyTable();
+    }
+
+    protected function migrateUserTable()
     {
         DB::schema()->create('users', function ($table)
         {
             $table->increments('id');
             $table->string('name');
         });
+    }
 
+    protected function migrateMetricTable()
+    {
         DB::schema()->create('metrics', function ($table)
         {
             $table->increments('id');
@@ -49,7 +81,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });
+    }
 
+    public function migrateCategoryTable()
+    {
         DB::schema()->create('categories', function ($table)
         {
             $table->increments('id');
@@ -66,7 +101,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
              */
             $table->string('belongs_to')->nullable();
         });
+    }
 
+    protected function migrateLocationTable()
+    {
         DB::schema()->create('locations', function ($table)
         {
             $table->increments('id');
@@ -83,7 +121,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
              */
             $table->string('belongs_to')->nullable();
         });
+    }
 
+    protected function migrateInventoryTable()
+    {
         DB::schema()->create('inventories', function ($table)
         {
             $table->increments('id');
@@ -107,7 +148,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+    }
 
+    protected function migrateInventoryStockTable()
+    {
         DB::schema()->create('inventory_stocks', function ($table)
         {
             $table->increments('id');
@@ -138,7 +182,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+    }
 
+    protected function migrateInventoryStockMovementTable()
+    {
         DB::schema()->create('inventory_stock_movements', function ($table)
         {
             $table->increments('id');
@@ -158,7 +205,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });
+    }
 
+    protected function migrateInventorySkuTable()
+    {
         DB::schema()->create('inventory_skus', function ($table)
         {
             $table->increments('id');
@@ -175,7 +225,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
              */
             $table->unique(array('code'));
         });
+    }
 
+    protected function migrateInventorySupplierTables()
+    {
         DB::schema()->create('suppliers', function($table)
         {
             $table->increments('id');
@@ -211,7 +264,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+    }
 
+    protected function migrateInventoryTransactionTable()
+    {
         DB::schema()->create('inventory_transactions', function ($table)
         {
             $table->increments('id');
@@ -230,7 +286,10 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+    }
 
+    protected function migrateInventoryTransactionHistoryTable()
+    {
         DB::schema()->create('inventory_transaction_histories', function ($table)
         {
             $table->increments('id');
@@ -257,6 +316,32 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
             $table->foreign('transaction_id')->references('id')->on('inventory_transactions')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
+        });
+    }
+
+    protected function migrateInventoryAssemblyColumn()
+    {
+        DB::schema()->table('inventories', function ($table)
+        {
+            $table->boolean('is_assembly')->default(false);
+        });
+    }
+
+    protected function migrateInventoryAssemblyTable()
+    {
+        DB::schema()->create('inventory_assemblies', function ($table)
+        {
+            $table->increments('id');
+            $table->timestamps();
+
+            $table->integer('inventory_id')->unsigned();
+            $table->integer('part_id')->unsigned();
+            $table->integer('depth')->unsigned();
+            $table->integer('quantity')->nullable();
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
+
+            $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
         });
     }
 }
