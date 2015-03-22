@@ -335,11 +335,14 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
             $table->timestamps();
 
             $table->integer('inventory_id')->unsigned();
+            $table->integer('stock_id')->unsigned()->nullable();
             $table->integer('part_id')->unsigned();
             $table->integer('depth')->unsigned();
-            $table->integer('quantity')->nullable();
+            $table->decimal('quantity', 8, 2)->default(0);
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
+
+            $table->foreign('stock_id')->references('id')->on('inventory_stocks')->onDelete('cascade');
 
             $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
         });

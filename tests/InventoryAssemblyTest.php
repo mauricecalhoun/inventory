@@ -51,7 +51,7 @@ class InventoryAssemblyTest extends InventoryTest
 
         $cmilk->addAssemblyItem($milk);
 
-        $cmilk->addAssemblyItem($quik, 2);
+        $cmilk->addAssemblyItem($quik, null, 2);
 
         $items = $cmilk->getAssemblyItems();
 

@@ -16,6 +16,7 @@ class InventoryAssembly extends BaseModel
 
     protected $fillable = array(
         'inventory_id',
+        'stock_id',
         'part_id',
         'quantity',
         'depth',
@@ -29,5 +30,15 @@ class InventoryAssembly extends BaseModel
     public function item()
     {
         return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
+    }
+
+    /**
+     * The belongsTo inventory stock relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function stock()
+    {
+        return $this->belongsTo('Stevebauman\Inventory\Models\InventoryStock', 'stock_id', 'id');
     }
 }
