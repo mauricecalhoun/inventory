@@ -515,10 +515,16 @@ The trait:
     
 On your models:
     
+    use Stevebauman\Inventory\Traits\InventoryTrait;
+    
     class Inventory extends Eloquent
     {
         //Place the trait on your model
         use MyUserIdentificationTrait;
+        
+        use InventoryTrait;
+        
+        protected $table = 'inventories';
     }
     
 ## Misc Functions and Uses
