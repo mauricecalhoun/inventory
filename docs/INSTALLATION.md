@@ -88,7 +88,7 @@ If you'd like to use them you'll have include them in your use statements:
 
 Create the models, but keep in mind the models need:
 
-- The shown fillable attribute arrays
+- The shown fillable attribute arrays (needed for dynamically creating & updating relationship records)
 - The shown relationship names (such as `stocks()`)
 - The shown relationship type (such as hasOne, hasMany, belongsTo etc)
 
