@@ -269,6 +269,33 @@ trait InventoryTrait
     }
 
     /**
+     * Instantiates a new stock on the specified
+     * location on the current item
+     *
+     * @param $location
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
+     */
+    public function newStockOnLocation($location)
+    {
+        $location = $this->getLocation($location);
+
+        /*
+         * Create a new stock model instance
+         */
+        $stock = $this->stocks()->getRelated();
+
+        /*
+         * Assign the known attributes so
+         * devs don't have to
+         */
+        $stock->inventory_id = $this->id;
+        $stock->location_id = $location->id;
+
+        return $stock;
+    }
+
+    /**
      * Takes the specified amount ($quantity) of stock from specified stock location
      *
      * @param string|int $quantity
