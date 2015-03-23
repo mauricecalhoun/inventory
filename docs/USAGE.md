@@ -501,7 +501,25 @@ tagged to the current logged in user. However, you turn this off if you'd like i
     'allow_no_user' => false //Set to true
     
 If you're using another form of authentication, you can always override the `protected static function getCurrentUserId()`
-that is included on each trait by your own `UserIdentificationTrait`.
+that is included on each trait by your own `UserIdentificationTrait`. For example:
+
+The trait:
+
+    trait MyUserIdentificationTrait
+    {
+        public static function getCurrentUserId()
+        {
+            // Return the current users ID using your own method
+        }
+    }
+    
+On your models:
+    
+    class Inventory extends Eloquent
+    {
+        //Place the trait on your model
+        use MyUserIdentificationTrait;
+    }
     
 ## Misc Functions and Uses
 
