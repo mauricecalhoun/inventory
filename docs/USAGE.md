@@ -41,9 +41,22 @@ Now we can add stock to our inventory by supplying a number (int or string), and
     $item->createStockOnLocation(20, $location);
     
     /*
+    * Or instantiate a new stock. This will automatically 
+    * assign the location ID and inventory ID to the new stock
+    * record so we don't have to.
+    */
+    
+    $stock = $item->newStockOnLocation($location);
+    $stock->quantity = 20;
+    $stock->cost = '5.20';
+    $stock->reason = 'I bought some';
+    $stock->save();
+    
+    /*
     * Or we can create a stock manually.
     * If you want to set the cost and reason for the creation of the stock, be sure to do so
     */
+    
     $stock = new InventoryStock;
     $stock->inventory_id = $item->id;
     $stock->location_id = $location->id;
