@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Class InventoryTrait
+ * Trait InventoryTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventoryTrait

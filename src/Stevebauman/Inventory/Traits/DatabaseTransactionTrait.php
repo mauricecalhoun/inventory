@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 /**
- * Class DatabaseTransactionTrait
+ * Trait DatabaseTransactionTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait DatabaseTransactionTrait

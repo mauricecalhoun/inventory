@@ -8,7 +8,7 @@ use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 
 /**
- * Class InventoryTransactionTrait
+ * Trait InventoryTransactionTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventoryTransactionTrait

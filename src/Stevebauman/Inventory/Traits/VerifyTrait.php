@@ -3,7 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Class VerifyTrait
+ * Trait VerifyTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait VerifyTrait

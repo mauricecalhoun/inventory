@@ -3,7 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Class InventoryTransactionHistoryTrait
+ * Trait InventoryTransactionHistoryTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventoryTransactionHistoryTrait

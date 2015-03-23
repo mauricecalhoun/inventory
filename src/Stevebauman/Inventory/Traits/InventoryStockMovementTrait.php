@@ -3,7 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Class InventoryStockMovementTrait
+ * Trait InventoryStockMovementTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventoryStockMovementTrait

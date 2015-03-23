@@ -6,7 +6,7 @@ use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Class LocationTrait
+ * Trait LocationTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait LocationTrait

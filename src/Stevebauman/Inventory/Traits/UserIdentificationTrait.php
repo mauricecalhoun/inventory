@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Class UserIdentificationTrait
+ * Trait UserIdentificationTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait UserIdentificationTrait

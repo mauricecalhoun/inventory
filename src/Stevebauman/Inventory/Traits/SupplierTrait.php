@@ -6,7 +6,7 @@ use Stevebauman\Inventory\Exceptions\InvalidItemException;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Class SupplierTrait
+ * Trait SupplierTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait SupplierTrait

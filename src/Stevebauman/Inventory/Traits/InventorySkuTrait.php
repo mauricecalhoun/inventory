@@ -3,7 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Class InventorySkuTrait
+ * Trait InventorySkuTrait
  * @package Stevebauman\Inventory\Traits
  */
 trait InventorySkuTrait
