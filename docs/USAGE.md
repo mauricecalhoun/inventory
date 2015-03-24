@@ -247,7 +247,9 @@ You can perform this like so:
         
     $item->regenerateSku();
     
-If regenerating an SKU fails, the items previous SKU will be restored.
+If regenerating an SKU fails, the items previous SKU will be restored. An example of this might be, an item's category
+has changed to a category with no name. Then you call `regenerateSku()`, however this fails due to the category's name
+not meeting at least 1 (one) character in length, so the previous items SKU is restored.
 
 If the item does not have an SKU and `regenerateSku()` is called, then an SKU will be generated.
 
