@@ -13,7 +13,6 @@ use Illuminate\Console\Command;
  */
 class SchemaCheckCommand extends Command
 {
-
     /**
      * The console command name.
      *

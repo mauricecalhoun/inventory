@@ -246,6 +246,10 @@ You can perform this like so:
     $item = Inventory::find(1);
         
     $item->regenerateSku();
+    
+If regenerating an SKU fails, the items previous SKU will be restored.
+
+If the item does not have an SKU and `regenerateSku()` is called, then an SKU will be generated.
 
 ### How do I generate an SKU myself?
 
