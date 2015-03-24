@@ -272,7 +272,7 @@ If the item's category name is blank or empty, it will return false.
 ### How do I create an SKU myself?
 
 If you'd like to create your own SKU's, disable sku generation in the configuration file. Then, call
-then method `$item->createSku($code, $overwrite = false)` on your Inventory record like so:
+the method `createSku($code, $overwrite = false)` on your Inventory record like so:
 
     $item = Inventory::find(1);
     
