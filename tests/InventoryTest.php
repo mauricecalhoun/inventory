@@ -139,6 +139,20 @@ class InventoryTest extends FunctionalTestCase
         $this->assertEquals(1, $stock->location_id);
     }
 
+    public function testInventoryNewStockOnLocationFailure()
+    {
+        $item = $this->newInventory();
+
+        $location = $this->newLocation();
+
+        $stock = $item->newStockOnLocation($location);
+        $stock->save();
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
+
+        $stock2 = $item->newStockOnLocation($location);
+    }
+
     public function testInventoryInvalidQuantityException()
     {
         $item = $this->newInventory();

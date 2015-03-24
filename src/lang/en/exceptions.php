@@ -25,4 +25,6 @@ return array(
 
     'StockNotFoundException' => 'No stock was found from location :location',
 
+    'SkuAlreadyExistsException' => 'An SKU already exists for this item',
+
 );

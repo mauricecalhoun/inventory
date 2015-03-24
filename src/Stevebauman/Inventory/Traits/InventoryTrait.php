@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
+use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\InventoryServiceProvider;
@@ -274,25 +275,42 @@ trait InventoryTrait
      *
      * @param $location
      * @return \Illuminate\Database\Eloquent\Model
+     * @throws StockAlreadyExistsException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      */
     public function newStockOnLocation($location)
     {
         $location = $this->getLocation($location);
 
-        /*
-         * Create a new stock model instance
-         */
-        $stock = $this->stocks()->getRelated();
+        try
+        {
+            /*
+             * We want to make sure stock doesn't exist on the specified location already
+             */
+            if ($this->getStockFromLocation($location))
+            {
+                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
+                    'location' => $location->name,
+                ));
 
-        /*
-         * Assign the known attributes so
-         * devs don't have to
-         */
-        $stock->inventory_id = $this->id;
-        $stock->location_id = $location->id;
+                throw new StockAlreadyExistsException($message);
+            }
+        } catch (StockNotFoundException $e)
+        {
+            /*
+             * Create a new stock model instance
+             */
+            $stock = $this->stocks()->getRelated();
 
-        return $stock;
+            /*
+             * Assign the known attributes so
+             * devs don't have to
+             */
+            $stock->inventory_id = $this->id;
+            $stock->location_id = $location->id;
+
+            return $stock;
+        }
     }
 
     /**
@@ -528,7 +546,7 @@ trait InventoryTrait
         /*
          * Make sure sku generation is enabled and the item has a category, if not we'll return false.
          */
-        if(!$this->skusEnabled() || !$this->hasCategory()) return false;
+        if( ! $this->skusEnabled() || ! $this->hasCategory()) return false;
 
         /*
          * If the item already has an SKU, we'll return it
@@ -628,6 +646,73 @@ trait InventoryTrait
          * Always generate an SKU if one doesn't exist
          */
         return $this->generateSku();
+    }
+
+    /**
+     * Creates an SKU with the specified code. If overwrite is true,
+     * the current items SKU will be deleted if it exists before creating
+     * then SKU. If overwrite is false but the item has an SKU, an exception
+     * is thrown.
+     *
+     * @param string $code
+     * @param bool $overwrite
+     * @return mixed|bool
+     * @throws SkuAlreadyExistsException
+     */
+    public function createSku($code, $overwrite = false)
+    {
+        /*
+         * Get the current SKU record
+         */
+        $sku = $this->sku()->first();
+
+        if($sku)
+        {
+            /*
+             * The dev doesn't want the SKU overridden,
+             * we'll thrown an exception
+             */
+            if( ! $overwrite)
+            {
+                $message = Lang::get('inventory::exceptions.SkuAlreadyExistsException');
+
+                throw new SkuAlreadyExistsException($message);
+            }
+
+            /*
+             * Overwrite is true, lets update the current SKU
+             */
+            return $this->updateSku($code, $sku);
+        }
+
+        /*
+         * No SKU exists, lets create one
+         */
+        return $this->processSkuGeneration($this->id, $code);
+    }
+
+    /**
+     * Updates the items current SKU or the SKU
+     * supplied with the specified code
+     *
+     * @param string $code
+     * @param null $sku
+     * @return mixed|bool
+     */
+    public function updateSku($code, $sku = NULL)
+    {
+        /*
+         * Get the current SKU record if one isn't supplied
+         */
+        if( ! $sku) $sku = $this->sku()->first();
+
+        /*
+         * If an SKU still doesn't exist after
+         * trying to find one, we'll create one
+         */
+        if( ! $sku) return $this->processSkuGeneration($this->id, $code);
+
+        return $this->processSkuUpdate($sku, $code);
     }
 
     /**
@@ -758,6 +843,35 @@ trait InventoryTrait
             }
         }
         catch(\Exception $e)
+        {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
+     * Processes updating the specified SKU record with
+     * the specified code
+     *
+     * @param $sku
+     * @param string $code
+     * @return mixed|bool
+     */
+    private function processSkuUpdate($sku, $code)
+    {
+        $this->dbStartTransaction();
+
+        try
+        {
+            if($sku->update(compact('code')))
+            {
+                $this->dbCommitTransaction();
+
+                return $sku;
+            }
+
+        } catch(\Exception $e)
         {
             $this->dbRollbackTransaction();
         }

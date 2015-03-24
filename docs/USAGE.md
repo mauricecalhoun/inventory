@@ -255,7 +255,7 @@ If the item does not have an SKU and `regenerateSku()` is called, then an SKU wi
 
 ### How do I generate an SKU myself?
 
-First, disable SKU generation in the configuration file, then generate an sku like so:
+You can generate an sku yourself like so:
 
     $item = Inventory::find(1);
             
@@ -268,6 +268,36 @@ If an item does not have a category, it will return false.
 If SKU generation is disabled, or creating an SKU failed, it will return false.
 
 If the item's category name is blank or empty, it will return false.
+
+### How do I create an SKU myself?
+
+If you'd like to create your own SKU's, disable sku generation in the configuration file. Then, call
+then method `$item->createSku($code, $overwrite = false)` on your Inventory record like so:
+
+    $item = Inventory::find(1);
+    
+    $item->createSku('my own sku');
+
+This function contains no validation besides checking if an item already has an SKU, so you can create your own
+ways of generating unique SKU's.
+
+If an item already has an SKU, and `createSku($code)` is called, then an 'Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException`
+will be thrown.
+
+If you'd like to overwrite the SKU if it exists, pass in `true` into the second argument in the function like so:
+
+    $item = Inventory::find(1);
+    
+    // The current sku record will be updated if one exists with the new code
+    $sku = $item->createSku('my own sku', true); 
+
+If you'd like to update your custom SKU, you can just call the `updateSku($code)` method like so:
+
+    $item = Inventory::find(1);
+    
+    $sku = $item->updateSku('my new sku code');
+
+Calling `updateSku($code)` will also create an SKU if one doesn't exist.
 
 ### How do I find an item by it's SKU?
 

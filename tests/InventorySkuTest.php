@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
@@ -240,5 +241,65 @@ class InventorySkuTest extends InventoryTest
 
         $this->assertEquals(2, $sku->id);
         $this->assertEquals('DRI-000001', $sku->code);
+    }
+
+    public function testInventorySkuCreateSku()
+    {
+        $item = $this->newInventory();
+
+        $sku = $item->createSku('TESTING');
+
+        $this->assertEquals(1, $sku->inventory_id);
+        $this->assertEquals('TESTING', $sku->code);
+    }
+
+    public function testInventorySkuCreateSkuOverwrite()
+    {
+        $item = $this->newInventory();
+
+        $item->createSku('TESTING');
+
+        $newSku = $item->createSku('TESTING-RESTORE', true);
+
+        $this->assertEquals(1, $newSku->id);
+        $this->assertEquals(1, $newSku->inventory_id);
+        $this->assertEquals('TESTING-RESTORE', $newSku->code);
+    }
+
+    public function testsInventorySkuUpdate()
+    {
+        $item = $this->newInventory();
+
+        $item->createSku('TESTING');
+
+        $sku = $item->updateSku('TESTING-UPDATE');
+
+        $this->assertEquals(1, $sku->id);
+        $this->assertEquals(1, $sku->inventory_id);
+        $this->assertEquals('TESTING-UPDATE', $sku->code);
+    }
+
+    public function testInventorySkuUpdateCreate()
+    {
+        $item = $this->newInventory();
+
+        $sku = $item->updateSku('TESTING-UPDATE-CREATE');
+
+        $this->assertEquals(1, $sku->id);
+        $this->assertEquals(1, $sku->inventory_id);
+        $this->assertEquals('TESTING-UPDATE-CREATE', $sku->code);
+    }
+
+    public function testInventorySkuCreateSkuAlreadyExistsException()
+    {
+        $this->newInventorySku();
+
+        $item = Inventory::find(1);
+
+        Lang::shouldReceive('get')->once()->andReturn('Failed');
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException');
+
+        $item->createSku('test');
     }
 }
