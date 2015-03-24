@@ -281,7 +281,7 @@ the method `createSku($code, $overwrite = false)` on your Inventory record like 
 This function contains no validation besides checking if an item already has an SKU, so you can create your own
 ways of generating unique SKU's.
 
-If an item already has an SKU, and `createSku($code)` is called, then an 'Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException`
+If an item already has an SKU, and `createSku($code)` is called, then an `Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException`
 will be thrown.
 
 If you'd like to overwrite the SKU if it exists, pass in `true` into the second argument in the function like so:
