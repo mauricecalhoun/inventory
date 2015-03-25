@@ -34,7 +34,7 @@ trait UserIdentificationTrait
          */
         try
         {
-            if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || $class = class_exists('\Cartalyst\Sentinel\Laravel\Facades\Sentinel'))
+            if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel'))
             {
                 if($class::check()) return $class::getUser()->id;
 
