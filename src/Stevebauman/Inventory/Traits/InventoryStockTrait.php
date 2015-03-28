@@ -570,8 +570,8 @@ trait InventoryStockTrait
         $this->quantity = $movement->before;
 
         $reason = Lang::get('inventory::reasons.rollback', array(
-            'id' => $movement->id,
-            'date' => $movement->created_at,
+            'id' => $movement->getOriginal('id'),
+            'date' => $movement->getOriginal('created_at'),
         ));
 
         $this->setReason($reason);
