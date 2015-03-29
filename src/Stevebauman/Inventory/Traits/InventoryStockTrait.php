@@ -91,11 +91,9 @@ trait InventoryStockTrait
      *
      * @return void
      */
-    public static function boot()
+    public static function bootInventoryStockTrait()
     {
-        parent::boot();
-
-        parent::creating(function($model)
+        static::creating(function($model)
         {
             $model->user_id = $model->getCurrentUserId();
 
@@ -105,12 +103,12 @@ trait InventoryStockTrait
             if(!$model->reason) $model->reason = Lang::get('inventory::reasons.first_record');
         });
 
-        parent::created(function($model)
+        static::created(function($model)
         {
             $model->postCreate();
         });
 
-        parent::updating(function($model)
+        static::updating(function($model)
         {
             /*
              * Retrieve the original quantity before it was updated,
@@ -124,7 +122,7 @@ trait InventoryStockTrait
             if(!$model->reason) $model->reason = Lang::get('inventory::reasons.change');
         });
 
-        parent::updated(function($model)
+        static::updated(function($model)
         {
             $model->postUpdate();
         });

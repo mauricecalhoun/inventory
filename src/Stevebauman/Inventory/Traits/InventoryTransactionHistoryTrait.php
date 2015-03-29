@@ -18,13 +18,11 @@ trait InventoryTransactionHistoryTrait
      *
      * @return void
      */
-    public static function boot()
+    public static function bootInventoryTransactionHistoryTrait()
     {
-        parent::boot();
-
-        parent::creating(function ($model)
+        static::creating(function ($model)
         {
-            $model->user_id = $model->getCurrentUserId();
+            $model->user_id = static::getCurrentUserId();
         });
     }
 

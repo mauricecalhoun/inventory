@@ -76,23 +76,21 @@ trait InventoryTrait
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      */
-    public static function boot()
+    public static function bootInventoryTrait()
     {
-        parent::boot();
-
         /*
          * Assign the current users ID while the item
          * is being created
          */
-        parent::creating(function($record)
+        static::creating(function($record)
         {
-            $record->user_id = parent::getCurrentUserId();
+            $record->user_id = static::getCurrentUserId();
         });
 
         /*
          * Generate the items SKU once it's created
          */
-        parent::created(function($record)
+        static::created(function($record)
         {
             $record->generateSku();
         });
@@ -101,7 +99,7 @@ trait InventoryTrait
          * Generate an SKU if the item has been assigned a category,
          * this will not overwrite any SKU the item had previously
          */
-        parent::updated(function($record)
+        static::updated(function($record)
         {
             if($record->category_id != NULL) $record->generateSku();
         });

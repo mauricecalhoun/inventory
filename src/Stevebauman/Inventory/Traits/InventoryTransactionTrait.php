@@ -43,23 +43,21 @@ trait InventoryTransactionTrait
      *
      * @return void
      */
-    public static function boot()
+    public static function bootInventoryTransactionTrait()
     {
-        parent::boot();
-
-        parent::creating(function($model)
+        static::creating(function($model)
         {
-            $model->user_id = $model->getCurrentUserId();
+            $model->user_id = static::getCurrentUserId();
 
             if(!$model->beforeState) $model->beforeState = $model::STATE_OPENED;
         });
 
-        parent::created(function($model)
+        static::created(function($model)
         {
             $model->postCreate();
         });
 
-        parent::updating(function($model)
+        static::updating(function($model)
         {
             /*
              * Retrieve the original quantity before it was updated,
@@ -69,7 +67,7 @@ trait InventoryTransactionTrait
             $model->beforeQuantity = $model->getOriginal('quantity');
         });
 
-        parent::updated(function($model)
+        static::updated(function($model)
         {
             $model->postUpdate();
         });

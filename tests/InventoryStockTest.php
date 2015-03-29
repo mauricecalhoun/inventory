@@ -55,6 +55,8 @@ class InventoryStockTest extends InventoryTest
         $stock->take(10, 'Removed some', 15);
 
         $this->assertEquals(10, $stock->quantity);
+        $this->assertEquals('Removed some', $stock->reason);
+        $this->assertEquals(15, $stock->cost);
     }
 
     public function testStockMove()

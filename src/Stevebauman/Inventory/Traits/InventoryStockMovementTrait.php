@@ -23,13 +23,11 @@ trait InventoryStockMovementTrait
      * Overrides the models boot function to set the user ID automatically
      * to every new record
      */
-    public static function boot()
+    public static function bootInventoryStockMovementTrait()
     {
-        parent::boot();
-
-        parent::creating(function($record)
+        static::creating(function($record)
         {
-            $record->user_id = parent::getCurrentUserId();
+            $record->user_id = static::getCurrentUserId();
         });
     }
 
