@@ -30,15 +30,6 @@ class InventoryTransactionBackOrderTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_BACK_ORDER_FILLED, $transaction->state);
     }
 
-    public function testInventoryTransactionBackOrderSufficientStockException()
-    {
-        $transaction = $this->newTransaction();
-
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockIsSufficientException');
-
-        $transaction->backOrder(1);
-    }
-
     public function testInventoryTransactionBackOrderInvalidQuantityException()
     {
         $transaction = $this->newTransaction();

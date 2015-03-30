@@ -1,6 +1,5 @@
 <?php
 
-use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 

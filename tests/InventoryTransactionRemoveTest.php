@@ -24,6 +24,15 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_INVENTORY_ON_HOLD, $transaction->state);
     }
 
+    public function testInventoryTransactionRemovePartialFailureRollback()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->hold(5)->remove('testing');
+
+        $this->assertEquals(5, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_INVENTORY_ON_HOLD, $transaction->state);
+    }
 
     public function testInventoryTransactionRemovePartialAll()
     {
