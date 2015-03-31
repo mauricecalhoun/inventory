@@ -54,6 +54,16 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RETURNED, $transaction->state);
     }
 
+    public function testInventoryTransactionReturnedPartialAfterCheckoutRollback()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->checkout(5)->returned('testing');
+
+        $this->assertEquals(5, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+    }
+
     public function testInventoryTransactionReturnedPartialAfterCheckout()
     {
         $transaction = $this->newTransaction();
@@ -62,6 +72,16 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
 
         $this->assertEquals(3, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+    }
+
+    public function testInventoryTransactionReturnedPartialAfterSoldRollBack()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->sold(5)->returned('testing');
+
+        $this->assertEquals(5, $transaction->quantity);
+        $this->assertEquals(InventoryTransaction::STATE_COMMERCE_SOLD, $transaction->state);
     }
 
     public function testInventoryTransactionReturnedInvalidTransactionStateException()
