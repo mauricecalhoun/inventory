@@ -637,34 +637,13 @@ trait InventoryTransactionTrait
             $this::STATE_ORDERED_PENDING,
         ), $this::STATE_ORDERED_RECEIVED);
 
-        $stock = $this->getStockRecord();
-
         $received = $this->quantity;
 
         $this->quantity = 0;
 
         $this->state = $this::STATE_ORDERED_RECEIVED;
 
-        $this->dbStartTransaction();
-
-        try
-        {
-            if($stock->put($received) && $this->save())
-            {
-                $this->dbCommitTransaction();
-
-                $this->fireEvent('inventory.transaction.received', array(
-                    'transaction' => $this,
-                ));
-
-                return $this;
-            }
-        } catch(\Exception $e)
-        {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
+        return $this->processStockPutAndSave($received, 'inventory.transaction.received');
     }
 
     /**
