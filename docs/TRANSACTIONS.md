@@ -264,7 +264,7 @@ These are easy to guard against however, you can just place the transaction meth
 
     try
     {
-        $transaction->reserve('$quantity);
+        $transaction->reserve($quantity);
     } catch(Stevebauman\Inventory\Exceptions\InvalidQuantityException $e)
     {
         return 'Invalid quantity was supplied. Please enter a valid quantity.';
