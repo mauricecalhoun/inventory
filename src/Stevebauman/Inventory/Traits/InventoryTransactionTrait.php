@@ -1149,11 +1149,11 @@ trait InventoryTransactionTrait
      * current transaction
      *
      * @param $quantity
-     * @param null $event
+     * @param string $event
      * @return $this|bool
      * @throws StockNotFoundException
      */
-    private function processStockPutAndSave($quantity, $event = null)
+    private function processStockPutAndSave($quantity, $event = '')
     {
         $stock = $this->getStockRecord();
 
@@ -1184,11 +1184,11 @@ trait InventoryTransactionTrait
      * stock and saving the current transaction
      *
      * @param $quantity
-     * @param null $event
+     * @param string $event
      * @return $this|bool
      * @throws StockNotFoundException
      */
-    private function processStockTakeAndSave($quantity, $event = null)
+    private function processStockTakeAndSave($quantity, $event = '')
     {
         $stock = $this->getStockRecord();
 
@@ -1222,10 +1222,10 @@ trait InventoryTransactionTrait
      * Processes saving the transaction by covering it with
      * a database transaction.
      *
-     * @param null $event
+     * @param string $event
      * @return $this|bool
      */
-    private function processSave($event = null)
+    private function processSave($event = '')
     {
         $this->dbStartTransaction();
 
