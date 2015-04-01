@@ -949,9 +949,12 @@ trait InventoryTransactionTrait
      * Transactions with states such as sold, returned, order-received,
      * and inventory released CAN NOT be cancelled.
      *
-     * @return mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidTransactionStateException
      */
-    public function cancel()
+    public function cancel($reason = '', $cost = 0)
     {
         $this->validatePreviousState(array(
             NULL,
@@ -974,11 +977,11 @@ trait InventoryTransactionTrait
         switch($beforeState)
         {
             case $this::STATE_COMMERCE_CHECKOUT:
-                return $this->processStockPutAndSave($beforeQuantity, $event);
+                return $this->processStockPutAndSave($beforeQuantity, $event, $reason, $cost);
             case $this::STATE_COMMERCE_RESERVED:
-                return $this->processStockPutAndSave($beforeQuantity, $event);
+                return $this->processStockPutAndSave($beforeQuantity, $event, $reason, $cost);
             case $this::STATE_INVENTORY_ON_HOLD:
-                return $this->processStockPutAndSave($beforeQuantity, $event);
+                return $this->processStockPutAndSave($beforeQuantity, $event, $reason, $cost);
             default:
                 return $this->processSave($event);
         }

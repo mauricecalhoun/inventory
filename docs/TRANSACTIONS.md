@@ -4,7 +4,8 @@ In update 1.4.*, inventory transactions were implemented. Transactions are a way
 several different uses depending on the situation. Every transaction automatically creates a history trail with user accountability, 
 so you're able to see the complete history of each transaction and who performed what for each state change. On any transaction
 method that <b>modifies the stock in some way</b> accepts a `$reason` and `$cost` argument. These reasons and costs will be used
-when updating the stock record.
+when updating the stock record. These arguments are <b>always</b> optional, and are only included in the methods below
+for demonstration.
 
 ### Creating a transaction
 
@@ -171,7 +172,7 @@ Or if we used all of the stock, we can use the `remove()` method without specify
     $transaction->removeAll();
     
     echo $transaction->state; //Returns 'inventory-removed'
-            
+    
     $transaction->isRemoved(); // Returns true
     
 If the quantity in either methods (`release($quantity)` or `remove($quantity)`) exceed the amount of quantity inside the
@@ -187,7 +188,7 @@ Only transactions that are opened, checked out, reserved, back ordered, ordered,
     $transaction->cancel();
     
     // Cancel a checked out transaction, this will return the stock into the inventory
-    $transaction->checkout(5)->cancel();
+    $transaction->checkout(5)->cancel($reason = "User cancelled checkout", $cost = 0);
     
     // Cancel a reserved transaction, this will return the stock into the inventory
     $transaction->reserved(5)->cancel();

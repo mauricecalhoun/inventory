@@ -35,45 +35,45 @@ interface StateableInterface
     const STATE_CANCELLED = 'cancelled';
     const STATE_OPENED = 'opened';
 
-    public function checkout($quantity = NULL);
+    public function checkout($quantity = NULL, $reason = '', $cost = 0);
 
-    public function sold($quantity = NULL);
+    public function sold($quantity = NULL, $reason = '', $cost = 0);
 
-    public function soldAmount($quantity);
+    public function soldAmount($quantity, $reason = '', $cost = 0);
 
-    public function returned($quantity = NULL);
+    public function returned($quantity = NULL, $reason = '', $cost = 0);
 
-    public function returnedPartial($quantity);
+    public function returnedPartial($quantity, $reason = '', $cost = 0);
 
-    public function returnedAll();
+    public function returnedAll($reason = '', $cost = 0);
 
     public function reserved($quantity = NULL, $backOrder = false);
 
     public function backOrder($quantity);
 
-    public function fillBackOrder();
+    public function fillBackOrder($reason = '', $cost = 0);
 
     public function ordered($quantity);
 
-    public function received($quantity = NULL);
+    public function received($quantity = NULL, $reason = '', $cost = 0);
 
-    public function receivedPartial($quantity);
+    public function receivedPartial($quantity, $reason = '', $cost = 0);
 
-    public function receivedAll();
+    public function receivedAll($reason = '', $cost = 0);
 
-    public function hold($quantity);
+    public function hold($quantity, $reason = '', $cost = 0);
 
-    public function release($quantity = NULL);
+    public function release($quantity = NULL, $reason = '', $cost = 0);
 
-    public function releasePartial($quantity);
+    public function releasePartial($quantity, $reason = '', $cost = 0);
 
-    public function releaseAll();
+    public function releaseAll($reason = '', $cost = 0);
 
-    public function remove($quantity = NULL);
+    public function remove($quantity = NULL, $reason = '', $cost = 0);
 
-    public function removePartial($quantity);
+    public function removePartial($quantity, $reason = '', $cost = 0);
 
     public function removeAll();
 
-    public function cancel();
+    public function cancel($reason = '', $cost = 0);
 }
