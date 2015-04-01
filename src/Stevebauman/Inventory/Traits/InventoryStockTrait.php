@@ -99,8 +99,9 @@ trait InventoryStockTrait
 
             /*
              * Check if a reason has been set, if not let's retrieve the default first entry reason
+             * and set it on the model before it's created
              */
-            if( ! $model->reason) $model->reason = Lang::get('inventory::reasons.first_record');
+            if( ! $model->reason) $model->setReason(Lang::get('inventory::reasons.first_record'));
         });
 
         static::created(function($model)
@@ -119,7 +120,7 @@ trait InventoryStockTrait
             /*
              * Check if a reason has been set, if not let's retrieve the default change reason
              */
-            if( ! $model->reason) $model->reason = Lang::get('inventory::reasons.change');
+            if( ! $model->reason) $model->setReason(Lang::get('inventory::reasons.change'));
         });
 
         static::updated(function($model)
@@ -392,6 +393,27 @@ trait InventoryStockTrait
     }
 
     /**
+     * Sets the cost attribute
+     *
+     * @param int|string $cost
+     */
+    public function setCost($cost = 0)
+    {
+        if( ! $this->cost) $this->cost = $cost;
+    }
+
+    /**
+     * Sets the reason attribute
+     *
+     * @param string $reason
+     * @return void
+     */
+    public function setReason($reason = '')
+    {
+        if( ! $this->reason) $this->reason = $reason;
+    }
+
+    /**
      * Retrieves a movement by the specified ID
      *
      * @param int|string $id
@@ -650,16 +672,6 @@ trait InventoryStockTrait
     }
 
     /**
-     * Sets the cost attribute
-     *
-     * @param int|string $cost
-     */
-    private function setCost($cost = 0)
-    {
-        $this->cost = $cost;
-    }
-
-    /**
      * Reverses the cost of a movement
      *
      * @return void
@@ -673,17 +685,6 @@ trait InventoryStockTrait
         {
             $this->setCost(abs($this->cost));
         }
-    }
-
-    /**
-     * Sets the reason attribute
-     *
-     * @param string $reason
-     * @return void
-     */
-    private function setReason($reason = '')
-    {
-        $this->reason = $reason;
     }
 
     /**
