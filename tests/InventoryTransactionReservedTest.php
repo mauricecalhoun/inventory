@@ -8,7 +8,7 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->reserved(10);
+        $transaction->reserved(10, $backOrder = false, 'Reservation', 25);
 
         $this->assertEquals(10, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RESERVED, $transaction->state);
@@ -16,6 +16,8 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
         $stock = $transaction->getStockRecord();
 
         $this->assertEquals(10, $stock->quantity);
+        $this->assertEquals('Reservation', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionReservedNotEnoughStockException()

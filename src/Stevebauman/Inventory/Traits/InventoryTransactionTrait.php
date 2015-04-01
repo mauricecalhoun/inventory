@@ -261,12 +261,14 @@ trait InventoryTransactionTrait
      * waiting to be sold.
      *
      * @param int $quantity
-     * @return mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
-     * @throws StockNotFoundException
+     * @throws InvalidTransactionStateException
      */
-    public function checkout($quantity = 0)
+    public function checkout($quantity = 0, $reason = '', $cost = 0)
     {
         /*
          * Only allow a transaction that has a previous state of null, opened and reserved
@@ -284,7 +286,7 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_COMMERCE_CHECKOUT;
 
-        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.checkout');
+        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.checkout', $reason, $cost);
     }
 
     /**
@@ -293,18 +295,20 @@ trait InventoryTransactionTrait
      * reserved, back ordered, returned or returned partial, this will throw an exception.
      *
      * @param int $quantity
+     * @param string $reason
+     * @param int $cost
      * @return $this|bool|InventoryTransactionTrait
-     * @throws InvalidTransactionStateException
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws InvalidTransactionStateException
      */
-    public function sold($quantity = 0)
+    public function sold($quantity = 0, $reason = '', $cost = 0)
     {
         /*
          * If a quantity is specified, we must be using a new transaction, so we'll
          * set the quantity attribute
          */
-        if($quantity) return $this->soldAmount($quantity);
+        if($quantity) return $this->soldAmount($quantity, $reason, $cost);
 
         /*
          * Make sure the previous state of the transaction was
@@ -332,11 +336,12 @@ trait InventoryTransactionTrait
      * of the specified quantity from from the inventory stock.
      *
      * @param $quantity
-     * @return $this|bool
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
-     * @throws StockNotFoundException
      */
-    public function soldAmount($quantity)
+    public function soldAmount($quantity, $reason = '', $cost = 0)
     {
         /*
          * Only allow a previous state of null or opened
@@ -353,7 +358,7 @@ trait InventoryTransactionTrait
 
         $this->quantity = $quantity;
 
-        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.sold');
+        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.sold', $reason, $cost);
     }
 
     /**
@@ -366,9 +371,11 @@ trait InventoryTransactionTrait
      * and the transaction is reverted to its previous state with the leftover amount.
      *
      * @param int $quantity
-     * @return mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|mixed|InventoryTransactionTrait
      */
-    public function returned($quantity = 0)
+    public function returned($quantity = 0, $reason = '', $cost = 0)
     {
         if($quantity)
         {
@@ -376,13 +383,13 @@ trait InventoryTransactionTrait
              * Quantity was specified, we must be
              * returning a partial amount of quantity
              */
-            return $this->returnedPartial($quantity);
+            return $this->returnedPartial($quantity, $reason, $cost);
         } else
         {
             /*
              * Looks like we're returning all of the stock
              */
-            return $this->returnedAll();
+            return $this->returnedAll($reason, $cost);
         }
     }
 
@@ -392,16 +399,19 @@ trait InventoryTransactionTrait
      * quantity then a full return is processed.
      *
      * @param $quantity
-     * @return bool|mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidTransactionStateException
      */
-    public function returnedPartial($quantity)
+    public function returnedPartial($quantity, $reason = '', $cost = 0)
     {
         /*
          * If the inserted quantity is equal to or greater than
          * the quantity inside the transaction,
          * they must be returning all of the stock
          */
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->returnedAll();
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->returnedAll($reason, $cost);
 
         /*
          * Only allow partial returns when the transaction state is
@@ -431,7 +441,7 @@ trait InventoryTransactionTrait
          */
         $this->quantity = $this->quantity - $quantity;
 
-        if($this->processStockPutAndSave($quantity, 'inventory.transaction.returned.partial'))
+        if($this->processStockPutAndSave($quantity, 'inventory.transaction.returned.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
         }
@@ -443,11 +453,12 @@ trait InventoryTransactionTrait
      * Marks a transaction as returned and places the stock that
      * was taken back into the inventory.
      *
-     * @return $this|bool
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
-     * @throws StockNotFoundException
      */
-    public function returnedAll()
+    public function returnedAll($reason = '', $cost = 0)
     {
         /*
          * Only allow returns when the transaction state is
@@ -473,7 +484,7 @@ trait InventoryTransactionTrait
          */
         $this->quantity = 0;
 
-        return $this->processStockPutAndSave($originalQuantity, 'inventory.transaction.removed');
+        return $this->processStockPutAndSave($originalQuantity, 'inventory.transaction.removed', $reason, $cost);
     }
 
     /**
@@ -484,13 +495,14 @@ trait InventoryTransactionTrait
      *
      * @param int $quantity
      * @param bool $backOrder
-     * @return $this|bool|mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|mixed|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
-     * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
-    public function reserved($quantity = 0, $backOrder = false)
+    public function reserved($quantity = 0, $backOrder = false, $reason = '', $cost = 0)
     {
         /*
          * Only allow a previous state of null, opened, back ordered, and checkout
@@ -510,7 +522,7 @@ trait InventoryTransactionTrait
 
         try
         {
-            return $this->processStockTakeAndSave($quantity, 'inventory.transaction.reserved');
+            return $this->processStockTakeAndSave($quantity, 'inventory.transaction.reserved', $reason, $cost);
         } catch(NotEnoughStockException $e)
         {
             /*
@@ -531,7 +543,6 @@ trait InventoryTransactionTrait
      *
      * @param $quantity
      * @throws InvalidQuantityException
-     * @throws StockIsSufficientException
      * @throws InvalidTransactionStateException
      * @return mixed
      */
@@ -554,11 +565,13 @@ trait InventoryTransactionTrait
      * from the stock. This will return false if there was not enough stock
      * to fill the back order, or an exception occurred.
      *
-     * @return $this|bool
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
      */
-    public function fillBackOrder()
+    public function fillBackOrder($reason = '', $cost = 0)
     {
         /*
          * Only allow a previous state of back-ordered
@@ -571,7 +584,7 @@ trait InventoryTransactionTrait
 
         try
         {
-            return $this->processStockTakeAndSave($this->quantity, 'inventory.transaction.back-order.filled');
+            return $this->processStockTakeAndSave($this->quantity, 'inventory.transaction.back-order.filled', $reason, $cost);
         } catch(NotEnoughStockException $e) {}
 
         return false;
@@ -611,24 +624,28 @@ trait InventoryTransactionTrait
      * quantity left to receive
      *
      * @param int $quantity
-     * @return mixed
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      */
-    public function received($quantity = 0)
+    public function received($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->receivedPartial($quantity);
+        if($quantity) return $this->receivedPartial($quantity, $reason, $cost);
 
-        return $this->receivedAll();
+        return $this->receivedAll($reason, $cost);
     }
 
     /**
      * Marks an order transaction as received, placing all the quantity from
      * the transaction into the stock
      *
-     * @return bool|$this
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
      */
-    public function receivedAll()
+    public function receivedAll($reason = '', $cost = 0)
     {
         /*
          * Only allow the previous state of ordered
@@ -643,7 +660,7 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED;
 
-        return $this->processStockPutAndSave($received, 'inventory.transaction.received');
+        return $this->processStockPutAndSave($received, 'inventory.transaction.received', $reason, $cost);
     }
 
     /**
@@ -657,13 +674,15 @@ trait InventoryTransactionTrait
      * of the transaction into the stock.
      *
      * @param $quantity
+     * @param string $reason
+     * @param int $cost
      * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
      */
-    public function receivedPartial($quantity)
+    public function receivedPartial($quantity, $reason = '', $cost = 0)
     {
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->receivedAll();
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->receivedAll($reason, $cost);
 
         /*
          * Only allow the previous state of ordered
@@ -684,7 +703,7 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED_PARTIAL;
 
-        if($this->processStockPutAndSave($left, 'inventory.transaction.received.partial'))
+        if($this->processStockPutAndSave($left, 'inventory.transaction.received.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
         }
@@ -693,15 +712,14 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Holds the specified amount of quantity from the inventory stock. This will remove
-     * the quantity from the stock and hold it inside the transaction until further action is taken.
-     *
      * @param $quantity
-     * @throws InvalidQuantityException
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
-     * @return mixed
      */
-    public function hold($quantity)
+    public function hold($quantity, $reason = '', $cost = 0)
     {
         $this->validatePreviousState(array(
             NULL,
@@ -712,7 +730,7 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_ON_HOLD;
 
-        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.hold');
+        return $this->processStockTakeAndSave($quantity, 'inventory.transaction.hold', $reason, $cost);
     }
 
     /**
@@ -722,25 +740,29 @@ trait InventoryTransactionTrait
      * held stock
      *
      * @param int $quantity
+     * @param string $reason
+     * @param int $cost
      * @throws InvalidTransactionStateException
-     * @return mixed
+     * @return $this|bool|InventoryTransactionTrait
      */
-    public function release($quantity = 0)
+    public function release($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->releasePartial($quantity);
+        if($quantity) return $this->releasePartial($quantity, $reason, $cost);
 
-        return $this->releaseAll();
+        return $this->releaseAll($reason, $cost);
     }
 
     /**
      * Releases an on-hold inventory transaction, placing all the quantity
      * in the transaction back into the stock
      *
-     * @return $this|bool
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
      */
-    public function releaseAll()
+    public function releaseAll($reason = '', $cost = 0)
     {
         /*
          * Only allow the previous state of on-hold
@@ -755,18 +777,24 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED;
 
-        return $this->processStockPutAndSave($released, 'inventory.transaction.released');
+        return $this->processStockPutAndSave($released, 'inventory.transaction.released', $reason, $cost);
     }
 
     /**
+     * Releases a partial amount of the specified quantity from the transaction
+     * and returns it to the previous state.
+     *
      * @param $quantity
-     * @return bool|$this
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidTransactionStateException
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
      */
-    public function releasePartial($quantity)
+    public function releasePartial($quantity, $reason = '', $cost = 0)
     {
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->releaseAll();
+        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->releaseAll($reason, $cost);
 
         $this->validatePreviousState(array(
             $this::STATE_INVENTORY_ON_HOLD,
@@ -778,7 +806,7 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED_PARTIAL;
 
-        if($this->processStockPutAndSave($quantity, 'inventory.transaction.released.partial'))
+        if($this->processStockPutAndSave($quantity, 'inventory.transaction.released.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
         }
@@ -803,9 +831,28 @@ trait InventoryTransactionTrait
      * @throws NotEnoughStockException
      * @return $this|bool|InventoryTransactionTrait
      */
-    public function remove($quantity = 0)
+    /**
+     * Removes the specified quantity from the stock for the current transaction.
+     *
+     * If the transaction state is current on-hold, and a quantity is given then a partial-remove
+     * will be triggered and the remaining quantity will be on-hold. If no quantity is given, then
+     * this will set the transaction state to removed and the stock will be permanently removed from
+     * the current stock.
+     *
+     * If the transaction state was open or null, and a quantity is given, then the specified quantity
+     * is permanently removed from the stock.
+     *
+     * @param int $quantity
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
+     * @throws InvalidQuantityException
+     * @throws InvalidTransactionStateException
+     * @throws NotEnoughStockException
+     */
+    public function remove($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->removePartial($quantity);
+        if($quantity) return $this->removePartial($quantity, $reason, $cost);
 
         return $this->removeAll();
     }
@@ -834,16 +881,21 @@ trait InventoryTransactionTrait
     }
 
     /**
-     *
+     * Removes a partial amount of quantity from the inventory. If the transactions
+     * previous state was on-hold, no inventory will be removed since the stock
+     * was already taken. If the previous state is null or opened, then it will
+     * remove the specified quantity from the stock
      *
      * @param $quantity
-     * @return $this|bool
+     * @param string $reason
+     * @param int $cost
+     * @return $this|bool|InventoryTransactionTrait
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
-    public function removePartial($quantity)
+    public function removePartial($quantity, $reason = '', $cost = 0)
     {
         /*
          * If a partial remove is called and quantity is given, then we are removing
@@ -883,7 +935,7 @@ trait InventoryTransactionTrait
 
             $this->quantity = $quantity;
 
-            return $this->processStockTakeAndSave($quantity, 'inventory.transaction.removed');
+            return $this->processStockTakeAndSave($quantity, 'inventory.transaction.removed', $reason, $cost);
         }
 
         return false;
@@ -1150,10 +1202,12 @@ trait InventoryTransactionTrait
      *
      * @param $quantity
      * @param string $event
+     * @param string $reason
+     * @param int $cost
      * @return $this|bool
      * @throws StockNotFoundException
      */
-    private function processStockPutAndSave($quantity, $event = '')
+    private function processStockPutAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
         $stock = $this->getStockRecord();
 
@@ -1161,7 +1215,7 @@ trait InventoryTransactionTrait
 
         try
         {
-            if($stock->put(floatval($quantity)) && $this->save())
+            if($stock->put(floatval($quantity), $reason, $cost) && $this->save())
             {
                 $this->dbCommitTransaction();
 
@@ -1185,10 +1239,12 @@ trait InventoryTransactionTrait
      *
      * @param $quantity
      * @param string $event
+     * @param string $reason
+     * @param int $cost
      * @return $this|bool
      * @throws StockNotFoundException
      */
-    private function processStockTakeAndSave($quantity, $event = '')
+    private function processStockTakeAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
         $stock = $this->getStockRecord();
 
@@ -1200,7 +1256,7 @@ trait InventoryTransactionTrait
 
         try
         {
-            if($stock->take(floatval($quantity)) && $this->save())
+            if($stock->take(floatval($quantity), $reason, $cost) && $this->save())
             {
                 $this->dbCommitTransaction();
 

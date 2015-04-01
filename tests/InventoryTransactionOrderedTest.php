@@ -18,10 +18,15 @@ class InventoryTransactionOrderedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->ordered(5)->received();
+        $transaction->ordered(5)->received(5, 'Received Order', 25);
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_ORDERED_RECEIVED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Received Order', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionOrderedReceivedPartial()

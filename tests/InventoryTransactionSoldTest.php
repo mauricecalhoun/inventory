@@ -8,10 +8,15 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->sold(5);
+        $transaction->sold(5, 'Sold some', 25);
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_SOLD, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Sold some', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionSoldNotEnoughStockFailure()

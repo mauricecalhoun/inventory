@@ -13,10 +13,15 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 
         DB::shouldReceive('commit')->once();
 
-        $transaction->checkout(5);
+        $transaction->checkout(5, 'Checking out', 25);
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Checking out', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionIsCheckout()

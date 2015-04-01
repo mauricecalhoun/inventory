@@ -8,10 +8,15 @@ class InventoryTransactionHoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->hold(10);
+        $transaction->hold(10, 'Holding', 25);
 
         $this->assertEquals(10, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_INVENTORY_ON_HOLD, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Holding', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionHoldInvalidQuantityException()

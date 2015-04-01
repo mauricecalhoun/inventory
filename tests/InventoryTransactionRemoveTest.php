@@ -8,10 +8,15 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->remove(5);
+        $transaction->remove(5, 'Removed from inventory', 25);
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_INVENTORY_REMOVED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Removed from inventory', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionRemovePartial()

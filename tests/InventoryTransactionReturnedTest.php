@@ -8,10 +8,15 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->sold(5)->returned();
+        $transaction->sold(5)->returned(5, 'Returned', 25);
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RETURNED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Returned', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionReturnedAllAfterSold()
