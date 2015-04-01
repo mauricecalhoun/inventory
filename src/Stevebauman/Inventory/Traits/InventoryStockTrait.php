@@ -119,6 +119,7 @@ trait InventoryStockTrait
 
             /*
              * Check if a reason has been set, if not let's retrieve the default change reason
+             * and set it on the model before it's updated
              */
             if( ! $model->reason) $model->setReason(Lang::get('inventory::reasons.change'));
         });
