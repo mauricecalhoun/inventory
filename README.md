@@ -62,7 +62,7 @@
 Inventory is a fully tested Laravel inventory solution. It provides the basics of inventory management using Eloquent such as:
 
 - Inventory item management
-- Inventory stock management
+- Inventory stock management (per location)
 - Inventory stock movement tracking
 - Inventory SKU generation
 - Inventory supplier management
