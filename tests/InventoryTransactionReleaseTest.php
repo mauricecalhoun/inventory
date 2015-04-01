@@ -8,10 +8,15 @@ class InventoryTransactionReleaseTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $transaction->hold(5)->release();
+        $transaction->hold(5)->release(null, 'Released', 25);
 
         $this->assertEquals(0, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_INVENTORY_RELEASED, $transaction->state);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('Released', $stock->reason);
+        $this->assertEquals(25, $stock->cost);
     }
 
     public function testInventoryTransactionReleasePartial()

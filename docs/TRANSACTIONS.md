@@ -2,7 +2,9 @@
 
 In update 1.4.*, inventory transactions were implemented. Transactions are a way of securely managing stock levels, and have
 several different uses depending on the situation. Every transaction automatically creates a history trail with user accountability, 
-so you're able to see the complete history of each transaction and who performed what for each state change.
+so you're able to see the complete history of each transaction and who performed what for each state change. On any transaction
+method that <b>modifies the stock in some way</b> accepts a `$reason` and `$cost` argument. These reasons and costs will be used
+when updating the stock record.
 
 ### Creating a transaction
 
@@ -34,6 +36,14 @@ a certain amount of stock is reserved for a user who requests it. For example, i
     echo $transaction->state; //Returns 'commerce-reserved'
     
     $transaction->isReserved(); // Returns true
+    
+If you'd like to automatically turn the transaction into a back order if stock isn't available when a reservation
+takes place, you can pass in `true` into the second parameter:
+
+    $transaction = $stock->newTransaction();
+    
+    // Turns into a back order if stock isn't sufficient
+    $transaction->reserved(500, $backOrder = true, $reason = 'User placed reservation', $cost = 25);
 
 This will remove 5 drinks from the stock so it is reserved for the user. The quantity is then stored inside the transaction.
 
@@ -64,7 +74,10 @@ If you've placed an order for more stock on a particular item, a typical order t
         
     $transaction = $stock->newTransaction();
     
-    $transaction->ordered(5);
+    $reason = 'Ordered 5 for maintenance';
+    $cost = 5;
+    
+    $transaction->ordered(5, $reason, $cost);
     
     echo $transaction->state; //Returns 'order-on-order'
             
@@ -80,7 +93,7 @@ This will place the transaction quantity inside the stock.
 If you've only received a partial amount of the order, you can also include an amount of quantity inside the `received()`
 function:
 
-    $transaction->received(2);
+    $transaction->received(2, $reason = 'Only received 2; Awaiting more', $cost = 5);
     
 This will add the amount received into the stock and the left over remaining stock to receive will be reset to an
 ordered transaction state. In this case the transaction would have 3 left to receive.
@@ -93,7 +106,7 @@ If you insert a quantity greater or equal to the amount inside the order, it wil
     
     $transaction->ordered(5);
     
-    $transaction->received(5000);
+    $transaction->received(5000, $reason = 'Received order 1005', $cost = 500.59);
     
     echo $transaction->state; //Returns 'order-received'
             
@@ -111,7 +124,7 @@ is easily possible using the transaction method `hold($quantity)`:
             
     $transaction = $stock->newTransaction();
     
-    $transaction->hold(20);
+    $transaction->hold(20, $reason = 'Holding 20 stock for maintenance job', $cost = 0);
     
     echo $transaction->state; //Returns 'inventory-on-hold'
             
@@ -123,17 +136,17 @@ we have access to do certain things with it:
 We can release a certain amount of quantity, which will return the amount of quantity specified back into the stock, and then
 return the transaction back into a 'hold' state, with the remainder of the stock.
 
-    $transaction->release(5);
+    $transaction->release(5, $reason = "Didn't need 5 of these", $cost = 0);
     echo $transaction->quantity; //Returns 15
 
 Using the method `release()` without specifying a quantity will release all of the quantity on the transaction and insert
 it back into the stock.
 
-    $transaction->release();
+    $transaction->release(null, $reason = 'Maintenance job cancelled, returned all stock', $cost = 0);
     echo $transaction->quantity; //Returns 0
     
     //Or
-    $transaction->releaseAll();
+    $transaction->releaseAll($reason = 'Maintenance job cancelled, returned all stock', $cost = 0);
     
     echo $transaction->state; //Returns 'inventory-released'
             
@@ -141,7 +154,7 @@ it back into the stock.
 
 If the held quantity was used, we can use the `remove($quantity)` method to permanently remove the stock:
 
-    $transaction->remove(5);
+    $transaction->remove(5, $reason = 'Needed 5 of these', $cost = 0);
     
     echo $transaction->quantity; //Returns 15
     
