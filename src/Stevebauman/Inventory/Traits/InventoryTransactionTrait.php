@@ -1083,22 +1083,7 @@ trait InventoryTransactionTrait
     {
         $this->state = $previousState;
 
-        $this->dbStartTransaction();
-
-        try
-        {
-            if($this->save())
-            {
-                $this->dbCommitTransaction();
-
-                return $this;
-            }
-        } catch(\Exception $e)
-        {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
+        return $this->processSave();
     }
 
     /**
@@ -1112,20 +1097,7 @@ trait InventoryTransactionTrait
     {
         $this->state = $this::STATE_COMMERCE_RESERVED;
 
-        try
-        {
-            if($this->save())
-            {
-                $this->dbCommitTransaction();
-
-                return $this;
-            }
-        } catch(\Exception $e)
-        {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
+        return $this->processSave('inventory.transaction.reserved');
     }
 
     /**
@@ -1138,20 +1110,7 @@ trait InventoryTransactionTrait
     {
         $this->state = $this::STATE_COMMERCE_CHECKOUT;
 
-        try
-        {
-            if($this->save())
-            {
-                $this->dbCommitTransaction();
-
-                return $this;
-            }
-        } catch(\Exception $e)
-        {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
+        return $this->processSave('inventory.transaction.checkout');
     }
 
     /**
