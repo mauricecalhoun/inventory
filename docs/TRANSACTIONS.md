@@ -2,7 +2,9 @@
 
 In update 1.4.*, inventory transactions were implemented. Transactions are a way of securely managing stock levels, and have
 several different uses depending on the situation. Every transaction automatically creates a history trail with user accountability, 
-so you're able to see the complete history of each transaction and who performed what for each state change. On any transaction
+so you're able to see the complete history of each transaction and who performed what for each state change.
+
+On any transaction
 method that <b>modifies the stock in some way</b> accepts a `$reason` and `$cost` argument. These reasons and costs will be used
 when updating the stock record. These arguments are <b>always</b> optional, and are only included in the methods below
 for demonstration.
