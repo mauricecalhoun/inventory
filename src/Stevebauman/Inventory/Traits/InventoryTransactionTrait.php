@@ -4,7 +4,6 @@ namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Exceptions\StockIsSufficientException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 use Stevebauman\Inventory\InventoryServiceProvider;
