@@ -15,6 +15,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
 
         $stock = $transaction->getStockRecord();
 
+        $this->assertEquals(15, $stock->quantity);
         $this->assertEquals('Sold some', $stock->reason);
         $this->assertEquals(25, $stock->cost);
     }
