@@ -38,7 +38,7 @@ trait UserIdentificationTrait
             {
                 if($class::check()) return $class::getUser()->id;
 
-            } elseif (class_exists('Illuminate\Auth'))
+            } elseif (class_exists('Illuminate\Auth') || class_exists('Illuminate\Support\Facades\Auth'))
             {
                 if(\Auth::check()) return \Auth::user()->getAuthIdentifier();
             }
