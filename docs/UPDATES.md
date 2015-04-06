@@ -135,6 +135,10 @@ On your `InventoryStock` model, you'll have to add another `hasMany` relationshi
 
 Now you're good to go to use the new update!
 
+### Updating from 1.4.* to 1.5.*
+
+No migrations were added to this release, you can jump to `1.5.*` with no issues.
+
 ### Upcoming Updates
 
 `1.6.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may
