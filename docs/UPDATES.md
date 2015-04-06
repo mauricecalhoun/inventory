@@ -139,6 +139,11 @@ Now you're good to go to use the new update!
 
 No migrations were added to this release, you can jump to `1.5.*` with no issues.
 
+However, the exception `Stevebauman\Inventory\Exceptions\StockIsSufficientException` has been removed.
+
+It is no longer thrown when there is enough stock for a back-order. Simply remove it from your
+try/catch statement.
+
 ### Upcoming Updates
 
 `1.6.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may
