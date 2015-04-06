@@ -285,6 +285,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_COMMERCE_CHECKOUT;
 
+        if( ! $reason) $reason = $this->getTransactionReason('checkout');
+
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.checkout', $reason, $cost);
     }
 
@@ -356,6 +358,8 @@ trait InventoryTransactionTrait
         $this->state = $this::STATE_COMMERCE_SOLD;
 
         $this->quantity = $quantity;
+
+        if( ! $reason) $reason = $this->getTransactionReason('sold-amount');
 
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.sold', $reason, $cost);
     }
@@ -440,6 +444,8 @@ trait InventoryTransactionTrait
          */
         $this->quantity = $this->quantity - $quantity;
 
+        if( ! $reason) $reason = $this->getTransactionReason('returned-partial');
+
         if($this->processStockPutAndSave($quantity, 'inventory.transaction.returned.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
@@ -483,6 +489,8 @@ trait InventoryTransactionTrait
          */
         $this->quantity = 0;
 
+        if( ! $reason) $reason = $this->getTransactionReason('returned');
+
         return $this->processStockPutAndSave($originalQuantity, 'inventory.transaction.removed', $reason, $cost);
     }
 
@@ -518,6 +526,8 @@ trait InventoryTransactionTrait
         $this->state = $this::STATE_COMMERCE_RESERVED;
 
         $this->quantity = $quantity;
+
+        if( ! $reason) $reason = $this->getTransactionReason('reserved');
 
         try
         {
@@ -580,6 +590,8 @@ trait InventoryTransactionTrait
         ), $this::STATE_COMMERCE_BACK_ORDER_FILLED);
 
         $this->state = $this::STATE_COMMERCE_BACK_ORDER_FILLED;
+
+        if( ! $reason) $reason = $this->getTransactionReason('back-order-filled');
 
         try
         {
@@ -659,6 +671,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED;
 
+        if( ! $reason) $reason = $this->getTransactionReason('received');
+
         return $this->processStockPutAndSave($received, 'inventory.transaction.received', $reason, $cost);
     }
 
@@ -702,6 +716,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED_PARTIAL;
 
+        if( ! $reason) $reason = $this->getTransactionReason('received-partial');
+
         if($this->processStockPutAndSave($left, 'inventory.transaction.received.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
@@ -728,6 +744,8 @@ trait InventoryTransactionTrait
         $this->quantity = $quantity;
 
         $this->state = $this::STATE_INVENTORY_ON_HOLD;
+
+        if( ! $reason) $reason = $this->getTransactionReason('hold');
 
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.hold', $reason, $cost);
     }
@@ -776,6 +794,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED;
 
+        if( ! $reason) $reason = $this->getTransactionReason('released');
+
         return $this->processStockPutAndSave($released, 'inventory.transaction.released', $reason, $cost);
     }
 
@@ -805,6 +825,8 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED_PARTIAL;
 
+        if( ! $reason) $reason = $this->getTransactionReason('released-partial');
+
         if($this->processStockPutAndSave($quantity, 'inventory.transaction.released.partial', $reason, $cost))
         {
             return $this->returnToPreviousState($previousState);
@@ -813,23 +835,6 @@ trait InventoryTransactionTrait
         return false;
     }
 
-    /**
-     * Removes the specified quantity from the stock for the current transaction.
-     *
-     * If the transaction state is current on-hold, and a quantity is given then a partial-remove
-     * will be triggered and the remaining quantity will be on-hold. If no quantity is given, then
-     * this will set the transaction state to removed and the stock will be permanently removed from
-     * the current stock.
-     *
-     * If the transaction state was open or null, and a quantity is given, then the specified quantity
-     * is permanently removed from the stock.
-     *
-     * @param int $quantity
-     * @throws InvalidQuantityException
-     * @throws InvalidTransactionStateException
-     * @throws NotEnoughStockException
-     * @return $this|bool|InventoryTransactionTrait
-     */
     /**
      * Removes the specified quantity from the stock for the current transaction.
      *
@@ -934,6 +939,8 @@ trait InventoryTransactionTrait
 
             $this->quantity = $quantity;
 
+            if( ! $reason) $reason = $this->getTransactionReason('removed');
+
             return $this->processStockTakeAndSave($quantity, 'inventory.transaction.removed', $reason, $cost);
         }
 
@@ -973,6 +980,8 @@ trait InventoryTransactionTrait
         $this->state = $this::STATE_CANCELLED;
 
         $event = 'inventory.transaction.cancelled';
+
+        if( ! $reason) $reason = $this->getTransactionReason('cancelled');
 
         switch($beforeState)
         {
@@ -1126,9 +1135,11 @@ trait InventoryTransactionTrait
      */
     private function validatePreviousState($allowedStates = array(), $toState)
     {
-        if(!in_array($this->state, $allowedStates))
+        if( ! in_array($this->state, $allowedStates))
         {
-            $message = "Transaction state: $this->state cannot be changed to a: $toState state.";
+            $fromState = ( ! $this->state ? 'NULL' : $this->state);
+
+            $message = "Transaction state: $fromState cannot be changed to a: $toState state.";
 
             throw new InvalidTransactionStateException($message);
         }
@@ -1146,7 +1157,7 @@ trait InventoryTransactionTrait
      */
     private function validateStateIsAvailable($state)
     {
-        if(!in_array($state, $this->getAvailableStates()))
+        if( ! in_array($state, $this->getAvailableStates()))
         {
             $message = "State: $state is an invalid state, and cannot be used.";
 
@@ -1180,9 +1191,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, array(
-                    'transaction' => $this,
-                ));
+                if($event) $this->fireEvent($event, ['transaction' => $this ]);
 
                 return $this;
             }
@@ -1221,9 +1230,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, array(
-                    'transaction' => $this,
-                ));
+                if($event) $this->fireEvent($event, ['transaction' => $this ]);
 
                 return $this;
             }
@@ -1252,9 +1259,7 @@ trait InventoryTransactionTrait
             {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, array(
-                    'transaction' => $this,
-                ));
+                if($event) $this->fireEvent($event, ['transaction' => $this ]);
 
                 return $this;
             }
@@ -1286,6 +1291,26 @@ trait InventoryTransactionTrait
         );
 
         return $this->histories()->create($insert);
+    }
+
+    /**
+     * Returns a default transaction reason from
+     * the specified key in the reasons lang file
+     *
+     * @param $key
+     * @return string
+     */
+    private function getTransactionReason($key)
+    {
+        $reason = Lang::get('inventory::reasons.transactions.' . $key, ['id' => $this->id, 'date' => date('Y-m-d H:i:s')]);
+
+        /*
+         * Make sure we set the reason to null if no translation is found
+         * so the default stock change reason is used
+         */
+        if( ! $reason) $reason = null;
+
+        return $reason;
     }
 
     /**

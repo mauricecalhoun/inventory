@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 
 class InventoryTransactionCheckoutTest extends InventoryTransactionTest
@@ -205,5 +206,18 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_CHECKOUT, $transaction->state);
+    }
+
+    public function testInventoryTransactionCheckoutDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->checkout(5);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }

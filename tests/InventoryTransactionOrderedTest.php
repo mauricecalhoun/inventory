@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 
 class InventoryTransactionOrderedTest extends InventoryTransactionTest
 {
@@ -65,5 +66,18 @@ class InventoryTransactionOrderedTest extends InventoryTransactionTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->reserved(5)->ordered(10);
+    }
+
+    public function testInventoryTransactionReceivedDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->ordered(5)->received(5);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }

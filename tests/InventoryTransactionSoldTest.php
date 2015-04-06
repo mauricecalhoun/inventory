@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 
 class InventoryTransactionSoldTest extends InventoryTransactionTest
 {
@@ -104,5 +105,18 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->soldAmount(5000);
+    }
+
+    public function testInventoryTransactionSoldDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->sold(5);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }

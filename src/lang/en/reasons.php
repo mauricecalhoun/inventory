@@ -36,5 +36,9 @@ return array(
         'released' => 'Release occurred on Transaction ID :id on :date',
 
         'released-partial' => 'Partial release occurred on Transaction ID :id on :date',
+
+        'removed' => 'Removal occurred on Transaction ID :id on :date',
+
+        'cancelled' => 'Cancellation occurred on Transaction ID :id on :date'
     ),
 );

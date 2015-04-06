@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 
 class InventoryTransactionBackOrderTest extends InventoryTransactionTest
 {
@@ -46,5 +47,20 @@ class InventoryTransactionBackOrderTest extends InventoryTransactionTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->checkout(5)->backOrder(3);
+    }
+
+    public function testInventoryTransactionBackOrderFilledDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->backOrder(5);
+
+        $stock = $transaction->getStockRecord();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->fillBackOrder();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }

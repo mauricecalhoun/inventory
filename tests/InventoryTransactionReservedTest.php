@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 
 class InventoryTransactionReservedTest extends InventoryTransactionTest
 {
@@ -55,5 +56,18 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
 
         $this->assertEquals(5, $transaction->quantity);
         $this->assertEquals(InventoryTransaction::STATE_COMMERCE_RESERVED, $transaction->state);
+    }
+
+    public function testInventoryTransactionReservedDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->reserved(5);
+
+        $stock = $transaction->getStockRecord();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }

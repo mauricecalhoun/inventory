@@ -212,8 +212,9 @@ trait InventoryStockTrait
      * @param $quantity
      * @param $reason
      * @param int $cost
-     * @return InventoryStock
+     * @return InventoryStockTrait
      */
+    /**
     public function add($quantity, $reason = '', $cost = 0)
     {
         return $this->put($quantity, $reason, $cost);
@@ -487,8 +488,8 @@ trait InventoryStockTrait
         $total = $putting + $before;
 
         /*
-         * If the updated total and the beginning total are the same, we'll check if
-         * duplicate movements are allowed
+         * If the updated total and the beginning total are the same,
+         * we'll check if duplicate movements are allowed
          */
         if($total == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) return $this;
 

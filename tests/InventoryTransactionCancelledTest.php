@@ -1,6 +1,7 @@
 <?php
 
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Illuminate\Support\Facades\Lang;
 
 class InventoryTransactionCancelledTest extends InventoryTransactionTest
 {
@@ -79,5 +80,20 @@ class InventoryTransactionCancelledTest extends InventoryTransactionTest
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->cancel()->cancel();
+    }
+
+    public function testInventoryTransactionCancelledDefaultReason()
+    {
+        $transaction = $this->newTransaction();
+
+        $transaction->checkout(5);
+
+        $stock = $transaction->getStockRecord();
+
+        Lang::shouldReceive('get')->once()->andReturn('test');
+
+        $transaction->cancel();
+
+        $this->assertEquals('test', $stock->reason);
     }
 }
