@@ -214,7 +214,6 @@ trait InventoryStockTrait
      * @param int $cost
      * @return InventoryStockTrait
      */
-    /**
     public function add($quantity, $reason = '', $cost = 0)
     {
         return $this->put($quantity, $reason, $cost);
