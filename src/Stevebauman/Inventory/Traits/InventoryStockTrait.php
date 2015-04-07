@@ -346,7 +346,7 @@ trait InventoryStockTrait
 
     /**
      * Returns a movement depending on the specified argument. If an object is supplied, it is checked if it
-     * is an instance of the model InventoryStockMovement, if a numeric value is entered, it is retrieved by it's ID
+     * is an instance of an eloquent model. If a numeric value is entered, it is retrieved by it's ID.
      *
      * @param $movement
      * @return \Illuminate\Support\Collection|null|static
