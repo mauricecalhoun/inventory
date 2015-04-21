@@ -6,7 +6,7 @@
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/stevebauman/inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 [![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
-[![License](https://img.shields.io/github/license/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
+[![License](https://img.shields.io/packagist/l/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 
 ## Index
 
