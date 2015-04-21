@@ -1,12 +1,12 @@
 ![Inventory Banner]
 (https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
-[![Code Climate](https://codeclimate.com/github/stevebauman/inventory/badges/gpa.svg)](https://codeclimate.com/github/stevebauman/inventory)
-[![Travis CI](https://travis-ci.org/stevebauman/inventory.svg?branch=master)](https://travis-ci.org/stevebauman/inventory)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/stevebauman/inventory/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/stevebauman/inventory/v/stable.svg)](https://packagist.org/packages/stevebauman/inventory)
-[![Total Downloads](https://poser.pugx.org/stevebauman/inventory/downloads.svg)](https://packagist.org/packages/stevebauman/inventory)
-[![License](https://poser.pugx.org/stevebauman/inventory/license.svg)](https://packagist.org/packages/stevebauman/inventory)
+[![Code Climate](https://img.shields.io/codeclimate/github/stevebauman/inventory.svg?style=flat-square)](https://codeclimate.com/github/stevebauman/inventory)
+[![Travis CI](https://img.shields.io/travis/stevebauman/inventory.svg?style=flat-square)](https://travis-ci.org/stevebauman/inventory)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/stevebauman/inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
+[![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
+[![License](https://img.shields.io/github/license/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 
 ## Index
 
