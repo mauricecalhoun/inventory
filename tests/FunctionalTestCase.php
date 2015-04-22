@@ -33,14 +33,12 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
 
     public function migrateTables()
     {
-        DB::schema()->create('users', function ($table)
-        {
+        DB::schema()->create('users', function ($table) {
             $table->increments('id');
             $table->string('name');
         });
 
-        DB::schema()->create('metrics', function ($table)
-        {
+        DB::schema()->create('metrics', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
@@ -52,8 +50,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('set null');
         });
 
-        DB::schema()->create('categories', function ($table)
-        {
+        DB::schema()->create('categories', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('parent_id')->nullable()->index();
@@ -69,8 +66,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->string('belongs_to')->nullable();
         });
 
-        DB::schema()->create('locations', function ($table)
-        {
+        DB::schema()->create('locations', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('parent_id')->nullable()->index();
@@ -86,8 +82,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->string('belongs_to')->nullable();
         });
 
-        DB::schema()->create('inventories', function ($table)
-        {
+        DB::schema()->create('inventories', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->softDeletes();
@@ -110,8 +105,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('cascade');
         });
 
-        DB::schema()->create('inventory_stocks', function ($table)
-        {
+        DB::schema()->create('inventory_stocks', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
@@ -141,8 +135,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('cascade');
         });
 
-        DB::schema()->create('inventory_stock_movements', function ($table)
-        {
+        DB::schema()->create('inventory_stock_movements', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('stock_id')->unsigned();
@@ -161,8 +154,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('set null');
         });
 
-        DB::schema()->create('inventory_skus', function ($table)
-        {
+        DB::schema()->create('inventory_skus', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('inventory_id')->unsigned();
@@ -178,8 +170,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->unique(['code']);
         });
 
-        DB::schema()->create('suppliers', function($table)
-        {
+        DB::schema()->create('suppliers', function ($table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -197,8 +188,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->string('contact_email')->nullable();
         });
 
-        DB::schema()->create('inventory_suppliers', function ($table)
-        {
+        DB::schema()->create('inventory_suppliers', function ($table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -214,8 +204,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('cascade');
         });
 
-        DB::schema()->create('inventory_transactions', function ($table)
-        {
+        DB::schema()->create('inventory_transactions', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
@@ -233,8 +222,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('cascade');
         });
 
-        DB::schema()->create('inventory_transaction_histories', function ($table)
-        {
+        DB::schema()->create('inventory_transaction_histories', function ($table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();

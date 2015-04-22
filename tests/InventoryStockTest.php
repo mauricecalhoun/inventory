@@ -82,7 +82,7 @@ class InventoryStockTest extends InventoryTest
         $stock = $this->newInventoryStock();
 
         $this->assertTrue($stock->isValidQuantity(500));
-        $this->assertTrue($stock->isValidQuantity(5,000));
+        $this->assertTrue($stock->isValidQuantity(5, 000));
         $this->assertTrue($stock->isValidQuantity('500'));
         $this->assertTrue($stock->isValidQuantity('500.00'));
         $this->assertTrue($stock->isValidQuantity('500.0'));

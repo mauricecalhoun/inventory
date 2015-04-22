@@ -49,11 +49,9 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * If the package method exists, we're using Laravel 4, if not, we're on 5
          */
-        if(method_exists($this, 'package'))
-        {
+        if (method_exists($this, 'package')) {
             $this->package('stevebauman/inventory');
-        } else
-        {
+        } else {
             /*
              * Set the proper configuration separator since
              * retrieving configuration values in packages
@@ -97,24 +95,21 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * Bind the install command
          */
-        $this->app->bind('inventory:install', function()
-        {
+        $this->app->bind('inventory:install', function () {
             return new Commands\InstallCommand();
         });
 
         /*
          * Bind the check-schema command
          */
-        $this->app->bind('inventory:check-schema', function()
-        {
+        $this->app->bind('inventory:check-schema', function () {
             return new Commands\SchemaCheckCommand();
         });
 
         /*
          * Bind the run migrations command
          */
-        $this->app->bind('inventory:run-migrations', function()
-        {
+        $this->app->bind('inventory:run-migrations', function () {
             return new Commands\RunMigrationsCommand();
         });
 
@@ -142,5 +137,4 @@ class InventoryServiceProvider extends ServiceProvider
     {
         return ['inventory'];
     }
-
 }

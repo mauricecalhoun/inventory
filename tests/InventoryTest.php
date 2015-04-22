@@ -180,10 +180,9 @@ class InventoryTest extends FunctionalTestCase
         $this->newInventory();
 
         $item = Inventory::find(1);
-        $item->category_id = NULL;
+        $item->category_id = null;
         $item->save();
 
         $this->assertFalse($item->hasCategory());
     }
-
 }

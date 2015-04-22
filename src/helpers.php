@@ -6,29 +6,22 @@
  * @param $node
  * @return string
  */
-if (!function_exists('renderNode'))
-{
+if (! function_exists('renderNode')) {
     function renderNode($node)
     {
         $html = '';
 
-        if (is_object($node))
-        {
+        if (is_object($node)) {
             $ancestors = $node->getAncestorsAndSelf();
 
-            foreach ($ancestors as $ancestor)
-            {
-                if ($node->equals($ancestor) && $node->isRoot())
-                {
+            foreach ($ancestors as $ancestor) {
+                if ($node->equals($ancestor) && $node->isRoot()) {
                     $html .= sprintf('<b>%s</b>', $ancestor->name);
-                } elseif ($node->equals($ancestor))
-                {
+                } elseif ($node->equals($ancestor)) {
                     $html .= sprintf(' > <b>%s</b>', $ancestor->name);
-                } elseif ($ancestor->isRoot())
-                {
+                } elseif ($ancestor->isRoot()) {
                     $html .= sprintf('%s', $ancestor->name);
-                } else
-                {
+                } else {
                     $html .= sprintf(' > %s', $ancestor->name);
                 }
             }

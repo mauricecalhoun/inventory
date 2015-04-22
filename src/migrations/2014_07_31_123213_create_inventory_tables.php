@@ -12,8 +12,7 @@ class CreateInventoryTables extends Migration
      */
     public function up()
     {
-        Schema::create('inventories', function (Blueprint $table)
-        {
+        Schema::create('inventories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->softDeletes();
@@ -36,8 +35,7 @@ class CreateInventoryTables extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('inventory_stocks', function (Blueprint $table)
-        {
+        Schema::create('inventory_stocks', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -68,8 +66,7 @@ class CreateInventoryTables extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('inventory_stock_movements', function (Blueprint $table)
-        {
+        Schema::create('inventory_stock_movements', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 

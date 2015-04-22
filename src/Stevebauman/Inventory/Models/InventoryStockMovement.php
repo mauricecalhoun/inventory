@@ -32,5 +32,4 @@ class InventoryStockMovement extends BaseModel
     {
         return $this->belongsTo('Stevebauman\Inventory\Models\InventoryStock', 'stock_id', 'id');
     }
-
 }

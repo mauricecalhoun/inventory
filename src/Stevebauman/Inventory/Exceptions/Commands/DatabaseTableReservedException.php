@@ -2,5 +2,6 @@
 
 namespace Stevebauman\Inventory\Exceptions\Commands;
 
-
-class DatabaseTableReservedException extends \Exception {}
+class DatabaseTableReservedException extends \Exception
+{
+}

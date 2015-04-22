@@ -21,11 +21,9 @@ trait LocationTrait
      */
     public function getLocation($location)
     {
-        if ($this->isLocation($location))
-        {
+        if ($this->isLocation($location)) {
             return $location;
-        } else
-        {
+        } else {
             $message = Lang::get('inventory::exceptions.InvalidLocationException', [
                 'location' => $location,
             ]);
