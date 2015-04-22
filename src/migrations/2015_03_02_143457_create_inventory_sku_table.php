@@ -26,7 +26,7 @@ class CreateInventorySkuTable extends Migration
             /*
              * Make sure each SKU is unique
              */
-            $table->unique(array('code'));
+            $table->unique(['code']);
         });
 	}
 

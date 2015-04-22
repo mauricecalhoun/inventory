@@ -16,13 +16,13 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
     {
         $db = new DB;
 
-        $db->addConnection(array(
+        $db->addConnection([
             'driver'    => 'sqlite',
             'database'  => ':memory:',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-        ));
+        ]);
 
         $db->bootEloquent();
 
@@ -124,7 +124,7 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
              * This allows only one stock to be created
              * on a single location
              */
-            $table->unique(array('inventory_id', 'location_id'));
+            $table->unique(['inventory_id', 'location_id']);
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')
@@ -173,7 +173,7 @@ abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
             /*
              * Make sure each SKU is unique
              */
-            $table->unique(array('code'));
+            $table->unique(['code']);
         });
 
         DB::schema()->create('suppliers', function($table)

@@ -14,11 +14,11 @@ trait DatabaseTransactionTrait
     /**
      * Alias for firing events easily that implement this trait
      *
-     * @param string $name
+     * @param $name
      * @param array $args
-     * @return type
+     * @return mixed
      */
-    protected function fireEvent($name, $args = array())
+    protected function fireEvent($name, $args = [])
     {
         return Event::fire((string) $name, (array) $args);
     }

@@ -10,7 +10,7 @@ class Supplier extends BaseModel
 
     protected $table = 'suppliers';
 
-    protected $fillable = array(
+    protected $fillable = [
         'name',
         'address',
         'postal_code',
@@ -23,7 +23,7 @@ class Supplier extends BaseModel
         'contact_phone',
         'contact_fax',
         'contact_email',
-    );
+    ];
 
     /**
      * The belongsToMany items relationship

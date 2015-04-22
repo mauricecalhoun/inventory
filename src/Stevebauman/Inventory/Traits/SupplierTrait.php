@@ -28,7 +28,7 @@ trait SupplierTrait
      * @param array $items
      * @return bool
      */
-    public function addItems($items = array())
+    public function addItems($items = [])
     {
         foreach($items as $item)
         {
@@ -75,7 +75,7 @@ trait SupplierTrait
      * @param array $items
      * @return bool
      */
-    public function removeItems($items = array())
+    public function removeItems($items = [])
     {
         foreach($items as $item)
         {
@@ -115,10 +115,10 @@ trait SupplierTrait
 
             $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.supplier.attached', array(
+            $this->fireEvent('inventory.supplier.attached', [
                 'item' => $item,
                 'supplier' => $this,
-            ));
+            ]);
 
             return true;
         } catch(\Exception $e)
@@ -145,10 +145,10 @@ trait SupplierTrait
 
             $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.supplier.detached', array(
+            $this->fireEvent('inventory.supplier.detached', [
                 'item' => $item,
                 'supplier' => $this,
-            ));
+            ]);
 
             return true;
         } catch(\Exception $e)
@@ -176,9 +176,9 @@ trait SupplierTrait
             return $item;
         } else
         {
-            $message = Lang::get('inventory.exceptions.InvalidItemException', array(
+            $message = Lang::get('inventory.exceptions.InvalidItemException', [
                 'item' => $item,
-            ));
+            ]);
 
             throw new InvalidItemException($message);
         }

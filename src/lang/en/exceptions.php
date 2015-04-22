@@ -5,7 +5,7 @@
  *
  * @author Steve Bauman
  */
-return array(
+return [
 
     'InvalidLocationException' => 'Location :location is invalid',
 
@@ -27,4 +27,4 @@ return array(
 
     'SkuAlreadyExistsException' => 'An SKU already exists for this item',
 
-);
+];

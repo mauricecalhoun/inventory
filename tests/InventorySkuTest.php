@@ -55,9 +55,9 @@ class InventorySkuTest extends InventoryTest
 
         $category = Category::find(1);
 
-        $update = array(
+        $update = [
             'name' => 'D',
-        );
+        ];
 
         $category->update($update);
 
@@ -177,7 +177,7 @@ class InventorySkuTest extends InventoryTest
 
         $category = Category::find(1);
 
-        $category->update(array('name' => '     '));
+        $category->update(['name' => '     ']);
 
         $item = Inventory::find(1);
 

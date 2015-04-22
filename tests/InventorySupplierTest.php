@@ -7,7 +7,7 @@ class InventorySupplierTest extends InventoryTest
 {
     protected function newSupplier()
     {
-        return Supplier::create(array(
+        return Supplier::create([
             'name' => 'Supplier',
             'address' => '123 Fake St',
             'postal_code' => '12345',
@@ -20,7 +20,7 @@ class InventorySupplierTest extends InventoryTest
             'contact_phone' => '555 555 5555',
             'contact_fax' => '555 555 5555',
             'contact_email' => 'john.doe@email.com',
-        ));
+        ]);
     }
 
     public function testInventorySupplierAttach()

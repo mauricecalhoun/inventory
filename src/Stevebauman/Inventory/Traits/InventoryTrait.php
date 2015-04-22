@@ -234,9 +234,9 @@ trait InventoryTrait
              */
             if ($this->getStockFromLocation($location))
             {
-                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
+                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
-                ));
+                ]);
 
                 throw new StockAlreadyExistsException($message);
             }
@@ -245,14 +245,14 @@ trait InventoryTrait
             /*
              * A stock record wasn't found on this location, we'll create one
              */
-            $insert = array(
+            $insert = [
                 'inventory_id' => $this->id,
                 'location_id' => $location->id,
                 'quantity' => 0,
                 'aisle' => $aisle,
                 'row' => $row,
                 'bin' => $bin,
-            );
+            ];
 
             /*
              * We'll perform a create so a 'first' movement is generated
@@ -287,9 +287,9 @@ trait InventoryTrait
              */
             if ($this->getStockFromLocation($location))
             {
-                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', array(
+                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
-                ));
+                ]);
 
                 throw new StockAlreadyExistsException($message);
             }
@@ -346,9 +346,9 @@ trait InventoryTrait
      * @return array
      * @throws StockNotFoundException
      */
-    public function takeFromManyLocations($quantity, $locations = array(), $reason = '')
+    public function takeFromManyLocations($quantity, $locations = [], $reason = '')
     {
-        $stocks = array();
+        $stocks = [];
 
         foreach ($locations as $location)
         {
@@ -381,7 +381,7 @@ trait InventoryTrait
      * @param string $reason
      * @return array
      */
-    public function removeFromManyLocations($quantity, $locations = array(), $reason = '')
+    public function removeFromManyLocations($quantity, $locations = [], $reason = '')
     {
         return $this->takeFromManyLocations($quantity, $locations, $reason);
     }
@@ -419,9 +419,9 @@ trait InventoryTrait
      * @return array
      * @throws StockNotFoundException
      */
-    public function putToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0)
+    public function putToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
     {
-        $stocks = array();
+        $stocks = [];
 
         foreach ($locations as $location)
         {
@@ -456,7 +456,7 @@ trait InventoryTrait
      * @param int $cost
      * @return array
      */
-    public function addToManyLocations($quantity, $locations = array(), $reason = '', $cost = 0)
+    public function addToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
     {
         return $this->putToManyLocations($quantity, $locations, $reason, $cost);
     }
@@ -500,9 +500,9 @@ trait InventoryTrait
             return $stock;
         } else
         {
-            $message = Lang::get('inventory::exceptions.StockNotFoundException', array(
+            $message = Lang::get('inventory::exceptions.StockNotFoundException', [
                 'location' => $location->name,
-            ));
+            ]);
 
             throw new StockNotFoundException($message);
         }
@@ -720,7 +720,7 @@ trait InventoryTrait
      * @param array $suppliers
      * @return bool
      */
-    public function addSuppliers($suppliers = array())
+    public function addSuppliers($suppliers = [])
     {
         foreach($suppliers as $supplier) $this->addSupplier($supplier);
 
@@ -748,7 +748,7 @@ trait InventoryTrait
      * @param array $suppliers
      * @return bool
      */
-    public function removeSuppliers($suppliers = array())
+    public function removeSuppliers($suppliers = [])
     {
         foreach($suppliers as $supplier) $this->removeSupplier($supplier);
 
@@ -801,9 +801,9 @@ trait InventoryTrait
             return $supplier;
         } else
         {
-            $message = Lang::get('inventory::exceptions.InvalidSupplierException', array(
+            $message = Lang::get('inventory::exceptions.InvalidSupplierException', [
                 'supplier' => $supplier,
-            ));
+            ]);
 
             throw new InvalidSupplierException($message);
         }
@@ -822,10 +822,10 @@ trait InventoryTrait
 
         try
         {
-            $insert = array(
+            $insert = [
                 'inventory_id' => $inventoryId,
                 'code' => $code,
-            );
+            ];
 
             $record = $this->sku()->create($insert);
 
@@ -833,9 +833,9 @@ trait InventoryTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.sku.generated', array(
+                $this->fireEvent('inventory.sku.generated', [
                     'item' => $this,
-                ));
+                ]);
 
                 return $record;
             }
@@ -893,10 +893,10 @@ trait InventoryTrait
 
             $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.supplier.attached', array(
+            $this->fireEvent('inventory.supplier.attached', [
                 'item' => $this,
                 'supplier' => $supplier,
-            ));
+            ]);
 
             return true;
         } catch(\Exception $e)
@@ -923,10 +923,10 @@ trait InventoryTrait
 
             $this->dbCommitTransaction();
 
-            $this->fireEvent('inventory.supplier.detached', array(
+            $this->fireEvent('inventory.supplier.detached', [
                 'item' => $this,
                 'supplier' => $supplier,
-            ));
+            ]);
 
             return true;
         } catch(\Exception $e)

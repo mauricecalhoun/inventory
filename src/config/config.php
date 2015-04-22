@@ -3,7 +3,7 @@
 /**
  * The Inventory configuration file
  */
-return array(
+return [
 
     /*
      * Allows inventory changes to occur without a user responsible
@@ -64,4 +64,4 @@ return array(
      */
     'sku_separator' => '',
 
-);
+];

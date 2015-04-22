@@ -15,13 +15,13 @@ class InventoryTransaction extends BaseModel implements StateableInterface
 
     protected $table = 'inventory_transactions';
 
-    protected $fillable = array(
+    protected $fillable = [
         'user_id',
         'stock_id',
         'name',
         'state',
         'quantity',
-    );
+    ];
 
     /**
      * The belongsTo stock relationship

@@ -121,11 +121,11 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * Register the commands
          */
-        $this->commands(array(
+        $this->commands([
             'inventory:install',
             'inventory:check-schema',
             'inventory:run-migrations',
-        ));
+        ]);
 
         /*
          * Include the helpers file
@@ -140,7 +140,7 @@ class InventoryServiceProvider extends ServiceProvider
     */
     public function provides()
     {
-        return array('inventory');
+        return ['inventory'];
     }
 
 }

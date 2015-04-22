@@ -299,9 +299,9 @@ trait InventoryStockTrait
     {
         if($this->isPositive($quantity)) return true;
 
-        $message = Lang::get('inventory::exceptions.InvalidQuantityException', array(
+        $message = Lang::get('inventory::exceptions.InvalidQuantityException', [
             'quantity' => $quantity,
-        ));
+        ]);
 
         throw new InvalidQuantityException($message);
     }
@@ -322,10 +322,10 @@ trait InventoryStockTrait
          */
         if($this->quantity == $quantity || $this->quantity > $quantity) return true;
 
-        $message = Lang::get('inventory::exceptions.NotEnoughStockException', array(
+        $message = Lang::get('inventory::exceptions.NotEnoughStockException', [
             'quantity' => $quantity,
             'available' => $this->quantity,
-        ));
+        ]);
 
         throw new NotEnoughStockException($message);
     }
@@ -362,9 +362,9 @@ trait InventoryStockTrait
             return $this->getMovementById($movement);
         } else
         {
-            $message = Lang::get('inventory::exceptions.InvalidMovementException', array(
+            $message = Lang::get('inventory::exceptions.InvalidMovementException', [
                 'movement' => $movement,
-            ));
+            ]);
 
             throw new InvalidMovementException($message);
         }
@@ -458,9 +458,9 @@ trait InventoryStockTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.stock.taken', array(
+                $this->fireEvent('inventory.stock.taken', [
                     'stock' => $this,
-                ));
+                ]);
 
                 return $this;
             }
@@ -506,9 +506,9 @@ trait InventoryStockTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.stock.added', array(
+                $this->fireEvent('inventory.stock.added', [
                     'stock' => $this,
-                ));
+                ]);
 
                 return $this;
             }
@@ -539,9 +539,9 @@ trait InventoryStockTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.stock.moved', array(
+                $this->fireEvent('inventory.stock.moved', [
                     'stock' => $this,
-                ));
+                ]);
 
                 return $this;
             }
@@ -567,10 +567,10 @@ trait InventoryStockTrait
 
         $this->quantity = $movement->before;
 
-        $reason = Lang::get('inventory::reasons.rollback', array(
+        $reason = Lang::get('inventory::reasons.rollback', [
             'id' => $movement->getOriginal('id'),
             'date' => $movement->getOriginal('created_at'),
-        ));
+        ]);
 
         $this->setReason($reason);
 
@@ -589,9 +589,9 @@ trait InventoryStockTrait
             {
                 $this->dbCommitTransaction();
 
-                $this->fireEvent('inventory.stock.rollback', array(
+                $this->fireEvent('inventory.stock.rollback', [
                     'stock' => $this,
-                ));
+                ]);
 
                 return $this;
             }
@@ -620,7 +620,7 @@ trait InventoryStockTrait
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $rollbacks = array();
+        $rollbacks = [];
 
         foreach($movements as $movement) $rollbacks = $this->processRollbackOperation($movement);
 
@@ -638,13 +638,13 @@ trait InventoryStockTrait
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
     {
-        $insert = array(
+        $insert = [
             'stock_id' => $this->id,
             'before' => $before,
             'after' => $after,
             'reason' => $reason,
             'cost' => $cost,
-        );
+        ];
 
         return $this->movements()->create($insert);
     }

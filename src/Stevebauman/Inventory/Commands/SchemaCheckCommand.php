@@ -30,14 +30,14 @@ class SchemaCheckCommand extends Command
     /*
      * Holds the database tables that must be present before install
      */
-    protected $dependencies = array(
+    protected $dependencies = [
         'users' => 'Sentry, Sentinel or Laravel',
-    );
+    ];
 
     /*
      * Holds the required database tables necessary to install
      */
-    protected $reserved = array(
+    protected $reserved = [
         'metrics',
         'locations',
         'categories',
@@ -49,7 +49,7 @@ class SchemaCheckCommand extends Command
         'inventory_suppliers',
         'inventory_transactions',
         'inventory_transaction_histories',
-    );
+    ];
 
     /**
      * Executes the console command

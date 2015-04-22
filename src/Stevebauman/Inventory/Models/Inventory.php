@@ -14,13 +14,13 @@ class Inventory extends BaseModel
 
     protected $table = 'inventories';
 
-    protected $fillable = array(
+    protected $fillable = [
         'user_id',
         'category_id',
         'metric_id',
         'name',
         'description'
-    );
+    ];
 
     /**
      * The hasOne category relationship

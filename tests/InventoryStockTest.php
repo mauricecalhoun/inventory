@@ -63,9 +63,9 @@ class InventoryStockTest extends InventoryTest
     {
         $stock = $this->newInventoryStock();
 
-        $newLocation = Location::create(array(
+        $newLocation = Location::create([
             'name' => 'New Location'
-        ));
+        ]);
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
         Event::shouldReceive('fire')->once();
@@ -175,7 +175,7 @@ class InventoryStockTest extends InventoryTest
 
         $location = Location::find(1);
 
-        $item->takeFromManyLocations(10, array($location));
+        $item->takeFromManyLocations(10, [$location]);
 
         $stock = InventoryStock::find(1);
 
@@ -190,7 +190,7 @@ class InventoryStockTest extends InventoryTest
 
         $location = Location::find(1);
 
-        $item->addToManyLocations(10, array($location));
+        $item->addToManyLocations(10, [$location]);
 
         $stock = InventoryStock::find(1);
 

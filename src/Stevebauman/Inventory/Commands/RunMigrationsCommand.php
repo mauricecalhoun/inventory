@@ -31,8 +31,8 @@ class RunMigrationsCommand extends Command
      */
     public function fire()
     {
-        $this->call('migrate', array(
+        $this->call('migrate', [
             '--path' => 'vendor/stevebauman/inventory/src/migrations',
-        ));
+        ]);
     }
 }

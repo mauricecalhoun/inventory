@@ -53,7 +53,7 @@ class CreateInventoryTables extends Migration
              * This allows only one inventory stock to be created
              * on a single location
              */
-            $table->unique(array('inventory_id', 'location_id'));
+            $table->unique(['inventory_id', 'location_id']);
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('restrict')

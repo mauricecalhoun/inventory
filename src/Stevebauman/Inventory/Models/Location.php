@@ -12,11 +12,11 @@ class Location extends Node
 {
     protected $table = 'locations';
 
-    protected $fillable = array(
+    protected $fillable = [
         'name'
-    );
+    ];
 
-    protected $scoped = array('belongs_to');
+    protected $scoped = ['belongs_to'];
 
     /**
      * The hasMany stocks relationship

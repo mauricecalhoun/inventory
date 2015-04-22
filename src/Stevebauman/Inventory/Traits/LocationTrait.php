@@ -26,9 +26,9 @@ trait LocationTrait
             return $location;
         } else
         {
-            $message = Lang::get('inventory::exceptions.InvalidLocationException', array(
+            $message = Lang::get('inventory::exceptions.InvalidLocationException', [
                 'location' => $location,
-            ));
+            ]);
 
             throw new InvalidLocationException($message);
         }

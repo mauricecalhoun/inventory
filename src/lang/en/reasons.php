@@ -5,7 +5,7 @@
  *
  * @author Steve Bauman
  */
-return array(
+return [
 
     'first_record' => 'First Item Record; Stock Increase',
 
@@ -13,7 +13,7 @@ return array(
 
     'rollback' => 'Rolled back to movement ID: :id on :date',
 
-    'transactions' => array(
+    'transactions' => [
 
         'checkout' => 'Checkout occurred on Transaction ID: :id on :date',
 
@@ -40,5 +40,5 @@ return array(
         'removed' => 'Removal occurred on Transaction ID :id on :date',
 
         'cancelled' => 'Cancellation occurred on Transaction ID :id on :date'
-    ),
-);
+    ],
+];

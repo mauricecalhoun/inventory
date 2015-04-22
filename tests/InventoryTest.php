@@ -33,36 +33,36 @@ class InventoryTest extends FunctionalTestCase
 
         $category = $this->newCategory();
 
-        return Inventory::create(array(
+        return Inventory::create([
             'metric_id' => $metric->id,
             'category_id' => $category->id,
             'name' => 'Milk',
             'description' => 'Delicious Milk',
-        ));
+        ]);
     }
 
 
     protected function newMetric()
     {
-        return Metric::create(array(
+        return Metric::create([
             'name' => 'Litres',
             'symbol' => 'L'
-        ));
+        ]);
     }
 
     protected function newLocation()
     {
-        return Location::create(array(
+        return Location::create([
             'name' => 'Warehouse',
             'belongs_to' => ''
-        ));
+        ]);
     }
 
     protected function newCategory()
     {
-        return Category::create(array(
+        return Category::create([
             'name' => 'Drinks'
-        ));
+        ]);
     }
 
     public function testMetricCreation()

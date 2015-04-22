@@ -14,14 +14,14 @@ class InventoryStock extends BaseModel
 
     protected $table = 'inventory_stocks';
 
-    protected $fillable = array(
+    protected $fillable = [
         'inventory_id',
         'location_id',
         'quantity',
         'aisle',
         'row',
         'bin',
-    );
+    ];
 
     /**
      * The belongsTo inventory item relationship

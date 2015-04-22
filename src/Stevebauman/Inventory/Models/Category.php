@@ -12,9 +12,9 @@ class Category extends Node
 {
     protected $table = 'categories';
 
-    protected $fillable = array(
+    protected $fillable = [
         'name'
-    );
+    ];
 
-    protected $scoped = array('belongs_to');
+    protected $scoped = ['belongs_to'];
 }
