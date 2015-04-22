@@ -1297,7 +1297,7 @@ trait InventoryTransactionTrait
      * Returns a default transaction reason from
      * the specified key in the reasons lang file
      *
-     * @param $key
+     * @param string $key
      * @return string
      */
     private function getTransactionReason($key)

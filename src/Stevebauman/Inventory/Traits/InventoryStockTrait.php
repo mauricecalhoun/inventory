@@ -375,7 +375,7 @@ trait InventoryStockTrait
      * instance with the current stock ID attached.
      *
      * @param string $name
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function newTransaction($name = '')
     {
@@ -634,7 +634,7 @@ trait InventoryStockTrait
      * @param $after
      * @param string $reason
      * @param $cost
-     * @return static
+     * @return \Illuminate\Database\Eloquent\Model
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
     {
