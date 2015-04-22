@@ -1,5 +1,7 @@
 <?php
 
+namespace Stevebauman\Inventory\Tests;
+
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 

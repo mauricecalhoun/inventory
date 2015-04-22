@@ -1,8 +1,10 @@
 <?php
 
+namespace Stevebauman\Inventory\Tests;
+
 use Illuminate\Database\Capsule\Manager as DB;
 
-abstract class FunctionalTestCase extends PHPUnit_Framework_TestCase
+abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

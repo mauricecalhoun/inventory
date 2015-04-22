@@ -1,5 +1,7 @@
 <?php
 
+namespace Stevebauman\Inventory\Tests;
+
 use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;

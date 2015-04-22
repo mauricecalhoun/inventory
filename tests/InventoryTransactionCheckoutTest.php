@@ -1,5 +1,7 @@
 <?php
 
+namespace Stevebauman\Inventory\Tests;
+
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;

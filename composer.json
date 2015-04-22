@@ -22,15 +22,22 @@
     "suggest": {
         "venturecraft/revisionable": "Allows the tracking of inventory stock location and category changes"
     },
+    "archive": {
+      "exclude": ["/tests"]
+    },
     "autoload": {
-        "classmap": [
-            "src",
-            "tests"
-        ],
-        "psr-0": {
+        "psr-4": {
             "Stevebauman\\Inventory\\": [
                 "src"
             ]
+        }
+    },
+    "autoload-dev":
+    {
+        "psr-4": {
+          "Stevebauman\\Inventory\\Tests\\": [
+              "tests"
+          ]
         }
     },
     "minimum-stability": "stable"
