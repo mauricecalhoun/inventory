@@ -62,5 +62,4 @@ class InventoryStock extends BaseModel
     {
         return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
     }
-
 }

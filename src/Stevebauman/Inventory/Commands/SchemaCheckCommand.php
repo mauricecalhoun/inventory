@@ -59,9 +59,13 @@ class SchemaCheckCommand extends Command
      */
     public function fire()
     {
-        if($this->checkDependencies()) $this->info('Schema dependencies are all good!');
+        if ($this->checkDependencies()) {
+            $this->info('Schema dependencies are all good!');
+        }
 
-        if($this->checkReserved()) $this->info('Schema reserved tables are all good!');
+        if ($this->checkReserved()) {
+            $this->info('Schema reserved tables are all good!');
+        }
     }
 
     /**
@@ -72,10 +76,8 @@ class SchemaCheckCommand extends Command
      */
     private function checkDependencies()
     {
-        foreach($this->dependencies as $table => $suppliedBy)
-        {
-            if(!$this->tableExists($table))
-            {
+        foreach ($this->dependencies as $table => $suppliedBy) {
+            if (! $this->tableExists($table)) {
                 $message = sprintf('Table: %s does not exist, it is supplied by %s', $table, $suppliedBy);
 
                 throw new DependencyNotFoundException($message);
@@ -93,10 +95,8 @@ class SchemaCheckCommand extends Command
      */
     private function checkReserved()
     {
-        foreach($this->reserved as $table)
-        {
-            if($this->tableExists($table))
-            {
+        foreach ($this->reserved as $table) {
+            if ($this->tableExists($table)) {
                 $message = sprintf('Table: %s already exists. This table is reserved. Please remove the database table to continue', $table);
 
                 throw new DatabaseTableReservedException($message);

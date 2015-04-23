@@ -52,20 +52,19 @@ trait InventoryTransactionTrait
      */
     public static function bootInventoryTransactionTrait()
     {
-        static::creating(function($model)
-        {
+        static::creating(function ($model) {
             $model->user_id = static::getCurrentUserId();
 
-            if(!$model->beforeState) $model->beforeState = $model::STATE_OPENED;
+            if (! $model->beforeState) {
+                $model->beforeState = $model::STATE_OPENED;
+            }
         });
 
-        static::created(function($model)
-        {
+        static::created(function ($model) {
             $model->postCreate();
         });
 
-        static::updating(function($model)
-        {
+        static::updating(function ($model) {
             /*
              * Retrieve the original quantity before it was updated,
              * so we can create generate an update with it
@@ -74,8 +73,7 @@ trait InventoryTransactionTrait
             $model->beforeQuantity = $model->getOriginal('quantity');
         });
 
-        static::updated(function($model)
-        {
+        static::updated(function ($model) {
             $model->postUpdate();
         });
     }
@@ -104,8 +102,7 @@ trait InventoryTransactionTrait
          * Make sure the transaction does not already have a history record
          * before creating one
          */
-        if(!$this->getLastHistoryRecord())
-        {
+        if (! $this->getLastHistoryRecord()) {
             $this->generateTransactionHistory($this->beforeState, $this->state, 0, $this->quantity);
         }
     }
@@ -274,18 +271,22 @@ trait InventoryTransactionTrait
          * to use the checkout function
          */
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_RESERVED,
         ], $this::STATE_COMMERCE_CHECKOUT);
 
-        if($this->isReservation()) return $this->checkoutFromReserved();
+        if ($this->isReservation()) {
+            return $this->checkoutFromReserved();
+        }
 
         $this->quantity = $quantity;
 
         $this->state = $this::STATE_COMMERCE_CHECKOUT;
 
-        if( ! $reason) $reason = $this->getTransactionReason('checkout');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('checkout');
+        }
 
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.checkout', $reason, $cost);
     }
@@ -309,7 +310,9 @@ trait InventoryTransactionTrait
          * If a quantity is specified, we must be using a new transaction, so we'll
          * set the quantity attribute
          */
-        if($quantity) return $this->soldAmount($quantity, $reason, $cost);
+        if ($quantity) {
+            return $this->soldAmount($quantity, $reason, $cost);
+        }
 
         /*
          * Make sure the previous state of the transaction was
@@ -348,7 +351,7 @@ trait InventoryTransactionTrait
          * Only allow a previous state of null or opened
          */
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
         ], $this::STATE_COMMERCE_SOLD);
 
@@ -359,7 +362,9 @@ trait InventoryTransactionTrait
 
         $this->quantity = $quantity;
 
-        if( ! $reason) $reason = $this->getTransactionReason('sold-amount');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('sold-amount');
+        }
 
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.sold', $reason, $cost);
     }
@@ -380,15 +385,13 @@ trait InventoryTransactionTrait
      */
     public function returned($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity)
-        {
+        if ($quantity) {
             /*
              * Quantity was specified, we must be
              * returning a partial amount of quantity
              */
             return $this->returnedPartial($quantity, $reason, $cost);
-        } else
-        {
+        } else {
             /*
              * Looks like we're returning all of the stock
              */
@@ -414,7 +417,9 @@ trait InventoryTransactionTrait
          * the quantity inside the transaction,
          * they must be returning all of the stock
          */
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->returnedAll($reason, $cost);
+        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+            return $this->returnedAll($reason, $cost);
+        }
 
         /*
          * Only allow partial returns when the transaction state is
@@ -444,10 +449,11 @@ trait InventoryTransactionTrait
          */
         $this->quantity = $this->quantity - $quantity;
 
-        if( ! $reason) $reason = $this->getTransactionReason('returned-partial');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('returned-partial');
+        }
 
-        if($this->processStockPutAndSave($quantity, 'inventory.transaction.returned.partial', $reason, $cost))
-        {
+        if ($this->processStockPutAndSave($quantity, 'inventory.transaction.returned.partial', $reason, $cost)) {
             return $this->returnToPreviousState($previousState);
         }
 
@@ -489,7 +495,9 @@ trait InventoryTransactionTrait
          */
         $this->quantity = 0;
 
-        if( ! $reason) $reason = $this->getTransactionReason('returned');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('returned');
+        }
 
         return $this->processStockPutAndSave($originalQuantity, 'inventory.transaction.removed', $reason, $cost);
     }
@@ -515,31 +523,35 @@ trait InventoryTransactionTrait
          * Only allow a previous state of null, opened, back ordered, and checkout
          */
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_BACK_ORDERED,
             $this::STATE_COMMERCE_CHECKOUT,
         ], $this::STATE_COMMERCE_RESERVED);
 
-        if($this->isCheckout()) return $this->reservedFromCheckout();
+        if ($this->isCheckout()) {
+            return $this->reservedFromCheckout();
+        }
 
         $this->state = $this::STATE_COMMERCE_RESERVED;
 
         $this->quantity = $quantity;
 
-        if( ! $reason) $reason = $this->getTransactionReason('reserved');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('reserved');
+        }
 
-        try
-        {
+        try {
             return $this->processStockTakeAndSave($quantity, 'inventory.transaction.reserved', $reason, $cost);
-        } catch(NotEnoughStockException $e)
-        {
+        } catch (NotEnoughStockException $e) {
             /*
              * Looks like there wasn't enough stock to reserve the
              * specified quantity. If backOrder is true, we'll
              * create a back order for this quantity
              */
-            if($backOrder) return $this->backOrder($quantity);
+            if ($backOrder) {
+                return $this->backOrder($quantity);
+            }
 
             throw new NotEnoughStockException($e);
         }
@@ -558,7 +570,7 @@ trait InventoryTransactionTrait
     public function backOrder($quantity)
     {
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
         ], $this::STATE_COMMERCE_BACK_ORDERED);
 
@@ -591,12 +603,14 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_COMMERCE_BACK_ORDER_FILLED;
 
-        if( ! $reason) $reason = $this->getTransactionReason('back-order-filled');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('back-order-filled');
+        }
 
-        try
-        {
+        try {
             return $this->processStockTakeAndSave($this->quantity, 'inventory.transaction.back-order.filled', $reason, $cost);
-        } catch(NotEnoughStockException $e) {}
+        } catch (NotEnoughStockException $e) {
+        }
 
         return false;
     }
@@ -616,7 +630,7 @@ trait InventoryTransactionTrait
          * Only allow previous states of null, opened, and partially received order
          */
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
             $this::STATE_ORDERED_RECEIVED_PARTIAL,
         ], $this::STATE_ORDERED_PENDING);
@@ -641,7 +655,9 @@ trait InventoryTransactionTrait
      */
     public function received($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->receivedPartial($quantity, $reason, $cost);
+        if ($quantity) {
+            return $this->receivedPartial($quantity, $reason, $cost);
+        }
 
         return $this->receivedAll($reason, $cost);
     }
@@ -671,7 +687,9 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED;
 
-        if( ! $reason) $reason = $this->getTransactionReason('received');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('received');
+        }
 
         return $this->processStockPutAndSave($received, 'inventory.transaction.received', $reason, $cost);
     }
@@ -695,7 +713,9 @@ trait InventoryTransactionTrait
      */
     public function receivedPartial($quantity, $reason = '', $cost = 0)
     {
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->receivedAll($reason, $cost);
+        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+            return $this->receivedAll($reason, $cost);
+        }
 
         /*
          * Only allow the previous state of ordered
@@ -716,10 +736,11 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_ORDERED_RECEIVED_PARTIAL;
 
-        if( ! $reason) $reason = $this->getTransactionReason('received-partial');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('received-partial');
+        }
 
-        if($this->processStockPutAndSave($left, 'inventory.transaction.received.partial', $reason, $cost))
-        {
+        if ($this->processStockPutAndSave($left, 'inventory.transaction.received.partial', $reason, $cost)) {
             return $this->returnToPreviousState($previousState);
         }
 
@@ -737,7 +758,7 @@ trait InventoryTransactionTrait
     public function hold($quantity, $reason = '', $cost = 0)
     {
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
         ], $this::STATE_INVENTORY_ON_HOLD);
 
@@ -745,7 +766,9 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_ON_HOLD;
 
-        if( ! $reason) $reason = $this->getTransactionReason('hold');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('hold');
+        }
 
         return $this->processStockTakeAndSave($quantity, 'inventory.transaction.hold', $reason, $cost);
     }
@@ -764,7 +787,9 @@ trait InventoryTransactionTrait
      */
     public function release($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->releasePartial($quantity, $reason, $cost);
+        if ($quantity) {
+            return $this->releasePartial($quantity, $reason, $cost);
+        }
 
         return $this->releaseAll($reason, $cost);
     }
@@ -794,7 +819,9 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED;
 
-        if( ! $reason) $reason = $this->getTransactionReason('released');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('released');
+        }
 
         return $this->processStockPutAndSave($released, 'inventory.transaction.released', $reason, $cost);
     }
@@ -813,7 +840,9 @@ trait InventoryTransactionTrait
      */
     public function releasePartial($quantity, $reason = '', $cost = 0)
     {
-        if($quantity == $this->quantity || $quantity > $this->quantity) return $this->releaseAll($reason, $cost);
+        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+            return $this->releaseAll($reason, $cost);
+        }
 
         $this->validatePreviousState([
             $this::STATE_INVENTORY_ON_HOLD,
@@ -825,10 +854,11 @@ trait InventoryTransactionTrait
 
         $this->state = $this::STATE_INVENTORY_RELEASED_PARTIAL;
 
-        if( ! $reason) $reason = $this->getTransactionReason('released-partial');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('released-partial');
+        }
 
-        if($this->processStockPutAndSave($quantity, 'inventory.transaction.released.partial', $reason, $cost))
-        {
+        if ($this->processStockPutAndSave($quantity, 'inventory.transaction.released.partial', $reason, $cost)) {
             return $this->returnToPreviousState($previousState);
         }
 
@@ -856,7 +886,9 @@ trait InventoryTransactionTrait
      */
     public function remove($quantity = 0, $reason = '', $cost = 0)
     {
-        if($quantity) return $this->removePartial($quantity, $reason, $cost);
+        if ($quantity) {
+            return $this->removePartial($quantity, $reason, $cost);
+        }
 
         return $this->removeAll();
     }
@@ -906,9 +938,10 @@ trait InventoryTransactionTrait
          * a partial amount from the on hold transaction. Otherwise we are just processing
          * a transaction for removing a quantity from the current stock
          */
-        if($this->isOnHold())
-        {
-            if($quantity == $this->quantity || $quantity > $this->quantity) return $this->removeAll();
+        if ($this->isOnHold()) {
+            if ($quantity == $this->quantity || $quantity > $this->quantity) {
+                return $this->removeAll();
+            }
 
             $this->validatePreviousState([
                 $this::STATE_INVENTORY_ON_HOLD,
@@ -920,18 +953,16 @@ trait InventoryTransactionTrait
 
             $this->state = $this::STATE_INVENTORY_REMOVED_PARTIAL;
 
-            if($this->processSave('inventory.transaction.removed.partial'))
-            {
+            if ($this->processSave('inventory.transaction.removed.partial')) {
                 return $this->returnToPreviousState($previousState);
             }
-        } else
-        {
+        } else {
             /*
              * We must be processing a pure removal transaction, make sure
              * previous state was null or opened
              */
             $this->validatePreviousState([
-                NULL,
+                null,
                 $this::STATE_OPENED,
             ], $this::STATE_INVENTORY_REMOVED);
 
@@ -939,7 +970,9 @@ trait InventoryTransactionTrait
 
             $this->quantity = $quantity;
 
-            if( ! $reason) $reason = $this->getTransactionReason('removed');
+            if (! $reason) {
+                $reason = $this->getTransactionReason('removed');
+            }
 
             return $this->processStockTakeAndSave($quantity, 'inventory.transaction.removed', $reason, $cost);
         }
@@ -964,7 +997,7 @@ trait InventoryTransactionTrait
     public function cancel($reason = '', $cost = 0)
     {
         $this->validatePreviousState([
-            NULL,
+            null,
             $this::STATE_OPENED,
             $this::STATE_COMMERCE_CHECKOUT,
             $this::STATE_COMMERCE_RESERVED,
@@ -981,10 +1014,11 @@ trait InventoryTransactionTrait
 
         $event = 'inventory.transaction.cancelled';
 
-        if( ! $reason) $reason = $this->getTransactionReason('cancelled');
+        if (! $reason) {
+            $reason = $this->getTransactionReason('cancelled');
+        }
 
-        switch($beforeState)
-        {
+        switch ($beforeState) {
             case $this::STATE_COMMERCE_CHECKOUT:
                 return $this->processStockPutAndSave($beforeQuantity, $event, $reason, $cost);
             case $this::STATE_COMMERCE_RESERVED:
@@ -1004,7 +1038,9 @@ trait InventoryTransactionTrait
      */
     public function hasStock()
     {
-        if($this->stock) return true;
+        if ($this->stock) {
+            return true;
+        }
 
         return false;
     }
@@ -1019,7 +1055,9 @@ trait InventoryTransactionTrait
      */
     public function getStockRecord()
     {
-        if($this->hasStock()) return $this->stock;
+        if ($this->hasStock()) {
+            return $this->stock;
+        }
 
         $message = "Transaction is not associated with a stock";
 
@@ -1045,7 +1083,9 @@ trait InventoryTransactionTrait
     {
         $record = $this->histories()->orderBy('created_at', 'DESC')->first();
 
-        if($record) return $record;
+        if ($record) {
+            return $record;
+        }
 
         return false;
     }
@@ -1059,8 +1099,7 @@ trait InventoryTransactionTrait
      */
     public function setQuantityAttribute($quantity)
     {
-        if( ! $this->isPositive($quantity))
-        {
+        if (! $this->isPositive($quantity)) {
             $message = Lang::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'exceptions.InvalidQuantityException');
 
             throw new InvalidQuantityException($message);
@@ -1135,9 +1174,8 @@ trait InventoryTransactionTrait
      */
     private function validatePreviousState($allowedStates = [], $toState)
     {
-        if( ! in_array($this->state, $allowedStates))
-        {
-            $fromState = ( ! $this->state ? 'NULL' : $this->state);
+        if (! in_array($this->state, $allowedStates)) {
+            $fromState = (! $this->state ? 'NULL' : $this->state);
 
             $message = "Transaction state: $fromState cannot be changed to a: $toState state.";
 
@@ -1157,8 +1195,7 @@ trait InventoryTransactionTrait
      */
     private function validateStateIsAvailable($state)
     {
-        if( ! in_array($state, $this->getAvailableStates()))
-        {
+        if (! in_array($state, $this->getAvailableStates())) {
             $message = "State: $state is an invalid state, and cannot be used.";
 
             throw new InvalidTransactionStateException($message);
@@ -1185,18 +1222,17 @@ trait InventoryTransactionTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if($stock->put(floatval($quantity), $reason, $cost) && $this->save())
-            {
+        try {
+            if ($stock->put(floatval($quantity), $reason, $cost) && $this->save()) {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, ['transaction' => $this ]);
+                if ($event) {
+                    $this->fireEvent($event, ['transaction' => $this ]);
+                }
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -1224,18 +1260,17 @@ trait InventoryTransactionTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if($stock->take(floatval($quantity), $reason, $cost) && $this->save())
-            {
+        try {
+            if ($stock->take(floatval($quantity), $reason, $cost) && $this->save()) {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, ['transaction' => $this ]);
+                if ($event) {
+                    $this->fireEvent($event, ['transaction' => $this ]);
+                }
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -1253,18 +1288,17 @@ trait InventoryTransactionTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
-            if($this->save())
-            {
+        try {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
-                if($event) $this->fireEvent($event, ['transaction' => $this ]);
+                if ($event) {
+                    $this->fireEvent($event, ['transaction' => $this ]);
+                }
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -1308,7 +1342,9 @@ trait InventoryTransactionTrait
          * Make sure we set the reason to null if no translation is found
          * so the default stock change reason is used
          */
-        if( ! $reason) $reason = null;
+        if (! $reason) {
+            $reason = null;
+        }
 
         return $reason;
     }

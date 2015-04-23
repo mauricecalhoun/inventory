@@ -20,8 +20,7 @@ trait InventoryTransactionHistoryTrait
      */
     public static function bootInventoryTransactionHistoryTrait()
     {
-        static::creating(function ($model)
-        {
+        static::creating(function ($model) {
             $model->user_id = static::getCurrentUserId();
         });
     }

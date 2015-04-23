@@ -27,23 +27,25 @@ trait UserIdentificationTrait
         /*
          * Check if we're allowed to return no user ID to the model, if so we'll return NULL
          */
-        if (Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_no_user')) return NULL;
+        if (Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_no_user')) {
+            return null;
+        }
 
         /*
          * Accountability is enabled, let's try and retrieve the current users ID
          */
-        try
-        {
-            if(class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel'))
-            {
-                if($class::check()) return $class::getUser()->id;
-
-            } elseif (class_exists('Illuminate\Auth') || class_exists('Illuminate\Support\Facades\Auth'))
-            {
-                if(\Auth::check()) return \Auth::user()->getAuthIdentifier();
+        try {
+            if (class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
+                if ($class::check()) {
+                    return $class::getUser()->id;
+                }
+            } elseif (class_exists('Illuminate\Auth') || class_exists('Illuminate\Support\Facades\Auth')) {
+                if (\Auth::check()) {
+                    return \Auth::user()->getAuthIdentifier();
+                }
             }
-
-        } catch (\Exception $e){}
+        } catch (\Exception $e) {
+        }
 
         /*
          * Couldn't get the current logged in users ID, throw exception

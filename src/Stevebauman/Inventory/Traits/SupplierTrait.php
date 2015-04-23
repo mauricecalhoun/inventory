@@ -30,8 +30,7 @@ trait SupplierTrait
      */
     public function addItems($items = [])
     {
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $this->addItem($item);
         }
 
@@ -61,8 +60,7 @@ trait SupplierTrait
     {
         $items = $this->items()->get();
 
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $this->removeItem($item);
         }
 
@@ -77,8 +75,7 @@ trait SupplierTrait
      */
     public function removeItems($items = [])
     {
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $this->removeItem($item);
         }
 
@@ -109,8 +106,7 @@ trait SupplierTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
+        try {
             $this->items()->attach($item);
 
             $this->dbCommitTransaction();
@@ -121,8 +117,7 @@ trait SupplierTrait
             ]);
 
             return true;
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -139,8 +134,7 @@ trait SupplierTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
+        try {
             $this->items()->detach($item);
 
             $this->dbCommitTransaction();
@@ -151,8 +145,7 @@ trait SupplierTrait
             ]);
 
             return true;
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -168,14 +161,11 @@ trait SupplierTrait
      */
     public function getItem($item)
     {
-        if($this->isNumeric($item))
-        {
+        if ($this->isNumeric($item)) {
             return $this->getItemById($item);
-        } else if($this->isModel($item))
-        {
+        } elseif ($this->isModel($item)) {
             return $item;
-        } else
-        {
+        } else {
             $message = Lang::get('inventory.exceptions.InvalidItemException', [
                 'item' => $item,
             ]);

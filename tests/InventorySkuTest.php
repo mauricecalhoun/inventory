@@ -146,7 +146,7 @@ class InventorySkuTest extends InventoryTest
     {
         $item = $this->newInventory();
 
-        $item->category_id = NULL;
+        $item->category_id = null;
         $item->save();
 
         $this->assertFalse($item->generateSku());

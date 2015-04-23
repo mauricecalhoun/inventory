@@ -2,5 +2,6 @@
 
 namespace Stevebauman\Inventory\Exceptions\Commands;
 
-
-class DependencyNotFoundException extends \Exception {}
+class DependencyNotFoundException extends \Exception
+{
+}

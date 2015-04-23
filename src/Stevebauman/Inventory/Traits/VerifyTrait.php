@@ -27,7 +27,9 @@ trait VerifyTrait
      */
     private function isPositive($number)
     {
-        if($this->isNumeric($number)) return ($number >= 0 ? true : false);
+        if ($this->isNumeric($number)) {
+            return ($number >= 0 ? true : false);
+        }
     }
 
     /**

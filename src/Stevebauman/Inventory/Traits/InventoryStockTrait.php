@@ -93,23 +93,22 @@ trait InventoryStockTrait
      */
     public static function bootInventoryStockTrait()
     {
-        static::creating(function($model)
-        {
+        static::creating(function ($model) {
             $model->user_id = $model->getCurrentUserId();
 
             /*
              * Check if a reason has been set, if not let's retrieve the default first entry reason
              */
-            if( ! $model->reason) $model->reason = Lang::get('inventory::reasons.first_record');
+            if (! $model->reason) {
+                $model->reason = Lang::get('inventory::reasons.first_record');
+            }
         });
 
-        static::created(function($model)
-        {
+        static::created(function ($model) {
             $model->postCreate();
         });
 
-        static::updating(function($model)
-        {
+        static::updating(function ($model) {
             /*
              * Retrieve the original quantity before it was updated,
              * so we can create generate an update with it
@@ -119,11 +118,12 @@ trait InventoryStockTrait
             /*
              * Check if a reason has been set, if not let's retrieve the default change reason
              */
-            if( ! $model->reason) $model->reason = Lang::get('inventory::reasons.change');
+            if (! $model->reason) {
+                $model->reason = Lang::get('inventory::reasons.change');
+            }
         });
 
-        static::updated(function($model)
-        {
+        static::updated(function ($model) {
             $model->postUpdate();
         });
     }
@@ -138,8 +138,7 @@ trait InventoryStockTrait
         /*
          * Only create a first record movement if one isn't created already
          */
-        if( ! $this->getLastMovement())
-        {
+        if (! $this->getLastMovement()) {
             /*
              * Generate the movement
              */
@@ -169,8 +168,7 @@ trait InventoryStockTrait
      */
     public function updateQuantity($quantity, $reason= '', $cost = 0)
     {
-        if($this->isValidQuantity($quantity))
-        {
+        if ($this->isValidQuantity($quantity)) {
             return $this->processUpdateQuantityOperation($quantity, $reason, $cost);
         }
     }
@@ -200,8 +198,7 @@ trait InventoryStockTrait
      */
     public function take($quantity, $reason = '', $cost = 0)
     {
-        if($this->isValidQuantity($quantity) && $this->hasEnoughStock($quantity))
-        {
+        if ($this->isValidQuantity($quantity) && $this->hasEnoughStock($quantity)) {
             return $this->processTakeOperation($quantity, $reason, $cost);
         }
     }
@@ -230,8 +227,7 @@ trait InventoryStockTrait
      */
     public function put($quantity, $reason = '', $cost = 0)
     {
-        if($this->isValidQuantity($quantity))
-        {
+        if ($this->isValidQuantity($quantity)) {
             return $this->processPutOperation($quantity, $reason, $cost);
         }
     }
@@ -257,16 +253,16 @@ trait InventoryStockTrait
      * @param bool $recursive
      * @return $this|bool|InventoryStockTrait
      */
-    public function rollback($movement = NULL, $recursive = false)
+    public function rollback($movement = null, $recursive = false)
     {
-        if($movement)
-        {
+        if ($movement) {
             return $this->rollbackMovement($movement, $recursive);
-        } else
-        {
+        } else {
             $movement = $this->getLastMovement();
 
-            if($movement) return $this->processRollbackOperation($movement, $recursive);
+            if ($movement) {
+                return $this->processRollbackOperation($movement, $recursive);
+            }
         }
 
         return false;
@@ -297,7 +293,9 @@ trait InventoryStockTrait
      */
     public function isValidQuantity($quantity)
     {
-        if($this->isPositive($quantity)) return true;
+        if ($this->isPositive($quantity)) {
+            return true;
+        }
 
         $message = Lang::get('inventory::exceptions.InvalidQuantityException', [
             'quantity' => $quantity,
@@ -320,7 +318,9 @@ trait InventoryStockTrait
          * Using double equals for validation of complete value only, not variable type. For example:
          * '20' (string) equals 20 (int)
          */
-        if($this->quantity == $quantity || $this->quantity > $quantity) return true;
+        if ($this->quantity == $quantity || $this->quantity > $quantity) {
+            return true;
+        }
 
         $message = Lang::get('inventory::exceptions.NotEnoughStockException', [
             'quantity' => $quantity,
@@ -339,7 +339,9 @@ trait InventoryStockTrait
     {
         $movement = $this->movements()->orderBy('created_at', 'DESC')->first();
 
-        if($movement) return $movement;
+        if ($movement) {
+            return $movement;
+        }
 
         return false;
     }
@@ -354,14 +356,11 @@ trait InventoryStockTrait
      */
     public function getMovement($movement)
     {
-        if($this->isModel($movement))
-        {
+        if ($this->isModel($movement)) {
             return $movement;
-        } elseif(is_numeric($movement))
-        {
+        } elseif (is_numeric($movement)) {
             return $this->getMovementById($movement);
-        } else
-        {
+        } else {
             $message = Lang::get('inventory::exceptions.InvalidMovementException', [
                 'movement' => $movement,
             ]);
@@ -412,13 +411,11 @@ trait InventoryStockTrait
      */
     private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
     {
-        if($quantity > $this->quantity)
-        {
+        if ($quantity > $this->quantity) {
             $putting = $quantity - $this->quantity;
 
             return $this->put($putting, $reason, $cost);
-        } else
-        {
+        } else {
             $taking = $this->quantity - $quantity;
 
             return $this->take($taking, $reason, $cost);
@@ -442,7 +439,9 @@ trait InventoryStockTrait
          * duplicate movements are allowed. We'll return the current record if
          * they aren't.
          */
-        if($left == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) return $this;
+        if ($left == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) {
+            return $this;
+        }
 
         $this->quantity = $left;
 
@@ -452,10 +451,8 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if($this->save())
-            {
+        try {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.taken', [
@@ -464,8 +461,7 @@ trait InventoryStockTrait
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -490,7 +486,9 @@ trait InventoryStockTrait
          * If the updated total and the beginning total are the same,
          * we'll check if duplicate movements are allowed
          */
-        if($total == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) return $this;
+        if ($total == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) {
+            return $this;
+        }
 
         $this->quantity = $total;
 
@@ -500,10 +498,8 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if ($this->save())
-            {
+        try {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.added', [
@@ -512,8 +508,7 @@ trait InventoryStockTrait
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -533,10 +528,8 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if($this->save())
-            {
+        try {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.moved', [
@@ -545,8 +538,7 @@ trait InventoryStockTrait
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -563,7 +555,9 @@ trait InventoryStockTrait
      */
     private function processRollbackOperation($movement, $recursive = false)
     {
-        if($recursive) return $this->processRecursiveRollbackOperation($movement);
+        if ($recursive) {
+            return $this->processRecursiveRollbackOperation($movement);
+        }
 
         $this->quantity = $movement->before;
 
@@ -574,8 +568,7 @@ trait InventoryStockTrait
 
         $this->setReason($reason);
 
-        if($this->rollbackCostEnabled())
-        {
+        if ($this->rollbackCostEnabled()) {
             $this->setCost($movement->cost);
 
             $this->reverseCost();
@@ -583,10 +576,8 @@ trait InventoryStockTrait
 
         $this->dbStartTransaction();
 
-        try
-        {
-            if ($this->save())
-            {
+        try {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.stock.rollback', [
@@ -595,8 +586,7 @@ trait InventoryStockTrait
 
                 return $this;
             }
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -622,7 +612,9 @@ trait InventoryStockTrait
 
         $rollbacks = [];
 
-        foreach($movements as $movement) $rollbacks = $this->processRollbackOperation($movement);
+        foreach ($movements as $movement) {
+            $rollbacks = $this->processRollbackOperation($movement);
+        }
 
         return $rollbacks;
     }
@@ -666,11 +658,9 @@ trait InventoryStockTrait
      */
     private function reverseCost()
     {
-        if($this->isPositive($this->cost))
-        {
+        if ($this->isPositive($this->cost)) {
             $this->setCost(-abs($this->cost));
-        } else
-        {
+        } else {
             $this->setCost(abs($this->cost));
         }
     }
@@ -709,5 +699,4 @@ trait InventoryStockTrait
     {
         return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'rollback_cost');
     }
-
 }

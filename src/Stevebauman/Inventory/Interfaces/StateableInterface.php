@@ -35,19 +35,19 @@ interface StateableInterface
     const STATE_CANCELLED = 'cancelled';
     const STATE_OPENED = 'opened';
 
-    public function checkout($quantity = NULL, $reason = '', $cost = 0);
+    public function checkout($quantity = null, $reason = '', $cost = 0);
 
-    public function sold($quantity = NULL, $reason = '', $cost = 0);
+    public function sold($quantity = null, $reason = '', $cost = 0);
 
     public function soldAmount($quantity, $reason = '', $cost = 0);
 
-    public function returned($quantity = NULL, $reason = '', $cost = 0);
+    public function returned($quantity = null, $reason = '', $cost = 0);
 
     public function returnedPartial($quantity, $reason = '', $cost = 0);
 
     public function returnedAll($reason = '', $cost = 0);
 
-    public function reserved($quantity = NULL, $backOrder = false);
+    public function reserved($quantity = null, $backOrder = false);
 
     public function backOrder($quantity);
 
@@ -55,7 +55,7 @@ interface StateableInterface
 
     public function ordered($quantity);
 
-    public function received($quantity = NULL, $reason = '', $cost = 0);
+    public function received($quantity = null, $reason = '', $cost = 0);
 
     public function receivedPartial($quantity, $reason = '', $cost = 0);
 
@@ -63,13 +63,13 @@ interface StateableInterface
 
     public function hold($quantity, $reason = '', $cost = 0);
 
-    public function release($quantity = NULL, $reason = '', $cost = 0);
+    public function release($quantity = null, $reason = '', $cost = 0);
 
     public function releasePartial($quantity, $reason = '', $cost = 0);
 
     public function releaseAll($reason = '', $cost = 0);
 
-    public function remove($quantity = NULL, $reason = '', $cost = 0);
+    public function remove($quantity = null, $reason = '', $cost = 0);
 
     public function removePartial($quantity, $reason = '', $cost = 0);
 

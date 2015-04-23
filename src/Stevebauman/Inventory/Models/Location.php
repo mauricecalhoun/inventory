@@ -27,5 +27,4 @@ class Location extends Node
     {
         return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'location_id', 'id');
     }
-
 }

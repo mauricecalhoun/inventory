@@ -82,16 +82,14 @@ trait InventoryTrait
          * Assign the current users ID while the item
          * is being created
          */
-        static::creating(function($record)
-        {
+        static::creating(function ($record) {
             $record->user_id = static::getCurrentUserId();
         });
 
         /*
          * Generate the items SKU once it's created
          */
-        static::created(function($record)
-        {
+        static::created(function ($record) {
             $record->generateSku();
         });
 
@@ -99,9 +97,10 @@ trait InventoryTrait
          * Generate an SKU if the item has been assigned a category,
          * this will not overwrite any SKU the item had previously
          */
-        static::updated(function($record)
-        {
-            if($record->category_id != NULL) $record->generateSku();
+        static::updated(function ($record) {
+            if ($record->category_id != null) {
+                $record->generateSku();
+            }
         });
     }
 
@@ -131,7 +130,9 @@ trait InventoryTrait
          * Check if the SKU was found, and if an item is attached to the SKU
          * we'll return it
          */
-        if($sku && $sku->item) return $sku->item;
+        if ($sku && $sku->item) {
+            return $sku->item;
+        }
 
         /*
          * Return false on failure
@@ -156,7 +157,9 @@ trait InventoryTrait
      */
     public function hasMetric()
     {
-        if($this->metric) return true;
+        if ($this->metric) {
+            return true;
+        }
 
         return false;
     }
@@ -168,7 +171,9 @@ trait InventoryTrait
      */
     public function hasSku()
     {
-        if($this->sku) return true;
+        if ($this->sku) {
+            return true;
+        }
 
         return false;
     }
@@ -180,7 +185,9 @@ trait InventoryTrait
      */
     public function hasCategory()
     {
-        if($this->category) return true;
+        if ($this->category) {
+            return true;
+        }
 
         return false;
     }
@@ -192,7 +199,9 @@ trait InventoryTrait
      */
     public function getMetricSymbol()
     {
-        if($this->hasMetric()) return $this->metric->symbol;
+        if ($this->hasMetric()) {
+            return $this->metric->symbol;
+        }
 
         return null;
     }
@@ -223,25 +232,22 @@ trait InventoryTrait
      * @throws \Stevebauman\Inventory\Traits\InvalidLocationException
      * @throws \Stevebauman\Inventory\Traits\NoUserLoggedInException
      */
-    public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = NULL, $row = NULL, $bin = NULL)
+    public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
     {
         $location = $this->getLocation($location);
 
-        try
-        {
+        try {
             /*
              * We want to make sure stock doesn't exist on the specified location already
              */
-            if ($this->getStockFromLocation($location))
-            {
+            if ($this->getStockFromLocation($location)) {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
                 ]);
 
                 throw new StockAlreadyExistsException($message);
             }
-        } catch (StockNotFoundException $e)
-        {
+        } catch (StockNotFoundException $e) {
             /*
              * A stock record wasn't found on this location, we'll create one
              */
@@ -280,21 +286,18 @@ trait InventoryTrait
     {
         $location = $this->getLocation($location);
 
-        try
-        {
+        try {
             /*
              * We want to make sure stock doesn't exist on the specified location already
              */
-            if ($this->getStockFromLocation($location))
-            {
+            if ($this->getStockFromLocation($location)) {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
                 ]);
 
                 throw new StockAlreadyExistsException($message);
             }
-        } catch (StockNotFoundException $e)
-        {
+        } catch (StockNotFoundException $e) {
             /*
              * Create a new stock model instance
              */
@@ -326,14 +329,14 @@ trait InventoryTrait
          * If the specified location is an array, we must be taking from
          * multiple locations
          */
-        if (is_array($location))
-        {
+        if (is_array($location)) {
             return $this->takeFromManyLocations($quantity, $location, $reason);
-        } else
-        {
+        } else {
             $stock = $this->getStockFromLocation($location);
 
-            if ($stock->take($quantity, $reason)) return $this;
+            if ($stock->take($quantity, $reason)) {
+                return $this;
+            }
         }
     }
 
@@ -350,8 +353,7 @@ trait InventoryTrait
     {
         $stocks = [];
 
-        foreach ($locations as $location)
-        {
+        foreach ($locations as $location) {
             $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->take($quantity, $reason);
@@ -398,14 +400,14 @@ trait InventoryTrait
      */
     public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
-        if (is_array($location))
-        {
+        if (is_array($location)) {
             return $this->putToManyLocations($quantity, $location);
-        } else
-        {
+        } else {
             $stock = $this->getStockFromLocation($location);
 
-            if ($stock->put($quantity, $reason, $cost)) return $this;
+            if ($stock->put($quantity, $reason, $cost)) {
+                return $this;
+            }
         }
     }
 
@@ -423,8 +425,7 @@ trait InventoryTrait
     {
         $stocks = [];
 
-        foreach ($locations as $location)
-        {
+        foreach ($locations as $location) {
             $stock = $this->getStockFromLocation($location);
 
             $stocks[] = $stock->put($quantity, $reason, $cost);
@@ -495,11 +496,9 @@ trait InventoryTrait
             ->where('location_id', $location->id)
             ->first();
 
-        if ($stock)
-        {
+        if ($stock) {
             return $stock;
-        } else
-        {
+        } else {
             $message = Lang::get('inventory::exceptions.StockNotFoundException', [
                 'location' => $location->name,
             ]);
@@ -515,9 +514,11 @@ trait InventoryTrait
      */
     public function getSku()
     {
-        if($this->hasSku()) return $this->sku->code;
+        if ($this->hasSku()) {
+            return $this->sku->code;
+        }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -544,12 +545,16 @@ trait InventoryTrait
         /*
          * Make sure sku generation is enabled and the item has a category, if not we'll return false.
          */
-        if( ! $this->skusEnabled() || ! $this->hasCategory()) return false;
+        if (! $this->skusEnabled() || ! $this->hasCategory()) {
+            return false;
+        }
 
         /*
          * If the item already has an SKU, we'll return it
          */
-        if($this->hasSku()) return $this->sku;
+        if ($this->hasSku()) {
+            return $this->sku;
+        }
 
         /*
          * Get the set SKU code length from the configuration file
@@ -570,7 +575,7 @@ trait InventoryTrait
          * Make sure we trim empty spaces in the separator if it's a string, otherwise we'll
          * set it to NULL
          */
-        $skuSeparator = (is_string($skuSeparator) ? trim($skuSeparator) : NULL);
+        $skuSeparator = (is_string($skuSeparator) ? trim($skuSeparator) : null);
 
         /*
          * Trim the category name to remove blank spaces, then
@@ -582,8 +587,7 @@ trait InventoryTrait
          * We'll make sure the prefix length is greater than zero before we try and
          * generate an SKU
          */
-        if(strlen($prefix) > 0)
-        {
+        if (strlen($prefix) > 0) {
             /*
              * Create the numerical code by the items ID
              * to accompany the prefix and pad left zeros
@@ -612,8 +616,7 @@ trait InventoryTrait
     {
         $sku = $this->sku()->first();
 
-        if($sku)
-        {
+        if ($sku) {
             /*
              * Capture current SKU
              */
@@ -632,7 +635,9 @@ trait InventoryTrait
             /*
              * New sku generation successful, return it
              */
-            if($newSku) return $newSku;
+            if ($newSku) {
+                return $newSku;
+            }
 
             /*
              * Failed generating a new sku, we'll restore the old one
@@ -664,14 +669,12 @@ trait InventoryTrait
          */
         $sku = $this->sku()->first();
 
-        if($sku)
-        {
+        if ($sku) {
             /*
              * The dev doesn't want the SKU overridden,
              * we'll thrown an exception
              */
-            if( ! $overwrite)
-            {
+            if (! $overwrite) {
                 $message = Lang::get('inventory::exceptions.SkuAlreadyExistsException');
 
                 throw new SkuAlreadyExistsException($message);
@@ -697,18 +700,22 @@ trait InventoryTrait
      * @param null $sku
      * @return mixed|bool
      */
-    public function updateSku($code, $sku = NULL)
+    public function updateSku($code, $sku = null)
     {
         /*
          * Get the current SKU record if one isn't supplied
          */
-        if( ! $sku) $sku = $this->sku()->first();
+        if (! $sku) {
+            $sku = $this->sku()->first();
+        }
 
         /*
          * If an SKU still doesn't exist after
          * trying to find one, we'll create one
          */
-        if( ! $sku) return $this->processSkuGeneration($this->id, $code);
+        if (! $sku) {
+            return $this->processSkuGeneration($this->id, $code);
+        }
 
         return $this->processSkuUpdate($sku, $code);
     }
@@ -722,7 +729,9 @@ trait InventoryTrait
      */
     public function addSuppliers($suppliers = [])
     {
-        foreach($suppliers as $supplier) $this->addSupplier($supplier);
+        foreach ($suppliers as $supplier) {
+            $this->addSupplier($supplier);
+        }
 
         return true;
     }
@@ -736,7 +745,9 @@ trait InventoryTrait
     {
         $suppliers = $this->suppliers()->get();
 
-        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
+        foreach ($suppliers as $supplier) {
+            $this->removeSupplier($supplier);
+        }
 
         return true;
     }
@@ -750,7 +761,9 @@ trait InventoryTrait
      */
     public function removeSuppliers($suppliers = [])
     {
-        foreach($suppliers as $supplier) $this->removeSupplier($supplier);
+        foreach ($suppliers as $supplier) {
+            $this->removeSupplier($supplier);
+        }
 
         return true;
     }
@@ -792,15 +805,11 @@ trait InventoryTrait
      */
     public function getSupplier($supplier)
     {
-        if($this->isNumeric($supplier))
-        {
+        if ($this->isNumeric($supplier)) {
             return $this->getSupplierById($supplier);
-
-        } else if($this->isModel($supplier))
-        {
+        } elseif ($this->isModel($supplier)) {
             return $supplier;
-        } else
-        {
+        } else {
             $message = Lang::get('inventory::exceptions.InvalidSupplierException', [
                 'supplier' => $supplier,
             ]);
@@ -820,8 +829,7 @@ trait InventoryTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
+        try {
             $insert = [
                 'inventory_id' => $inventoryId,
                 'code' => $code,
@@ -829,8 +837,7 @@ trait InventoryTrait
 
             $record = $this->sku()->create($insert);
 
-            if ($record)
-            {
+            if ($record) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.sku.generated', [
@@ -839,9 +846,7 @@ trait InventoryTrait
 
                 return $record;
             }
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -860,17 +865,13 @@ trait InventoryTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
-            if($sku->update(compact('code')))
-            {
+        try {
+            if ($sku->update(compact('code'))) {
                 $this->dbCommitTransaction();
 
                 return $sku;
             }
-
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -887,8 +888,7 @@ trait InventoryTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
+        try {
             $this->suppliers()->attach($supplier);
 
             $this->dbCommitTransaction();
@@ -899,8 +899,7 @@ trait InventoryTrait
             ]);
 
             return true;
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -917,8 +916,7 @@ trait InventoryTrait
     {
         $this->dbStartTransaction();
 
-        try
-        {
+        try {
             $this->suppliers()->detach($supplier);
 
             $this->dbCommitTransaction();
@@ -929,8 +927,7 @@ trait InventoryTrait
             ]);
 
             return true;
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 

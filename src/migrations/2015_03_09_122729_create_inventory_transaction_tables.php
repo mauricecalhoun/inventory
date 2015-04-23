@@ -5,15 +5,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventoryTransactionTables extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-        Schema::create('inventory_transactions', function (Blueprint $table)
-        {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
@@ -31,8 +30,7 @@ class CreateInventoryTransactionTables extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('inventory_transaction_histories', function (Blueprint $table)
-        {
+        Schema::create('inventory_transaction_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
@@ -58,16 +56,16 @@ class CreateInventoryTransactionTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
-	}
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
         Schema::dropIfExists('inventory_transaction_histories');
-		Schema::dropIfExists('inventory_transactions');
-	}
+        Schema::dropIfExists('inventory_transactions');
+    }
 }

@@ -5,15 +5,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventorySupplierTables extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-        Schema::create('suppliers', function(Blueprint $table)
-        {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -31,8 +30,7 @@ class CreateInventorySupplierTables extends Migration
             $table->string('contact_email')->nullable();
         });
 
-        Schema::create('inventory_suppliers', function (Blueprint $table)
-        {
+        Schema::create('inventory_suppliers', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -47,16 +45,16 @@ class CreateInventorySupplierTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
-	}
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::dropIfExists('inventory_suppliers');
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('inventory_suppliers');
         Schema::dropIfExists('suppliers');
-	}
+    }
 }

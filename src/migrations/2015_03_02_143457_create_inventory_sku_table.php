@@ -5,15 +5,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventorySkuTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-        Schema::create('inventory_skus', function (Blueprint $table)
-        {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('inventory_skus', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('inventory_id')->unsigned();
@@ -28,15 +27,15 @@ class CreateInventorySkuTable extends Migration
              */
             $table->unique(['code']);
         });
-	}
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
         Schema::dropIfExists('inventory_skus');
-	}
+    }
 }
