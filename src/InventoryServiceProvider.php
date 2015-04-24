@@ -67,8 +67,8 @@ class InventoryServiceProvider extends ServiceProvider
             /*
              * Load the inventory translations from the inventory lang folder
              */
-            $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'inventory');
-
+            $this->loadTranslationsFrom(__DIR__ . '/lang', 'inventory');
+            
             /*
              * Assign the configuration as publishable, and tag it as 'config'
              */
