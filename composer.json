@@ -27,17 +27,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Stevebauman\\Inventory\\": [
-                "src/Stevebauman/Inventory"
-            ]
+            "Stevebauman\\Inventory\\": "src/"
         }
     },
     "autoload-dev":
     {
         "psr-4": {
-          "Stevebauman\\Inventory\\Tests\\": [
-              "tests"
-          ]
+          "Stevebauman\\Inventory\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable"
