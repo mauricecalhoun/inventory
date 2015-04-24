@@ -15,7 +15,7 @@ class InventoryServiceProvider extends ServiceProvider
     *
     * @var string
     */
-    const VERSION = '1.5.6';
+    const VERSION = '1.5.7';
 
     /**
     * Stores the package configuration separator
@@ -73,14 +73,14 @@ class InventoryServiceProvider extends ServiceProvider
              * Assign the configuration as publishable, and tag it as 'config'
              */
             $this->publishes([
-                __DIR__ . '/../../config/config.php' => config_path('inventory.php'),
+                __DIR__ . '/config/config.php' => config_path('inventory.php'),
             ], 'config');
 
             /*
              * Assign the migrations as publishable, and tag it as 'migrations'
              */
             $this->publishes([
-                __DIR__ . '/../../migrations/' => base_path('database/migrations'),
+                __DIR__ . '/migrations/' => base_path('database/migrations'),
             ], 'migrations');
         }
     }
@@ -125,7 +125,7 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * Include the helpers file
          */
-        include __DIR__ .'/../../helpers.php';
+        include __DIR__ .'/helpers.php';
     }
 
     /**
