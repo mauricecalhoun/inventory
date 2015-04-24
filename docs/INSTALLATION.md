@@ -30,6 +30,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
     
 ### Installation (Laravel 5)
 
+Include in your `composer.json` file:
 
     "stevebauman/inventory" : "1.5.*"
 
