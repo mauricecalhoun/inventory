@@ -152,7 +152,7 @@ class InventoryTest extends FunctionalTestCase
 
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
 
-        $stock2 = $item->newStockOnLocation($location);
+        $item->newStockOnLocation($location);
     }
 
     public function testInventoryInvalidQuantityException()

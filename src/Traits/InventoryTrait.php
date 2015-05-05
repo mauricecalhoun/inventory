@@ -73,8 +73,8 @@ trait InventoryTrait
     abstract public function suppliers();
 
     /**
-     * Overrides the models boot function to set the user ID automatically
-     * to every new record
+     * Overrides the models boot function to set the user
+     * ID automatically to every new record.
      */
     public static function bootInventoryTrait()
     {
@@ -105,9 +105,10 @@ trait InventoryTrait
     }
 
     /**
-     * Returns an item record by the specified SKU code
+     * Returns an item record by the specified SKU code.
      *
      * @param string $sku
+     *
      * @return bool
      */
     public static function findBySku($sku)
@@ -127,8 +128,8 @@ trait InventoryTrait
             ->first();
 
         /*
-         * Check if the SKU was found, and if an item is attached to the SKU
-         * we'll return it
+         * Check if the SKU was found, and if an item is
+         * attached to the SKU we'll return it
          */
         if ($sku && $sku->item) {
             return $sku->item;
@@ -141,7 +142,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the total sum of the current stock
+     * Returns the total sum of the current stock.
      *
      * @return mixed
      */
@@ -151,7 +152,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns true/false if the inventory has a metric present
+     * Returns true/false if the inventory has a metric present.
      *
      * @return bool
      */
@@ -165,7 +166,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns true/false if the current item has an SKU
+     * Returns true/false if the current item has an SKU.
      *
      * @return bool
      */
@@ -179,7 +180,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns true/false if the current item has a category
+     * Returns true/false if the current item has a category.
      *
      * @return bool
      */
@@ -193,9 +194,9 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the inventory's metric symbol
+     * Returns the inventory's metric symbol.
      *
-     * @return mixed
+     * @return string|null
      */
     public function getMetricSymbol()
     {
@@ -207,7 +208,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns true/false if the inventory has stock
+     * Returns true/false if the inventory has stock.
      *
      * @return bool
      */
@@ -217,20 +218,22 @@ trait InventoryTrait
     }
 
     /**
-     * Creates a stock record to the current inventory item
+     * Creates a stock record to the current inventory item.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param $location
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
      * @param null $aisle
      * @param null $row
      * @param null $bin
-     * @return mixed
+     *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
-     * @throws \Stevebauman\Inventory\Traits\InvalidLocationException
-     * @throws \Stevebauman\Inventory\Traits\NoUserLoggedInException
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
+     * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
+     *
+     * @return mixed
      */
     public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
     {
@@ -275,12 +278,14 @@ trait InventoryTrait
 
     /**
      * Instantiates a new stock on the specified
-     * location on the current item
+     * location on the current item.
      *
      * @param $location
-     * @return \Illuminate\Database\Eloquent\Model
+     *
      * @throws StockAlreadyExistsException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
+     *
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function newStockOnLocation($location)
     {
@@ -304,8 +309,8 @@ trait InventoryTrait
             $stock = $this->stocks()->getRelated();
 
             /*
-             * Assign the known attributes so
-             * devs don't have to
+             * Assign the known attributes
+             * so devs don't have to
              */
             $stock->inventory_id = $this->id;
             $stock->location_id = $location->id;
@@ -315,13 +320,15 @@ trait InventoryTrait
     }
 
     /**
-     * Takes the specified amount ($quantity) of stock from specified stock location
+     * Takes the specified amount ($quantity) of stock from specified stock location.
      *
-     * @param string|int $quantity
+     * @param int|string $quantity
      * @param $location
      * @param string $reason
-     * @return array
+     *
      * @throws StockNotFoundException
+     *
+     * @return array
      */
     public function takeFromLocation($quantity, $location, $reason = '')
     {
@@ -338,16 +345,20 @@ trait InventoryTrait
                 return $this;
             }
         }
+
+        return false;
     }
 
     /**
-     * Takes the specified amount ($quantity) of stock from the specified stock locations
+     * Takes the specified amount ($quantity) of stock from the specified stock locations.
      *
-     * @param string|int $quantity
+     * @param int|string $quantity
      * @param array $locations
      * @param string $reason
-     * @return array
+     *
      * @throws StockNotFoundException
+     *
+     * @return array
      */
     public function takeFromManyLocations($quantity, $locations = [], $reason = '')
     {
@@ -363,11 +374,12 @@ trait InventoryTrait
     }
 
     /**
-     * Alias for the `take` function
+     * Alias for the `take` function.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param $location
      * @param string $reason
+     *
      * @return array
      */
     public function removeFromLocation($quantity, $location, $reason = '')
@@ -376,11 +388,12 @@ trait InventoryTrait
     }
 
     /**
-     * Alias for the `takeFromMany` function
+     * Alias for the `takeFromMany` function.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param array $locations
      * @param string $reason
+     *
      * @return array
      */
     public function removeFromManyLocations($quantity, $locations = [], $reason = '')
@@ -389,14 +402,16 @@ trait InventoryTrait
     }
 
     /**
-     * Puts the specified amount ($quantity) of stock into the specified stock location(s)
+     * Puts the specified amount ($quantity) of stock into the specified stock location(s).
      *
-     * @param string|int $quantity
+     * @param int|string $quantity
      * @param $location
      * @param string $reason
-     * @param int $cost
-     * @return array
+     * @param int|string $cost
+     *
      * @throws StockNotFoundException
+     *
+     * @return array
      */
     public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
@@ -409,17 +424,21 @@ trait InventoryTrait
                 return $this;
             }
         }
+
+        return false;
     }
 
     /**
-     * Puts the specified amount ($quantity) of stock into the specified stock locations
+     * Puts the specified amount ($quantity) of stock into the specified stock locations.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param array $locations
      * @param string $reason
-     * @param int $cost
-     * @return array
+     * @param int|string $cost
+     *
      * @throws StockNotFoundException
+     *
+     * @return array
      */
     public function putToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
     {
@@ -435,12 +454,13 @@ trait InventoryTrait
     }
 
     /**
-     * Alias for the `put` function
+     * Alias for the `put` function.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param $location
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
+     *
      * @return array
      */
     public function addToLocation($quantity, $location, $reason = '', $cost = 0)
@@ -449,12 +469,13 @@ trait InventoryTrait
     }
 
     /**
-     * Alias for the `putToMany` function
+     * Alias for the `putToMany` function.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param array $locations
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
+     *
      * @return array
      */
     public function addToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
@@ -467,8 +488,10 @@ trait InventoryTrait
      *
      * @param $fromLocation
      * @param $toLocation
-     * @return mixed
+     *
      * @throws StockNotFoundException
+     *
+     * @return mixed
      */
     public function moveStock($fromLocation, $toLocation)
     {
@@ -480,12 +503,14 @@ trait InventoryTrait
     }
 
     /**
-     * Retrieves an inventory stock from a given location
+     * Retrieves an inventory stock from a given location.
      *
      * @param $location
-     * @return mixed
-     * @throws InvalidLocationException
+     *
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws StockNotFoundException
+     *
+     * @return mixed
      */
     public function getStockFromLocation($location)
     {
@@ -508,7 +533,7 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the item's SKU
+     * Returns the item's SKU.
      *
      * @return null|string
      */
@@ -607,8 +632,10 @@ trait InventoryTrait
     }
 
     /**
-     * Regenerates the current items SKU by deleting its current SKU
-     * and creating another. This will also generate an SKU if one does not exist
+     * Regenerates the current items SKU by
+     * deleting its current SKU and creating
+     * another. This will also generate an SKU
+     * if one does not exist.
      *
      * @return bool|mixed
      */
@@ -659,8 +686,10 @@ trait InventoryTrait
      *
      * @param string $code
      * @param bool $overwrite
-     * @return mixed|bool
+     *
      * @throws SkuAlreadyExistsException
+     *
+     * @return mixed|bool
      */
     public function createSku($code, $overwrite = false)
     {
@@ -694,10 +723,11 @@ trait InventoryTrait
 
     /**
      * Updates the items current SKU or the SKU
-     * supplied with the specified code
+     * supplied with the specified code.
      *
      * @param string $code
      * @param null $sku
+     *
      * @return mixed|bool
      */
     public function updateSku($code, $sku = null)
@@ -721,10 +751,11 @@ trait InventoryTrait
     }
 
     /**
-     * Adds all of the specified suppliers inside the array to
-     * the current inventory item
+     * Adds all of the specified suppliers inside
+     * the array to the current inventory item.
      *
      * @param array $suppliers
+     *
      * @return bool
      */
     public function addSuppliers($suppliers = [])
@@ -753,10 +784,11 @@ trait InventoryTrait
     }
 
     /**
-     * Removes all of the specified suppliers inside the array from
-     * the current inventory item
+     * Removes all of the specified suppliers inside
+     * the array from the current inventory item.
      *
      * @param array $suppliers
+     *
      * @return bool
      */
     public function removeSuppliers($suppliers = [])
@@ -769,11 +801,13 @@ trait InventoryTrait
     }
 
     /**
-     * Adds the specified supplier to the current inventory item
+     * Adds the specified supplier to the current inventory item.
      *
      * @param $supplier
-     * @return bool
+     *
      * @throws InvalidSupplierException
+     *
+     * @return bool
      */
     public function addSupplier($supplier)
     {
@@ -783,11 +817,13 @@ trait InventoryTrait
     }
 
     /**
-     * Removes the specified supplier from the current inventory item
+     * Removes the specified supplier from the current inventory item.
      *
      * @param $supplier
-     * @return bool
+     *
      * @throws InvalidSupplierException
+     *
+     * @return bool
      */
     public function removeSupplier($supplier)
     {
@@ -797,11 +833,13 @@ trait InventoryTrait
     }
 
     /**
-     * Retrieves a supplier from the specified variable
+     * Retrieves a supplier from the specified variable.
      *
      * @param $supplier
-     * @return mixed
+     *
      * @throws InvalidSupplierException
+     *
+     * @return mixed
      */
     public function getSupplier($supplier)
     {
@@ -819,10 +857,11 @@ trait InventoryTrait
     }
 
     /**
-     * Processes an SKU generation covered by database transactions
+     * Processes an SKU generation covered by database transactions.
      *
      * @param int|string $inventoryId
      * @param string $code
+     *
      * @return bool|mixed
      */
     private function processSkuGeneration($inventoryId, $code)
@@ -854,11 +893,12 @@ trait InventoryTrait
     }
 
     /**
-     * Processes updating the specified SKU record with
-     * the specified code
+     * Processes updating the specified SKU
+     * record with the specified code.
      *
      * @param $sku
      * @param string $code
+     *
      * @return mixed|bool
      */
     private function processSkuUpdate($sku, $code)
@@ -879,9 +919,10 @@ trait InventoryTrait
     }
 
     /**
-     * Processes attaching a supplier to an inventory item
+     * Processes attaching a supplier to an inventory item.
      *
      * @param $supplier
+     *
      * @return bool
      */
     private function processSupplierAttach($supplier)
@@ -907,9 +948,10 @@ trait InventoryTrait
     }
 
     /**
-     * Processes detaching a supplier
+     * Processes detaching a supplier.
      *
      * @param $supplier
+     *
      * @return bool
      */
     private function processSupplierDetach($supplier)
@@ -935,9 +977,10 @@ trait InventoryTrait
     }
 
     /**
-     * Returns a supplier by the specified ID
+     * Returns a supplier by the specified ID.
      *
      * @param $id
+     *
      * @return mixed
      */
     private function getSupplierById($id)
@@ -946,8 +989,8 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the configuration option for the enablement of automatic
-     * SKU generation
+     * Returns the configuration option for the
+     * enablement of automatic SKU generation.
      *
      * @return mixed
      */

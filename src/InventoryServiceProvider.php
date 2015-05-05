@@ -15,7 +15,7 @@ class InventoryServiceProvider extends ServiceProvider
     *
     * @var string
     */
-    const VERSION = '1.5.8';
+    const VERSION = '1.6.0';
 
     /**
     * Stores the package configuration separator
@@ -68,7 +68,7 @@ class InventoryServiceProvider extends ServiceProvider
              * Load the inventory translations from the inventory lang folder
              */
             $this->loadTranslationsFrom(__DIR__ . '/lang', 'inventory');
-            
+
             /*
              * Assign the configuration as publishable, and tag it as 'config'
              */

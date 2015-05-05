@@ -248,5 +248,13 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
+
+        DB::schema()->table('inventories', function($table) {
+            $table->integer('parent_id')->unsigned()->nullable()->after('id');
+
+            $table->foreign('parent_id')->references('id')->on('inventories')
+                ->onUpdate('restrict')
+                ->onDelete('cascade');
+        });
     }
 }
