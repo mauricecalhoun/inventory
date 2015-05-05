@@ -27,15 +27,21 @@ class SchemaCheckCommand extends Command
      */
     protected $description = 'Checks the current database to make sure the required tables are present, and the reserved tables are not';
 
-    /*
-     * Holds the database tables that must be present before install
+    /**
+     * Holds the database tables that
+     * must be present before install
+     *
+     * @var array
      */
     protected $dependencies = [
         'users' => 'Sentry, Sentinel or Laravel',
     ];
 
-    /*
-     * Holds the required database tables necessary to install
+    /**
+     * Holds the reserved database tables that
+     * cannot exist before installation.
+     *
+     * @var array
      */
     protected $reserved = [
         'metrics',
@@ -52,7 +58,7 @@ class SchemaCheckCommand extends Command
     ];
 
     /**
-     * Executes the console command
+     * Executes the console command.
      *
      * @throws DatabaseTableReservedException
      * @throws DependencyNotFoundException
@@ -69,10 +75,11 @@ class SchemaCheckCommand extends Command
     }
 
     /**
-     * Checks the current database for dependencies
+     * Checks the current database for dependencies.
+     *
+     * @throws DependencyNotFoundException
      *
      * @return bool
-     * @throws DependencyNotFoundException
      */
     private function checkDependencies()
     {
@@ -88,10 +95,11 @@ class SchemaCheckCommand extends Command
     }
 
     /**
-     * Checks the current database for reserved tables
+     * Checks the current database for reserved tables.
+     *
+     * @throws DatabaseTableReservedException
      *
      * @return bool
-     * @throws DatabaseTableReservedException
      */
     private function checkReserved()
     {
@@ -107,8 +115,12 @@ class SchemaCheckCommand extends Command
     }
 
     /**
+     * Returns true / false if the current
+     * database table exists.
+     *
      * @param string $table
-     * @return boolean
+     *
+     * @return bool
      */
     private function tableExists($table)
     {
