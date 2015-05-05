@@ -38,6 +38,17 @@ trait InventoryVariantTrait
     }
 
     /**
+     * Returns the parent item record
+     * for the current variant.
+     *
+     * @return mixed
+     */
+    public function getParent()
+    {
+        return $this->newQuery()->find($this->parent_id);
+    }
+
+    /**
      * Returns a new Inventory model instance with it's parent
      * ID, category ID, and metric ID set to the current item's
      * for creation of a variant.

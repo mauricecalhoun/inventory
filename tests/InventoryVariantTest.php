@@ -120,4 +120,36 @@ class InventoryVariantTest extends InventoryTest
         $this->assertInstanceOf('Illuminate\Support\Collection', $variants);
         $this->assertEquals(1, $variants->count());
     }
+
+    public function testGetParent()
+    {
+        $this->newCategory();
+        $this->newMetric();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        $cherryCoke = Inventory::create([
+            'name' => 'Cherry Coke',
+            'description' => 'Delicious Cherry Coke',
+            'metric_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+
+        Event::shouldReceive('fire')->once()->andReturn(true);
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $parent = $cherryCoke->getParent();
+
+        $this->assertEquals('Coke', $parent->name);
+        $this->assertEquals(NULL, $parent->parent_id);
+    }
 }
