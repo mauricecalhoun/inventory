@@ -43,6 +43,16 @@ and their events:
     $stock->rollback($movement, $recursive = true);
     $movement->rollback();
     $movement->rollback($recursive = true);
+    
+    /*
+    * Triggers 'inventory.variant.made', the inventory item is passed into this event
+    */
+    $item->makeVariantOf($anotherItem);
+    
+    /*
+    * Triggers 'inventory.variant.created', the inventory item is passed into this event
+    */
+    $item->createVariant('Another Item', 'Description', $categoryId = 1, $metricId = 1);
 
     /*
     * Triggers 'inventory.transaction.checkout', the transaction record is passed into this event
