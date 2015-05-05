@@ -20,8 +20,8 @@ trait InventoryStockMovementTrait
     abstract public function stock();
 
     /**
-     * Overrides the models boot function to set the user ID automatically
-     * to every new record
+     * Overrides the models boot function to set
+     * the user ID automatically to every new record.
      */
     public static function bootInventoryStockMovementTrait()
     {
@@ -34,6 +34,7 @@ trait InventoryStockMovementTrait
      * Rolls back the current movement
      *
      * @param bool $recursive
+     *
      * @return mixed
      */
     public function rollback($recursive = false)

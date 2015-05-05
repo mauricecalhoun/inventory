@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Event;
 trait DatabaseTransactionTrait
 {
     /**
-     * Alias for firing events easily that implement this trait
+     * Alias for firing events easily that implement this trait.
      *
-     * @param $name
+     * @param string $name
      * @param array $args
+     *
      * @return mixed
      */
     protected function fireEvent($name, $args = [])
@@ -24,7 +25,7 @@ trait DatabaseTransactionTrait
     }
 
     /**
-     * Alias for beginning a database transaction
+     * Alias for beginning a database transaction.
      *
      * @return mixed
      */
@@ -34,7 +35,7 @@ trait DatabaseTransactionTrait
     }
 
     /**
-     * Alias for committing a database transaction
+     * Alias for committing a database transaction.
      *
      * @return mixed
      */
@@ -44,7 +45,7 @@ trait DatabaseTransactionTrait
     }
 
     /**
-     * Alias for rolling back a transaction
+     * Alias for rolling back a transaction.
      *
      * @return mixed
      */

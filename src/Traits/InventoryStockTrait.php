@@ -129,7 +129,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Generates a stock movement on the creation of a stock
+     * Generates a stock movement on the creation of a stock.
      *
      * @return void
      */
@@ -147,7 +147,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Generates a stock movement after a stock is updated
+     * Generates a stock movement after a stock is updated.
      *
      * @return void
      */
@@ -157,14 +157,18 @@ trait InventoryStockTrait
     }
 
     /**
-     * Performs a quantity update. Automatically determining depending on the quantity entered if stock is being taken
-     * or added
+     * Performs a quantity update. Automatically determining
+     * depending on the quantity entered if stock is being taken
+     * or added.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return InventoryStock|InventoryStockTrait
+     * @param int|string $cost
+     *
      * @throws InvalidQuantityException
+     *
+     * @return $this
+     *
      */
     public function updateQuantity($quantity, $reason= '', $cost = 0)
     {
@@ -174,12 +178,13 @@ trait InventoryStockTrait
     }
 
     /**
-     * Removes the specified quantity from the current stock
+     * Removes the specified quantity from the current stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryStockTrait
+     * @param int|string $cost
+     *
+     * @return $this|bool
      */
     public function remove($quantity, $reason= '', $cost = 0)
     {
@@ -187,14 +192,16 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes a 'take' operation on the current stock
+     * Processes a 'take' operation on the current stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryStockTrait
+     * @param int|string $cost
+     *
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
+     *
+     * @return $this|bool
      */
     public function take($quantity, $reason = '', $cost = 0)
     {
@@ -204,12 +211,13 @@ trait InventoryStockTrait
     }
 
     /**
-     * Alias for put function
+     * Alias for put function.
      *
-     * @param $quantity
-     * @param $reason
-     * @param int $cost
-     * @return InventoryStockTrait
+     * @param int|string $quantity
+     * @param string $reason
+     * @param int|string $cost
+     *
+     * @return $this
      */
     public function add($quantity, $reason = '', $cost = 0)
     {
@@ -217,13 +225,15 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes a 'put' operation on the current stock
+     * Processes a 'put' operation on the current stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return static
+     * @param int|string $cost
+     *
      * @throws InvalidQuantityException
+     *
+     * @return $this
      */
     public function put($quantity, $reason = '', $cost = 0)
     {
@@ -233,7 +243,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Moves a stock to the specified location
+     * Moves a stock to the specified location.
      *
      * @param $location
      * @return bool
@@ -247,11 +257,12 @@ trait InventoryStockTrait
 
     /**
      * Rolls back the last movement, or the movement specified. If recursive is set to true,
-     * it will rollback all movements leading up to the movement specified
+     * it will rollback all movements leading up to the movement specified.
      *
-     * @param null $movement
+     * @param mixed $movement
      * @param bool $recursive
-     * @return $this|bool|InventoryStockTrait
+     *
+     * @return $this|bool
      */
     public function rollback($movement = null, $recursive = false)
     {
@@ -269,12 +280,14 @@ trait InventoryStockTrait
     }
 
     /**
-     * Rolls back a specific movement
+     * Rolls back a specific movement.
      *
-     * @param $movement
+     * @param mixed $movement
      * @param bool $recursive
-     * @return $this|bool|InventoryStockTrait
+     *
      * @throws InvalidMovementException
+     *
+     * @return $this|bool
      */
     public function rollbackMovement($movement, $recursive = false)
     {
@@ -287,9 +300,11 @@ trait InventoryStockTrait
      * Returns true if the specified quantity is valid, throws
      * InvalidQuantityException otherwise.
      *
-     * @param $quantity
-     * @return bool
+     * @param int|string $quantity
+     *
      * @throws InvalidQuantityException
+     *
+     * @return bool
      */
     public function isValidQuantity($quantity)
     {
@@ -308,9 +323,11 @@ trait InventoryStockTrait
      * Returns true if there is enough stock for the specified quantity being taken.
      * Throws NotEnoughStockException otherwise.
      *
-     * @param int $quantity
-     * @return bool
+     * @param int|string $quantity
+     *
      * @throws NotEnoughStockException
+     *
+     * @return bool
      */
     public function hasEnoughStock($quantity = 0)
     {
@@ -331,7 +348,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Returns the last movement on the current stock record
+     * Returns the last movement on the current stock record.
      *
      * @return mixed
      */
@@ -350,9 +367,11 @@ trait InventoryStockTrait
      * Returns a movement depending on the specified argument. If an object is supplied, it is checked if it
      * is an instance of an eloquent model. If a numeric value is entered, it is retrieved by it's ID.
      *
-     * @param $movement
-     * @return \Illuminate\Support\Collection|null|static
+     * @param mixed $movement
+     *
      * @throws InvalidMovementException
+     *
+     * @return mixed
      */
     public function getMovement($movement)
     {
@@ -374,6 +393,7 @@ trait InventoryStockTrait
      * instance with the current stock ID attached.
      *
      * @param string $name
+     *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function newTransaction($name = '')
@@ -391,10 +411,11 @@ trait InventoryStockTrait
     }
 
     /**
-     * Retrieves a movement by the specified ID
+     * Retrieves a movement by the specified ID.
      *
      * @param int|string $id
-     * @return \Illuminate\Support\Collection|null|static
+     *
+     * @return mixed
      */
     private function getMovementById($id)
     {
@@ -402,12 +423,13 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes a quantity update operation
+     * Processes a quantity update operation.
      *
      * @param int|string $quantity
      * @param string $reason
      * @param int|string $cost
-     * @return InventoryStock|InventoryStockTrait
+     *
+     * @return $this
      */
     private function processUpdateQuantityOperation($quantity, $reason = '', $cost = 0)
     {
@@ -423,11 +445,12 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes removing quantity from the current stock
+     * Processes removing quantity from the current stock.
      *
      * @param int|string $taking
      * @param string $reason
      * @param int|string $cost
+     *
      * @return $this|bool
      */
     private function processTakeOperation($taking, $reason = '', $cost = 0)
@@ -469,12 +492,13 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes adding quantity to current stock
+     * Processes adding quantity to current stock.
      *
      * @param int|string $putting
      * @param string $reason
      * @param int|string $cost
-     * @return $this|bool|mixed
+     *
+     * @return $this|bool
      */
     private function processPutOperation($putting, $reason = '', $cost = 0)
     {
@@ -516,10 +540,11 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes the stock moving from it's current location,
-     * to the specified location
+     * Processes the stock moving from it's current
+     * location, to the specified location.
      *
-     * @param $location
+     * @param mixed $location
+     *
      * @return bool
      */
     private function processMoveOperation($location)
@@ -547,10 +572,11 @@ trait InventoryStockTrait
 
 
     /**
-     * Processes a single rollback operation
+     * Processes a single rollback operation.
      *
-     * @param $movement
+     * @param mixed $movement
      * @param bool $recursive
+     *
      * @return $this|bool
      */
     private function processRollbackOperation($movement, $recursive = false)
@@ -594,10 +620,11 @@ trait InventoryStockTrait
     }
 
     /**
-     * Processes a recursive rollback operation
+     * Processes a recursive rollback operation.
      *
-     * @param $movement
-     * @return $this|array|bool|InventoryStockTrait
+     * @param mixed $movement
+     *
+     * @return array
      */
     private function processRecursiveRollbackOperation($movement)
     {
@@ -612,20 +639,23 @@ trait InventoryStockTrait
 
         $rollbacks = [];
 
-        foreach ($movements as $movement) {
-            $rollbacks = $this->processRollbackOperation($movement);
+        if($movements->count() > 0) {
+            foreach ($movements as $movement) {
+                $rollbacks = $this->processRollbackOperation($movement);
+            }
         }
 
         return $rollbacks;
     }
 
     /**
-     * Creates a stock movement record
+     * Creates a new stock movement record.
      *
-     * @param $before
-     * @param $after
+     * @param int|string $before
+     * @param int|string $after
      * @param string $reason
-     * @param $cost
+     * @param int|string $cost
+     *
      * @return \Illuminate\Database\Eloquent\Model
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
@@ -642,7 +672,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Sets the cost attribute
+     * Sets the cost attribute.
      *
      * @param int|string $cost
      */
@@ -652,7 +682,7 @@ trait InventoryStockTrait
     }
 
     /**
-     * Reverses the cost of a movement
+     * Reverses the cost of a movement.
      *
      * @return void
      */
@@ -666,9 +696,10 @@ trait InventoryStockTrait
     }
 
     /**
-     * Sets the reason attribute
+     * Sets the reason attribute.
      *
      * @param string $reason
+     *
      * @return void
      */
     private function setReason($reason = '')
@@ -679,7 +710,7 @@ trait InventoryStockTrait
     /**
      * Returns true/false from the configuration file determining
      * whether or not stock movements can have the same before and after
-     * quantities
+     * quantities.
      *
      * @return bool
      */
@@ -691,7 +722,7 @@ trait InventoryStockTrait
     /**
      * Returns true/false from the configuration file determining
      * whether or not to rollback costs when a rollback occurs on
-     * a stock
+     * a stock.
      *
      * @return bool
      */
