@@ -98,7 +98,7 @@ trait InventoryTrait
          * this will not overwrite any SKU the item had previously
          */
         static::updated(function ($record) {
-            if ($record->category_id != null) {
+            if ($record->category_id !== null) {
                 $record->generateSku();
             }
         });
