@@ -3,7 +3,7 @@
 
 [![Travis CI](https://img.shields.io/travis/stevebauman/inventory.svg?style=flat-square)](https://travis-ci.org/stevebauman/inventory)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/stevebauman/inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9.svg?style=flat-square)](https://insight.sensiolabs.com/projects/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9/mini.png)](https://insight.sensiolabs.com/projects/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9)
 [![Latest Stable Version](https://img.shields.io/packagist/v/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 [![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://img.shields.io/packagist/l/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
