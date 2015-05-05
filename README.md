@@ -61,7 +61,7 @@
 
 ## Description
 
-Inventory is a fully tested Laravel inventory solution. It provides the basics of inventory management using Eloquent such as:
+Inventory is a fully tested, PSR compliant Laravel inventory solution. It provides the basics of inventory management using Eloquent such as:
 
 - Inventory item management
 - Inventory item variant management
