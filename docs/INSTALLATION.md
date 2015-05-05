@@ -4,7 +4,7 @@
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.5.*"
+    "stevebauman/inventory" : "1.6.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -32,7 +32,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.5.*"
+    "stevebauman/inventory" : "1.6.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -138,10 +138,12 @@ Supplier:
 Inventory:
 
     use Stevebauman\Inventory\Traits\InventoryTrait;
+    use Stevebauman\Inventory\Traits\InventoryVariantTrait;
     
     class Inventory extends Model
     {
         use InventoryTrait;
+        use InventoryVariantTrait;
     
         protected $table = 'inventory';
         
