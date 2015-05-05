@@ -146,7 +146,7 @@ try/catch statement.
 
 ### Updating from 1.5.* to 1.6.*
 
-A new migration was added to this release. This migration adds the column `parent_id` to your `inventories` database
+A new migration and trait was added to this release. This migration adds the column `parent_id` to your `inventories` database
 table. When rolled back, it will remove this `parent_id` column. The default `parent_id` is null, so you can run the
 migration with all of your data inside just fine.
 
@@ -163,6 +163,16 @@ Follow standard update migration procedure:
 Then run the migration using:
 
     php artisan migrate
+
+If you're using your own models, be sure to insert the new trait on your `Inventory` model:
+    
+    use Stevebauman\Inventory\Traits\InventoryVariantTrait;
+    
+    class Inventory extends Eloquent {
+        use InventoryVariantTrait;
+    }
+
+If you're using the built in models, it's already included.
 
 ### Upcoming Updates
 
