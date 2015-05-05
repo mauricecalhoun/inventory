@@ -147,8 +147,8 @@ try/catch statement.
 ### Updating from 1.5.* to 1.6.*
 
 A new migration and trait was added to this release. This migration adds the column `parent_id` to your `inventories` database
-table. When rolled back, it will remove this `parent_id` column. The default `parent_id` is null, so you can run the
-migration with all of your data inside just fine.
+table. When rolled back, it will remove the `parent_id` column. The column `parent_id` is defaulted to null, so this migration
+is completely non-destructive.
 
 Follow standard update migration procedure:
 
