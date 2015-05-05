@@ -16,8 +16,10 @@ trait LocationTrait
      * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID
      *
      * @param $location
-     * @return \Illuminate\Support\Collection|null|LocationTrait|static
+     *
      * @throws InvalidLocationException
+     *
+     * @return mixed
      */
     public function getLocation($location)
     {
@@ -33,9 +35,10 @@ trait LocationTrait
     }
 
     /**
-     * Returns true or false if the specified location is an instance of the model Location
+     * Returns true or false if the specified location is an instance of a model.
      *
-     * @param $object
+     * @param mixed $object
+     *
      * @return bool
      */
     private function isLocation($object)

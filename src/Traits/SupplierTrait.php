@@ -16,16 +16,17 @@ trait SupplierTrait
     use VerifyTrait;
 
     /**
-     * The belongsToMany items relationship
+     * The belongsToMany items relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     abstract public function items();
 
     /**
-     * Adds all the specified items to the current supplier
+     * Adds all the specified items to the current supplier.
      *
      * @param array $items
+     *
      * @return bool
      */
     public function addItems($items = [])
@@ -38,11 +39,13 @@ trait SupplierTrait
     }
 
     /**
-     * Adds the specified item to the current supplier
+     * Adds the specified item to the current supplier.
      *
-     * @param $item
-     * @return bool
+     * @param mixed $item
+     *
      * @throws InvalidItemException
+     *
+     * @return bool
      */
     public function addItem($item)
     {
@@ -52,7 +55,7 @@ trait SupplierTrait
     }
 
     /**
-     * Removes all items from the current supplier
+     * Removes all items from the current supplier.
      *
      * @return bool
      */
@@ -68,9 +71,10 @@ trait SupplierTrait
     }
 
     /**
-     * Removes all the specified items from the current supplier
+     * Removes all the specified items from the current supplier.
      *
      * @param array $items
+     *
      * @return bool
      */
     public function removeItems($items = [])
@@ -83,11 +87,13 @@ trait SupplierTrait
     }
 
     /**
-     * Removes the specified item from the current supplier
+     * Removes the specified item from the current supplier.
      *
-     * @param $item
-     * @return bool
+     * @param mixed $item
+     *
      * @throws InvalidItemException
+     *
+     * @return bool
      */
     public function removeItem($item)
     {
@@ -97,9 +103,10 @@ trait SupplierTrait
     }
 
     /**
-     * Processes attaching the specified item to the current supplier
+     * Processes attaching the specified item to the current supplier.
      *
-     * @param $item
+     * @param mixed $item
+     *
      * @return bool
      */
     private function processItemAttach($item)
@@ -125,9 +132,10 @@ trait SupplierTrait
     }
 
     /**
-     * Processes detaching the specified item from the current supplier
+     * Processes detaching the specified item from the current supplier.
      *
-     * @param $item
+     * @param mixed $item
+     *
      * @return bool
      */
     private function processItemDetach($item)
@@ -153,11 +161,13 @@ trait SupplierTrait
     }
 
     /**
-     * Retrieves the specified item
+     * Retrieves the specified item.
      *
-     * @param $item
-     * @return mixed
+     * @param mixed $item
+     *
      * @throws InvalidItemException
+     *
+     * @return mixed
      */
     public function getItem($item)
     {
@@ -175,9 +185,10 @@ trait SupplierTrait
     }
 
     /**
-     * Retrieves an item by the specified ID
+     * Retrieves an item by the specified ID.
      *
-     * @param $id
+     * @param int|string $id
+     *
      * @return mixed
      */
     private function getItemById($id)

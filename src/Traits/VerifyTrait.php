@@ -9,9 +9,10 @@ namespace Stevebauman\Inventory\Traits;
 trait VerifyTrait
 {
     /**
-     * Returns true/false if the number specified is numeric
+     * Returns true/false if the number specified is numeric.
      *
-     * @param int $number
+     * @param int|string $number
+     *
      * @return bool
      */
     private function isNumeric($number)
@@ -20,9 +21,9 @@ trait VerifyTrait
     }
 
     /**
-     * Returns true or false if the number inserted is positive
+     * Returns true or false if the number inserted is positive.
      *
-     * @param $number
+     * @param int|string $number
      * @return bool
      */
     private function isPositive($number)
@@ -34,9 +35,10 @@ trait VerifyTrait
 
     /**
      * Returns true/false if the specified model is a subclass
-     * of the Eloquent Model
+     * of the Eloquent Model.
      *
-     * @param $model
+     * @param mixed $model
+     *
      * @return bool
      */
     private function isModel($model)

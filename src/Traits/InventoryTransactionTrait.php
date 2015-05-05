@@ -46,7 +46,7 @@ trait InventoryTransactionTrait
 
     /**
      * Overrides the models boot function to generate a new transaction history
-     * record when it is created and updated
+     * record when it is created and updated.
      *
      * @return void
      */
@@ -81,8 +81,9 @@ trait InventoryTransactionTrait
     /**
      * Returns all transactions by the specified state
      *
-     * @param $state
-     * @return mixed
+     * @param string $state
+     *
+     * @return \Illuminate\Support\Collection
      */
     public static function getByState($state)
     {
@@ -92,7 +93,7 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Generates a transaction history record after a transaction has been created
+     * Generates a transaction history record after a transaction has been created.
      *
      * @return void
      */
@@ -108,7 +109,7 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Generates a transaction history record when a transaction has been updated
+     * Generates a transaction history record when a transaction has been updated.
      *
      * @return void
      */
@@ -118,14 +119,14 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * The belongsTo stock relationship
+     * The belongsTo stock relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     abstract public function stock();
 
     /**
-     * The hasMany histories relationship
+     * The hasMany histories relationship.
      *
      * @return mixed
      */
@@ -133,7 +134,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is a checkout
+     * current state of the transaction is a checkout.
      *
      * @return bool
      */
@@ -144,7 +145,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is reserved
+     * current state of the transaction is reserved.
      *
      * @return bool
      */
@@ -155,7 +156,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is a back order
+     * current state of the transaction is a back order.
      *
      * @return bool
      */
@@ -166,7 +167,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is a return
+     * current state of the transaction is a return.
      *
      * @return bool
      */
@@ -177,7 +178,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is sold
+     * current state of the transaction is sold.
      *
      * @return bool
      */
@@ -188,7 +189,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is cancelled
+     * current state of the transaction is cancelled.
      *
      * @return bool
      */
@@ -199,7 +200,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is an order
+     * current state of the transaction is an order.
      *
      * @return bool
      */
@@ -210,7 +211,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is a received order
+     * current state of the transaction is a received order.
      *
      * @return bool
      */
@@ -221,7 +222,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is on-hold
+     * current state of the transaction is on-hold.
      *
      * @return bool
      */
@@ -232,7 +233,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is released inventory
+     * current state of the transaction is released inventory.
      *
      * @return bool
      */
@@ -243,7 +244,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true or false depending if the
-     * current state of the transaction is removed inventory
+     * current state of the transaction is removed inventory.
      *
      * @return bool
      */
@@ -256,13 +257,15 @@ trait InventoryTransactionTrait
      * Checks out the specified amount of quantity from the stock,
      * waiting to be sold.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool
      */
     public function checkout($quantity = 0, $reason = '', $cost = 0)
     {
@@ -296,13 +299,15 @@ trait InventoryTransactionTrait
      * If no quantity is specified and the previous state was not in checkout,
      * reserved, back ordered, returned or returned partial, this will throw an exception.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool
      */
     public function sold($quantity = 0, $reason = '', $cost = 0)
     {
@@ -339,11 +344,13 @@ trait InventoryTransactionTrait
      * Marks a new or open transaction as sold and removes the amount
      * of the specified quantity from from the inventory stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool
      */
     public function soldAmount($quantity, $reason = '', $cost = 0)
     {
@@ -378,10 +385,11 @@ trait InventoryTransactionTrait
      * that was sold/checked-out, then the specified amount is inserted back into the stock
      * and the transaction is reverted to its previous state with the leftover amount.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|mixed|InventoryTransactionTrait
+     * @param int|string $cost
+     *
+     * @return $this|bool
      */
     public function returned($quantity = 0, $reason = '', $cost = 0)
     {
@@ -404,11 +412,13 @@ trait InventoryTransactionTrait
      * back into the stock. If the transaction quantity is greater or equal to the specified
      * quantity then a full return is processed.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool
      */
     public function returnedPartial($quantity, $reason = '', $cost = 0)
     {
@@ -465,9 +475,11 @@ trait InventoryTransactionTrait
      * was taken back into the inventory.
      *
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool|InventoryTransactionTrait
      */
     public function returnedAll($reason = '', $cost = 0)
     {
@@ -508,14 +520,16 @@ trait InventoryTransactionTrait
      * quantity is unavailable to be reserved. Otherwise it will throw an exception. If reserved is called
      * from being checked out we'll make sure we don't take any inventory.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param bool $backOrder
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|mixed|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function reserved($quantity = 0, $backOrder = false, $reason = '', $cost = 0)
     {
@@ -562,10 +576,12 @@ trait InventoryTransactionTrait
      * for the quantity specified, this will throw an exception. This prevents back-orders
      * being created when unnecessary
      *
-     * @param $quantity
+     * @param int|string $quantity
+     *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
-     * @return mixed
+     *
+     * @return $this
      */
     public function backOrder($quantity)
     {
@@ -587,10 +603,12 @@ trait InventoryTransactionTrait
      * to fill the back order, or an exception occurred.
      *
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function fillBackOrder($reason = '', $cost = 0)
     {
@@ -619,10 +637,12 @@ trait InventoryTransactionTrait
      * Creates a transaction that specifies the amount of quantity that has been ordered.
      * The received or cancel method must be used after this is performed.
      *
-     * @param $quantity
+     * @param int|string $quantity
+     *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
-     * @return mixed
+     *
+     * @return $this
      */
     public function ordered($quantity)
     {
@@ -646,12 +666,13 @@ trait InventoryTransactionTrait
      * Marks a transaction as received. If the previous state was ordered then the amount
      * ordered is inserted into the stock. If a quantity is specified then the status of the
      * transaction is set to received-partial, and then returned to ordered with the amount of
-     * quantity left to receive
+     * quantity left to receive.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
+     * @return $this|bool
      */
     public function received($quantity = 0, $reason = '', $cost = 0)
     {
@@ -664,13 +685,15 @@ trait InventoryTransactionTrait
 
     /**
      * Marks an order transaction as received, placing all the quantity from
-     * the transaction into the stock
+     * the transaction into the stock.
      *
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function receivedAll($reason = '', $cost = 0)
     {
@@ -704,12 +727,14 @@ trait InventoryTransactionTrait
      * ordered, this will mark the transaction as received all and place the quantity
      * of the transaction into the stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
+     *
+     * @return $this|bool
      */
     public function receivedPartial($quantity, $reason = '', $cost = 0)
     {
@@ -748,12 +773,17 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * @param $quantity
+     * Holds the specified amount of quantity until
+     * it is either used or released.
+     *
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
+     *
+     * @return $this|bool
      */
     public function hold($quantity, $reason = '', $cost = 0)
     {
@@ -777,13 +807,15 @@ trait InventoryTransactionTrait
      * Releases held inventory and inserts it back into the stock. If a quantity is specified
      * and it is lower than the held quantity, than the transaction state will change to
      * released-partial and then returned to the state on-hold with the remainder of the
-     * held stock
+     * held stock.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
-     * @return $this|bool|InventoryTransactionTrait
+     *
+     * @return $this|bool
      */
     public function release($quantity = 0, $reason = '', $cost = 0)
     {
@@ -796,13 +828,15 @@ trait InventoryTransactionTrait
 
     /**
      * Releases an on-hold inventory transaction, placing all the quantity
-     * in the transaction back into the stock
+     * in the transaction back into the stock.
      *
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function releaseAll($reason = '', $cost = 0)
     {
@@ -830,13 +864,15 @@ trait InventoryTransactionTrait
      * Releases a partial amount of the specified quantity from the transaction
      * and returns it to the previous state.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function releasePartial($quantity, $reason = '', $cost = 0)
     {
@@ -876,13 +912,15 @@ trait InventoryTransactionTrait
      * If the transaction state was open or null, and a quantity is given, then the specified quantity
      * is permanently removed from the stock.
      *
-     * @param int $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
+     *
+     * @return $this|bool
      */
     public function remove($quantity = 0, $reason = '', $cost = 0)
     {
@@ -920,16 +958,18 @@ trait InventoryTransactionTrait
      * Removes a partial amount of quantity from the inventory. If the transactions
      * previous state was on-hold, no inventory will be removed since the stock
      * was already taken. If the previous state is null or opened, then it will
-     * remove the specified quantity from the stock
+     * remove the specified quantity from the stock.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     public function removePartial($quantity, $reason = '', $cost = 0)
     {
@@ -990,9 +1030,11 @@ trait InventoryTransactionTrait
      * and inventory released CAN NOT be cancelled.
      *
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool|InventoryTransactionTrait
+     * @param int|string $cost
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return $this|bool
      */
     public function cancel($reason = '', $cost = 0)
     {
@@ -1032,7 +1074,7 @@ trait InventoryTransactionTrait
 
     /**
      * Returns true/false depending if the current
-     * transaction is attached to a stock
+     * transaction is attached to a stock.
      *
      * @return bool
      */
@@ -1047,11 +1089,12 @@ trait InventoryTransactionTrait
 
 
     /**
-     * Returns the current stock record attached to the current
-     * transaction
+     * Returns the current stock record
+     * attached to the current transaction.
+     *
+     * @throws StockNotFoundException
      *
      * @return mixed
-     * @throws StockNotFoundException
      */
     public function getStockRecord()
     {
@@ -1065,7 +1108,7 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Returns the current transaction history
+     * Returns the current transaction history.
      *
      * @return mixed
      */
@@ -1075,7 +1118,7 @@ trait InventoryTransactionTrait
     }
 
     /**
-     *  Returns the last transaction history record
+     *  Returns the last transaction history record.
      *
      * @return bool|mixed
      */
@@ -1091,10 +1134,11 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Validates the quantity attribute when it has
-     * been set
+     * Validates the quantity attribute
+     * when it has been set.
      *
-     * @param $quantity
+     * @param int|string $quantity
+     *
      * @throws InvalidQuantityException
      */
     public function setQuantityAttribute($quantity)
@@ -1109,9 +1153,10 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Verifies if the state being set is valid
+     * Verifies if the state being set is valid.
      *
-     * @param $state
+     * @param string $state
+     *
      * @throws InvalidTransactionStateException
      */
     public function setStateAttribute($state)
@@ -1126,7 +1171,8 @@ trait InventoryTransactionTrait
      * partial is called. This is to allow a transaction to continue functioning normally
      * since only a partial amount of the transaction was returned, therefore it is still open.
      *
-     * @param $previousState
+     * @param string $previousState
+     *
      * @return $this|bool
      */
     private function returnToPreviousState($previousState)
@@ -1169,8 +1215,10 @@ trait InventoryTransactionTrait
      *
      * @param array $allowedStates
      * @param string $toState
-     * @return bool
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return bool
      */
     private function validatePreviousState($allowedStates = [], $toState)
     {
@@ -1186,12 +1234,14 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Returns true if the specified state is valid, throws an
-     * exception otherwise
+     * Returns true if the specified state is valid,
+     * throws an exception otherwise.
      *
-     * @param $state
-     * @return bool
+     * @param string $state
+     *
      * @throws InvalidTransactionStateException
+     *
+     * @return bool
      */
     private function validateStateIsAvailable($state)
     {
@@ -1207,14 +1257,16 @@ trait InventoryTransactionTrait
     /**
      * Processes putting the specified quantity into
      * the current transaction stock and saving the
-     * current transaction
+     * current transaction.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $event
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool
+     * @param int|string $cost
+     *
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     private function processStockPutAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
@@ -1241,14 +1293,16 @@ trait InventoryTransactionTrait
 
     /**
      * Processes removing the specified quantity from transaction
-     * stock and saving the current transaction
+     * stock and saving the current transaction.
      *
-     * @param $quantity
+     * @param int|string $quantity
      * @param string $event
      * @param string $reason
-     * @param int $cost
-     * @return $this|bool
+     * @param int|string $cost
+     *
      * @throws StockNotFoundException
+     *
+     * @return $this|bool
      */
     private function processStockTakeAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
@@ -1278,10 +1332,11 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Processes saving the transaction by covering it with
-     * a database transaction.
+     * Processes saving the transaction by
+     * covering it with a database transaction.
      *
      * @param string $event
+     *
      * @return $this|bool
      */
     private function processSave($event = '')
@@ -1306,12 +1361,13 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Processes generating a transaction history entry
+     * Processes generating a transaction history entry.
      *
-     * @param $stateBefore
-     * @param $stateAfter
-     * @param int $quantityBefore
-     * @param int $quantityAfter
+     * @param string $stateBefore
+     * @param string $stateAfter
+     * @param int|string $quantityBefore
+     * @param int|string $quantityAfter
+     *
      * @return mixed
      */
     private function generateTransactionHistory($stateBefore, $stateAfter, $quantityBefore = 0, $quantityAfter = 0)
@@ -1329,9 +1385,10 @@ trait InventoryTransactionTrait
 
     /**
      * Returns a default transaction reason from
-     * the specified key in the reasons lang file
+     * the specified key in the reasons lang file.
      *
      * @param string $key
+     *
      * @return string
      */
     private function getTransactionReason($key)
@@ -1350,7 +1407,7 @@ trait InventoryTransactionTrait
     }
 
     /**
-     * Returns an array of available states
+     * Returns an array of available states.
      *
      * @return array
      */

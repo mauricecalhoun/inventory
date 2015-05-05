@@ -19,8 +19,9 @@ trait UserIdentificationTrait
      *
      * Thanks to https://github.com/VentureCraft/revisionable/blob/master/src/Venturecraft/Revisionable/RevisionableTrait.php
      *
-     * @return null
      * @throws NoUserLoggedInException
+     *
+     * @return int|string|null
      */
     protected static function getCurrentUserId()
     {
