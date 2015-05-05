@@ -73,6 +73,50 @@ trait InventoryVariantTrait
     }
 
     /**
+     * Creates a new variant instance, saves it,
+     * and returns the resulting variant.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int|string $categoryId
+     * @param int|string $metricId
+     *
+     * @return mixed
+     */
+    public function createVariant($name = '', $description = '', $categoryId = null, $metricId = null)
+    {
+        $variant = $this->newVariant($name);
+
+        try {
+            if(! empty($description)) {
+                $variant->description = $description;
+            }
+
+            if($categoryId !== null) {
+                $variant->category_id = $categoryId;
+            }
+
+            if($metricId !== null) {
+                $variant->metric_id = $metricId;
+            }
+
+            if($variant->save()) {
+                $this->dbCommitTransaction();
+
+                $this->fireEvent('inventory.variant.created', [
+                    'item' => $this,
+                ]);
+
+                return $variant;
+            }
+        } catch (\Exception $e) {
+            $this->dbRollbackTransaction();
+        }
+
+        return false;
+    }
+
+    /**
      * Makes the current item a variant of
      * the specified item.
      *

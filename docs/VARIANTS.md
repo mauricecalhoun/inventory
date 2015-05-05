@@ -70,6 +70,14 @@ However, feel free to override these if you wish:
     
     $cherryCoke->save();
 
+#### Create Variant
+
+To create a variant, use the `createVariant($name = '', $description = '', $categoryId = null, $metricId = null)` method:
+
+    $coke = Inventory::find(1);
+    
+    $cherryCoke = $coke->createVariant('Cherry Coke', 'Delicious Cherry Coke');
+
 #### Is Variant
 
 To ask an item if it's a variant, use the `isVariant()` method:
