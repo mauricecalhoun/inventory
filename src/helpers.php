@@ -7,8 +7,7 @@
  * @return string
  */
 if (! function_exists('renderNode')) {
-    function renderNode($node)
-    {
+    function renderNode($node) {
         $html = '';
 
         if (is_object($node)) {
