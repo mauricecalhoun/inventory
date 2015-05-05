@@ -26,7 +26,7 @@ trait InventoryVariantTrait
     /**
      * Returns all variants of the current item.
      *
-     * This does not retrieve variants recursively.
+     * This method does not retrieve variants recursively.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -51,7 +51,7 @@ trait InventoryVariantTrait
     /**
      * Returns a new Inventory model instance with it's parent
      * ID, category ID, and metric ID set to the current item's
-     * for creation of a variant.
+     * for the creation of a variant.
      *
      * @param string $name
      *
