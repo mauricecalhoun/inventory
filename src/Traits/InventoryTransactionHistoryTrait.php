@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Trait InventoryTransactionHistoryTrait
  * @package Stevebauman\Inventory\Traits
@@ -20,7 +22,7 @@ trait InventoryTransactionHistoryTrait
      */
     public static function bootInventoryTransactionHistoryTrait()
     {
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             $model->user_id = static::getCurrentUserId();
         });
     }

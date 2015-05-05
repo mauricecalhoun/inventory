@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Trait InventoryStockMovementTrait
  * @package Stevebauman\Inventory\Traits
@@ -25,7 +27,7 @@ trait InventoryStockMovementTrait
      */
     public static function bootInventoryStockMovementTrait()
     {
-        static::creating(function ($record) {
+        static::creating(function (Model $record) {
             $record->user_id = static::getCurrentUserId();
         });
     }

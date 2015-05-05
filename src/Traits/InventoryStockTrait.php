@@ -6,6 +6,7 @@ use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
@@ -93,7 +94,7 @@ trait InventoryStockTrait
      */
     public static function bootInventoryStockTrait()
     {
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             $model->user_id = $model->getCurrentUserId();
 
             /*
@@ -104,11 +105,11 @@ trait InventoryStockTrait
             }
         });
 
-        static::created(function ($model) {
+        static::created(function (Model $model) {
             $model->postCreate();
         });
 
-        static::updating(function ($model) {
+        static::updating(function (Model $model) {
             /*
              * Retrieve the original quantity before it was updated,
              * so we can create generate an update with it
@@ -123,7 +124,7 @@ trait InventoryStockTrait
             }
         });
 
-        static::updated(function ($model) {
+        static::updated(function (Model $model) {
             $model->postUpdate();
         });
     }
@@ -547,7 +548,7 @@ trait InventoryStockTrait
      *
      * @return bool
      */
-    private function processMoveOperation($location)
+    private function processMoveOperation(Model $location)
     {
         $this->location_id = $location->id;
 
@@ -579,7 +580,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    private function processRollbackOperation($movement, $recursive = false)
+    private function processRollbackOperation(Model $movement, $recursive = false)
     {
         if ($recursive) {
             return $this->processRecursiveRollbackOperation($movement);
@@ -626,7 +627,7 @@ trait InventoryStockTrait
      *
      * @return array
      */
-    private function processRecursiveRollbackOperation($movement)
+    private function processRecursiveRollbackOperation(Model $movement)
     {
         /*
          * Retrieve movements that were created after the specified movement, and order them descending

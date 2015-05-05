@@ -7,6 +7,7 @@ use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 use Stevebauman\Inventory\InventoryServiceProvider;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -52,7 +53,7 @@ trait InventoryTransactionTrait
      */
     public static function bootInventoryTransactionTrait()
     {
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             $model->user_id = static::getCurrentUserId();
 
             if (! $model->beforeState) {
@@ -60,11 +61,11 @@ trait InventoryTransactionTrait
             }
         });
 
-        static::created(function ($model) {
+        static::created(function (Model $model) {
             $model->postCreate();
         });
 
-        static::updating(function ($model) {
+        static::updating(function (Model $model) {
             /*
              * Retrieve the original quantity before it was updated,
              * so we can create generate an update with it
@@ -73,7 +74,7 @@ trait InventoryTransactionTrait
             $model->beforeQuantity = $model->getOriginal('quantity');
         });
 
-        static::updated(function ($model) {
+        static::updated(function (Model $model) {
             $model->postUpdate();
         });
     }

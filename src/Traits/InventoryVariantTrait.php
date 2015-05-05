@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Trait InventoryVariantTrait
  * @package Stevebauman\Inventory\Traits
@@ -120,11 +122,11 @@ trait InventoryVariantTrait
      * Makes the current item a variant of
      * the specified item.
      *
-     * @param $item
+     * @param Model $item
      *
      * @return $this|bool
      */
-    public function makeVariantOf($item)
+    public function makeVariantOf(Model $item)
     {
         return $this->processMakeVariant($item->id);
     }

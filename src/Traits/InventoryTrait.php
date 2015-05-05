@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
 use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
@@ -82,14 +83,14 @@ trait InventoryTrait
          * Assign the current users ID while the item
          * is being created
          */
-        static::creating(function ($record) {
+        static::creating(function (Model $record) {
             $record->user_id = static::getCurrentUserId();
         });
 
         /*
          * Generate the items SKU once it's created
          */
-        static::created(function ($record) {
+        static::created(function (Model $record) {
             $record->generateSku();
         });
 
@@ -97,7 +98,7 @@ trait InventoryTrait
          * Generate an SKU if the item has been assigned a category,
          * this will not overwrite any SKU the item had previously
          */
-        static::updated(function ($record) {
+        static::updated(function (Model $record) {
             if ($record->category_id !== null) {
                 $record->generateSku();
             }
@@ -896,12 +897,12 @@ trait InventoryTrait
      * Processes updating the specified SKU
      * record with the specified code.
      *
-     * @param $sku
+     * @param Model $sku
      * @param string $code
      *
      * @return mixed|bool
      */
-    private function processSkuUpdate($sku, $code)
+    private function processSkuUpdate(Model $sku, $code)
     {
         $this->dbStartTransaction();
 
@@ -921,11 +922,11 @@ trait InventoryTrait
     /**
      * Processes attaching a supplier to an inventory item.
      *
-     * @param $supplier
+     * @param Model $supplier
      *
      * @return bool
      */
-    private function processSupplierAttach($supplier)
+    private function processSupplierAttach(Model $supplier)
     {
         $this->dbStartTransaction();
 
@@ -950,11 +951,11 @@ trait InventoryTrait
     /**
      * Processes detaching a supplier.
      *
-     * @param $supplier
+     * @param Model $supplier
      *
      * @return bool
      */
-    private function processSupplierDetach($supplier)
+    private function processSupplierDetach(Model $supplier)
     {
         $this->dbStartTransaction();
 
@@ -979,7 +980,7 @@ trait InventoryTrait
     /**
      * Returns a supplier by the specified ID.
      *
-     * @param $id
+     * @param int|string $id
      *
      * @return mixed
      */
