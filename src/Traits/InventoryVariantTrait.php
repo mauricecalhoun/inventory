@@ -53,15 +53,21 @@ trait InventoryVariantTrait
      * ID, category ID, and metric ID set to the current item's
      * for creation of a variant.
      *
+     * @param string $name
+     *
      * @return mixed
      */
-    public function newVariant()
+    public function newVariant($name = '')
     {
         $variant = new $this;
 
         $variant->parent_id = $this->id;
         $variant->category_id = $this->category_id;
         $variant->metric_id = $this->metric_id;
+
+        if(! empty($name)) {
+            $variant->name = $name;
+        }
 
         return $variant;
     }
