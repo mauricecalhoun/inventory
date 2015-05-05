@@ -144,10 +144,30 @@ However, the exception `Stevebauman\Inventory\Exceptions\StockIsSufficientExcept
 It is no longer thrown when there is enough stock for a back-order. Simply remove it from your
 try/catch statement.
 
+### Updating from 1.5.* to 1.6.*
+
+A new migration was added to this release. This migration adds the column `parent_id` to your `inventories` database
+table. When rolled back, it will remove this `parent_id` column. The default `parent_id` is null, so you can run the
+migration with all of your data inside just fine.
+
+Follow standard update migration procedure:
+
+##### Laravel 4:
+
+    php artisan migrate:publish --package="stevebauman/inventory"
+
+##### Laravel 5:
+
+    php artisan vendor:publish
+    
+Then run the migration using:
+
+    php artisan migrate
+
 ### Upcoming Updates
 
-`1.6.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may
+`1.7.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may
 also be assemblies. This will allow the generation of a 'bill of materials' list for an assembly, and many more useful
 functions.
 
-`1.7.*` will bring Inventory Kits. More on this update once `1.6.*` is released.
+`1.8.*` will bring Inventory Kits. More on this update once `1.7.*` is released.
