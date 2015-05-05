@@ -50,6 +50,7 @@
             <li><a href="docs/USAGE.md#sku-generation">SKU Generation</a></li>
             <li><a href="docs/USAGE.md#suppliers">Suppliers</a></li>
             <li><a href="docs/TRANSACTIONS.md">Transactions</a></li>
+            <li><a href="docs/VARIANTS.md">Variants</a></li>
             <li><a href="docs/EVENTS.md">Events</a></li>
             <li><a href="docs/USAGE.md#exceptions">Exceptions</a></li>
             <li><a href="docs/USAGE.md#auth-integration">Auth Integration</a></li>
