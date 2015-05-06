@@ -1,9 +1,9 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\Tests\Transactions;
 
-use Stevebauman\Inventory\Models\InventoryTransaction;
 use Illuminate\Support\Facades\Lang;
+use Stevebauman\Inventory\Models\InventoryTransaction;
 
 class InventoryTransactionOrderedTest extends InventoryTransactionTest
 {

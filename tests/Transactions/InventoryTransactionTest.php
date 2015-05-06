@@ -1,9 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Stevebauman\Inventory\Tests\InventoryStockTest;
 
 class InventoryTransactionTest extends InventoryStockTest
 {

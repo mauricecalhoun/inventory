@@ -1,10 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\Tests\Transactions;
 
-use Stevebauman\Inventory\Models\InventoryTransaction;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
+use Stevebauman\Inventory\Models\InventoryTransaction;
 
 class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 {
