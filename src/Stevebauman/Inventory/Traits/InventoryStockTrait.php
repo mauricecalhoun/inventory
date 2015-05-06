@@ -98,7 +98,8 @@ trait InventoryStockTrait
             $model->user_id = $model->getCurrentUserId();
 
             /*
-             * Check if a reason has been set, if not let's retrieve the default first entry reason
+             * Check if a reason has been set, if not
+             * let's retrieve the default first entry reason
              */
             if (! $model->reason) {
                 $model->reason = Lang::get('inventory::reasons.first_record');

@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Stevebauman\\Inventory\\": "src/"
+            "Stevebauman\\Inventory\\": "src/Stevebauman/Inventory/"
         }
     },
     "autoload-dev":
