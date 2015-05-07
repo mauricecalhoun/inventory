@@ -88,6 +88,8 @@ Recommended:
 
 - Venturecraft/Revisionable (For tracking Category and Location changes to stocks)
 
+If you need another Auth driver supported, please send a pull request or create an issue.
+
 ### Benefits
 
 If you're using the traits from this package to customize your install, that means you have complete flexibility over your own
