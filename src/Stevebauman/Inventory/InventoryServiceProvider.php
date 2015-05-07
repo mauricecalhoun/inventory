@@ -11,39 +11,40 @@ use Illuminate\Support\ServiceProvider;
 class InventoryServiceProvider extends ServiceProvider
 {
     /**
-    * Inventory version
-    *
-    * @var string
-    */
+     * Inventory version
+     *
+     * @var string
+     */
     const VERSION = '1.6.2';
 
     /**
-    * Stores the package configuration separator
-    * for Laravel 5 compatibility
-    *
-    * @var string
-    */
+     * Stores the package configuration separator
+     * for Laravel 5 compatibility
+     *
+     * @var string
+     */
     public static $packageConfigSeparator = '::';
 
     /**
-    * The laravel version number. This is used for the install commands
-    *
-    * @var int
-    */
+     * The laravel version number. This is
+     * used for the install commands.
+     *
+     * @var int
+     */
     public static $laravelVersion = 4;
 
     /**
-    * Indicates if loading of the provider is deferred.
-    *
-    * @var bool
-    */
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
     protected $defer = false;
 
     /**
-    * Boot the service provider.
-    *
-    * @return void
-    */
+     * Boot the service provider.
+     *
+     * @return void
+     */
     public function boot()
     {
         /*
@@ -86,10 +87,10 @@ class InventoryServiceProvider extends ServiceProvider
     }
 
     /**
-    * Register the service provider.
-    *
-    * @return void
-    */
+     * Register the service provider.
+     *
+     * @return void
+     */
     public function register()
     {
         /*
@@ -129,10 +130,10 @@ class InventoryServiceProvider extends ServiceProvider
     }
 
     /**
-    * Get the services provided by the provider.
-    *
-    * @return array
-    */
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
     public function provides()
     {
         return ['inventory'];
