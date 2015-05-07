@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class InvalidLocationException
- * @package Stevebauman\Inventory\Exceptions
+ * Class InvalidLocationException.
  */
 class InvalidLocationException extends \Exception
 {

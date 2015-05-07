@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\InventoryStockTrait;
 
 /**
- * Class InventoryStock
- * @package Stevebauman\Inventory\Models
+ * Class InventoryStock.
  */
 class InventoryStock extends BaseModel
 {
@@ -24,7 +23,7 @@ class InventoryStock extends BaseModel
     ];
 
     /**
-     * The belongsTo inventory item relationship
+     * The belongsTo inventory item relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -34,7 +33,7 @@ class InventoryStock extends BaseModel
     }
 
     /**
-     * The hasMany movements relationship
+     * The hasMany movements relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -44,7 +43,7 @@ class InventoryStock extends BaseModel
     }
 
     /**
-     * The hasMany transactions relationship
+     * The hasMany transactions relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -54,7 +53,7 @@ class InventoryStock extends BaseModel
     }
 
     /**
-     * The hasOne location relationship
+     * The hasOne location relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

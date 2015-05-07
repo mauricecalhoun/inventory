@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Trait VerifyTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait VerifyTrait.
  */
 trait VerifyTrait
 {
@@ -24,6 +23,7 @@ trait VerifyTrait
      * Returns true or false if the number inserted is positive.
      *
      * @param int|string $number
+     *
      * @return bool
      */
     private function isPositive($number)

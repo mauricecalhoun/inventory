@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Trait UserIdentificationTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait UserIdentificationTrait.
  */
 trait UserIdentificationTrait
 {
     /**
      * Attempt to find the user id of the currently logged in user
-     * Supports Cartalyst Sentry/Sentinel based authentication, as well as stock Auth
+     * Supports Cartalyst Sentry/Sentinel based authentication, as well as stock Auth.
      *
      * Thanks to https://github.com/VentureCraft/revisionable/blob/master/src/Venturecraft/Revisionable/RevisionableTrait.php
      *
@@ -28,8 +27,8 @@ trait UserIdentificationTrait
         /*
          * Check if we're allowed to return no user ID to the model, if so we'll return NULL
          */
-        if (Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_no_user')) {
-            return null;
+        if (Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'allow_no_user')) {
+            return;
         }
 
         /*

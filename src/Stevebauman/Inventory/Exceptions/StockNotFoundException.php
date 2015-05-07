@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class StockNotFoundException
- * @package Stevebauman\Inventory\Exceptions
+ * Class StockNotFoundException.
  */
 class StockNotFoundException extends \Exception
 {

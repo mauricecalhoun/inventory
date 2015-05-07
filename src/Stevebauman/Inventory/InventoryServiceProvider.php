@@ -5,13 +5,12 @@ namespace Stevebauman\Inventory;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class InventoryServiceProvider
- * @package Stevebauman\Inventory
+ * Class InventoryServiceProvider.
  */
 class InventoryServiceProvider extends ServiceProvider
 {
     /**
-     * Inventory version
+     * Inventory version.
      *
      * @var string
      */
@@ -19,7 +18,7 @@ class InventoryServiceProvider extends ServiceProvider
 
     /**
      * Stores the package configuration separator
-     * for Laravel 5 compatibility
+     * for Laravel 5 compatibility.
      *
      * @var string
      */
@@ -42,8 +41,6 @@ class InventoryServiceProvider extends ServiceProvider
 
     /**
      * Boot the service provider.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -68,28 +65,26 @@ class InventoryServiceProvider extends ServiceProvider
             /*
              * Load the inventory translations from the inventory lang folder
              */
-            $this->loadTranslationsFrom(__DIR__ . '../../../lang', 'inventory');
+            $this->loadTranslationsFrom(__DIR__.'../../../lang', 'inventory');
 
             /*
              * Assign the configuration as publishable, and tag it as 'config'
              */
             $this->publishes([
-                __DIR__ . '../../../config/config.php' => config_path('inventory.php'),
+                __DIR__.'../../../config/config.php' => config_path('inventory.php'),
             ], 'config');
 
             /*
              * Assign the migrations as publishable, and tag it as 'migrations'
              */
             $this->publishes([
-                __DIR__ . '../../../migrations/' => base_path('database/migrations'),
+                __DIR__.'../../../migrations/' => base_path('database/migrations'),
             ], 'migrations');
         }
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
@@ -126,7 +121,7 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * Include the helpers file
          */
-        include __DIR__ . '../../../helpers.php';
+        include __DIR__.'../../../helpers.php';
     }
 
     /**

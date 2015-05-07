@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class InvalidQuantityException
- * @package Stevebauman\Inventory\Exceptions
+ * Class InvalidQuantityException.
  */
 class InvalidQuantityException extends \Exception
 {

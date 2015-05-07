@@ -11,76 +11,75 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Trait InventoryStockTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventoryStockTrait.
  */
 trait InventoryStockTrait
 {
-    /**
+    /*
      * Used for easily grabbing a specified location
      */
     use LocationTrait;
 
-    /**
+    /*
      * Verification helper functions
      */
     use VerifyTrait;
 
-    /**
+    /*
      * Set's the models constructor method to automatically assign the
      * user_id's attribute to the current logged in user
      */
     use UserIdentificationTrait;
 
-    /**
+    /*
      * Helpers for starting database transactions
      */
     use DatabaseTransactionTrait;
 
     /**
-     * Stores the quantity before an update
+     * Stores the quantity before an update.
      *
      * @var int|string
      */
     private $beforeQuantity = 0;
 
     /**
-     * Stores the reason for updating / creating a stock
+     * Stores the reason for updating / creating a stock.
      *
      * @var string
      */
     public $reason = '';
 
     /**
-     * Stores the cost for updating a stock
+     * Stores the cost for updating a stock.
      *
      * @var int|string
      */
     public $cost = 0;
 
     /**
-     * The hasOne location relationship
+     * The hasOne location relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     abstract public function location();
 
     /**
-     * The belongsTo item relationship
+     * The belongsTo item relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     abstract public function item();
 
     /**
-     * The hasMany movements relationship
+     * The hasMany movements relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     abstract public function movements();
 
     /**
-     * The hasMany transactions relationship
+     * The hasMany transactions relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -88,9 +87,7 @@ trait InventoryStockTrait
 
     /**
      * Overrides the models boot function to set the user ID automatically
-     * to every new record
-     *
-     * @return void
+     * to every new record.
      */
     public static function bootInventoryStockTrait()
     {
@@ -101,7 +98,7 @@ trait InventoryStockTrait
              * Check if a reason has been set, if not
              * let's retrieve the default first entry reason
              */
-            if (! $model->reason) {
+            if (!$model->reason) {
                 $model->reason = Lang::get('inventory::reasons.first_record');
             }
         });
@@ -120,7 +117,7 @@ trait InventoryStockTrait
             /*
              * Check if a reason has been set, if not let's retrieve the default change reason
              */
-            if (! $model->reason) {
+            if (!$model->reason) {
                 $model->reason = Lang::get('inventory::reasons.change');
             }
         });
@@ -132,15 +129,13 @@ trait InventoryStockTrait
 
     /**
      * Generates a stock movement on the creation of a stock.
-     *
-     * @return void
      */
     public function postCreate()
     {
         /*
          * Only create a first record movement if one isn't created already
          */
-        if (! $this->getLastMovement()) {
+        if (!$this->getLastMovement()) {
             /*
              * Generate the movement
              */
@@ -150,8 +145,6 @@ trait InventoryStockTrait
 
     /**
      * Generates a stock movement after a stock is updated.
-     *
-     * @return void
      */
     public function postUpdate()
     {
@@ -164,15 +157,14 @@ trait InventoryStockTrait
      * or added.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @throws InvalidQuantityException
      *
      * @return $this
-     *
      */
-    public function updateQuantity($quantity, $reason= '', $cost = 0)
+    public function updateQuantity($quantity, $reason = '', $cost = 0)
     {
         if ($this->isValidQuantity($quantity)) {
             return $this->processUpdateQuantityOperation($quantity, $reason, $cost);
@@ -183,12 +175,12 @@ trait InventoryStockTrait
      * Removes the specified quantity from the current stock.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return $this|bool
      */
-    public function remove($quantity, $reason= '', $cost = 0)
+    public function remove($quantity, $reason = '', $cost = 0)
     {
         return $this->take($quantity, $reason, $cost);
     }
@@ -197,7 +189,7 @@ trait InventoryStockTrait
      * Processes a 'take' operation on the current stock.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @throws InvalidQuantityException
@@ -216,7 +208,7 @@ trait InventoryStockTrait
      * Alias for put function.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return $this
@@ -230,7 +222,7 @@ trait InventoryStockTrait
      * Processes a 'put' operation on the current stock.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @throws InvalidQuantityException
@@ -248,6 +240,7 @@ trait InventoryStockTrait
      * Moves a stock to the specified location.
      *
      * @param $location
+     *
      * @return bool
      */
     public function moveTo($location)
@@ -262,7 +255,7 @@ trait InventoryStockTrait
      * it will rollback all movements leading up to the movement specified.
      *
      * @param mixed $movement
-     * @param bool $recursive
+     * @param bool  $recursive
      *
      * @return $this|bool
      */
@@ -285,7 +278,7 @@ trait InventoryStockTrait
      * Rolls back a specific movement.
      *
      * @param mixed $movement
-     * @param bool $recursive
+     * @param bool  $recursive
      *
      * @throws InvalidMovementException
      *
@@ -333,7 +326,7 @@ trait InventoryStockTrait
      */
     public function hasEnoughStock($quantity = 0)
     {
-        /**
+        /*
          * Using double equals for validation of complete value only, not variable type. For example:
          * '20' (string) equals 20 (int)
          */
@@ -428,7 +421,7 @@ trait InventoryStockTrait
      * Processes a quantity update operation.
      *
      * @param int|string $quantity
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return $this
@@ -450,7 +443,7 @@ trait InventoryStockTrait
      * Processes removing quantity from the current stock.
      *
      * @param int|string $taking
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return $this|bool
@@ -464,7 +457,7 @@ trait InventoryStockTrait
          * duplicate movements are allowed. We'll return the current record if
          * they aren't.
          */
-        if ($left == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) {
+        if ($left == $this->quantity && !$this->allowDuplicateMovementsEnabled()) {
             return $this;
         }
 
@@ -497,7 +490,7 @@ trait InventoryStockTrait
      * Processes adding quantity to current stock.
      *
      * @param int|string $putting
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return $this|bool
@@ -512,7 +505,7 @@ trait InventoryStockTrait
          * If the updated total and the beginning total are the same,
          * we'll check if duplicate movements are allowed
          */
-        if ($total == $this->quantity && ! $this->allowDuplicateMovementsEnabled()) {
+        if ($total == $this->quantity && !$this->allowDuplicateMovementsEnabled()) {
             return $this;
         }
 
@@ -572,12 +565,11 @@ trait InventoryStockTrait
         return false;
     }
 
-
     /**
      * Processes a single rollback operation.
      *
      * @param mixed $movement
-     * @param bool $recursive
+     * @param bool  $recursive
      *
      * @return $this|bool
      */
@@ -641,7 +633,7 @@ trait InventoryStockTrait
 
         $rollbacks = [];
 
-        if($movements->count() > 0) {
+        if ($movements->count() > 0) {
             foreach ($movements as $movement) {
                 $rollbacks = $this->processRollbackOperation($movement);
             }
@@ -655,7 +647,7 @@ trait InventoryStockTrait
      *
      * @param int|string $before
      * @param int|string $after
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return \Illuminate\Database\Eloquent\Model
@@ -685,8 +677,6 @@ trait InventoryStockTrait
 
     /**
      * Reverses the cost of a movement.
-     *
-     * @return void
      */
     private function reverseCost()
     {
@@ -701,8 +691,6 @@ trait InventoryStockTrait
      * Sets the reason attribute.
      *
      * @param string $reason
-     *
-     * @return void
      */
     private function setReason($reason = '')
     {
@@ -718,7 +706,7 @@ trait InventoryStockTrait
      */
     private function allowDuplicateMovementsEnabled()
     {
-        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'allow_duplicate_movements');
+        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'allow_duplicate_movements');
     }
 
     /**
@@ -730,6 +718,6 @@ trait InventoryStockTrait
      */
     private function rollbackCostEnabled()
     {
-        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'rollback_cost');
+        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'rollback_cost');
     }
 }

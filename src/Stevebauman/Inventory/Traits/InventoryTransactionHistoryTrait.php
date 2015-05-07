@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Traits;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Trait InventoryTransactionHistoryTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventoryTransactionHistoryTrait.
  */
 trait InventoryTransactionHistoryTrait
 {
@@ -16,9 +15,7 @@ trait InventoryTransactionHistoryTrait
     use UserIdentificationTrait;
 
     /**
-     * Make sure we try and assign the current user if enabled
-     *
-     * @return void
+     * Make sure we try and assign the current user if enabled.
      */
     public static function bootInventoryTransactionHistoryTrait()
     {
@@ -28,7 +25,7 @@ trait InventoryTransactionHistoryTrait
     }
 
     /**
-     * The belongsTo stock relationship
+     * The belongsTo stock relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

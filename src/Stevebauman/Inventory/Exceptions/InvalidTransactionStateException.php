@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class InvalidTransactionStateException
- * @package Stevebauman\Inventory\Exceptions
+ * Class InvalidTransactionStateException.
  */
 class InvalidTransactionStateException extends \Exception
 {

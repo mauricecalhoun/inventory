@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Traits;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Trait InventoryVariantTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventoryVariantTrait.
  */
 trait InventoryVariantTrait
 {
@@ -18,7 +17,7 @@ trait InventoryVariantTrait
      */
     public function isVariant()
     {
-        if($this->parent_id) {
+        if ($this->parent_id) {
             return true;
         }
 
@@ -61,13 +60,13 @@ trait InventoryVariantTrait
      */
     public function newVariant($name = '')
     {
-        $variant = new $this;
+        $variant = new $this();
 
         $variant->parent_id = $this->id;
         $variant->category_id = $this->category_id;
         $variant->metric_id = $this->metric_id;
 
-        if(! empty($name)) {
+        if (!empty($name)) {
             $variant->name = $name;
         }
 
@@ -78,8 +77,8 @@ trait InventoryVariantTrait
      * Creates a new variant instance, saves it,
      * and returns the resulting variant.
      *
-     * @param string $name
-     * @param string $description
+     * @param string     $name
+     * @param string     $description
      * @param int|string $categoryId
      * @param int|string $metricId
      *
@@ -90,19 +89,19 @@ trait InventoryVariantTrait
         $variant = $this->newVariant($name);
 
         try {
-            if(! empty($description)) {
+            if (!empty($description)) {
                 $variant->description = $description;
             }
 
-            if($categoryId !== null) {
+            if ($categoryId !== null) {
                 $variant->category_id = $categoryId;
             }
 
-            if($metricId !== null) {
+            if ($metricId !== null) {
                 $variant->metric_id = $metricId;
             }
 
-            if($variant->save()) {
+            if ($variant->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.variant.created', [
@@ -146,7 +145,7 @@ trait InventoryVariantTrait
         try {
             $this->parent_id = $itemId;
 
-            if($this->save()) {
+            if ($this->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.variant.made', [
@@ -155,11 +154,10 @@ trait InventoryVariantTrait
 
                 return $this;
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->dbRollbackTransaction();
         }
 
         return false;
     }
 }
-

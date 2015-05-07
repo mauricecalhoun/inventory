@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Commands;
 use Illuminate\Console\Command;
 
 /**
- * Class RunMigrationsCommand
- * @package Stevebauman\Inventory\Commands
+ * Class RunMigrationsCommand.
  */
 class RunMigrationsCommand extends Command
 {
@@ -25,9 +24,7 @@ class RunMigrationsCommand extends Command
     protected $description = 'Runs the inventory migrations';
 
     /**
-     * Execute the command
-     *
-     * @return void
+     * Execute the command.
      */
     public function fire()
     {

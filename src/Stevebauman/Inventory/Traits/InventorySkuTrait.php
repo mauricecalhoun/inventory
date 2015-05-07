@@ -3,13 +3,12 @@
 namespace Stevebauman\Inventory\Traits;
 
 /**
- * Trait InventorySkuTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventorySkuTrait.
  */
 trait InventorySkuTrait
 {
     /**
-     * The belongsTo inventory item relationship
+     * The belongsTo inventory item relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\InventorySkuTrait;
 
 /**
- * Class InventorySku
- * @package Stevebauman\Inventory\Models
+ * Class InventorySku.
  */
 class InventorySku extends BaseModel
 {
@@ -20,7 +19,7 @@ class InventorySku extends BaseModel
     ];
 
     /**
-     * The belongsTo item trait
+     * The belongsTo item trait.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

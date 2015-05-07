@@ -5,21 +5,20 @@ namespace Stevebauman\Inventory\Models;
 use Baum\Node;
 
 /**
- * Class Location
- * @package Stevebauman\Inventory\Models
+ * Class Location.
  */
 class Location extends Node
 {
     protected $table = 'locations';
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     protected $scoped = ['belongs_to'];
 
     /**
-     * The hasMany stocks relationship
+     * The hasMany stocks relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

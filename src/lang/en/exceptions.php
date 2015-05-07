@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Inventory Exceptions language file
+ * The Inventory Exceptions language file.
  *
  * @author Steve Bauman
  */

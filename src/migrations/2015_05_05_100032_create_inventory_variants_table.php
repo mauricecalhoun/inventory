@@ -5,13 +5,11 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventoryVariantsTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
         Schema::table('inventories', function (Blueprint $table) {
             $table->integer('parent_id')->unsigned()->nullable()->after('id');
 
@@ -21,15 +19,13 @@ class CreateInventoryVariantsTable extends Migration
         });
     }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-        Schema::table('inventories', function(Blueprint $table) {
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('inventories', function (Blueprint $table) {
             $table->dropColumn('parent_id');
         });
-	}
+    }
 }

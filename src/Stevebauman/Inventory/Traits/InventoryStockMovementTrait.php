@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Traits;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Trait InventoryStockMovementTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventoryStockMovementTrait.
  */
 trait InventoryStockMovementTrait
 {
@@ -15,7 +14,7 @@ trait InventoryStockMovementTrait
     use DatabaseTransactionTrait;
 
     /**
-     * The belongsTo stock relationship
+     * The belongsTo stock relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -33,7 +32,7 @@ trait InventoryStockMovementTrait
     }
 
     /**
-     * Rolls back the current movement
+     * Rolls back the current movement.
      *
      * @param bool $recursive
      *

@@ -6,8 +6,7 @@ use Stevebauman\Inventory\Traits\InventoryTransactionTrait;
 use Stevebauman\Inventory\Interfaces\StateableInterface;
 
 /**
- * Class InventoryTransaction
- * @package Stevebauman\Inventory\Models
+ * Class InventoryTransaction.
  */
 class InventoryTransaction extends BaseModel implements StateableInterface
 {
@@ -24,7 +23,7 @@ class InventoryTransaction extends BaseModel implements StateableInterface
     ];
 
     /**
-     * The belongsTo stock relationship
+     * The belongsTo stock relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -34,7 +33,7 @@ class InventoryTransaction extends BaseModel implements StateableInterface
     }
 
     /**
-     * The hasMany histories relationship
+     * The hasMany histories relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

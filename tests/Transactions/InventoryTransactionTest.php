@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests\Transactions;
+namespace Stevebauman\Inventory\tests\Transactions;
 
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
@@ -20,7 +20,7 @@ class InventoryTransactionTest extends InventoryStockTest
     }
 
     /**
-     * Returns a new stock transaction for easier testing
+     * Returns a new stock transaction for easier testing.
      *
      * @return mixed
      */

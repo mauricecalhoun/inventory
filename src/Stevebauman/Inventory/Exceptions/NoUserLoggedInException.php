@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class NoUserLoggedInException
- * @package Stevebauman\Inventory\Exceptions
+ * Class NoUserLoggedInException.
  */
 class NoUserLoggedInException extends \Exception
 {

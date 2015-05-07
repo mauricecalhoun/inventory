@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
 
 /**
- * Class InventoryStockMovement
- * @package Stevebauman\Inventory\Models
+ * Class InventoryStockMovement.
  */
 class InventoryStockMovement extends BaseModel
 {
@@ -24,7 +23,7 @@ class InventoryStockMovement extends BaseModel
     ];
 
     /**
-     * The belongsTo stock relationship
+     * The belongsTo stock relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

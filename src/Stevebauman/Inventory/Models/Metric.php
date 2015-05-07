@@ -3,15 +3,14 @@
 namespace Stevebauman\Inventory\Models;
 
 /**
- * Class Metric
- * @package Stevebauman\Inventory\Models
+ * Class Metric.
  */
 class Metric extends BaseModel
 {
     protected $table = 'metrics';
 
     /**
-     * The hasMany inventory items relationship
+     * The hasMany inventory items relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

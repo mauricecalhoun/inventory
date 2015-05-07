@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Returns a single lined path for a baum node
+ * Returns a single lined path for a baum node.
  *
  * @param $node
+ *
  * @return string
  */
-if (! function_exists('renderNode')) {
-    function renderNode($node) {
+if (!function_exists('renderNode')) {
+    function renderNode($node)
+    {
         $html = '';
 
         if (is_object($node)) {

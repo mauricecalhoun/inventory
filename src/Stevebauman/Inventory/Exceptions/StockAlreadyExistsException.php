@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class StockAlreadyExistsException
- * @package Stevebauman\Inventory\Exceptions
+ * Class StockAlreadyExistsException.
  */
 class StockAlreadyExistsException extends \Exception
 {

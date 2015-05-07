@@ -6,14 +6,13 @@ use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Trait LocationTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait LocationTrait.
  */
 trait LocationTrait
 {
     /**
      * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
-     * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID
+     * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID.
      *
      * @param $location
      *

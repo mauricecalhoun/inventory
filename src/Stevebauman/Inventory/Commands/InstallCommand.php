@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Commands;
 use Illuminate\Console\Command;
 
 /**
- * Class InstallCommand
- * @package Stevebauman\Inventory\Commands
+ * Class InstallCommand.
  */
 class InstallCommand extends Command
 {

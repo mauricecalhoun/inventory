@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ class InventoryStockTest extends InventoryTest
 
         $location = $this->newLocation();
 
-        $stock = new InventoryStock;
+        $stock = new InventoryStock();
         $stock->inventory_id = $item->id;
         $stock->location_id = $location->id;
         $stock->quantity = 20;
@@ -66,7 +66,7 @@ class InventoryStockTest extends InventoryTest
         $stock = $this->newInventoryStock();
 
         $newLocation = Location::create([
-            'name' => 'New Location'
+            'name' => 'New Location',
         ]);
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();

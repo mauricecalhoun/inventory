@@ -12,62 +12,61 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Trait InventoryTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait InventoryTrait.
  */
 trait InventoryTrait
 {
-    /**
+    /*
      * Location helper functions
      */
     use LocationTrait;
 
-    /**
+    /*
      * Verification helper functions
      */
     use VerifyTrait;
 
-    /**
+    /*
      * Set's the models constructor method to automatically assign the
      * user_id's attribute to the current logged in user
      */
     use UserIdentificationTrait;
 
-    /**
+    /*
      * Helpers for starting database transactions
      */
     use DatabaseTransactionTrait;
 
     /**
-     * The hasOne category relationship
+     * The hasOne category relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     abstract public function category();
 
     /**
-     * The hasOne metric relationship
+     * The hasOne metric relationship.
      *
      * @return mixed
      */
     abstract public function metric();
 
     /**
-     * The hasOne SKU relationship
+     * The hasOne SKU relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     abstract public function sku();
 
     /**
-     * The hasMany stocks relationship
+     * The hasMany stocks relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     abstract public function stocks();
 
     /**
-     * The belongsToMany suppliers relationship
+     * The belongsToMany suppliers relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -117,7 +116,7 @@ trait InventoryTrait
         /*
          * Create a new static instance
          */
-        $instance = new static;
+        $instance = new static();
 
         /*
          * Try and find the SKU record
@@ -205,7 +204,7 @@ trait InventoryTrait
             return $this->metric->symbol;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -223,11 +222,11 @@ trait InventoryTrait
      *
      * @param int|string $quantity
      * @param $location
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
-     * @param null $aisle
-     * @param null $row
-     * @param null $bin
+     * @param null       $aisle
+     * @param null       $row
+     * @param null       $bin
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
@@ -325,7 +324,7 @@ trait InventoryTrait
      *
      * @param int|string $quantity
      * @param $location
-     * @param string $reason
+     * @param string     $reason
      *
      * @throws StockNotFoundException
      *
@@ -354,8 +353,8 @@ trait InventoryTrait
      * Takes the specified amount ($quantity) of stock from the specified stock locations.
      *
      * @param int|string $quantity
-     * @param array $locations
-     * @param string $reason
+     * @param array      $locations
+     * @param string     $reason
      *
      * @throws StockNotFoundException
      *
@@ -379,7 +378,7 @@ trait InventoryTrait
      *
      * @param int|string $quantity
      * @param $location
-     * @param string $reason
+     * @param string     $reason
      *
      * @return array
      */
@@ -392,8 +391,8 @@ trait InventoryTrait
      * Alias for the `takeFromMany` function.
      *
      * @param int|string $quantity
-     * @param array $locations
-     * @param string $reason
+     * @param array      $locations
+     * @param string     $reason
      *
      * @return array
      */
@@ -407,7 +406,7 @@ trait InventoryTrait
      *
      * @param int|string $quantity
      * @param $location
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @throws StockNotFoundException
@@ -433,8 +432,8 @@ trait InventoryTrait
      * Puts the specified amount ($quantity) of stock into the specified stock locations.
      *
      * @param int|string $quantity
-     * @param array $locations
-     * @param string $reason
+     * @param array      $locations
+     * @param string     $reason
      * @param int|string $cost
      *
      * @throws StockNotFoundException
@@ -459,7 +458,7 @@ trait InventoryTrait
      *
      * @param int|string $quantity
      * @param $location
-     * @param string $reason
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return array
@@ -473,8 +472,8 @@ trait InventoryTrait
      * Alias for the `putToMany` function.
      *
      * @param int|string $quantity
-     * @param array $locations
-     * @param string $reason
+     * @param array      $locations
+     * @param string     $reason
      * @param int|string $cost
      *
      * @return array
@@ -485,7 +484,7 @@ trait InventoryTrait
     }
 
     /**
-     * Moves a stock from one location to another
+     * Moves a stock from one location to another.
      *
      * @param $fromLocation
      * @param $toLocation
@@ -544,11 +543,11 @@ trait InventoryTrait
             return $this->sku->code;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Laravel accessor for the current items SKU
+     * Laravel accessor for the current items SKU.
      *
      * @return null|string
      */
@@ -571,7 +570,7 @@ trait InventoryTrait
         /*
          * Make sure sku generation is enabled and the item has a category, if not we'll return false.
          */
-        if (! $this->skusEnabled() || ! $this->hasCategory()) {
+        if (!$this->skusEnabled() || !$this->hasCategory()) {
             return false;
         }
 
@@ -585,17 +584,17 @@ trait InventoryTrait
         /*
          * Get the set SKU code length from the configuration file
          */
-        $codeLength = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_code_length');
+        $codeLength = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_code_length');
 
         /*
          * Get the set SKU prefix length from the configuration file
          */
-        $prefixLength = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_prefix_length');
+        $prefixLength = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_prefix_length');
 
         /*
          * Get the set SKU separator
          */
-        $skuSeparator = Config::get('inventory' . InventoryServiceProvider::$packageConfigSeparator . 'sku_separator');
+        $skuSeparator = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_separator');
 
         /*
          * Make sure we trim empty spaces in the separator if it's a string, otherwise we'll
@@ -686,7 +685,7 @@ trait InventoryTrait
      * is thrown.
      *
      * @param string $code
-     * @param bool $overwrite
+     * @param bool   $overwrite
      *
      * @throws SkuAlreadyExistsException
      *
@@ -704,7 +703,7 @@ trait InventoryTrait
              * The dev doesn't want the SKU overridden,
              * we'll thrown an exception
              */
-            if (! $overwrite) {
+            if (!$overwrite) {
                 $message = Lang::get('inventory::exceptions.SkuAlreadyExistsException');
 
                 throw new SkuAlreadyExistsException($message);
@@ -727,7 +726,7 @@ trait InventoryTrait
      * supplied with the specified code.
      *
      * @param string $code
-     * @param null $sku
+     * @param null   $sku
      *
      * @return mixed|bool
      */
@@ -736,7 +735,7 @@ trait InventoryTrait
         /*
          * Get the current SKU record if one isn't supplied
          */
-        if (! $sku) {
+        if (!$sku) {
             $sku = $this->sku()->first();
         }
 
@@ -744,7 +743,7 @@ trait InventoryTrait
          * If an SKU still doesn't exist after
          * trying to find one, we'll create one
          */
-        if (! $sku) {
+        if (!$sku) {
             return $this->processSkuGeneration($this->id, $code);
         }
 
@@ -769,7 +768,7 @@ trait InventoryTrait
     }
 
     /**
-     * Removes all suppliers from the current item
+     * Removes all suppliers from the current item.
      *
      * @return bool
      */
@@ -861,7 +860,7 @@ trait InventoryTrait
      * Processes an SKU generation covered by database transactions.
      *
      * @param int|string $inventoryId
-     * @param string $code
+     * @param string     $code
      *
      * @return bool|mixed
      */
@@ -897,7 +896,7 @@ trait InventoryTrait
      * Processes updating the specified SKU
      * record with the specified code.
      *
-     * @param Model $sku
+     * @param Model  $sku
      * @param string $code
      *
      * @return mixed|bool
@@ -997,6 +996,6 @@ trait InventoryTrait
      */
     private function skusEnabled()
     {
-        return Config::get('inventory'. InventoryServiceProvider::$packageConfigSeparator .'skus_enabled', false);
+        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'skus_enabled', false);
     }
 }

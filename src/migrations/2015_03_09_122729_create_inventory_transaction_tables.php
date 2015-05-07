@@ -7,8 +7,6 @@ class CreateInventoryTransactionTables extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -60,8 +58,6 @@ class CreateInventoryTransactionTables extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

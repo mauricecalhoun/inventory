@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 
 /**
- * Class SchemaCheckCommand
- * @package Stevebauman\Inventory\Commands
+ * Class SchemaCheckCommand.
  */
 class SchemaCheckCommand extends Command
 {
@@ -29,7 +28,7 @@ class SchemaCheckCommand extends Command
 
     /**
      * Holds the database tables that
-     * must be present before install
+     * must be present before install.
      *
      * @var array
      */
@@ -84,7 +83,7 @@ class SchemaCheckCommand extends Command
     private function checkDependencies()
     {
         foreach ($this->dependencies as $table => $suppliedBy) {
-            if (! $this->tableExists($table)) {
+            if (!$this->tableExists($table)) {
                 $message = sprintf('Table: %s does not exist, it is supplied by %s', $table, $suppliedBy);
 
                 throw new DependencyNotFoundException($message);

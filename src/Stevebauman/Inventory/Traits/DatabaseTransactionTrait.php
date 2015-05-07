@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 /**
- * Trait DatabaseTransactionTrait
- * @package Stevebauman\Inventory\Traits
+ * Trait DatabaseTransactionTrait.
  */
 trait DatabaseTransactionTrait
 {
@@ -15,7 +14,7 @@ trait DatabaseTransactionTrait
      * Alias for firing events easily that implement this trait.
      *
      * @param string $name
-     * @param array $args
+     * @param array  $args
      *
      * @return mixed
      */

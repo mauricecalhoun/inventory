@@ -3,8 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class NotEnoughStockException
- * @package Stevebauman\Inventory\Exceptions
+ * Class NotEnoughStockException.
  */
 class NotEnoughStockException extends \Exception
 {

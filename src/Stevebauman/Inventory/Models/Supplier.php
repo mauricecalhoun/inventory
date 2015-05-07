@@ -26,7 +26,7 @@ class Supplier extends BaseModel
     ];
 
     /**
-     * The belongsToMany items relationship
+     * The belongsToMany items relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

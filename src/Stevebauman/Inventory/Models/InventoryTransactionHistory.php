@@ -5,8 +5,7 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
 
 /**
- * Class InventoryTransactionPeriod
- * @package Stevebauman\Inventory\Models
+ * Class InventoryTransactionPeriod.
  */
 class InventoryTransactionHistory extends BaseModel
 {
@@ -24,7 +23,7 @@ class InventoryTransactionHistory extends BaseModel
     ];
 
     /**
-     * The belongsTo transaction relationship
+     * The belongsTo transaction relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

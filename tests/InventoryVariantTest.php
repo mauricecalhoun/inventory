@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
@@ -180,6 +180,6 @@ class InventoryVariantTest extends InventoryTest
         $parent = $cherryCoke->getParent();
 
         $this->assertEquals('Coke', $parent->name);
-        $this->assertEquals(NULL, $parent->parent_id);
+        $this->assertEquals(null, $parent->parent_id);
     }
 }

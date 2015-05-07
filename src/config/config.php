@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Inventory configuration file
+ * The Inventory configuration file.
  */
 return [
 

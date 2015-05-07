@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests\Transactions;
+namespace Stevebauman\Inventory\tests\Transactions;
 
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +74,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     }
 
     /**
-     * The transaction quantity stays at 5 because a partial reserve cannot be made on a checkout
+     * The transaction quantity stays at 5 because a partial reserve cannot be made on a checkout.
      */
     public function testInventoryTransactionReservationAfterCheckoutQuantity()
     {
@@ -88,7 +88,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
 
     /**
      * This fails because the transaction is already set to checkout, a quantity update could simply be made
-     * instead of calling checkout again
+     * instead of calling checkout again.
      */
     public function testInventoryTransactionCheckoutAfterCheckoutFailure()
     {

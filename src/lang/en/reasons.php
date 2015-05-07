@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Inventory reasons language file
+ * The Inventory reasons language file.
  *
  * @author Steve Bauman
  */
@@ -39,6 +39,6 @@ return [
 
         'removed' => 'Removal occurred on Transaction ID :id on :date',
 
-        'cancelled' => 'Cancellation occurred on Transaction ID :id on :date'
+        'cancelled' => 'Cancellation occurred on Transaction ID :id on :date',
     ],
 ];

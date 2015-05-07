@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\tests;
 
 use Illuminate\Database\Capsule\Manager as DB;
 
@@ -16,14 +16,14 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
 
     protected function configureDatabase()
     {
-        $db = new DB;
+        $db = new DB();
 
         $db->addConnection([
-            'driver'    => 'sqlite',
-            'database'  => ':memory:',
-            'charset'   => 'utf8',
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'prefix' => '',
         ]);
 
         $db->bootEloquent();
@@ -249,7 +249,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onDelete('cascade');
         });
 
-        DB::schema()->table('inventories', function($table) {
+        DB::schema()->table('inventories', function ($table) {
             $table->integer('parent_id')->unsigned()->nullable()->after('id');
 
             $table->foreign('parent_id')->references('id')->on('inventories')

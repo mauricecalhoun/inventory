@@ -5,15 +5,14 @@ namespace Stevebauman\Inventory\Models;
 use Baum\Node;
 
 /**
- * Class Category
- * @package Stevebauman\Inventory\Models
+ * Class Category.
  */
 class Category extends Node
 {
     protected $table = 'categories';
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     protected $scoped = ['belongs_to'];

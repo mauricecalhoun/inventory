@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Stevebauman\Inventory\tests;
 
 use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
@@ -43,12 +43,11 @@ class InventoryTest extends FunctionalTestCase
         ]);
     }
 
-
     protected function newMetric()
     {
         return Metric::create([
             'name' => 'Litres',
-            'symbol' => 'L'
+            'symbol' => 'L',
         ]);
     }
 
@@ -56,14 +55,14 @@ class InventoryTest extends FunctionalTestCase
     {
         return Location::create([
             'name' => 'Warehouse',
-            'belongs_to' => ''
+            'belongs_to' => '',
         ]);
     }
 
     protected function newCategory()
     {
         return Category::create([
-            'name' => 'Drinks'
+            'name' => 'Drinks',
         ]);
     }
 

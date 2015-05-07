@@ -6,8 +6,7 @@ use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
 /**
- * Class Inventory
- * @package Stevebauman\Inventory\Models
+ * Class Inventory.
  */
 class Inventory extends BaseModel
 {
@@ -21,11 +20,11 @@ class Inventory extends BaseModel
         'category_id',
         'metric_id',
         'name',
-        'description'
+        'description',
     ];
 
     /**
-     * The hasOne category relationship
+     * The hasOne category relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -35,7 +34,7 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasOne metric relationship
+     * The hasOne metric relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -45,7 +44,7 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasOne sku relationship
+     * The hasOne sku relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -55,7 +54,7 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasMany stocks relationship
+     * The hasMany stocks relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -65,7 +64,7 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The belongsToMany suppliers relationship
+     * The belongsToMany suppliers relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
