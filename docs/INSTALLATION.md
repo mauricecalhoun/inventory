@@ -112,11 +112,17 @@ Location:
 
 Category:
 
+    use Stevebauman\Inventory\Traits\CategoryTrait;
     use Baum\Node;
     
     class Category extends Node
     {
         protected $table = 'categories';
+        
+        public function inventories()
+        {
+            return $this->hasMany('Inventory', 'category_id');
+        }
     }
 
 Supplier:
