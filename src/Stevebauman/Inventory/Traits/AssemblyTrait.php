@@ -58,6 +58,9 @@ trait AssemblyTrait
             $item = $assembly->child;
 
             if($item) {
+                // Dynamically set the quantity attribute on the item
+                $item->quantity = $assembly->quantity;
+
                 // Add the item to the list of items if it exists
                 $items->add($item);
 
