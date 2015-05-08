@@ -81,7 +81,14 @@ class InventoryAssemblyTest extends InventoryTest
             'metric_id' => $item->metric_id,
         ]);
 
+        $part2 = $this->newInventory([
+            'name' => 'Child 2 Part',
+            'category_id' => $item->category_id,
+            'metric_id' => $item->metric_id,
+        ]);
+
         $item->addAssemblyItem($part);
+        $item->addAssemblyItem($part2);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
@@ -108,10 +115,24 @@ class InventoryAssemblyTest extends InventoryTest
 
         $nestedPart->addAssemblyItem($nestedNestedPart);
 
-        $this->assertEquals(3, $item->getAssemblyItems()->count());
-        $this->assertEquals(2, $part->getAssemblyItems()->count());
-        $this->assertEquals(1, $nestedPart->getAssemblyItems()->count());
-        $this->assertEquals(0, $nestedNestedPart->getAssemblyItems()->count());
+        $items = $item->getAssemblyItems();
+
+        $this->assertEquals(2, $items->count());
+        $this->assertEquals(2, $items[1]->count());
+
+        $partItems = $part->getAssemblyItems();
+
+        $this->assertEquals(2, $partItems->count());
+        $this->assertEquals(1, $partItems[1]->count());
+
+        $nestedPartItems = $nestedPart->getAssemblyItems();
+
+        $this->assertEquals(1, $nestedPartItems->count());
+        $this->assertNull($nestedNestedPart[1]);
+
+        $nestedNestedPartItems = $nestedNestedPart->getAssemblyItems();
+
+        $this->assertEquals(0, $nestedNestedPartItems->count());
     }
 
     public function testGetAssemblyItemsNone()

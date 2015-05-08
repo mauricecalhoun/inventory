@@ -37,9 +37,11 @@ trait AssemblyTrait
     /**
      * Returns all of the assemblies items recursively.
      *
+     * @param bool $recursive
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAssemblyItems()
+    public function getAssemblyItems($recursive = true)
     {
         /*
          * Grab all of the current item's assemblies
@@ -59,9 +61,17 @@ trait AssemblyTrait
                 // Add the item to the list of items if it exists
                 $items->add($item);
 
-                // If the item is an assembly, we'll grab it's items and merge the collection
+                if( ! $recursive) continue;
+
+                /*
+                 * If the item is an assembly, we'll grab it's items into
+                 * a new collection and add it to the current collection,
+                 * creating a multi-dimensional nested array
+                 */
                 if($item->is_assembly) {
-                    return $items->merge($item->getAssemblyItems());
+                    $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
+
+                    return $items->add($nestedCollection);
                 }
             }
         }
@@ -81,6 +91,12 @@ trait AssemblyTrait
      */
     public function addAssemblyItem($part, $quantity = 1, $depth = null, $returnPart = false)
     {
+        /*
+         * Make sure we make the current item an
+         * assembly if it currently isn't one
+         */
+        if(! $this->is_assembly) $this->makeAssembly();
+
         if (is_null($depth)) {
             $depth = 1;
         }
