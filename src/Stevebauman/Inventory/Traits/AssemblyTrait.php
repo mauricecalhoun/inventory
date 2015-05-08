@@ -41,6 +41,10 @@ trait AssemblyTrait
      */
     public function getAssemblyItems()
     {
+        /*
+         * Grab all of the current item's assemblies
+         * with a depth greater than 0 (indicating children)
+         */
         $assemblies = $this->assemblies()->with('child')->where('depth', '>', 0)->get();
 
         $items = new Collection;
@@ -48,7 +52,7 @@ trait AssemblyTrait
         // We'll go through each assembly
         foreach($assemblies as $assembly)
         {
-            // We'll grab the assembly child
+            // Get the assembly child item
             $item = $assembly->child;
 
             if($item) {
