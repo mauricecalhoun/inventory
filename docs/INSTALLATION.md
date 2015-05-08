@@ -119,6 +119,8 @@ Category:
     {
         protected $table = 'categories';
         
+        protected $scoped = ['belongs_to'];
+        
         public function inventories()
         {
             return $this->hasMany('Inventory', 'category_id');
