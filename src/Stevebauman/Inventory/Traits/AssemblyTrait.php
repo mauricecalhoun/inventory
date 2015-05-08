@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
+
 trait AssemblyTrait
 {
     /**
@@ -33,23 +35,34 @@ trait AssemblyTrait
     }
 
     /**
-     * Returns all of the assemblies items.
+     * Returns all of the assemblies items recursively.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAssemblyItems()
     {
-        $id = $this->id;
+        $assemblies = $this->assemblies()->with('child')->where('depth', '>', 0)->get();
 
-        $inventoryTable = $this->getTable();
+        $items = new Collection;
 
-        $assemblyTable = $this->assemblies()->getRelated()->getTable();
+        // We'll go through each assembly
+        foreach($assemblies as $assembly)
+        {
+            // We'll grab the assembly child
+            $item = $assembly->child;
 
-        return $this->select("$inventoryTable.*", "$assemblyTable.quantity")->join($assemblyTable, function ($join) use ($id, $inventoryTable, $assemblyTable) {
-            $join->on("$inventoryTable.id", '=', "$assemblyTable.part_id")
-                ->where("$assemblyTable.inventory_id", '=', $id)
-                ->where("$assemblyTable.depth", '>', 0);
-        })->get();
+            if($item) {
+                // Add the item to the list of items if it exists
+                $items->add($item);
+
+                // If the item is an assembly, we'll grab it's items and merge the collection
+                if($item->is_assembly) {
+                    return $items->merge($item->getAssemblyItems());
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**

@@ -64,6 +64,56 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals(1, $item->getAssemblyItems()->count());
     }
 
+    public function testAddAssemblyItemsNested()
+    {
+        $item = $this->newInventory();
+
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+
+        Event::shouldReceive('fire')->once()->andReturn(true);
+
+        $item->makeAssembly();
+
+        $part = $this->newInventory([
+            'name' => 'Child Part',
+            'category_id' => $item->category_id,
+            'metric_id' => $item->metric_id,
+        ]);
+
+        $item->addAssemblyItem($part);
+
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+
+        Event::shouldReceive('fire')->once()->andReturn(true);
+
+        $nestedPart = $this->newInventory([
+            'name' => 'Nested Part',
+            'category_id' => $part->category_id,
+            'metric_id' => $part->metric_id,
+        ]);
+
+        $part->makeAssembly();
+
+        $part->addAssemblyItem($nestedPart);
+
+        $nestedNestedPart = $this->newInventory([
+            'name' => 'Nested Nested Part',
+            'category_id' => $nestedPart->category_id,
+            'metric_id' => $nestedPart->metric_id,
+        ]);
+
+        $nestedPart->makeAssembly();
+
+        $nestedPart->addAssemblyItem($nestedNestedPart);
+
+        $this->assertEquals(3, $item->getAssemblyItems()->count());
+        $this->assertEquals(2, $part->getAssemblyItems()->count());
+        $this->assertEquals(1, $nestedPart->getAssemblyItems()->count());
+        $this->assertEquals(0, $nestedNestedPart->getAssemblyItems()->count());
+    }
+
     public function testGetAssemblyItemsNone()
     {
         $item = $this->newInventory();
