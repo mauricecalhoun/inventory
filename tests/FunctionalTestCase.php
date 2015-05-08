@@ -14,7 +14,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         $this->migrateTables();
     }
 
-    protected function configureDatabase()
+    private function configureDatabase()
     {
         $db = new DB();
 
@@ -31,7 +31,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         $db->setAsGlobal();
     }
 
-    public function migrateTables()
+    private function migrateTables()
     {
         DB::schema()->create('users', function ($table) {
             $table->increments('id');
@@ -255,6 +255,24 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->foreign('parent_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
+        });
+
+        DB::schema()->table('inventories', function ($table) {
+            $table->boolean('is_assembly')->default(false);
+        });
+
+        DB::schema()->create('inventory_assemblies', function ($table) {
+
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('inventory_id')->unsigned();
+            $table->integer('part_id')->unsigned();
+            $table->integer('depth')->unsigned();
+            $table->integer('quantity')->nullable();
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
+            $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
+
         });
     }
 }

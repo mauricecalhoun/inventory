@@ -29,7 +29,7 @@ trait InventoryVariantTrait
      *
      * This method does not retrieve variants recursively.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getVariants()
     {

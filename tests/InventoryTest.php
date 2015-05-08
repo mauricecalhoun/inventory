@@ -18,22 +18,17 @@ class InventoryTest extends FunctionalTestCase
         parent::setUp();
 
         Eloquent::unguard();
-
-        InventoryStockMovement::flushEventListeners();
-        InventoryStockMovement::boot();
-
-        InventoryStock::flushEventListeners();
-        InventoryStock::boot();
-
-        Inventory::flushEventListeners();
-        Inventory::boot();
     }
 
-    protected function newInventory()
+    protected function newInventory(array $attributes = [])
     {
         $metric = $this->newMetric();
 
         $category = $this->newCategory();
+
+        if(count($attributes) > 0) {
+            return Inventory::create($attributes);
+        }
 
         return Inventory::create([
             'metric_id' => $metric->id,
@@ -64,36 +59,6 @@ class InventoryTest extends FunctionalTestCase
         return Category::create([
             'name' => 'Drinks',
         ]);
-    }
-
-    public function testMetricCreation()
-    {
-        $metric = $this->newMetric();
-
-        $this->assertEquals('Litres', $metric->name);
-    }
-
-    public function testCategoryCreation()
-    {
-        $category = $this->newCategory();
-
-        $this->assertEquals('Drinks', $category->name);
-    }
-
-    public function testLocationCreation()
-    {
-        $location = $this->newLocation();
-
-        $this->assertEquals('Warehouse', $location->name);
-    }
-
-    public function testInventoryCreation()
-    {
-        $inventory = $this->newInventory();
-
-        $this->assertEquals(null, $inventory->user_id);
-        $this->assertEquals(1, $inventory->category_id);
-        $this->assertEquals(1, $inventory->metric_id);
     }
 
     public function testInventoryHasMetric()

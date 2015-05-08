@@ -81,7 +81,7 @@ trait InventoryTransactionTrait
      *
      * @param string $state
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getByState($state)
     {
