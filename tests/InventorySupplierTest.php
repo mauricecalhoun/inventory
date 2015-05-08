@@ -62,11 +62,9 @@ class InventorySupplierTest extends InventoryTest
 
     public function testSupplierAttachItem()
     {
-        $this->testInventoryCreation();
+        $item = $this->newInventory();
 
         $supplier = $this->newSupplier();
-
-        $item = Inventory::find(1);
 
         $item->addSupplier($supplier);
 
