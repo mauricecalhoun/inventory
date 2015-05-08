@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\tests;
+namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Event;

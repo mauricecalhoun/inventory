@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\tests\Transactions;
+namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;

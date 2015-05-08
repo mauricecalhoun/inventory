@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\tests;
+namespace Stevebauman\Inventory\Tests;
 
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
