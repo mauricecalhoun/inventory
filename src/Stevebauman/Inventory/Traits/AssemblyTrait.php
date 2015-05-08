@@ -61,12 +61,16 @@ trait AssemblyTrait
                 // Add the item to the list of items if it exists
                 $items->add($item);
 
+                /*
+                 * If the dev doesn't want a recursive
+                 * query, we'll continue
+                 */
                 if( ! $recursive) continue;
 
                 /*
                  * If the item is an assembly, we'll grab it's items into
                  * a new collection and add it to the current collection,
-                 * creating a multi-dimensional nested array
+                 * creating a multi-dimensional nested collection array
                  */
                 if($item->is_assembly) {
                     $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
