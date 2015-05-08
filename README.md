@@ -52,6 +52,7 @@
             <li><a href="docs/USAGE.md#suppliers">Suppliers</a></li>
             <li><a href="docs/TRANSACTIONS.md">Transactions</a></li>
             <li><a href="docs/VARIANTS.md">Variants</a></li>
+            <li><a href="docs/ASSEMBLIES.md">Assemblies (Coming Soon)</a></li>
             <li><a href="docs/SEPARATING-INVENTORY.md">Separating Inventory</a></li>
             <li><a href="docs/EVENTS.md">Events</a></li>
             <li><a href="docs/USAGE.md#exceptions">Exceptions</a></li>
