@@ -92,14 +92,13 @@ trait AssemblyTrait
     /**
      * Adds an item to the current assembly.
      *
-     * @param \Illuminate\Database\Eloquent\Model $part
+     * @param int|string|\Illuminate\Database\Eloquent\Model $part
      * @param int|string $quantity
      * @param null $depth
-     * @param bool $returnPart
      *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
-    public function addAssemblyItem($part, $quantity = 1, $depth = null, $returnPart = false)
+    public function addAssemblyItem($part, $quantity = 1, $depth = null)
     {
         /*
          * Make sure we make the current item an
@@ -111,8 +110,18 @@ trait AssemblyTrait
             $depth = 1;
         }
 
-        if($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
-            return ($returnPart === true ? $part : $this);
+        if(is_string($part) || is_int($part)) {
+            $partId = $part;
+        } else if(is_a($part, 'Illuminate\Database\Eloquent\Model')) {
+            $partId = $part->id;
+        } else {
+            $partId = false;
+        }
+
+        if($partId) {
+            if($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
+                return $this;
+            }
         }
 
         return false;
