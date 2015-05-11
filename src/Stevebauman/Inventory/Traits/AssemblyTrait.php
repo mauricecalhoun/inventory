@@ -92,13 +92,26 @@ trait AssemblyTrait
                          * collection with the returned assembly items
                          * to create a single dimensional array of the entire assembly
                          */
-                        return $items->merge($item->getAssemblyItems());
+                        return $items->merge($item->getAssemblyItemsList());
                     }
                 }
             }
         }
 
         return $items;
+    }
+
+    /**
+     * Returns all of the assembly items recursively
+     * into a single dimensional array (list).
+     *
+     * @param bool $recursive
+     *
+     * @return Collection
+     */
+    public function getAssemblyItemsList($recursive = true)
+    {
+        return $this->getAssemblyItems($recursive, false);
     }
 
     /**

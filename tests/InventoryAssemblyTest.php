@@ -135,6 +135,42 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals(0, $nestedNestedPartItems->count());
     }
 
+    public function testGetAssemblyItemsList()
+    {
+        $item = $this->newInventory();
+
+        $part1 = $this->newInventory([
+            'name' => 'Part 1',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $part2 = $this->newInventory([
+            'name' => 'Part 2',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $part3 = $this->newInventory([
+            'name' => 'Part 3',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $item->addAssemblyItem($part1);
+
+        $part1->addAssemblyItem($part2);
+
+        $part2->addAssemblyItem($part3);
+
+        $items = $item->getAssemblyItemsList();
+
+        $this->assertEquals(3, $items->count());
+        $this->assertEquals('Part 1', $items->get(0)->name);
+        $this->assertEquals('Part 2', $items->get(1)->name);
+        $this->assertEquals('Part 3', $items->get(2)->name);
+    }
+
     public function testGetAssemblyItemsNone()
     {
         $item = $this->newInventory();
