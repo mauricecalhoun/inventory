@@ -61,6 +61,9 @@ trait AssemblyTrait
                 // Dynamically set the quantity attribute on the item
                 $item->quantity = $assembly->quantity;
 
+                // Dynamically set the assembly ID attribute to the item
+                $item->assembly_id = $assembly->id;
+
                 // Add the item to the list of items if it exists
                 $items->add($item);
 
@@ -110,6 +113,26 @@ trait AssemblyTrait
 
         if($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
             return ($returnPart === true ? $part : $this);
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes the items assembly by the assembly's ID
+     *
+     * @param int|string|\Illuminate\Database\Eloquent\Model $assembly
+     *
+     * @return bool
+     */
+    public function removeAssembly($assembly)
+    {
+        $model = $this->assemblies()->getRelated();
+
+        if(is_string($assembly) || is_int($assembly)) {
+            return $model->destroy($assembly);
+        } else if(is_a($assembly, 'Illuminate\Database\Eloquent\Model')) {
+            return $model->destroy($assembly->id);
         }
 
         return false;

@@ -148,4 +148,38 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->assertEquals(0, $item->getAssemblyItems()->count());
     }
+
+    public function testRemoveAssemblyById()
+    {
+        $item = $this->newInventory();
+
+        $part = $this->newInventory([
+            'name' => 'Part',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $item->addAssemblyItem($part);
+
+        $assembly = $item->assemblies()->first();
+
+        $this->assertEquals(1, $item->removeAssembly($assembly->id));
+    }
+
+    public function testRemoveAssemblyByObject()
+    {
+        $item = $this->newInventory();
+
+        $part = $this->newInventory([
+            'name' => 'Part',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $item->addAssemblyItem($part);
+
+        $assembly = $item->assemblies()->first();
+
+        $this->assertEquals(1, $item->removeAssembly($assembly));
+    }
 }
