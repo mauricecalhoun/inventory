@@ -39,10 +39,11 @@ trait AssemblyTrait
      * Returns all of the assemblies items recursively.
      *
      * @param bool $recursive
+     * @param bool $nested
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAssemblyItems($recursive = true)
+    public function getAssemblyItems($recursive = true, $nested = true)
     {
         /*
          * Grab all of the current item's assemblies
@@ -68,22 +69,31 @@ trait AssemblyTrait
                 $items->add($item);
 
                 /*
-                 * If the dev doesn't want a recursive
-                 * query, we'll continue
+                 * If the dev doesn't want a
+                 * recursive query, we'll continue
                  */
                 if (!$recursive) {
                     continue;
                 }
 
-                /*
-                 * If the item is an assembly, we'll grab it's items into
-                 * a new collection and add it to the current collection,
-                 * creating a multi-dimensional nested collection array
-                 */
                 if ($item->is_assembly) {
-                    $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
+                    if ($nested) {
+                        /*
+                         * If the dev wants the assembly list in a nested Collection
+                         * then we'll create a new collection and add it into the current
+                         * item collection to create a nested multi-dimensional array
+                         */
+                        $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
 
-                    return $items->add($nestedCollection);
+                        return $items->add($nestedCollection);
+                    } else {
+                        /*
+                         * If nested is false, we'll merge the items
+                         * collection with the returned assembly items
+                         * to create a single dimensional array of the entire assembly
+                         */
+                        return $items->merge($item->getAssemblyItems());
+                    }
                 }
             }
         }
@@ -123,7 +133,7 @@ trait AssemblyTrait
         }
 
         if ($partId) {
-            if ($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
+            if ($this->processCreateAssembly($this->id, $partId, $depth, $quantity)) {
                 return $this;
             }
         }
