@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 trait AssemblyTrait
@@ -158,7 +159,7 @@ trait AssemblyTrait
      *
      * @return mixed
      */
-    public function scopeAssembly($query)
+    public function scopeAssembly(Builder $query)
     {
         return $query->where('is_assembly', '=', true);
     }
