@@ -39,7 +39,7 @@ trait InventoryStockTrait
     /**
      * Stores the quantity before an update.
      *
-     * @var int|string
+     * @var int|float|string
      */
     private $beforeQuantity = 0;
 
@@ -53,7 +53,7 @@ trait InventoryStockTrait
     /**
      * Stores the cost for updating a stock.
      *
-     * @var int|string
+     * @var int|float|string
      */
     public $cost = 0;
 
@@ -156,9 +156,9 @@ trait InventoryStockTrait
      * depending on the quantity entered if stock is being taken
      * or added.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidQuantityException
      *
@@ -174,9 +174,9 @@ trait InventoryStockTrait
     /**
      * Removes the specified quantity from the current stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this|bool
      */
@@ -188,9 +188,9 @@ trait InventoryStockTrait
     /**
      * Processes a 'take' operation on the current stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
@@ -207,9 +207,9 @@ trait InventoryStockTrait
     /**
      * Alias for put function.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this
      */
@@ -221,9 +221,9 @@ trait InventoryStockTrait
     /**
      * Processes a 'put' operation on the current stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidQuantityException
      *
@@ -295,7 +295,7 @@ trait InventoryStockTrait
      * Returns true if the specified quantity is valid, throws
      * InvalidQuantityException otherwise.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      *
      * @throws InvalidQuantityException
      *
@@ -318,7 +318,7 @@ trait InventoryStockTrait
      * Returns true if there is enough stock for the specified quantity being taken.
      * Throws NotEnoughStockException otherwise.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      *
      * @throws NotEnoughStockException
      *
@@ -420,9 +420,9 @@ trait InventoryStockTrait
     /**
      * Processes a quantity update operation.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this
      */
@@ -442,9 +442,9 @@ trait InventoryStockTrait
     /**
      * Processes removing quantity from the current stock.
      *
-     * @param int|string $taking
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $taking
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this|bool
      */
@@ -489,9 +489,9 @@ trait InventoryStockTrait
     /**
      * Processes adding quantity to current stock.
      *
-     * @param int|string $putting
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $putting
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this|bool
      */
@@ -645,10 +645,10 @@ trait InventoryStockTrait
     /**
      * Creates a new stock movement record.
      *
-     * @param int|string $before
-     * @param int|string $after
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $before
+     * @param int|float|string $after
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -668,7 +668,7 @@ trait InventoryStockTrait
     /**
      * Sets the cost attribute.
      *
-     * @param int|string $cost
+     * @param int|float|string $cost
      */
     private function setCost($cost = 0)
     {

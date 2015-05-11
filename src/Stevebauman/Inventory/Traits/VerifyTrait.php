@@ -10,7 +10,7 @@ trait VerifyTrait
     /**
      * Returns true/false if the number specified is numeric.
      *
-     * @param int|string $number
+     * @param int|float|string $number
      *
      * @return bool
      */
@@ -22,7 +22,7 @@ trait VerifyTrait
     /**
      * Returns true or false if the number inserted is positive.
      *
-     * @param int|string $number
+     * @param int|float|string $number
      *
      * @return bool
      */

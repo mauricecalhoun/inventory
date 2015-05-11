@@ -220,13 +220,13 @@ trait InventoryTrait
     /**
      * Creates a stock record to the current inventory item.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      * @param $location
-     * @param string     $reason
-     * @param int|string $cost
-     * @param null       $aisle
-     * @param null       $row
-     * @param null       $bin
+     * @param string           $reason
+     * @param int|float|string $cost
+     * @param null             $aisle
+     * @param null             $row
+     * @param null             $bin
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
@@ -322,9 +322,9 @@ trait InventoryTrait
     /**
      * Takes the specified amount ($quantity) of stock from specified stock location.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      * @param $location
-     * @param string     $reason
+     * @param string           $reason
      *
      * @throws StockNotFoundException
      *
@@ -352,9 +352,9 @@ trait InventoryTrait
     /**
      * Takes the specified amount ($quantity) of stock from the specified stock locations.
      *
-     * @param int|string $quantity
-     * @param array      $locations
-     * @param string     $reason
+     * @param int|float|string $quantity
+     * @param array            $locations
+     * @param string           $reason
      *
      * @throws StockNotFoundException
      *
@@ -376,9 +376,9 @@ trait InventoryTrait
     /**
      * Alias for the `take` function.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      * @param $location
-     * @param string     $reason
+     * @param string           $reason
      *
      * @return array
      */
@@ -390,9 +390,9 @@ trait InventoryTrait
     /**
      * Alias for the `takeFromMany` function.
      *
-     * @param int|string $quantity
-     * @param array      $locations
-     * @param string     $reason
+     * @param int|float|string $quantity
+     * @param array            $locations
+     * @param string           $reason
      *
      * @return array
      */
@@ -404,10 +404,10 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock location(s).
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      * @param $location
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws StockNotFoundException
      *
@@ -431,10 +431,10 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock locations.
      *
-     * @param int|string $quantity
-     * @param array      $locations
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param array            $locations
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws StockNotFoundException
      *
@@ -456,10 +456,10 @@ trait InventoryTrait
     /**
      * Alias for the `put` function.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      * @param $location
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return array
      */
@@ -471,10 +471,10 @@ trait InventoryTrait
     /**
      * Alias for the `putToMany` function.
      *
-     * @param int|string $quantity
-     * @param array      $locations
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param array            $locations
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return array
      */

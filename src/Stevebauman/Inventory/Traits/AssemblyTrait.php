@@ -27,7 +27,7 @@ trait AssemblyTrait
         $this->is_assembly = true;
         $this->save();
 
-        if($returnAssembly) {
+        if ($returnAssembly) {
             return $assembly;
         }
 
@@ -49,15 +49,14 @@ trait AssemblyTrait
          */
         $assemblies = $this->assemblies()->with('child')->where('depth', '>', 0)->get();
 
-        $items = new Collection;
+        $items = new Collection();
 
         // We'll go through each assembly
-        foreach($assemblies as $assembly)
-        {
+        foreach ($assemblies as $assembly) {
             // Get the assembly child item
             $item = $assembly->child;
 
-            if($item) {
+            if ($item) {
                 // Dynamically set the quantity attribute on the item
                 $item->quantity = $assembly->quantity;
 
@@ -71,14 +70,16 @@ trait AssemblyTrait
                  * If the dev doesn't want a recursive
                  * query, we'll continue
                  */
-                if( ! $recursive) continue;
+                if (!$recursive) {
+                    continue;
+                }
 
                 /*
                  * If the item is an assembly, we'll grab it's items into
                  * a new collection and add it to the current collection,
                  * creating a multi-dimensional nested collection array
                  */
-                if($item->is_assembly) {
+                if ($item->is_assembly) {
                     $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
 
                     return $items->add($nestedCollection);
@@ -93,8 +94,8 @@ trait AssemblyTrait
      * Adds an item to the current assembly.
      *
      * @param int|string|\Illuminate\Database\Eloquent\Model $part
-     * @param int|string $quantity
-     * @param null $depth
+     * @param int|float|string                               $quantity
+     * @param null                                           $depth
      *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
@@ -104,22 +105,24 @@ trait AssemblyTrait
          * Make sure we make the current item an
          * assembly if it currently isn't one
          */
-        if(! $this->is_assembly) $this->makeAssembly();
+        if (!$this->is_assembly) {
+            $this->makeAssembly();
+        }
 
         if (is_null($depth)) {
             $depth = 1;
         }
 
-        if(is_string($part) || is_int($part)) {
+        if (is_string($part) || is_int($part)) {
             $partId = $part;
-        } else if(is_a($part, 'Illuminate\Database\Eloquent\Model')) {
+        } elseif (is_a($part, 'Illuminate\Database\Eloquent\Model')) {
             $partId = $part->id;
         } else {
             $partId = false;
         }
 
-        if($partId) {
-            if($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
+        if ($partId) {
+            if ($this->processCreateAssembly($this->id, $part->id, $depth, $quantity)) {
                 return $this;
             }
         }
@@ -128,7 +131,7 @@ trait AssemblyTrait
     }
 
     /**
-     * Removes the items assembly by the assembly's ID
+     * Removes the items assembly by the assembly's ID.
      *
      * @param int|string|\Illuminate\Database\Eloquent\Model $assembly
      *
@@ -138,9 +141,9 @@ trait AssemblyTrait
     {
         $model = $this->assemblies()->getRelated();
 
-        if(is_string($assembly) || is_int($assembly)) {
+        if (is_string($assembly) || is_int($assembly)) {
             return $model->destroy($assembly);
-        } else if(is_a($assembly, 'Illuminate\Database\Eloquent\Model')) {
+        } elseif (is_a($assembly, 'Illuminate\Database\Eloquent\Model')) {
             return $model->destroy($assembly->id);
         }
 
@@ -163,10 +166,10 @@ trait AssemblyTrait
     /**
      * Processes creating an inventory assembly.
      *
-     * @param int|string $inventoryId
-     * @param int|string $partId
-     * @param int $depth
-     * @param int|string $quantity
+     * @param int|string       $inventoryId
+     * @param int|string       $partId
+     * @param int              $depth
+     * @param int|float|string $quantity
      *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
@@ -182,8 +185,7 @@ trait AssemblyTrait
             $assembly->depth = $depth;
             $assembly->quantity = (float) $quantity;
 
-            if($assembly->save())
-            {
+            if ($assembly->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.assembly.created', [

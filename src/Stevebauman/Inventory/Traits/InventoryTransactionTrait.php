@@ -251,9 +251,9 @@ trait InventoryTransactionTrait
      * Checks out the specified amount of quantity from the stock,
      * waiting to be sold.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
@@ -293,9 +293,9 @@ trait InventoryTransactionTrait
      * If no quantity is specified and the previous state was not in checkout,
      * reserved, back ordered, returned or returned partial, this will throw an exception.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
@@ -338,9 +338,9 @@ trait InventoryTransactionTrait
      * Marks a new or open transaction as sold and removes the amount
      * of the specified quantity from from the inventory stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      *
@@ -379,9 +379,9 @@ trait InventoryTransactionTrait
      * that was sold/checked-out, then the specified amount is inserted back into the stock
      * and the transaction is reverted to its previous state with the leftover amount.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this|bool
      */
@@ -406,9 +406,9 @@ trait InventoryTransactionTrait
      * back into the stock. If the transaction quantity is greater or equal to the specified
      * quantity then a full return is processed.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      *
@@ -468,8 +468,8 @@ trait InventoryTransactionTrait
      * Marks a transaction as returned and places the stock that
      * was taken back into the inventory.
      *
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      *
@@ -514,10 +514,10 @@ trait InventoryTransactionTrait
      * quantity is unavailable to be reserved. Otherwise it will throw an exception. If reserved is called
      * from being checked out we'll make sure we don't take any inventory.
      *
-     * @param int|string $quantity
-     * @param bool       $backOrder
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param bool             $backOrder
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
@@ -570,7 +570,7 @@ trait InventoryTransactionTrait
      * for the quantity specified, this will throw an exception. This prevents back-orders
      * being created when unnecessary.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
@@ -596,8 +596,8 @@ trait InventoryTransactionTrait
      * from the stock. This will return false if there was not enough stock
      * to fill the back order, or an exception occurred.
      *
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
@@ -631,7 +631,7 @@ trait InventoryTransactionTrait
      * Creates a transaction that specifies the amount of quantity that has been ordered.
      * The received or cancel method must be used after this is performed.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
@@ -662,9 +662,9 @@ trait InventoryTransactionTrait
      * transaction is set to received-partial, and then returned to ordered with the amount of
      * quantity left to receive.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @return $this|bool
      */
@@ -681,8 +681,8 @@ trait InventoryTransactionTrait
      * Marks an order transaction as received, placing all the quantity from
      * the transaction into the stock.
      *
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
@@ -721,9 +721,9 @@ trait InventoryTransactionTrait
      * ordered, this will mark the transaction as received all and place the quantity
      * of the transaction into the stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
@@ -770,9 +770,9 @@ trait InventoryTransactionTrait
      * Holds the specified amount of quantity until
      * it is either used or released.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws NotEnoughStockException
@@ -803,9 +803,9 @@ trait InventoryTransactionTrait
      * released-partial and then returned to the state on-hold with the remainder of the
      * held stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      *
@@ -824,8 +824,8 @@ trait InventoryTransactionTrait
      * Releases an on-hold inventory transaction, placing all the quantity
      * in the transaction back into the stock.
      *
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws StockNotFoundException
@@ -858,9 +858,9 @@ trait InventoryTransactionTrait
      * Releases a partial amount of the specified quantity from the transaction
      * and returns it to the previous state.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws InvalidTransactionStateException
@@ -906,9 +906,9 @@ trait InventoryTransactionTrait
      * If the transaction state was open or null, and a quantity is given, then the specified quantity
      * is permanently removed from the stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidQuantityException
      * @throws InvalidTransactionStateException
@@ -954,9 +954,9 @@ trait InventoryTransactionTrait
      * was already taken. If the previous state is null or opened, then it will
      * remove the specified quantity from the stock.
      *
-     * @param int|string $quantity
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      * @throws InvalidQuantityException
@@ -1023,8 +1023,8 @@ trait InventoryTransactionTrait
      * Transactions with states such as sold, returned, order-received,
      * and inventory released CAN NOT be cancelled.
      *
-     * @param string     $reason
-     * @param int|string $cost
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws InvalidTransactionStateException
      *
@@ -1130,7 +1130,7 @@ trait InventoryTransactionTrait
      * Validates the quantity attribute
      * when it has been set.
      *
-     * @param int|string $quantity
+     * @param int|float|string $quantity
      *
      * @throws InvalidQuantityException
      */
@@ -1252,10 +1252,10 @@ trait InventoryTransactionTrait
      * the current transaction stock and saving the
      * current transaction.
      *
-     * @param int|string $quantity
-     * @param string     $event
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $event
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws StockNotFoundException
      *
@@ -1288,10 +1288,10 @@ trait InventoryTransactionTrait
      * Processes removing the specified quantity from transaction
      * stock and saving the current transaction.
      *
-     * @param int|string $quantity
-     * @param string     $event
-     * @param string     $reason
-     * @param int|string $cost
+     * @param int|float|string $quantity
+     * @param string           $event
+     * @param string           $reason
+     * @param int|float|string $cost
      *
      * @throws StockNotFoundException
      *
@@ -1356,10 +1356,10 @@ trait InventoryTransactionTrait
     /**
      * Processes generating a transaction history entry.
      *
-     * @param string     $stateBefore
-     * @param string     $stateAfter
-     * @param int|string $quantityBefore
-     * @param int|string $quantityAfter
+     * @param string           $stateBefore
+     * @param string           $stateAfter
+     * @param int|float|string $quantityBefore
+     * @param int|float|string $quantityAfter
      *
      * @return mixed
      */
