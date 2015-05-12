@@ -256,22 +256,5 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
-
-        DB::schema()->table('inventories', function ($table) {
-            $table->boolean('is_assembly')->default(false);
-        });
-
-        DB::schema()->create('inventory_assemblies', function ($table) {
-
-            $table->increments('id');
-            $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('part_id')->unsigned();
-            $table->integer('quantity')->nullable();
-
-            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
-            $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
-
-        });
     }
 }

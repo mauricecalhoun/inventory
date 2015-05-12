@@ -2,7 +2,6 @@
 
 namespace Stevebauman\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
@@ -13,7 +12,6 @@ class Inventory extends BaseModel
 {
     use InventoryTrait;
     use InventoryVariantTrait;
-    use AssemblyTrait;
 
     protected $table = 'inventories';
 
@@ -73,15 +71,5 @@ class Inventory extends BaseModel
     public function suppliers()
     {
         return $this->belongsToMany('Stevebauman\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
-    }
-
-    /**
-     * The hasMany assemblies relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function assemblies()
-    {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryAssembly', 'inventory_id', 'id');
     }
 }
