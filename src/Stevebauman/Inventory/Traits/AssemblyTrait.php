@@ -51,7 +51,7 @@ trait AssemblyTrait
         $assemblies = $this->assemblies()->where('part_id', '!=', $this->id)->get();
 
         $items = new Collection();
-
+        
         // We'll go through each assembly
         foreach ($assemblies as $assembly) {
             // Get the assembly part
@@ -67,7 +67,11 @@ trait AssemblyTrait
                 // If recursive is true, we'll go through each assembly level
                 if($recursive) {
                     if($part->is_assembly) {
-
+                        /*
+                         * The part is an assembly, we'll create a new
+                         * collection and store the part in it's own array key,
+                         * as well as the assembly.
+                         */
                         $nestedCollection = new Collection([
                             'part' => $part,
                             'assembly' => $part->getAssemblyItems(),
@@ -76,9 +80,14 @@ trait AssemblyTrait
                         $items->add($nestedCollection);
 
                     } else {
+                        // The part isn't an assembly, we'll just add it to the list
                         $items->add($part);
                     }
                 } else {
+                    /*
+                     * Looks like the dev only wants one level
+                     * of items, we'll just add the part to the list
+                     */
                     $items->add($part);
                 }
             }
