@@ -39,61 +39,47 @@ trait AssemblyTrait
      * Returns all of the assemblies items recursively.
      *
      * @param bool $recursive
-     * @param bool $nested
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAssemblyItems($recursive = true, $nested = true)
+    public function getAssemblyItems($recursive = true)
     {
         /*
          * Grab all of the current item's assemblies
          * with a depth greater than 0 (indicating children)
          */
-        $assemblies = $this->assemblies()->with('part')->where('depth', '>', 0)->get();
+        $assemblies = $this->assemblies()->where('part_id', '!=', $this->id)->get();
 
         $items = new Collection();
 
         // We'll go through each assembly
         foreach ($assemblies as $assembly) {
-            // Get the assembly child item
-            $item = $assembly->child;
+            // Get the assembly part
+            $part = $assembly->part;
 
-            if ($item) {
+            if ($part) {
                 // Dynamically set the quantity attribute on the item
-                $item->quantity = $assembly->quantity;
+                $part->quantity = $assembly->quantity;
 
                 // Dynamically set the assembly ID attribute to the item
-                $item->assembly_id = $assembly->id;
+                $part->assembly_id = $assembly->id;
 
-                // Add the item to the list of items if it exists
-                $items->add($item);
+                // If recursive is true, we'll go through each assembly level
+                if($recursive) {
+                    if($part->is_assembly) {
 
-                /*
-                 * If the dev doesn't want a
-                 * recursive query, we'll continue
-                 */
-                if (!$recursive) {
-                    continue;
-                }
+                        $nestedCollection = new Collection([
+                            'part' => $part,
+                            'assembly' => $part->getAssemblyItems(),
+                        ]);
 
-                if ($item->is_assembly) {
-                    if ($nested) {
-                        /*
-                         * If the dev wants the assembly list in a nested Collection
-                         * then we'll create a new collection and add it into the current
-                         * item collection to create a nested multi-dimensional array
-                         */
-                        $nestedCollection = new Collection($item->getAssemblyItems()->toArray());
+                        $items->add($nestedCollection);
 
-                        return $items->add($nestedCollection);
                     } else {
-                        /*
-                         * If nested is false, we'll merge the items
-                         * collection with the returned assembly items
-                         * to create a single dimensional array of the entire assembly
-                         */
-                        return $items->merge($item->getAssemblyItemsList());
+                        $items->add($part);
                     }
+                } else {
+                    $items->add($part);
                 }
             }
         }
@@ -102,28 +88,14 @@ trait AssemblyTrait
     }
 
     /**
-     * Returns all of the assembly items recursively
-     * into a single dimensional array (list).
-     *
-     * @param bool $recursive
-     *
-     * @return Collection
-     */
-    public function getAssemblyItemsList($recursive = true)
-    {
-        return $this->getAssemblyItems($recursive, false);
-    }
-
-    /**
      * Adds an item to the current assembly.
      *
      * @param int|string|\Illuminate\Database\Eloquent\Model $part
      * @param int|float|string                               $quantity
-     * @param null                                           $depth
      *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
-    public function addAssemblyItem($part, $quantity = 1, $depth = null)
+    public function addAssemblyItem($part, $quantity = 1)
     {
         /*
          * Make sure we make the current item an
@@ -131,10 +103,6 @@ trait AssemblyTrait
          */
         if (!$this->is_assembly) {
             $this->makeAssembly();
-        }
-
-        if (is_null($depth)) {
-            $depth = 1;
         }
 
         if (is_string($part) || is_int($part)) {
@@ -146,7 +114,7 @@ trait AssemblyTrait
         }
 
         if ($partId) {
-            if ($this->processCreateAssembly($this->id, $partId, $depth, $quantity)) {
+            if ($this->processCreateAssembly($this->id, $partId, $quantity)) {
                 return $this;
             }
         }
@@ -192,12 +160,11 @@ trait AssemblyTrait
      *
      * @param int|string       $inventoryId
      * @param int|string       $partId
-     * @param int              $depth
      * @param int|float|string $quantity
      *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
-    private function processCreateAssembly($inventoryId, $partId, $depth = 0, $quantity = 0)
+    private function processCreateAssembly($inventoryId, $partId, $quantity = 0)
     {
         $this->dbStartTransaction();
 
@@ -206,7 +173,6 @@ trait AssemblyTrait
 
             $assembly->inventory_id = $inventoryId;
             $assembly->part_id = $partId;
-            $assembly->depth = $depth;
             $assembly->quantity = (float) $quantity;
 
             if ($assembly->save()) {
