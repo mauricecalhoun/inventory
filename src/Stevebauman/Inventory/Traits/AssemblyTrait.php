@@ -49,7 +49,7 @@ trait AssemblyTrait
          * Grab all of the current item's assemblies
          * with a depth greater than 0 (indicating children)
          */
-        $assemblies = $this->assemblies()->with('child')->where('depth', '>', 0)->get();
+        $assemblies = $this->assemblies()->with('part')->where('depth', '>', 0)->get();
 
         $items = new Collection();
 

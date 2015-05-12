@@ -5,16 +5,16 @@ namespace Stevebauman\Inventory\Traits;
 trait InventoryAssemblyTrait
 {
     /**
-     * The hasOne parent relationship.
+     * The hasOne item relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    abstract public function parent();
+    abstract public function item();
 
     /**
-     * The hasOne child relationship.
+     * The hasOne part relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    abstract public function child();
+    abstract public function part();
 }

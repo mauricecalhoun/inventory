@@ -14,21 +14,21 @@ class InventoryAssembly extends BaseModel
     protected $table = 'inventory_assemblies';
 
     /**
-     * The belongsTo parent relationship.
+     * The belongsTo item relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent()
+    public function item()
     {
         return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
     }
 
     /**
-     * The belongsTo child relationship.
+     * The belongsTo part relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function child()
+    public function part()
     {
         return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'part_id', 'id');
     }
