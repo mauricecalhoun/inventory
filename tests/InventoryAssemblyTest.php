@@ -77,7 +77,7 @@ class InventoryAssemblyTest extends InventoryTest
             'metric_id' => $item->metric_id,
         ]);
 
-        $item->addAssemblyItem($part);
+        $item->addAssemblyItem($part, 5);
 
         $part2 = $this->newInventory([
             'name' => 'Child Part 2',
@@ -97,6 +97,10 @@ class InventoryAssemblyTest extends InventoryTest
         $items = $item->getAssemblyItems();
 
         $this->assertEquals('Child Part', $items->get(0)->get('part')->name);
+        $this->assertEquals($part->id, $items->get(0)->get('part')->id);
+        $this->assertEquals(5, $items->get(0)->get('part')->quantity);
+
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $items->get(0)->get('assembly'));
         $this->assertEquals('Child Part 2', $items->get(0)->get('assembly')->get(0)->name);
         $this->assertEquals('Child Part 3', $items->get(0)->get('assembly')->get(1)->name);
     }
