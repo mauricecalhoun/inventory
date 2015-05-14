@@ -47,7 +47,7 @@ trait InventoryTrait
     /**
      * The hasOne metric relationship.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     abstract public function metric();
 
@@ -145,7 +145,7 @@ trait InventoryTrait
     /**
      * Returns the total sum of the current stock.
      *
-     * @return mixed
+     * @return int|float
      */
     public function getTotalStock()
     {
