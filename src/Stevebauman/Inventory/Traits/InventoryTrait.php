@@ -124,6 +124,7 @@ trait InventoryTrait
         $sku = $instance
             ->sku()
             ->getRelated()
+            ->with('item')
             ->where('code', $sku)
             ->first();
 
