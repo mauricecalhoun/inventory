@@ -4,7 +4,6 @@ namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 
 trait AssemblyTrait
 {
@@ -44,7 +43,7 @@ trait AssemblyTrait
      *
      * @param bool $recursive
      *
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAssemblyItems($recursive = true)
     {
@@ -96,7 +95,7 @@ trait AssemblyTrait
      *
      * @return bool
      */
-    public function hasAssemblyItem($part)
+    public function hasAssemblyItem(Model $part)
     {
         $items = $this->assemblies;
 
