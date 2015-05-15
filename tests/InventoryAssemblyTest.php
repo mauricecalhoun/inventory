@@ -220,7 +220,11 @@ class InventoryAssemblyTest extends InventoryTest
 
         $numQueries = count($table->getConnection()->getQueryLog());
 
-        $assemblyQueries = ($numQueries - 58);
+        /*
+         * Due to all queries being counted, we need to
+         * remove the ones that aren't related to retrieving assemblies
+         */
+        $assemblyQueries = ((int) $numQueries - (int) 58);
 
         $this->assertEquals(5, $assemblyQueries);
     }
