@@ -219,7 +219,24 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
     }
 
-    public function testAssemblyHasPart()
+    public function testInvalidPartException()
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+
+        $table->addAssemblyItem($table);
+    }
+
+    public function testNestedInvalidPartException()
     {
         $metric = $this->newMetric();
 
@@ -237,8 +254,34 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $table->category_id,
         ]);
 
-        $table->addAssemblyItem($tableTop, 1);
+        $tableLegs = $this->newInventory([
+            'name' => 'Table Legs',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $this->assertTrue($table->hasAssemblyItem($tableTop));
+        $screws = $this->newInventory([
+            'name' => 'Screws',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $metal = $this->newInventory([
+            'name' => 'Metal',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $table->addAssemblyItem($tableTop, 1);
+        $table->addAssemblyItem($tableLegs, 4);
+
+        $tableTop->addAssemblyItem($screws, 1);
+        $tableLegs->addAssemblyItem($screws, 2);
+
+        $screws->addAssemblyItem($metal, 5);
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+
+        $metal->addAssemblyItem($screws);
     }
 }

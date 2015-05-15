@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Exceptions\InvalidPartException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,6 +60,7 @@ trait AssemblyTrait
      * easy to work with array.
      *
      * @param bool $recursive
+     * @param int $depth
      *
      * @return array
      */
@@ -93,29 +95,6 @@ trait AssemblyTrait
     }
 
     /**
-     * Returns true / false if the current items
-     * assembly contains the inserted part.
-     *
-     * @param Model $part
-     *
-     * @return bool
-     */
-    public function hasAssemblyItem(Model $part)
-    {
-        $items = $this->assemblies;
-
-        if (count($items) > 0) {
-            foreach ($items as $item) {
-                if ((int) $item->id === (int) $part->id) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Adds an item to the current assembly.
      *
      * @param Model            $part
@@ -134,6 +113,53 @@ trait AssemblyTrait
         }
 
         return $this->assemblies()->save($part, ['quantity' => $quantity]);
+    }
+
+    /**
+     * Validates that the inserted parts assembly
+     * does not contain the current item. This
+     * prevents infinite recursion.
+     *
+     * @param Model $part
+     *
+     * @return bool
+     *
+     * @throws InvalidPartException
+     */
+    private function validatePart(Model $part)
+    {
+        if((int) $part->id === (int) $this->id) {
+            $message = 'A part cannot be an assembly of itself.';
+
+            throw new InvalidPartException($message);
+        }
+
+        $list = $part->getAssemblyItemsList();
+
+        array_walk_recursive($list, [$this, 'validatePartAgainstList']);
+
+        return true;
+    }
+
+    /**
+     * Validates the value and key of the values
+     * from the assemblies item list to verify that
+     * it does not equal the current items ID.
+     *
+     * @param mixed $value
+     * @param int|string $key
+     *
+     * @throws InvalidPartException
+     */
+    private function validatePartAgainstList($value, $key)
+    {
+        if($key === 'id') {
+            if((int) $value === (int) $this->id) {
+                $message = 'The current part exists inside the assembly tree. A part cannot be an assembly of itself.';
+
+                throw new InvalidPartException($message);
+            }
+        }
     }
 
     /**
