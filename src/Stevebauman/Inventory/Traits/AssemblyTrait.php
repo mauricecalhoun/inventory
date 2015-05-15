@@ -74,6 +74,8 @@ trait AssemblyTrait
             $list[$level] = [
                 'id' => $item->id,
                 'name' => $item->name,
+                'metric_id' => $item->metric_id,
+                'category_id' => $item->category_id,
                 'quantity' => $item->pivot->quantity,
             ];
 
