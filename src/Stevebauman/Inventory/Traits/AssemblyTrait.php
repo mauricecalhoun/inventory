@@ -129,7 +129,7 @@ trait AssemblyTrait
     private function validatePart(Model $part)
     {
         if((int) $part->id === (int) $this->id) {
-            $message = 'A part cannot be an assembly of itself.';
+            $message = 'An item cannot be an assembly of itself.';
 
             throw new InvalidPartException($message);
         }
@@ -155,7 +155,7 @@ trait AssemblyTrait
     {
         if($key === 'id') {
             if((int) $value === (int) $this->id) {
-                $message = 'The current part exists inside the assembly tree. A part cannot be an assembly of itself.';
+                $message = 'The inserted part exists inside the assembly tree. An item cannot be an assembly of itself.';
 
                 throw new InvalidPartException($message);
             }
