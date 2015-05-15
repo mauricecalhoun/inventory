@@ -220,9 +220,9 @@ class InventoryAssemblyTest extends InventoryTest
 
         $numQueries = count($table->getConnection()->getQueryLog());
 
-        $assemblyQueries = $numQueries - 58;
+        $assemblyQueries = ($numQueries - 58);
 
-        $this->assertEquals($assemblyQueries, 5);
+        $this->assertEquals(5, $assemblyQueries);
     }
 
     public function testAssemblyHasPart()
