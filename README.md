@@ -10,6 +10,8 @@
 
 ## Index
 
+[![Join the chat at https://gitter.im/stevebauman/inventory](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/stevebauman/inventory?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <ul>
     <li>
         <a href="#description">Description</a>
