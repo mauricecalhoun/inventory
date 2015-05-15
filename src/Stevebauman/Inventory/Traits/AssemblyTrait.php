@@ -62,13 +62,15 @@ trait AssemblyTrait
      *
      * @return array
      */
-    public function getAssemblyItemsList($recursive = true)
+    public function getAssemblyItemsList($recursive = true, $depth = 0)
     {
         $list = [];
 
         $items = $this->getAssemblyItems();
 
         $level = 0;
+
+        $depth++;
 
         foreach ($items as $key => $item) {
             $list[$level] = [
@@ -77,10 +79,11 @@ trait AssemblyTrait
                 'metric_id' => $item->metric_id,
                 'category_id' => $item->category_id,
                 'quantity' => $item->pivot->quantity,
+                'depth' => $depth,
             ];
 
             if ($item->is_assembly && $recursive) {
-                $list[$level]['parts'] = $item->getAssemblyItemsList();
+                $list[$level]['parts'] = $item->getAssemblyItemsList(true, $depth);
             }
 
             $level++;

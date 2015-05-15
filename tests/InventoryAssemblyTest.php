@@ -187,6 +187,12 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $table->category_id,
         ]);
 
+        $flux = $this->newInventory([
+            'name' => 'Flux',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);
 
@@ -196,6 +202,7 @@ class InventoryAssemblyTest extends InventoryTest
         $screws->addAssemblyItem($metal, 5);
 
         $metal->addAssemblyItem($ore, 10);
+        $metal->addAssemblyItem($flux, 5);
 
         $list = $table->getAssemblyItemsList();
 
@@ -210,6 +217,12 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->assertEquals('Ore', $list[0]['parts'][0]['parts'][0]['parts'][0]['name']);
         $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
+
+        $numQueries = count($table->getConnection()->getQueryLog());
+
+        $assemblyQueries = $numQueries - 58;
+
+        $this->assertEquals($assemblyQueries, 5);
     }
 
     public function testAssemblyHasPart()

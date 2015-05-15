@@ -19,6 +19,11 @@ class InventoryTest extends FunctionalTestCase
         Eloquent::unguard();
     }
 
+    /**
+     * @param array $attributes
+     *
+     * @return Inventory
+     */
     protected function newInventory(array $attributes = [])
     {
         $metric = $this->newMetric();
@@ -37,6 +42,9 @@ class InventoryTest extends FunctionalTestCase
         ]);
     }
 
+    /**
+     * @return Metric
+     */
     protected function newMetric()
     {
         return Metric::create([
@@ -45,6 +53,9 @@ class InventoryTest extends FunctionalTestCase
         ]);
     }
 
+    /**
+     * @return Location
+     */
     protected function newLocation()
     {
         return Location::create([
@@ -53,6 +64,9 @@ class InventoryTest extends FunctionalTestCase
         ]);
     }
 
+    /**
+     * @return Category
+     */
     protected function newCategory()
     {
         return Category::create([
