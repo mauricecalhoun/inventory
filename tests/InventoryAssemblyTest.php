@@ -217,10 +217,6 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->assertEquals('Ore', $list[0]['parts'][0]['parts'][0]['parts'][0]['name']);
         $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
-
-        $numQueries = count($table->getConnection()->getQueryLog());
-
-        $this->assertEquals(63, $numQueries);
     }
 
     public function testAssemblyHasPart()
