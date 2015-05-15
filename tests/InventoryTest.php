@@ -5,7 +5,6 @@ namespace Stevebauman\Inventory\Tests;
 use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
-use Stevebauman\Inventory\Models\InventoryStockMovement;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\Lang;

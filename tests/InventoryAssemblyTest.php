@@ -4,7 +4,6 @@ namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
-use Stevebauman\Inventory\Models\InventoryAssembly;
 
 class InventoryAssemblyTest extends InventoryTest
 {
@@ -20,122 +19,219 @@ class InventoryAssemblyTest extends InventoryTest
         $item->makeAssembly();
 
         $this->assertTrue($item->is_assembly);
-
-        $assembly = InventoryAssembly::first();
-
-        $this->assertEquals(1, $assembly->inventory_id);
-        $this->assertEquals(1, $assembly->part_id);
-        $this->assertEquals(0, $assembly->depth);
     }
 
-    public function testMakeAssemblyReturned()
+    public function testGetAssemblies()
     {
-        $item = $this->newInventory();
+        $metric = $this->newMetric();
 
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
+        $category = $this->newCategory();
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
 
-        $assembly = $item->makeAssembly(true);
+        $tableTop = $this->newInventory([
+            'name' => 'Table Top',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $this->assertInstanceOf('Stevebauman\Inventory\Models\InventoryAssembly', $assembly);
+        $tableLegs = $this->newInventory([
+            'name' => 'Table Legs',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $table->addAssemblyItem($tableTop, 1);
+        $table->addAssemblyItem($tableLegs, 4);
+
+        $items = $table->assemblies;
+
+        $this->assertEquals(2, $items->count());
+
+        $this->assertEquals('Table Top', $items->get(0)->name);
+        $this->assertEquals(1, $items->get(0)->pivot->quantity);
+
+        $this->assertEquals('Table Legs', $items->get(1)->name);
+        $this->assertEquals(4, $items->get(1)->pivot->quantity);
+
+        $this->assertNull($items->get(2));
     }
 
-    public function testAddAssemblyItem()
+    public function testGetAssembliesRecursive()
     {
-        $item = $this->newInventory();
+        $metric = $this->newMetric();
 
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
+        $category = $this->newCategory();
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
-
-        $part = $this->newInventory([
-            'name' => 'Child Part',
-            'category_id' => $item->category_id,
-            'metric_id' => $item->metric_id,
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
-        $item->addAssemblyItem($part);
+        $tableTop = $this->newInventory([
+            'name' => 'Table Top',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $this->assertEquals(1, $item->getAssemblyItems()->count());
+        $tableLegs = $this->newInventory([
+            'name' => 'Table Legs',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $screws = $this->newInventory([
+            'name' => 'Screws',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $table->addAssemblyItem($tableTop, 1);
+        $table->addAssemblyItem($tableLegs, 4);
+
+        $tableTop->addAssemblyItem($screws, 1);
+        $tableLegs->addAssemblyItem($screws, 2);
+
+        $items = $table->getAssemblyItems();
+
+        $this->assertEquals(2, $items->count());
+
+        $this->assertEquals('Table Top', $items->get(0)->name);
+        $this->assertEquals(1, $items->get(0)->pivot->quantity);
+
+        $this->assertEquals('Table Legs', $items->get(1)->name);
+        $this->assertEquals(4, $items->get(1)->pivot->quantity);
+
+        // One screw item exists on each model
+        $this->assertEquals(1, $items->get(0)->assemblies->count());
+        $this->assertEquals(1, $items->get(1)->assemblies->count());
+
+        // One screw for table top
+        $this->assertEquals('Screws', $items->get(0)->assemblies->get(0)->name);
+        $this->assertEquals(1, $items->get(0)->assemblies->get(0)->pivot->quantity);
+
+        // Two screws for table legs
+        $this->assertEquals('Screws', $items->get(1)->assemblies->get(0)->name);
+        $this->assertEquals(2, $items->get(1)->assemblies->get(0)->pivot->quantity);
     }
 
-    public function testGetAssemblyItemsNested()
+    public function testRemoveAssemblyItem()
     {
-        $item = $this->newInventory();
+        $metric = $this->newMetric();
 
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
+        $category = $this->newCategory();
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
-
-        $part = $this->newInventory([
-            'name' => 'Child Part',
-            'category_id' => $item->category_id,
-            'metric_id' => $item->metric_id,
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
-        $item->addAssemblyItem($part, 5);
-
-        $part2 = $this->newInventory([
-            'name' => 'Child Part 2',
-            'category_id' => $item->category_id,
-            'metric_id' => $item->metric_id,
+        $tableTop = $this->newInventory([
+            'name' => 'Table Top',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
         ]);
 
-        $part3 = $this->newInventory([
-            'name' => 'Child Part 3',
-            'category_id' => $item->category_id,
-            'metric_id' => $item->metric_id,
-        ]);
+        $table->addAssemblyItem($tableTop, 1);
 
-        $part->addAssemblyItem($part2);
-        $part->addAssemblyItem($part3);
+        $table->removeAssemblyItem($tableTop);
 
-        $items = $item->getAssemblyItems();
-
-        $this->assertEquals('Child Part', $items->get(0)->get('part')->name);
-        $this->assertEquals($part->id, $items->get(0)->get('part')->id);
-        $this->assertEquals(5, $items->get(0)->get('part')->quantity);
-
-        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $items->get(0)->get('assembly'));
-        $this->assertEquals('Child Part 2', $items->get(0)->get('assembly')->get(0)->name);
-        $this->assertEquals('Child Part 3', $items->get(0)->get('assembly')->get(1)->name);
+        $this->assertNull($table->assemblies->first());
     }
 
-    public function testRemoveAssemblyById()
+    public function testGetAssemblyItemsList()
     {
-        $item = $this->newInventory();
+        $metric = $this->newMetric();
 
-        $part = $this->newInventory([
-            'name' => 'Part',
-            'metric_id' => $item->metric_id,
-            'category_id' => $item->category_id,
+        $category = $this->newCategory();
+
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
-        $item->addAssemblyItem($part);
+        $tableTop = $this->newInventory([
+            'name' => 'Table Top',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $assembly = $item->assemblies()->first();
+        $tableLegs = $this->newInventory([
+            'name' => 'Table Legs',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $this->assertEquals(1, $item->removeAssembly($assembly->id));
+        $screws = $this->newInventory([
+            'name' => 'Screws',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $metal = $this->newInventory([
+            'name' => 'Metal',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $ore = $this->newInventory([
+            'name' => 'Ore',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
+
+        $table->addAssemblyItem($tableTop, 1);
+        $table->addAssemblyItem($tableLegs, 4);
+
+        $tableTop->addAssemblyItem($screws, 1);
+        $tableLegs->addAssemblyItem($screws, 2);
+
+        $screws->addAssemblyItem($metal, 5);
+
+        $metal->addAssemblyItem($ore, 10);
+
+        $list = $table->getAssemblyItemsList();
+
+        $this->assertEquals('Table Top', $list[0]['name']);
+        $this->assertEquals('Table Legs', $list[1]['name']);
+
+        $this->assertEquals('Screws', $list[0]['parts'][0]['name']);
+        $this->assertEquals('Screws', $list[1]['parts'][0]['name']);
+
+        $this->assertEquals('Metal', $list[0]['parts'][0]['parts'][0]['name']);
+        $this->assertEquals('Metal', $list[1]['parts'][0]['parts'][0]['name']);
+
+        $this->assertEquals('Ore', $list[0]['parts'][0]['parts'][0]['parts'][0]['name']);
+        $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
     }
 
-    public function testRemoveAssemblyByObject()
+    public function testAssemblyHasPart()
     {
-        $item = $this->newInventory();
+        $metric = $this->newMetric();
 
-        $part = $this->newInventory([
-            'name' => 'Part',
-            'metric_id' => $item->metric_id,
-            'category_id' => $item->category_id,
+        $category = $this->newCategory();
+
+        $table = $this->newInventory([
+            'name' => 'Table',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
-        $item->addAssemblyItem($part);
+        $tableTop = $this->newInventory([
+            'name' => 'Table Top',
+            'metric_id' => $table->metric_id,
+            'category_id' => $table->category_id,
+        ]);
 
-        $assembly = $item->assemblies()->first();
+        $table->addAssemblyItem($tableTop, 1);
 
-        $this->assertEquals(1, $item->removeAssembly($assembly));
+        $this->assertTrue($table->hasAssemblyItem($tableTop));
     }
 }

@@ -76,12 +76,12 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasMany assemblies relationship.
+     * The belongsToMany assemblies relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function assemblies()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryAssembly', 'inventory_id', 'id');
+        return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
     }
 }
