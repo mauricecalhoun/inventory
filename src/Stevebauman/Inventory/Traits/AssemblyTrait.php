@@ -47,7 +47,9 @@ trait AssemblyTrait
      */
     public function getAssemblyItems($recursive = true)
     {
-        if($recursive) return $this->assembliesRecursive;
+        if ($recursive) {
+            return $this->assembliesRecursive;
+        }
 
         return $this->assemblies;
     }
@@ -68,16 +70,14 @@ trait AssemblyTrait
 
         $level = 0;
 
-        foreach($items as $key => $item)
-        {
+        foreach ($items as $key => $item) {
             $list[$level] = [
                 'id' => $item->id,
                 'name' => $item->name,
-                'quantity' => $item->pivot->quantity
+                'quantity' => $item->pivot->quantity,
             ];
 
-            if($item->is_assembly && $recursive) {
-
+            if ($item->is_assembly && $recursive) {
                 $list[$level]['parts'] = $item->getAssemblyItemsList();
             }
 
@@ -99,9 +99,11 @@ trait AssemblyTrait
     {
         $items = $this->assemblies;
 
-        if(count($items) > 0) {
-            foreach($items as $item) {
-                if((int) $item->id === (int) $part->id) return true;
+        if (count($items) > 0) {
+            foreach ($items as $item) {
+                if ((int) $item->id === (int) $part->id) {
+                    return true;
+                }
             }
         }
 
@@ -118,9 +120,11 @@ trait AssemblyTrait
      */
     public function addAssemblyItem(Model $part, $quantity = 1)
     {
-        if(! $this->is_assembly) $this->makeAssembly();
+        if (!$this->is_assembly) {
+            $this->makeAssembly();
+        }
 
-        if($part->is_assembly) {
+        if ($part->is_assembly) {
             $this->validatePart($part);
         }
 
