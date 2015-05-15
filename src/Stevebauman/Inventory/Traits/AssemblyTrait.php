@@ -72,7 +72,7 @@ trait AssemblyTrait
 
         $depth++;
 
-        foreach ($items as $key => $item) {
+        foreach ($items as $item) {
             $list[$level] = [
                 'id' => $item->id,
                 'name' => $item->name,
