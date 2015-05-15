@@ -5,11 +5,11 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateInventoryAssembliesTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 */
-	public function up()
-	{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
         Schema::create('inventory_assemblies', function (Blueprint $table) {
 
             $table->increments('id');
@@ -22,13 +22,13 @@ class CreateInventoryAssembliesTable extends Migration
             $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
 
         });
-	}
+    }
 
-	/**
-	 * Reverse the migrations.
-	 */
-	public function down()
-	{
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
         Schema::dropIfExists('inventory_assemblies');
-	}
+    }
 }
