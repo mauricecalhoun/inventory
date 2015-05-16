@@ -60,7 +60,7 @@ trait AssemblyTrait
      * easy to work with array.
      *
      * @param bool $recursive
-     * @param int $depth
+     * @param int  $depth
      *
      * @return array
      */
@@ -146,7 +146,7 @@ trait AssemblyTrait
      * from the assemblies item list to verify that
      * it does not equal the current items ID.
      *
-     * @param mixed $value
+     * @param mixed      $value
      * @param int|string $key
      *
      * @throws InvalidPartException
@@ -165,11 +165,11 @@ trait AssemblyTrait
     /**
      * Removes the part from the current items assembly.
      *
-     * @param Model $part
+     * @param int|string|Model $part
      *
      * @return bool
      */
-    public function removeAssemblyItem(Model $part)
+    public function removeAssemblyItem($part)
     {
         return $this->assemblies()->detach($part);
     }
