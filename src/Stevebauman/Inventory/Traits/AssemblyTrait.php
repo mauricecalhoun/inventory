@@ -14,7 +14,7 @@ trait AssemblyTrait
      *
      * @var string
      */
-    protected $assemblyCacheKey = "inventory::assembly.";
+    protected $assemblyCacheKey = 'inventory::assembly.';
 
     /**
      * The hasMany assemblies relationship.
@@ -47,7 +47,7 @@ trait AssemblyTrait
 
     /**
      * Returns true / false if the current item
-     * has a cached assembly
+     * has a cached assembly.
      *
      * @return bool
      */
@@ -65,7 +65,7 @@ trait AssemblyTrait
      */
     public function getCachedAssemblyItems()
     {
-        if($this->hasCachedAssemblyItems()) {
+        if ($this->hasCachedAssemblyItems()) {
             return Cache::get($this->getAssemblyCacheKey());
         }
 
@@ -84,10 +84,9 @@ trait AssemblyTrait
     public function getAssemblyItems($recursive = true)
     {
         if ($recursive) {
-
             $results = $this->getCachedAssemblyItems();
 
-            if(!$results) {
+            if (!$results) {
                 $results = $this->assembliesRecursive;
 
                 /*
@@ -160,7 +159,7 @@ trait AssemblyTrait
             $this->validatePart($part);
         }
 
-        if($this->assemblies()->save($part, ['quantity' => $quantity])) {
+        if ($this->assemblies()->save($part, ['quantity' => $quantity])) {
             Cache::forget($this->getAssemblyCacheKey());
         }
 
@@ -179,10 +178,9 @@ trait AssemblyTrait
     {
         $count = 0;
 
-        if(count($parts) > 0) {
-
-            foreach($parts as $part) {
-                if($this->addAssemblyItem($part, $quantity)) {
+        if (count($parts) > 0) {
+            foreach ($parts as $part) {
+                if ($this->addAssemblyItem($part, $quantity)) {
                     $count++;
                 }
             }
@@ -200,7 +198,7 @@ trait AssemblyTrait
      */
     public function removeAssemblyItem($part)
     {
-        if($this->assemblies()->detach($part)) {
+        if ($this->assemblies()->detach($part)) {
             Cache::forget($this->getAssemblyCacheKey());
         }
     }
@@ -231,7 +229,7 @@ trait AssemblyTrait
      */
     private function validatePart(Model $part)
     {
-        if((int) $part->id === (int) $this->id) {
+        if ((int) $part->id === (int) $this->id) {
             $message = 'An item cannot be an assembly of itself.';
 
             throw new InvalidPartException($message);
@@ -256,8 +254,8 @@ trait AssemblyTrait
      */
     private function validatePartAgainstList($value, $key)
     {
-        if($key === 'id') {
-            if((int) $value === (int) $this->id) {
+        if ($key === 'id') {
+            if ((int) $value === (int) $this->id) {
                 $message = 'The inserted part exists inside the assembly tree. An item cannot be an assembly of itself.';
 
                 throw new InvalidPartException($message);
