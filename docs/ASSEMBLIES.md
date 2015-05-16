@@ -140,13 +140,13 @@ resource intensive on larger assemblies. However this validation is completely n
 
 ### Other Notable Information
 
-#### Retrieving an inventory assembly from the cache
+#### Retrieving an items assembly items from the cache
 
 To retrieve the current items cached assembly, use the method `getCachedAssemblyItems()`:
 
     $parts = $item->getCachedAssemblyItems();
     
-#### Asking if an item has a cached assembly items
+#### Asking if an item has cached assembly items
 
 To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
 
