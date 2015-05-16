@@ -140,20 +140,6 @@ resource intensive on larger assemblies. However this validation is completely n
 
 ### Other Notable Information
 
-#### Setting the assembly cache key
-
-To set the inventory items cache key, override the `$assemblyCacheKey` inside your model:
-
-    class Inventory extends Eloquent {
-        
-        use InventoryTrait;
-        use InventoryVariantTrait;
-        use AssemblyTrait;
-        
-        protected $assemblyCacheKey = 'my-custom-cache-key';
-        
-    }
-
 #### Retrieving an inventory assembly from the cache
 
 To retrieve the current items cached assembly, use the method `getCachedAssemblyItems()`:
