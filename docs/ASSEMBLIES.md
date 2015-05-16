@@ -154,5 +154,5 @@ To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
         return 'This item has a cached assembly!';
     }
     
-This method shouldn't be needed by yourself though, as `$item->getCachedAssemblyItems()` calls this
+This method shouldn't be needed by yourself though, as `$item->getCachedAssemblyItems()` calls this method
 and will return false if no cached assembly exists.
