@@ -31,7 +31,9 @@ Now we have our inventory item created. We have to add stock, but to add stock w
     
     $location->name = 'Warehouse';
     $location->save();
-    
+
+#### Creating and Adding Stock
+
 Now we can add stock to our inventory by supplying a number (int or string), and the location (Location object):
     
     /*
@@ -64,7 +66,9 @@ Now we can add stock to our inventory by supplying a number (int or string), and
     $stock->cost = '5.20';
     $stock->reason = 'I bought some';
     $stock->save();
-    
+
+#### Adding More Stock
+
 So, we've successfully added stock to our inventory item, now let's add some more quantity to it:
 
     $location = Location::find(1);
@@ -88,7 +92,9 @@ So, we've successfully added stock to our inventory item, now let's add some mor
     * Or you can use the add, they both perform the same function
     */
     $stock->add(3, $reason, $cost);
-    
+
+#### Taking Stock
+
 We've added quantity to our stock, now lets take some away:
 
     $reason = 'I drank it';
@@ -99,7 +105,9 @@ We've added quantity to our stock, now lets take some away:
     * Or you can use remove, they both perform the same function
     */
     $stock->remove(15, $reason);
-    
+
+#### Rolling back movements
+
 Actually hang on, we definitely didn't drink that much, let's roll it back:
 
     $stock->rollback();
@@ -146,6 +154,12 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
     * Or on the movement itself:
     */
     $movement->rollback(true);
+
+#### Retrieving stock movements
+
+To retrieve the stocks movements, simply grab them from the `movements` relationship attribute:
+
+    $movements = $stock->movements;
 
 ## Asking Questions
 
