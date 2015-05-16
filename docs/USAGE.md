@@ -157,7 +157,7 @@ occurred AFTER the inserted movement. This is called a recursive rollback. This 
 
 #### Retrieving stock movements
 
-To retrieve the stocks movements, simply grab them from the `movements` relationship attribute:
+To retrieve the stocks movements, simply grab them from the `movements` relationship attribute from your stock:
 
     $movements = $stock->movements;
 
