@@ -51,7 +51,7 @@ trait AssemblyTrait
      *
      * @return bool
      */
-    public function hasCachedAssembly()
+    public function hasCachedAssemblyItems()
     {
         return Cache::has($this->assemblyCacheKey.$this->id);
     }
@@ -65,7 +65,7 @@ trait AssemblyTrait
      */
     public function getCachedAssemblyItems()
     {
-        if($this->hasCachedAssembly()) {
+        if($this->hasCachedAssemblyItems()) {
             return Cache::get($this->assemblyCacheKey.$this->id);
         }
 

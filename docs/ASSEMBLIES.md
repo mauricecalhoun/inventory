@@ -146,11 +146,11 @@ To retrieve the current items cached assembly, use the method `getCachedAssembly
 
     $parts = $item->getCachedAssemblyItems();
     
-#### Asking if an item has a cached assembly
+#### Asking if an item has a cached assembly items
 
 To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
 
-    if($item->hasCachedAssembly()) {
+    if($item->hasCachedAssemblyItems()) {
         return 'This item has a cached assembly!';
     }
     
