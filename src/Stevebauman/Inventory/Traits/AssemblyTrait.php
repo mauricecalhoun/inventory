@@ -53,7 +53,7 @@ trait AssemblyTrait
      */
     public function hasCachedAssemblyItems()
     {
-        return Cache::has($this->assemblyCacheKey.$this->id);
+        return Cache::has($this->getAssemblyCacheKey());
     }
 
     /**
@@ -66,7 +66,7 @@ trait AssemblyTrait
     public function getCachedAssemblyItems()
     {
         if($this->hasCachedAssemblyItems()) {
-            return Cache::get($this->assemblyCacheKey.$this->id);
+            return Cache::get($this->getAssemblyCacheKey());
         }
 
         return false;
@@ -94,7 +94,7 @@ trait AssemblyTrait
                  * Cache forever since adding assembly items
                  * will automatically clear this cache
                  */
-                Cache::forever($this->assemblyCacheKey.$this->id, $results);
+                Cache::forever($this->getAssemblyCacheKey(), $results);
             }
 
             return $results;
@@ -161,13 +161,7 @@ trait AssemblyTrait
         }
 
         if($this->assemblies()->save($part, ['quantity' => $quantity])) {
-            /*
-             * Saving the assembly part was a success, we'll
-             * forget the assembly cache so it's regenerated when asked for
-             */
-            $cacheKey = $this->assemblyCacheKey.$this->id;
-
-            Cache::forget($cacheKey);
+            Cache::forget($this->getAssemblyCacheKey());
         }
 
         return $this;
@@ -207,7 +201,7 @@ trait AssemblyTrait
     public function removeAssemblyItem($part)
     {
         if($this->assemblies()->detach($part)) {
-            Cache::forget($this->assemblyCacheKey.$this->id);
+            Cache::forget($this->getAssemblyCacheKey());
         }
     }
 
@@ -272,15 +266,12 @@ trait AssemblyTrait
     }
 
     /**
-     * Returns a unique MD5 hash string for the
-     * current items assembly for caching.
-     *
-     * @param mixed $results
+     * Returns the current items assemblies cache key.
      *
      * @return string
      */
-    private function generateAssemblyCacheKey($results)
+    private function getAssemblyCacheKey()
     {
-        return md5(serialize($results));
+        return $this->assemblyCacheKey.$this->id;
     }
 }
