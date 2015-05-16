@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Tests;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +45,8 @@ class InventoryAssemblyTest extends InventoryTest
             'metric_id' => $table->metric_id,
             'category_id' => $table->category_id,
         ]);
+
+        Cache::shouldReceive('forget')->twice()->andReturn(true);
 
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);
@@ -91,11 +94,16 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $table->category_id,
         ]);
 
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);
 
         $tableTop->addAssemblyItem($screws, 1);
         $tableLegs->addAssemblyItem($screws, 2);
+
+        Cache::shouldReceive('has')->once()->andReturn(false);
+        Cache::shouldReceive('forever')->once()->andReturn(true);
 
         $items = $table->getAssemblyItems();
 
@@ -137,6 +145,8 @@ class InventoryAssemblyTest extends InventoryTest
             'metric_id' => $table->metric_id,
             'category_id' => $table->category_id,
         ]);
+
+        Cache::shouldReceive('forget')->twice()->andReturn(true);
 
         $table->addAssemblyItem($tableTop, 1);
 
@@ -193,6 +203,8 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $table->category_id,
         ]);
 
+        Cache::shouldReceive('forget')->times(7)->andReturn(true);
+
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);
 
@@ -203,6 +215,9 @@ class InventoryAssemblyTest extends InventoryTest
 
         $metal->addAssemblyItem($ore, 10);
         $metal->addAssemblyItem($flux, 5);
+
+        Cache::shouldReceive('has')->once()->andReturn(false);
+        Cache::shouldReceive('forever')->once()->andReturn(true);
 
         $list = $table->getAssemblyItemsList();
 
@@ -271,6 +286,8 @@ class InventoryAssemblyTest extends InventoryTest
             'metric_id' => $table->metric_id,
             'category_id' => $table->category_id,
         ]);
+
+        Cache::shouldReceive('forget')->times(5)->andReturn(true);
 
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);

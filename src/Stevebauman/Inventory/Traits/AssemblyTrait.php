@@ -3,11 +3,14 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidPartException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 trait AssemblyTrait
 {
+    protected $assemblyCacheKey = "inventory.assembly.";
+
     /**
      * The hasMany assemblies relationship.
      *
@@ -49,7 +52,21 @@ trait AssemblyTrait
     public function getAssemblyItems($recursive = true)
     {
         if ($recursive) {
-            return $this->assembliesRecursive;
+            $cacheKey = $this->assemblyCacheKey.$this->id;
+
+            if(Cache::has($cacheKey)) {
+                $results = Cache::get($cacheKey);
+            } else {
+                $results = $this->assembliesRecursive;
+
+                /*
+                 * Cache forever since adding assembly items
+                 * will automatically clear this cache
+                 */
+                Cache::forever($cacheKey, $results);
+            }
+
+            return $results;
         }
 
         return $this->assemblies;
@@ -68,11 +85,11 @@ trait AssemblyTrait
     {
         $list = [];
 
-        $items = $this->getAssemblyItems();
-
         $level = 0;
 
         $depth++;
+
+        $items = $this->getAssemblyItems();
 
         foreach ($items as $item) {
             $list[$level] = [
@@ -100,7 +117,7 @@ trait AssemblyTrait
      * @param Model            $part
      * @param int|float|string $quantity
      *
-     * @return bool|\Illuminate\Database\Eloquent\Model
+     * @return $this
      */
     public function addAssemblyItem(Model $part, $quantity = 1)
     {
@@ -112,7 +129,68 @@ trait AssemblyTrait
             $this->validatePart($part);
         }
 
-        return $this->assemblies()->save($part, ['quantity' => $quantity]);
+        if($this->assemblies()->save($part, ['quantity' => $quantity])) {
+            /*
+             * Saving the assembly part was a success, we'll
+             * forget the assembly cache so it's regenerated when asked for
+             */
+            $cacheKey = $this->assemblyCacheKey.$this->id;
+
+            Cache::forget($cacheKey);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds multiple parts to the current items assembly.
+     *
+     * @param array            $parts
+     * @param int|float|string $quantity
+     *
+     * @return int
+     */
+    public function addAssemblyItems(array $parts, $quantity)
+    {
+        $count = 0;
+
+        if(count($parts) > 0) {
+
+            foreach($parts as $part) {
+                if($this->addAssemblyItem($part, $quantity)) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Removes the part from the current items assembly.
+     *
+     * @param int|string|Model $part
+     *
+     * @return bool
+     */
+    public function removeAssemblyItem($part)
+    {
+        if($this->assemblies()->detach($part)) {
+            Cache::forget($this->assemblyCacheKey.$this->id);
+        }
+    }
+
+    /**
+     * Scopes the current query to only retrieve
+     * inventory items that are an assembly.
+     *
+     * @param $query
+     *
+     * @return mixed
+     */
+    public function scopeAssembly(Builder $query)
+    {
+        return $query->where('is_assembly', '=', true);
     }
 
     /**
@@ -163,27 +241,15 @@ trait AssemblyTrait
     }
 
     /**
-     * Removes the part from the current items assembly.
+     * Returns a unique MD5 hash string for the
+     * current items assembly for caching.
      *
-     * @param int|string|Model $part
+     * @param mixed $results
      *
-     * @return bool
+     * @return string
      */
-    public function removeAssemblyItem($part)
+    private function generateAssemblyCacheKey($results)
     {
-        return $this->assemblies()->detach($part);
-    }
-
-    /**
-     * Scopes the current query to only retrieve
-     * inventory items that are an assembly.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeAssembly(Builder $query)
-    {
-        return $query->where('is_assembly', '=', true);
+        return md5(serialize($results));
     }
 }

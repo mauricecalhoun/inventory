@@ -2,8 +2,13 @@
 
 > **Note**: Assemblies are still in development, this functionality will be released with 1.7. Documentation is still in progress.
 
-Inventory Assemblies allow you to create an inventory item that is assembled by several inventory items. For example,
-a table would be assembled by the 4 (four) legs, and 1 (one) table top. For this particular example, here is a walk-through:
+Inventory Assemblies allow you to create an inventory item that is assembled by several other inventory items (which may also
+be assemblies). For example, a table would be assembled by the 4 (four) legs, and 1 (one) table top. For this
+particular example, below is a walk-through of this scenario including the methods available to you.
+
+### AddAssemblyItem
+
+To add a part to an items assembly, simply call the method `addAssemblyItem($part, $quantity)`:
 
     $tables = Inventory::create([
         'name' => 'Table',
@@ -28,8 +33,12 @@ a table would be assembled by the 4 (four) legs, and 1 (one) table top. For this
     
     // And 4 table legs
     $tables->addAssemblyItem($tableLegs, $quantity = 4);
-    
-Now we can ask the `$tables` inventory item to see what their made up of:
+
+### GetAssemblyItems
+
+Now we can ask the `$tables` inventory item to see what their made up of using the method `getAssemblyItems($recursive = true)`.
+This method is recursive by default, and will return you a mutli-dimensional array for sub-assemblies as well. Be sure to pass
+in `false` into the first parameter if you only want immediate assembly children.
 
     $items = $tables->getAssemblyItems(); // Returns an Eloquent Collection
     
@@ -44,6 +53,11 @@ Now we can ask the `$tables` inventory item to see what their made up of:
     
     echo $items[1]->name; // Returns 'Table Legs'
     echo $items[1]->quantity; // Returns '4'
+
+If a recursive assembly is generated it is automatically cached forever, so you don't have to worry about the performance
+of large nested assemblies. Don't worry, the items assembly is automatically flushed from the cache when you call
+`addAssemblyItem` or `removeAssemblyItem` on the items model. This ensures your generated assembly list is always up to date with your changes,
+but cached forever if there hasn't been any changes.
 
 Now, what if both the table top and table legs are assemblies of other inventory items as well? This is when it becomes more complex.
 
