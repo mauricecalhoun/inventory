@@ -3,10 +3,14 @@
 > **Note**: Assemblies are still in development, this functionality will be released with 1.7. Documentation is still in progress.
 
 Inventory Assemblies allow you to create an inventory item that is assembled by several other inventory items (which may also
-be assemblies). For example, a table would be assembled by the 4 (four) legs, and 1 (one) table top. For this
+be assemblies).
+
+### Usage
+
+For an example, a table would be assembled by the 4 (four) legs, and 1 (one) table top. For this
 particular example, below is a walk-through of this scenario including the methods available to you.
 
-### AddAssemblyItem
+#### AddAssemblyItem
 
 To add a part to an items assembly, simply call the method `addAssemblyItem($part, $quantity)`:
 
@@ -34,7 +38,7 @@ To add a part to an items assembly, simply call the method `addAssemblyItem($par
     // And 4 table legs
     $tables->addAssemblyItem($tableLegs, $quantity = 4);
 
-### GetAssemblyItems
+#### GetAssemblyItems
 
 Now we can ask the `$tables` inventory item to see what their made up of using the method `getAssemblyItems($recursive = true)`.
 This method is recursive by default, and will return you a mutli-dimensional array for sub-assemblies as well. Be sure to pass
