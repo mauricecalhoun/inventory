@@ -116,3 +116,6 @@ assemblies where an accidental addition could cause a recursive infinite query. 
 
 The last assembly item addition throws an `InvalidPartException` because wood cannot be made up of tables since wood
 already exists inside the tables assembly (through table tops and table legs).
+
+Unfortunately this validation requires the generation of the inserted parts assembly, which can be
+resource intensive on larger assemblies. However this validation is completely necessary to ensure the validity of the assembly.
