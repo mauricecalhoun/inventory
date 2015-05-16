@@ -9,7 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 
 trait AssemblyTrait
 {
-    protected $assemblyCacheKey = "inventory.assembly.";
+    /**
+     * The items assembly cache key.
+     *
+     * @var string
+     */
+    protected $assemblyCacheKey = "inventory::assembly.";
 
     /**
      * The hasMany assemblies relationship.
@@ -41,6 +46,33 @@ trait AssemblyTrait
     }
 
     /**
+     * Returns true / false if the current item
+     * has a cached assembly
+     *
+     * @return bool
+     */
+    public function hasCachedAssembly()
+    {
+        return Cache::has($this->assemblyCacheKey.$this->id);
+    }
+
+    /**
+     * Returns the current cached items assembly if
+     * it exists inside the cache. Returns false
+     * otherwise.
+     *
+     * @return bool|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getCachedAssemblyItems()
+    {
+        if($this->hasCachedAssembly()) {
+            return Cache::get($this->assemblyCacheKey.$this->id);
+        }
+
+        return false;
+    }
+
+    /**
      * Returns all of the assemblies items. If recursive
      * is true, the entire nested assemblies collection
      * is returned.
@@ -52,18 +84,17 @@ trait AssemblyTrait
     public function getAssemblyItems($recursive = true)
     {
         if ($recursive) {
-            $cacheKey = $this->assemblyCacheKey.$this->id;
 
-            if(Cache::has($cacheKey)) {
-                $results = Cache::get($cacheKey);
-            } else {
+            $results = $this->getCachedAssemblyItems();
+
+            if(!$results) {
                 $results = $this->assembliesRecursive;
 
                 /*
                  * Cache forever since adding assembly items
                  * will automatically clear this cache
                  */
-                Cache::forever($cacheKey, $results);
+                Cache::forever($this->assemblyCacheKey.$this->id, $results);
             }
 
             return $results;

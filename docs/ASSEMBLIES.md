@@ -137,3 +137,36 @@ already exists inside the tables assembly (through table tops and table legs).
 
 Unfortunately this validation requires the generation of the inserted parts assembly, which can be
 resource intensive on larger assemblies. However this validation is completely necessary to ensure the validity of the assembly.
+
+### Other Notable Information
+
+#### Setting the assembly cache key
+
+To set the inventory items cache key, override the `$assemblyCacheKey` inside your model:
+
+    class Inventory extends Eloquent {
+        
+        use InventoryTrait;
+        use InventoryVariantTrait;
+        use AssemblyTrait;
+        
+        protected $assemblyCacheKey = 'my-custom-cache-key';
+        
+    }
+
+#### Retrieving an inventory assembly from the cache
+
+To retrieve the current items cached assembly, use the method `getCachedAssemblyItems()`:
+
+    $parts = $item->getCachedAssemblyItems();
+    
+#### Asking if an item has a cached assembly
+
+To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
+
+    if($item->hasCachedAssembly()) {
+        return 'This item has a cached assembly!';
+    }
+    
+This method shouldn't be needed by yourself though, as `$item->getCachedAssemblyItems()` calls this
+and will return false if no cached assembly exists.
