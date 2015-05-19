@@ -43,28 +43,7 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals(10, $items->first()->pivot->quantity);
     }
 
-    public function testAddAssemblyItemExtraAttributes()
-    {
-        $item = $this->newInventory();
-
-        $childItem = $this->newInventory([
-            'name' => 'Child Item',
-            'metric_id' => $item->metric_id,
-            'category_id' => $item->category_id,
-        ]);
-
-        Cache::shouldReceive('forget')->once()->andReturn(true);
-
-        $item->addAssemblyItem($childItem, 10, ['extra' => 'testing']);
-
-        /*
-         * Tests that the extra array is merged
-         * and updated successfully with the quantity
-         */
-        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
-    }
-
-    public function testAddManyAssemblyItems()
+    public function testAddAssemblyItems()
     {
         $item = $this->newInventory();
 
@@ -91,6 +70,47 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->assertEquals('Child Item 2', $items->get(1)->name);
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
+    }
+
+    public function testAddSameAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->twice()->andReturn(true);
+
+        $item->addAssemblyItems([$childItem, $childItem]);
+
+        Cache::shouldReceive('has')->once()->andReturn(false);
+        Cache::shouldReceive('forever')->once()->andReturn(true);
+
+        $this->assertEquals(2, $item->getAssemblyItems()->count());
+    }
+
+    public function testAddAssemblyItemExtraAttributes()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        $item->addAssemblyItem($childItem, 10, ['extra' => 'testing']);
+
+        /*
+         * Tests that the extra array is merged
+         * and updated successfully with the quantity
+         */
+        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
     }
 
     public function testAddInvalidAssemblyItem()
@@ -144,6 +164,33 @@ class InventoryAssemblyTest extends InventoryTest
         $item->updateAssemblyItem($childItem->id, 10);
 
         $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
+    }
+
+    public function testUpdateAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $childItem2 = $this->newInventory([
+            'name' => 'Child Item 2',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $item->addAssemblyItem($childItem);
+        $item->addAssemblyItem($childItem2);
+
+        $item->updateAssemblyItems([$childItem, $childItem2], 10);
+
+        $items = $item->assemblies()->get();
+
+        $this->assertEquals(10, $items->get(0)->pivot->quantity);
+        $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
     public function testGetAssemblies()
