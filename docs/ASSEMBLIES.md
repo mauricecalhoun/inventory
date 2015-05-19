@@ -244,7 +244,7 @@ parameter to save/update your assemblies pivot table. For example:
     $item->addAssemblyItems($childItem, 10, ['extra_field' => 'Testing']);
     
     $item->updateAssemblyItem($childItem, 10, ['extra_field' => 'Testing']);
-    $item->addAssemblyItems($childItem, 10, ['extra_field' => 'Testing']);
+    $item->updateAssemblyItems($childItem, 10, ['extra_field' => 'Testing']);
 
 #### Retrieving an items assembly items from the cache
 
