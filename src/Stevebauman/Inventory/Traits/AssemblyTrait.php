@@ -19,7 +19,7 @@ trait AssemblyTrait
     /**
      * The hasMany assemblies relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     abstract public function assemblies();
 
@@ -151,7 +151,7 @@ trait AssemblyTrait
      */
     public function addAssemblyItem(Model $part, $quantity = 1)
     {
-        if($this->isValidQuantity($quantity)) {
+        if ($this->isValidQuantity($quantity)) {
             if (!$this->is_assembly) {
                 $this->makeAssembly();
             }
@@ -161,10 +161,15 @@ trait AssemblyTrait
             }
 
             if ($this->assemblies()->save($part, ['quantity' => $quantity])) {
-                Cache::forget($this->getAssemblyCacheKey());
-            }
+                $this->fireEvent('inventory.assembly.part-added', [
+                    'item' => $this,
+                    'part' => $part,
+                ]);
 
-            return $this;
+                $this->forgetAssemblyItems();
+
+                return $this;
+            }
         }
 
         return false;
@@ -194,17 +199,101 @@ trait AssemblyTrait
     }
 
     /**
-     * Removes the part from the current items assembly.
+     * Updates the inserted parts quantity for the current
+     * item's assembly.
+     *
+     * @param int|string|Model $part
+     * @param int|float|string $quantity
+     *
+     * @return $this|bool
+     */
+    public function updateAssemblyItem($part, $quantity)
+    {
+        if ($this->isValidQuantity($quantity)) {
+            $id = $part;
+
+            if ($part instanceof Model) {
+                $id = $part->id;
+            }
+
+            if ($this->assemblies()->updateExistingPivot($id, ['quantity' => $quantity])) {
+                $this->fireEvent('inventory.assembly.part-updated', [
+                    'item' => $this,
+                    'part' => $part,
+                ]);
+
+                $this->forgetAssemblyItems();
+
+                return $this;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Updates multiple parts with the specified quantity.
+     *
+     * @param array            $parts
+     * @param int|float|string $quantity
+     *
+     * @return int
+     */
+    public function updateAssemblyItems(array $parts, $quantity)
+    {
+        $count = 0;
+
+        if (count($parts) > 0) {
+            foreach ($parts as $part) {
+                if ($this->updateAssemblyItem($part, $quantity)) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Removes the specified part from
+     * the current items assembly.
      *
      * @param int|string|Model $part
      *
      * @return bool
      */
-    public function removeAssemblyItems($part)
+    public function removeAssemblyItem($part)
     {
         if ($this->assemblies()->detach($part)) {
-            Cache::forget($this->getAssemblyCacheKey());
+            $this->fireEvent('inventory.assembly.part-removed', [
+                'item' => $this,
+                'part' => $part,
+            ]);
+
+            $this->forgetAssemblyItems();
         }
+    }
+
+    /**
+     * Removes multiple parts from the current items assembly.
+     *
+     * @param array $parts
+     *
+     * @return int
+     */
+    public function removeAssemblyItems(array $parts)
+    {
+        $count = 0;
+
+        if (count($parts) > 0) {
+            foreach ($parts as $part) {
+                if ($this->removeAssemblyItem($part)) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
     }
 
     /**
@@ -265,6 +354,15 @@ trait AssemblyTrait
                 throw new InvalidPartException($message);
             }
         }
+    }
+
+    /**
+     * Removes the current items assembly items
+     * from the cache.
+     */
+    private function forgetAssemblyItems()
+    {
+        Cache::forget($this->getAssemblyCacheKey());
     }
 
     /**
