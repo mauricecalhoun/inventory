@@ -43,6 +43,27 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals(10, $items->first()->pivot->quantity);
     }
 
+    public function testAddAssemblyItemExtraAttributes()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        $item->addAssemblyItem($childItem, 10, ['extra' => 'testing']);
+
+        /*
+         * Tests that the extra array is merged
+         * and updated successfully with the quantity
+         */
+        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
+    }
+
     public function testAddManyAssemblyItems()
     {
         $item = $this->newInventory();

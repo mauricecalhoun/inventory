@@ -269,6 +269,9 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
             $table->integer('part_id')->unsigned();
             $table->integer('quantity')->nullable();
 
+            // Extra column for testing
+            $table->string('extra')->nullable();
+
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
 

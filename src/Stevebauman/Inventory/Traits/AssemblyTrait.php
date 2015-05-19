@@ -146,10 +146,11 @@ trait AssemblyTrait
      *
      * @param Model            $part
      * @param int|float|string $quantity
+     * @param array            $extra
      *
      * @return $this
      */
-    public function addAssemblyItem(Model $part, $quantity = 1)
+    public function addAssemblyItem(Model $part, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
             if (!$this->is_assembly) {
@@ -160,7 +161,9 @@ trait AssemblyTrait
                 $this->validatePart($part);
             }
 
-            if ($this->assemblies()->save($part, ['quantity' => $quantity])) {
+            $attributes = array_merge(['quantity' => $quantity], $extra);
+
+            if ($this->assemblies()->save($part, $attributes)) {
                 $this->fireEvent('inventory.assembly.part-added', [
                     'item' => $this,
                     'part' => $part,
@@ -180,16 +183,17 @@ trait AssemblyTrait
      *
      * @param array            $parts
      * @param int|float|string $quantity
+     * @param array            $extra
      *
      * @return int
      */
-    public function addAssemblyItems(array $parts, $quantity)
+    public function addAssemblyItems(array $parts, $quantity = 1, array $extra = [])
     {
         $count = 0;
 
         if (count($parts) > 0) {
             foreach ($parts as $part) {
-                if ($this->addAssemblyItem($part, $quantity)) {
+                if ($this->addAssemblyItem($part, $quantity, $extra)) {
                     $count++;
                 }
             }
@@ -204,10 +208,11 @@ trait AssemblyTrait
      *
      * @param int|string|Model $part
      * @param int|float|string $quantity
+     * @param array            $extra
      *
      * @return $this|bool
      */
-    public function updateAssemblyItem($part, $quantity)
+    public function updateAssemblyItem($part, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
             $id = $part;
@@ -216,7 +221,9 @@ trait AssemblyTrait
                 $id = $part->id;
             }
 
-            if ($this->assemblies()->updateExistingPivot($id, ['quantity' => $quantity])) {
+            $attributes = array_merge(['quantity' => $quantity], $extra);
+
+            if ($this->assemblies()->updateExistingPivot($id, $attributes)) {
                 $this->fireEvent('inventory.assembly.part-updated', [
                     'item' => $this,
                     'part' => $part,
@@ -236,16 +243,17 @@ trait AssemblyTrait
      *
      * @param array            $parts
      * @param int|float|string $quantity
+     * @param array            $extra
      *
      * @return int
      */
-    public function updateAssemblyItems(array $parts, $quantity)
+    public function updateAssemblyItems(array $parts, $quantity, array $extra = [])
     {
         $count = 0;
 
         if (count($parts) > 0) {
             foreach ($parts as $part) {
-                if ($this->updateAssemblyItem($part, $quantity)) {
+                if ($this->updateAssemblyItem($part, $quantity, $extra)) {
                     $count++;
                 }
             }
