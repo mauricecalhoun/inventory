@@ -54,6 +54,7 @@ class SchemaCheckCommand extends Command
         'inventory_suppliers',
         'inventory_transactions',
         'inventory_transaction_histories',
+        'inventory_assemblies',
     ];
 
     /**
