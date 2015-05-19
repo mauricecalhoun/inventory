@@ -292,29 +292,6 @@ trait InventoryStockTrait
     }
 
     /**
-     * Returns true if the specified quantity is valid, throws
-     * InvalidQuantityException otherwise.
-     *
-     * @param int|float|string $quantity
-     *
-     * @throws InvalidQuantityException
-     *
-     * @return bool
-     */
-    public function isValidQuantity($quantity)
-    {
-        if ($this->isPositive($quantity)) {
-            return true;
-        }
-
-        $message = Lang::get('inventory::exceptions.InvalidQuantityException', [
-            'quantity' => $quantity,
-        ]);
-
-        throw new InvalidQuantityException($message);
-    }
-
-    /**
      * Returns true if there is enough stock for the specified quantity being taken.
      * Throws NotEnoughStockException otherwise.
      *

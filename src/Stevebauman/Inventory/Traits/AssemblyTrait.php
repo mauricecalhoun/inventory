@@ -90,8 +90,8 @@ trait AssemblyTrait
                 $results = $this->assembliesRecursive;
 
                 /*
-                 * Cache forever since adding assembly items
-                 * will automatically clear this cache
+                 * Cache forever since adding / removing assembly
+                 * items will automatically clear this cache
                  */
                 Cache::forever($this->getAssemblyCacheKey(), $results);
             }
@@ -151,19 +151,23 @@ trait AssemblyTrait
      */
     public function addAssemblyItem(Model $part, $quantity = 1)
     {
-        if (!$this->is_assembly) {
-            $this->makeAssembly();
+        if($this->isValidQuantity($quantity)) {
+            if (!$this->is_assembly) {
+                $this->makeAssembly();
+            }
+
+            if ($part->is_assembly) {
+                $this->validatePart($part);
+            }
+
+            if ($this->assemblies()->save($part, ['quantity' => $quantity])) {
+                Cache::forget($this->getAssemblyCacheKey());
+            }
+
+            return $this;
         }
 
-        if ($part->is_assembly) {
-            $this->validatePart($part);
-        }
-
-        if ($this->assemblies()->save($part, ['quantity' => $quantity])) {
-            Cache::forget($this->getAssemblyCacheKey());
-        }
-
-        return $this;
+        return false;
     }
 
     /**
