@@ -73,6 +73,15 @@ trait AssemblyTrait
     }
 
     /**
+     * Removes the current items assembly items
+     * from the cache.
+     */
+    public function forgetAssemblyItems()
+    {
+        Cache::forget($this->getAssemblyCacheKey());
+    }
+
+    /**
      * Returns all of the assemblies items. If recursive
      * is true, the entire nested assemblies collection
      * is returned.
@@ -362,15 +371,6 @@ trait AssemblyTrait
                 throw new InvalidPartException($message);
             }
         }
-    }
-
-    /**
-     * Removes the current items assembly items
-     * from the cache.
-     */
-    private function forgetAssemblyItems()
-    {
-        Cache::forget($this->getAssemblyCacheKey());
     }
 
     /**
