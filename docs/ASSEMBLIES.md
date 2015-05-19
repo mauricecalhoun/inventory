@@ -38,6 +38,16 @@ To add a part to an items assembly, simply call the method `addAssemblyItem($par
     // And 4 table legs
     $tables->addAssemblyItem($tableLegs, $quantity = 4);
 
+#### AddAssemblyItems
+
+To add multiple items to an assembly at once, use the `addAssemblyItems($items = array(), $quantity = 1)` method:
+
+    $items = [$tableTops, $tableLegs];
+    
+    $count = $table->addAssemblyItems($items); // Returns the number of items added
+    
+    echo $count; // Returns 2
+
 #### GetAssemblyItems
 
 Now we can ask the `$tables` inventory item to see what their made up of using the method `getAssemblyItems($recursive = true)`.
@@ -64,6 +74,22 @@ of large nested assemblies. Don't worry, the items assembly is automatically flu
 but cached forever if there hasn't been any changes.
 
 Now, what if both the table top and table legs are assemblies of other inventory items as well? This is when it becomes more complex.
+
+#### RemoveAssemblyItems
+
+To remove an item or multiple items, use the method `removeAssemblyItems($items)` method:
+
+    $items = [$tableTops, $tableLegs];
+        
+    $count = $table->removeAssemblyItems($items); // Returns the number of items removed
+    
+    // We can pass in ID's, or single items as well
+    
+    $table->removeAssemblyItems(1);
+    
+    $table->removeAssemblyItems([1, 2]);
+    
+    $table->removeAssemblyItems($tableTops);
 
 ### Exceptions
 
@@ -137,6 +163,17 @@ already exists inside the tables assembly (through table tops and table legs).
 
 Unfortunately this validation requires the generation of the inserted parts assembly, which can be
 resource intensive on larger assemblies. However this validation is completely necessary to ensure the validity of the assembly.
+
+#### InvalidQuantityException
+
+As such when adding quantities to stocks, you will receive an `Stevebauman\Inventory\Exceptions\InvalidQuantityException` if
+and invalid quantity is entered inside any assembly methods that accept a quantity, for example:
+
+    // All below methods throw InvalidQuantityException
+    
+    $item->addAssemblyItem($childItem, 'invalid quantity');
+    $item->addAssemblyItem($childItem, '20a')
+    $item->addAssemblyItem($childItem, '20,000');
 
 ### Other Notable Information
 
