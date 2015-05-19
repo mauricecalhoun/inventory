@@ -174,6 +174,45 @@ If you're using your own models, be sure to insert the new trait on your `Invent
 
 If you're using the built in models, it's already included.
 
+### Updating from 1.6.* to 1.7.*
+
+In update `1.7`, assembly functionality has been added. This update comes with 2 new migrations, and a new trait.
+
+The new trait added is named `Stevebauman\Inventory\Traits\AssemblyTrait`. This trait will need to be inserted into
+your `Inventory` model if you wish to use the assembly functionality.
+
+The first migration adds the column `is_assembly (bool)` to your `inventories` table. It is defaulted to `false`.
+
+The second migration, adds the database pivot table `inventory_assemblies`.
+
+These migrations are non-destructive, so follow the standard update procedure:
+
+##### Laravel 4:
+
+    php artisan migrate:publish --package="stevebauman/inventory"
+
+##### Laravel 5:
+
+    php artisan vendor:publish
+    
+Then run the migration using:
+
+    php artisan migrate
+    
+Once you've ran the migrations, insert the new Assembly trait into your inventory model:
+
+    use Stevebauman\Inventory\Traits\AssemblyTrait;
+    use Stevebauman\Inventory\Traits\InventoryVariantTrait;
+    use Stevebauman\Inventory\Traits\InventoryTrait;
+    
+    class Inventory extends Eloquent
+    {
+        use InventoryTrait;
+        use InventoryVariantTrait;
+        use AssemblyTrait;
+
+You're all set!
+
 ### Upcoming Updates
 
 `1.7.*` will bring Inventory Assemblies. This update will allow you to create a an 'assembly' of multiple items, which may

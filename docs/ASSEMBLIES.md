@@ -70,10 +70,40 @@ in `false` into the first parameter if you only want immediate assembly children
 
 If a recursive assembly is generated it is automatically cached forever, so you don't have to worry about the performance
 of large nested assemblies. Don't worry, the items assembly is automatically flushed from the cache when you call
-`addAssemblyItem` or `removeAssemblyItem` on the items model. This ensures your generated assembly list is always up to date with your changes,
+`addAssemblyItem()` / `addAssemblyItems()` or `removeAssemblyItems()` on the items model. This ensures your generated assembly list is always up to date with your changes,
 but cached forever if there hasn't been any changes.
 
 Now, what if both the table top and table legs are assemblies of other inventory items as well? This is when it becomes more complex.
+If an assembly item is also an assembly, you can grab the items assembly items by using the `assemblies` accessor like so:
+
+    $screws = Inventory::create([
+        'name' => 'Screws',
+        'metric_id' => $metric->id,
+        'category_id' => $category->id,
+    ]);
+    
+    $wood = Inventory::create([
+        'name' => 'Wood',
+        'metric_id' => $metric->id,
+        'category_id' => $category->id,
+    ]);
+    
+    // Table tops are assembled by 2 screws
+    $tableTops->addAssemblyItem($screws, 2);
+    
+    // And 5 pieces of wood
+    $tableTops->addAssemblyItem($wood, 5);
+    
+Now that table tops are an assembly, let's retrieve the complete table assembly:
+
+    $items = $tables->getAssemblyItems();
+        
+    $screws = $items->get(0)->assemblies->get(0);
+    $wood = $items->get(0)->assemblies->get(1);
+    
+    echo $screws->name;
+
+#### GetAssemblyItemsList
 
 #### RemoveAssemblyItems
 

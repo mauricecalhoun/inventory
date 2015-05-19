@@ -43,6 +43,7 @@
             <li><a href="docs/UPDATES.md#updating-from-13-to-14">Updating from 1.3.* to 1.4.*</a></li>
             <li><a href="docs/UPDATES.md#updating-from-14-to-15">Updating from 1.4.* to 1.5.*</a></li>
             <li><a href="docs/UPDATES.md#updating-from-15-to-16">Updating from 1.5.* to 1.6.*</a></li>
+            <li><a href="docs/UPDATES.md#updating-from-16-to-17">Updating from 1.6.* to 1.7.*</a></li>
             <li><a href="docs/UPDATES.md#upcoming-updates">Upcoming Updates</a></li>
         </ul>
     </li>
