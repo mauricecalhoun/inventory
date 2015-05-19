@@ -262,3 +262,15 @@ To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
     
 This method shouldn't be needed by yourself though, as `$item->getCachedAssemblyItems()` calls this method
 and will return false if no cached assembly exists.
+
+#### Removing cached assembly items
+
+To manually remove cached assembly items, use the method `forgetCachedAssemblyItems()`:
+
+    if($item->forgetCachedAssemblyItems())
+    {
+        return 'The cached assembly items were cleared!';
+    } else
+    {
+        return 'No assembly item cache exists.';
+    }
