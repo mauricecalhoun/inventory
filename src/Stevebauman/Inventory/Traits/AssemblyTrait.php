@@ -75,10 +75,12 @@ trait AssemblyTrait
     /**
      * Removes the current items assembly items
      * from the cache.
+     *
+     * @return bool
      */
-    public function forgetAssemblyItems()
+    public function forgetCachedAssemblyItems()
     {
-        Cache::forget($this->getAssemblyCacheKey());
+        return Cache::forget($this->getAssemblyCacheKey());
     }
 
     /**
@@ -178,7 +180,7 @@ trait AssemblyTrait
                     'part' => $part,
                 ]);
 
-                $this->forgetAssemblyItems();
+                $this->forgetCachedAssemblyItems();
 
                 return $this;
             }
@@ -238,7 +240,7 @@ trait AssemblyTrait
                     'part' => $part,
                 ]);
 
-                $this->forgetAssemblyItems();
+                $this->forgetCachedAssemblyItems();
 
                 return $this;
             }
@@ -287,7 +289,7 @@ trait AssemblyTrait
                 'part' => $part,
             ]);
 
-            $this->forgetAssemblyItems();
+            $this->forgetCachedAssemblyItems();
         }
     }
 
