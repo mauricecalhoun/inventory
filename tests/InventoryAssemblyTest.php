@@ -302,7 +302,7 @@ class InventoryAssemblyTest extends InventoryTest
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
         $list = $table->getAssemblyItemsList();
-
+        
         $this->assertEquals('Table Top', $list[0]['name']);
         $this->assertEquals('Table Legs', $list[1]['name']);
 

@@ -105,6 +105,34 @@ Now that table tops are an assembly, let's retrieve the complete table assembly:
 
 #### GetAssemblyItemsList
 
+To retrieve an array of all assembly items, use the `getAssemblyItemsList()` method:
+
+    $items = $tables->getAssemblyItemsList();
+    
+    echo $items[0]['id']; // Returns 1
+    echo $items[0]['metric_id']; // Returns 1
+    echo $items[0]['category_id id']; // Returns 1
+    echo $items[0]['name']; // Returns 'Table Tops'
+    echo $items[0]['quantity']; // Returns 1
+    echo $items[0]['depth']; // Returns 1 (depth of 1 is always root for child items)
+    
+    // Retrieve an items assembly items through the 'parts' array key
+    $tableTopItems = $items[0]['parts'];
+    
+    echo $tableTopItems[0]['name'] // Returns 'Screws'
+
+This array will nest as deep as your assemblies are, for example, if Screws were made up of iron and flux:
+
+    $screws->addAssemblyItem($iron);
+    $screws->addAssemblyItem($flux);
+    
+    $items = $tables->getAssemblyItemsList();
+    
+    $screwItems = $items[0]['parts'][0]['parts']
+    
+    echo $screwItems[0]['name']; // Returns 'Iron'
+    echo $screwItems[1]['name']; // Returns 'Flux'
+
 #### RemoveAssemblyItems
 
 To remove an item or multiple items, use the method `removeAssemblyItems($items)` method:
