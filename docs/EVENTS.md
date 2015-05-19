@@ -3,6 +3,8 @@
 Most inventory operations will trigger events that you are free to do what you please with. Here is a list of methods
 and their events:
 
+### Basic Item Events
+
     /*
     * Triggers 'inventory.sku.generated', the item record is passed into this event. 
     * This is only triggered if the record for the sku is actually created.
@@ -53,6 +55,29 @@ and their events:
     * Triggers 'inventory.variant.created', the inventory item is passed into this event
     */
     $item->createVariant('Another Item', 'Description', $categoryId = 1, $metricId = 1);
+
+### Assembly Events
+
+    /*
+    * Triggers 'inventory.assembly.part-added', the item record and part is passed into this event
+    */
+    $item->addAssemblyItem($part, $quantity);
+    $item->addAssemblyItems($parts = array(), $quantity); // Triggers per part
+    
+    /*
+    * Triggers 'inventory.assembly.part-updated', the item record and part is passed into this event
+    */
+    $item->updateAssemblyItem($part, $quantity);
+    $item->updateAssemblyItems($parts = array(), $quantity); // Triggers per part
+        
+    /*
+    * Triggers 'inventory.assembly.part-removed', the item record and part is passed into this event
+    */
+    $item->removeAssemblyItem($part);
+    $item->removeAssemblyItems($parts = array()); // Triggers per part
+    
+
+### Transaction Events
 
     /*
     * Triggers 'inventory.transaction.checkout', the transaction record is passed into this event

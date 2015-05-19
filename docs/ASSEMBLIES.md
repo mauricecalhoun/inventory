@@ -70,7 +70,7 @@ in `false` into the first parameter if you only want immediate assembly children
 
 If a recursive assembly is generated it is automatically cached forever, so you don't have to worry about the performance
 of large nested assemblies. Don't worry, the items assembly is automatically flushed from the cache when you call
-`addAssemblyItem()` / `addAssemblyItems()` or `removeAssemblyItems()` on the items model. This ensures your generated assembly list is always up to date with your changes,
+`addAssemblyItem()` / `addAssemblyItems()`, `updateAssemblyItem()` / `updateAssemblyItems()` or `removeAssemblyItem()` / `removeAssemblyItems()` on the items model. This ensures your generated assembly list is always up to date with your changes,
 but cached forever if there hasn't been any changes.
 
 Now, what if both the table top and table legs are assemblies of other inventory items as well? This is when it becomes more complex.
