@@ -62,11 +62,11 @@ in `false` into the first parameter if you only want immediate assembly children
         echo $item->quantity;
     }
     
-    echo $items[0]->name; // Returns 'Table Tops'
-    echo $items[0]->quantity; // Returns '1'
+    echo $items->get(0)->name; // Returns 'Table Tops'
+    echo $items->get(0)->pivot->quantity; // Returns '1'
     
-    echo $items[1]->name; // Returns 'Table Legs'
-    echo $items[1]->quantity; // Returns '4'
+    echo $items->get(1)->name; // Returns 'Table Legs'
+    echo $items->get(1)->pivot->quantity; // Returns '4'
 
 If a recursive assembly is generated it is automatically cached forever, so you don't have to worry about the performance
 of large nested assemblies. Don't worry, the items assembly is automatically flushed from the cache when you call
@@ -234,6 +234,17 @@ and invalid quantity is entered inside any assembly methods that accept a quanti
     $item->addAssemblyItem($childItem, '20,000');
 
 ### Other Notable Information
+
+#### Including extra pivot attributes with assembly management methods
+
+With the assembly management methods, you can specify an extra attribute array into the third
+parameter to save/update your assemblies pivot table. For example:
+
+    $item->addAssemblyItem($childItem, 10, ['extra_field' => 'Testing']);
+    $item->addAssemblyItems($childItem, 10, ['extra_field' => 'Testing']);
+    
+    $item->updateAssemblyItem($childItem, 10, ['extra_field' => 'Testing']);
+    $item->addAssemblyItems($childItem, 10, ['extra_field' => 'Testing']);
 
 #### Retrieving an items assembly items from the cache
 

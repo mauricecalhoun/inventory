@@ -183,7 +183,8 @@ your `Inventory` model if you wish to use the assembly functionality.
 
 The first migration adds the column `is_assembly (bool)` to your `inventories` table. It is defaulted to `false`.
 
-The second migration, adds the database pivot table `inventory_assemblies`.
+The second migration, adds the database pivot table `inventory_assemblies`. Be sure to modify this schema if you require
+extra pivot table attributes, or would prefer not to have timestamps included on the pivot table.
 
 These migrations are non-destructive, so follow the standard update procedure:
 
@@ -210,6 +211,13 @@ Once you've ran the migrations, insert the new Assembly trait into your inventor
         use InventoryTrait;
         use InventoryVariantTrait;
         use AssemblyTrait;
+
+And add the new `assemblies()` belongsToMany relationship:
+
+    public function assemblies()
+    {
+        return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
+    }
 
 You're all set!
 
