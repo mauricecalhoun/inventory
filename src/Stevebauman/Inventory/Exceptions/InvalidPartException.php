@@ -3,7 +3,7 @@
 namespace Stevebauman\Inventory\Exceptions;
 
 /**
- * Class InvalidPartException
+ * Class InvalidPartException.
  */
 class InvalidPartException extends \Exception
 {

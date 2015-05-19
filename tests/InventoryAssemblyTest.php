@@ -104,6 +104,27 @@ class InventoryAssemblyTest extends InventoryTest
         $item->addAssemblyItem($childItem, 'invalid quantity');
     }
 
+    public function testUpdateAssemblyItem()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $item->addAssemblyItem($childItem);
+
+        $item->updateAssemblyItem($childItem, 5);
+
+        $this->assertEquals(5, $item->assemblies()->first()->pivot->quantity);
+
+        $item->updateAssemblyItem($childItem->id, 10);
+
+        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
+    }
+
     public function testGetAssemblies()
     {
         $metric = $this->newMetric();
@@ -302,7 +323,7 @@ class InventoryAssemblyTest extends InventoryTest
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
         $list = $table->getAssemblyItemsList();
-        
+
         $this->assertEquals('Table Top', $list[0]['name']);
         $this->assertEquals('Table Legs', $list[1]['name']);
 
