@@ -200,7 +200,7 @@ trait AssemblyTrait
      *
      * @return bool
      */
-    public function removeAssemblyItem($part)
+    public function removeAssemblyItems($part)
     {
         if ($this->assemblies()->detach($part)) {
             Cache::forget($this->getAssemblyCacheKey());

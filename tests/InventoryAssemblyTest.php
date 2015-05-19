@@ -232,7 +232,7 @@ class InventoryAssemblyTest extends InventoryTest
 
         $table->addAssemblyItem($tableTop, 1);
 
-        $table->removeAssemblyItem($tableTop);
+        $table->removeAssemblyItems($tableTop);
 
         $this->assertNull($table->assemblies->first());
     }
