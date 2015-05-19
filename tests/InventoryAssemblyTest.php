@@ -155,6 +155,8 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $item->category_id,
         ]);
 
+        Cache::shouldReceive('forget')->times(3)->andReturn(true);
+
         $item->addAssemblyItem($childItem);
 
         $item->updateAssemblyItem($childItem, 5);
@@ -182,6 +184,8 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $item->category_id,
         ]);
 
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
         $item->addAssemblyItem($childItem);
         $item->addAssemblyItem($childItem2);
 
@@ -191,6 +195,21 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->assertEquals(10, $items->get(0)->pivot->quantity);
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
+    }
+
+    public function testUpdateInvalidQuantityWithAssemblyItem()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $item->addAssemblyItem($childItem, 'invalid quantity');
     }
 
     public function testGetAssemblies()
