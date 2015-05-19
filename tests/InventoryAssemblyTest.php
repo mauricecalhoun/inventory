@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Tests;
 
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,87 @@ class InventoryAssemblyTest extends InventoryTest
         $item->makeAssembly();
 
         $this->assertTrue($item->is_assembly);
+    }
+
+    public function testAddAssemblyItem()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        $item->addAssemblyItem($childItem, 10);
+
+        $items = $item->assemblies;
+
+        $this->assertEquals('Child Item', $items->first()->name);
+        $this->assertEquals(10, $items->first()->pivot->quantity);
+    }
+
+    public function testAddManyAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        $childItem2 = $this->newInventory([
+            'name' => 'Child Item 2',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->twice()->andReturn(true);
+
+        $item->addAssemblyItems([$childItem, $childItem2], 10);
+
+        $items = $item->assemblies;
+
+        $this->assertEquals('Child Item', $items->get(0)->name);
+        $this->assertEquals(10, $items->get(0)->pivot->quantity);
+
+        $this->assertEquals('Child Item 2', $items->get(1)->name);
+        $this->assertEquals(10, $items->get(1)->pivot->quantity);
+    }
+
+    public function testAddInvalidAssemblyItem()
+    {
+        $item = $this->newInventory();
+
+        try {
+            $item->addAssemblyItem('invalid item');
+
+            $passes = false;
+        } catch (\Exception $e) {
+            $passes = true;
+        }
+
+        $this->assertTrue($passes);
+    }
+
+    public function testAddInvalidQuantityWithAssemblyItem()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Lang::shouldReceive('get')->once()->andReturn('Invalid Quantity');
+
+        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        $item->addAssemblyItem($childItem, 'invalid quantity');
     }
 
     public function testGetAssemblies()
@@ -299,6 +381,11 @@ class InventoryAssemblyTest extends InventoryTest
 
         $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidPartException');
 
-        $metal->addAssemblyItem($screws);
+        /*
+         * Since metal is already apart of screws,
+         * adding table as an assembly item of metal
+         * would cause an infinite recursive query
+         */
+        $metal->addAssemblyItem($table);
     }
 }
