@@ -432,7 +432,7 @@ Occurs when a stock of the item already exists at the specified location. Use a 
 ### InvalidQuantityException
 
 Occurs when a non-numerical value is entered as the quantity, such as `'30L'`, `'a20.0'`. Strings (as long as they're numeric), 
-integers and doubles/decimals are always valid. You can use laravel's built in validation to prevent this exception from
+integers and doubles/decimals/floats are always valid. You can use laravel's built in validation to prevent this exception from
 occurring, or you can use a try/catch block when processing actions involving quantity:
 
     try 
@@ -450,11 +450,11 @@ occurring, or you can use a try/catch block when processing actions involving qu
 
 ### InvalidLocationException
 
-Occurs when a location cannot be found, or the specified location is not a subclass or instance of Illuminate\Database\Eloquent\Model
+Occurs when a location cannot be found, or the specified location is not a subclass or instance of  `Illuminate\Database\Eloquent\Model`
 
 ### InvalidMovementException
 
-Occurs when a movement cannot be found, or the specified movement is not a subclass or instance of Illuminate\Database\Eloquent\Model
+Occurs when a movement cannot be found, or the specified movement is not a subclass or instance of `Illuminate\Database\Eloquent\Model`
 
 ## Methods & Their Exceptions
 
