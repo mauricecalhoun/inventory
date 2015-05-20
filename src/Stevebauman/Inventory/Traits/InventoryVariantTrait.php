@@ -25,6 +25,16 @@ trait InventoryVariantTrait
     }
 
     /**
+     * The belongsTo parent relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(get_class($this), 'parent_id');
+    }
+
+    /**
      * The hasMany variants relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -54,7 +64,7 @@ trait InventoryVariantTrait
      */
     public function getParent()
     {
-        return $this->newQuery()->find($this->parent_id);
+        return $this->parent;
     }
 
     /**
