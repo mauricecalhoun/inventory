@@ -55,7 +55,7 @@
             <li><a href="docs/USAGE.md#suppliers">Suppliers</a></li>
             <li><a href="docs/TRANSACTIONS.md">Transactions</a></li>
             <li><a href="docs/VARIANTS.md">Variants</a></li>
-            <li><a href="docs/ASSEMBLIES.md">Assemblies (Coming Soon)</a></li>
+            <li><a href="docs/ASSEMBLIES.md">Assemblies (BoM)</a></li>
             <li><a href="docs/KITS.md">Kits / Bundles (Coming Soon)</a></li>
             <li><a href="docs/SEPARATING-INVENTORY.md">Separating Inventory</a></li>
             <li><a href="docs/EVENTS.md">Events</a></li>
@@ -70,13 +70,14 @@
 
 Inventory is a fully tested, PSR compliant Laravel inventory solution. It provides the basics of inventory management using Eloquent such as:
 
-- Inventory item management
-- Inventory item variant management
-- Inventory stock management (per location)
-- Inventory stock movement tracking
+- Inventory Item management
+- Inventory Item Variant management
+- Inventory Stock management (per location)
+- Inventory Stock movement tracking
 - Inventory SKU generation
-- Inventory supplier management
-- Inventory transaction management
+- Inventory Assembly management (Bill of Materials)
+- Inventory Supplier management
+- Inventory Transaction management
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
