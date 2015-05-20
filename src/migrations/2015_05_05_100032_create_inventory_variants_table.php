@@ -25,6 +25,8 @@ class CreateInventoryVariantsTable extends Migration
     public function down()
     {
         Schema::table('inventories', function (Blueprint $table) {
+            $table->dropForeign('inventories_parent_id_foreign');
+
             $table->dropColumn('parent_id');
         });
     }
