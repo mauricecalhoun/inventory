@@ -224,7 +224,7 @@ resource intensive on larger assemblies. However this validation is completely n
 
 #### InvalidQuantityException
 
-As such when adding quantities to stocks, you will receive an `Stevebauman\Inventory\Exceptions\InvalidQuantityException` if
+As such when managing stock quantities, you will receive an `Stevebauman\Inventory\Exceptions\InvalidQuantityException` if
 and invalid quantity is entered inside any assembly methods that accept a quantity, for example:
 
     // All below methods throw InvalidQuantityException
@@ -254,7 +254,7 @@ To retrieve the current items cached assembly, use the method `getCachedAssembly
     
 #### Asking if an item has cached assembly items
 
-To see if an item has a cached assembly, use the method `hasCachedAssembly()`:
+To see if an item has a cached assembly, use the method `hasCachedAssemblyItems()`:
 
     if($item->hasCachedAssemblyItems()) {
         return 'This item has a cached assembly!';
