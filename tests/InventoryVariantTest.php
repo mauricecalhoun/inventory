@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Tests;
 
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\Inventory;
@@ -181,5 +183,44 @@ class InventoryVariantTest extends InventoryTest
 
         $this->assertEquals('Coke', $parent->name);
         $this->assertEquals(null, $parent->parent_id);
+    }
+
+    public function testGetTotalVariantStock()
+    {
+        $this->newCategory();
+        $this->newMetric();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        $cherryCoke = Inventory::create([
+            'name' => 'Cherry Coke',
+            'description' => 'Delicious Cherry Coke',
+            'metric_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        $cherryCoke->makeVariantOf($coke);
+
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+
+        Event::shouldReceive('fire')->once()->andReturn(true);
+
+        $location = $this->newLocation();
+
+        // Allow duplicate movements configuration option
+        Config::shouldReceive('get')->once()->andReturn(true);
+
+        // Stock change reasons (one for create, one for put)
+        Lang::shouldReceive('get')->twice()->andReturn('Default Reason');
+
+        $cherryCoke->createStockOnLocation(20, $location);
+
+        $this->assertEquals(20, $coke->getTotalVariantStock());
     }
 }

@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 trait InventoryVariantTrait
 {
     /**
+     * The variants cache key.
+     *
+     * @var string
+     */
+    protected $variantCacheKey = 'inventory::variant.';
+
+    /**
      * Returns true / false if the current
      * item is a variant of another item.
      *
@@ -42,6 +49,54 @@ trait InventoryVariantTrait
     public function variants()
     {
         return $this->hasMany(get_class($this) , 'parent_id');
+    }
+
+    /**
+     * Returns the total sum of the item
+     * variants stock. This method is recursive
+     * by default, and includes variants of variants
+     * stock as well.
+     *
+     * @param bool $recursive
+     *
+     * @return int|float
+     */
+    public function getTotalVariantStock($recursive = true)
+    {
+        $quantity = 0;
+
+        $variants = $this->getVariants();
+
+        if(count($variants) > 0) {
+            foreach($variants as $variant) {
+                $quantity = $quantity + $variant->getTotalStock();
+
+                /*
+                 * If the developer wants complete recursive variant stock,
+                 * we'll return a complete quantity for the variants variants
+                 */
+                if($recursive && $variant->hasVariants()) {
+                    $quantity = $quantity + $variant->getTotalVariantStock();
+                }
+            }
+        }
+
+        return $quantity;
+    }
+
+    /**
+     * Returns true / false if the current
+     * item has variants.
+     *
+     * @return bool
+     */
+    public function hasVariants()
+    {
+        if(count($this->getVariants()) > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -153,29 +153,6 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the total sum of the item
-     * variants stock.
-     *
-     * @return int|float
-     */
-    public function getTotalVariantStock()
-    {
-        $quantity = 0;
-
-        if(method_exists($this, 'getVariants')) {
-            $variants = $this->getVariants();
-
-            if(count($variants) > 0) {
-                foreach($variants as $variant) {
-                    $quantity = $quantity + $variant->getTotalStock();
-                }
-            }
-        }
-
-        return $quantity;
-    }
-
-    /**
      * Returns true/false if the inventory has a metric present.
      *
      * @return bool
