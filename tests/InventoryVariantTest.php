@@ -163,9 +163,9 @@ class InventoryVariantTest extends InventoryTest
 
         $variants = $coke->getVariants(true);
 
-        $this->assertEquals('Cherry Coke', $variants->get(0)->name);
-        $this->assertEquals('Vanilla Cherry Coke', $variants->get(0)->variants->get(0)->name);
-        $this->assertEquals('Vanilla Lime Cherry Coke', $variants->get(0)->variants->get(0)->variants->get(0)->name);
+        $this->assertEquals($cherryCoke->name, $variants->get(0)->name);
+        $this->assertEquals($vanillaCherryCoke->name, $variants->get(0)->variants->get(0)->name);
+        $this->assertEquals($vanillaLimeCherryCoke->name, $variants->get(0)->variants->get(0)->variants->get(0)->name);
     }
 
     public function testGetParent()
