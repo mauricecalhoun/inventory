@@ -318,6 +318,16 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals(2, $items->get(1)->assemblies->get(0)->pivot->quantity);
     }
 
+    public function testGetAssemblyItemsCached()
+    {
+        $item = $this->newInventory();
+
+        Cache::shouldReceive('has')->once()->andReturn(true);
+        Cache::shouldReceive('get')->once()->andReturn('cached items');
+
+        $this->assertEquals('cached items', $item->getAssemblyItems());
+    }
+
     public function testRemoveAssemblyItem()
     {
         $metric = $this->newMetric();
