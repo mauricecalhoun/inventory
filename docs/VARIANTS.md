@@ -97,3 +97,19 @@ To retrieve the parent item of a variant, use the `getParent()` method:
         
         echo $parent->name;
     }
+
+#### Get Total Variant Stock
+
+To retrieve the total stock of all an items variants, use the `getTotalVariantStock($recursive = true)` method:
+    
+    // The current items stock
+    $itemStock = $item->getTotalStock();
+    
+    // The current items variant stock
+    $itemVariantStock = $item->getTotalVariantStock();
+    
+    // The complete amount of stock
+    $completeStock = $itemStock + $itemVariantStock;
+
+> **Note**: By default this method is recursive, and retrieves variants of variants. Pass in `false` into the first
+> parameter if you only want immediate children stock.
