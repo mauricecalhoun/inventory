@@ -452,14 +452,30 @@ class InventoryAssemblyTest extends InventoryTest
         $this->assertEquals('Table Top', $list[0]['name']);
         $this->assertEquals('Table Legs', $list[1]['name']);
 
+        // Validate Table Top / Table Leg Depth
+        $this->assertEquals(1, $list[0]['depth']);
+        $this->assertEquals(1, $list[1]['depth']);
+
         $this->assertEquals('Screws', $list[0]['parts'][0]['name']);
         $this->assertEquals('Screws', $list[1]['parts'][0]['name']);
+
+        // Validate Screw Depth
+        $this->assertEquals(2, $list[0]['parts'][0]['depth']);
+        $this->assertEquals(2, $list[1]['parts'][0]['depth']);
 
         $this->assertEquals('Metal', $list[0]['parts'][0]['parts'][0]['name']);
         $this->assertEquals('Metal', $list[1]['parts'][0]['parts'][0]['name']);
 
+        // Validate Metal Depth
+        $this->assertEquals(3, $list[0]['parts'][0]['parts'][0]['depth']);
+        $this->assertEquals(3, $list[1]['parts'][0]['parts'][0]['depth']);
+
         $this->assertEquals('Ore', $list[0]['parts'][0]['parts'][0]['parts'][0]['name']);
         $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
+
+        // Validate Ore Depth
+        $this->assertEquals(4, $list[0]['parts'][0]['parts'][0]['parts'][0]['depth']);
+        $this->assertEquals(4, $list[1]['parts'][0]['parts'][0]['parts'][0]['depth']);
     }
 
     public function testInvalidPartException()
