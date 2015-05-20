@@ -230,7 +230,7 @@ class InventoryVariantTest extends InventoryTest
         // Allow duplicate movements configuration option
         Config::shouldReceive('get')->twice()->andReturn(true);
 
-        // Stock change reasons (one for create, one for put)
+        // Stock change reasons (one for create, one for put, for both items)
         Lang::shouldReceive('get')->times(4)->andReturn('Default Reason');
 
         $cherryCoke->createStockOnLocation(20, $location);

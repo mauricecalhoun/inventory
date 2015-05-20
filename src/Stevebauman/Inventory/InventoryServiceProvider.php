@@ -14,7 +14,7 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '1.7.0';
+    const VERSION = '1.7.1';
 
     /**
      * Stores the package configuration separator
