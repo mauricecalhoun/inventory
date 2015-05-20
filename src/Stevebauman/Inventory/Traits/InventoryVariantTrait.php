@@ -25,6 +25,16 @@ trait InventoryVariantTrait
     }
 
     /**
+     * The hasMany variants relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variants()
+    {
+        return $this->hasMany(get_class($this) , 'parent_id');
+    }
+
+    /**
      * Returns all variants of the current item.
      *
      * This method does not retrieve variants recursively.
@@ -33,9 +43,7 @@ trait InventoryVariantTrait
      */
     public function getVariants()
     {
-        return $this->newQuery()
-            ->where('parent_id', $this->id)
-            ->get();
+        return $this->variants;
     }
 
     /**
