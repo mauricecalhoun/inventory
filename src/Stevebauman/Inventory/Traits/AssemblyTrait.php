@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class AssemblyTrait.
+ */
 trait AssemblyTrait
 {
     /**
@@ -159,6 +162,8 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     *
      * @return $this
      */
     public function addAssemblyItem(Model $part, $quantity = 1, array $extra = [])
@@ -196,6 +201,8 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     *
      * @return int
      */
     public function addAssemblyItems(array $parts, $quantity = 1, array $extra = [])
@@ -220,6 +227,8 @@ trait AssemblyTrait
      * @param int|string|Model $part
      * @param int|float|string $quantity
      * @param array            $extra
+     *
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      *
      * @return $this|bool
      */
@@ -255,6 +264,8 @@ trait AssemblyTrait
      * @param array            $parts
      * @param int|float|string $quantity
      * @param array            $extra
+     *
+     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
      *
      * @return int
      */
