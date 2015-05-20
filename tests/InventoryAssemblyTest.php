@@ -496,4 +496,32 @@ class InventoryAssemblyTest extends InventoryTest
          */
         $metal->addAssemblyItem($table);
     }
+
+    public function testHasCachedAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        Cache::shouldReceive('has')->once()->andReturn(false);
+
+        $this->assertFalse($item->hasCachedAssemblyItems());
+    }
+
+    public function testGetCachedAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        Cache::shouldReceive('has')->once()->andReturn(true);
+        Cache::shouldReceive('get')->once()->andReturn('cached items');
+
+        $this->assertEquals('cached items', $item->getCachedAssemblyItems());
+    }
+
+    public function testForgetCachedAssemblyItems()
+    {
+        $item = $this->newInventory();
+
+        Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        $this->assertTrue($item->forgetCachedAssemblyItems());
+    }
 }
