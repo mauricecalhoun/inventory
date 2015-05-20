@@ -143,13 +143,36 @@ trait InventoryTrait
     }
 
     /**
-     * Returns the total sum of the current stock.
+     * Returns the total sum of the current item stock.
      *
      * @return int|float
      */
     public function getTotalStock()
     {
         return $this->stocks->sum('quantity');
+    }
+
+    /**
+     * Returns the total sum of the item
+     * variants stock.
+     *
+     * @return int|float
+     */
+    public function getTotalVariantStock()
+    {
+        $quantity = 0;
+
+        if(method_exists($this, 'getVariants')) {
+            $variants = $this->getVariants();
+
+            if(count($variants) > 0) {
+                foreach($variants as $variant) {
+                    $quantity = $quantity + $variant->getTotalStock();
+                }
+            }
+        }
+
+        return $quantity;
     }
 
     /**
@@ -234,7 +257,7 @@ trait InventoryTrait
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
      *
-     * @return mixed
+     * @return Model
      */
     public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
     {
@@ -275,6 +298,8 @@ trait InventoryTrait
              */
             return $stock->put($quantity, $reason, $cost);
         }
+
+        return false;
     }
 
     /**
