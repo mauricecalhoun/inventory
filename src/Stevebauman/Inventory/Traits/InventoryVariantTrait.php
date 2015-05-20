@@ -2,7 +2,6 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,13 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait InventoryVariantTrait
 {
-    /**
-     * The variants cache key.
-     *
-     * @var string
-     */
-    protected $variantCacheKey = 'inventory::variant.';
-
     /**
      * The belongsTo parent relationship.
      *
@@ -89,21 +81,7 @@ trait InventoryVariantTrait
     public function getVariants($recursive = false)
     {
         if($recursive) {
-
-            $variants = $this->getCachedVariants();
-
-            if(!$variants) {
-                $variants = $this->variantsRecursive;
-
-                /*
-                 * Cache the variants forever since making variants
-                 * will clear this cache automatically
-                 */
-                Cache::forever($this->getVariantCacheKey(), $variants);
-            }
-
-            return $variants;
-
+            return $this->variantsRecursive;
         } else {
             return $this->variants;
         }
@@ -151,43 +129,6 @@ trait InventoryVariantTrait
         }
 
         return $quantity;
-    }
-
-    /**
-     * Returns the current items cached
-     * variants if they exist in the cache.
-     *
-     * @return bool|\Illuminate\Database\Eloquent\Collection
-     */
-    public function getCachedVariants()
-    {
-        if($this->hasCachedVariants()) {
-            return Cache::get($this->getVariantCacheKey());
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns true / false if cache contains
-     * the current items variants.
-     *
-     * @return bool
-     */
-    public function hasCachedVariants()
-    {
-        return Cache::has($this->getVariantCacheKey());
-    }
-
-    /**
-     * Returns true / false if the items variants
-     * were cleared from the cache.
-     *
-     * @return bool
-     */
-    public function forgetCachedVariants()
-    {
-        return Cache::forget($this->getVariantCacheKey());
     }
 
     /**
@@ -300,15 +241,5 @@ trait InventoryVariantTrait
         }
 
         return false;
-    }
-
-    /**
-     * Returns the current items variants cache key.
-     *
-     * @return string
-     */
-    private function getVariantCacheKey()
-    {
-        return $this->variantCacheKey.$this->id;
     }
 }
