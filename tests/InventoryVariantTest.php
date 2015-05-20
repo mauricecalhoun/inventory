@@ -197,14 +197,13 @@ class InventoryVariantTest extends InventoryTest
             'category_id' => 1,
         ]);
 
-        $cherryCoke = Inventory::create([
-            'name' => 'Cherry Coke',
-            'description' => 'Delicious Cherry Coke',
-            'metric_id' => 1,
-            'category_id' => 1,
-        ]);
+        $cherryCoke = $coke->createVariant('Cherry Coke');
 
         $cherryCoke->makeVariantOf($coke);
+
+        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
+
+        $vanillaCherryCoke->makeVariantOf($cherryCoke);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
@@ -214,13 +213,15 @@ class InventoryVariantTest extends InventoryTest
         $location = $this->newLocation();
 
         // Allow duplicate movements configuration option
-        Config::shouldReceive('get')->once()->andReturn(true);
+        Config::shouldReceive('get')->twice()->andReturn(true);
 
         // Stock change reasons (one for create, one for put)
-        Lang::shouldReceive('get')->twice()->andReturn('Default Reason');
+        Lang::shouldReceive('get')->times(4)->andReturn('Default Reason');
 
         $cherryCoke->createStockOnLocation(20, $location);
 
-        $this->assertEquals(20, $coke->getTotalVariantStock());
+        $vanillaCherryCoke->createStockOnLocation(20, $location);
+
+        $this->assertEquals(40, $coke->getTotalVariantStock());
     }
 }
