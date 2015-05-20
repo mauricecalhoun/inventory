@@ -212,6 +212,20 @@ class InventoryAssemblyTest extends InventoryTest
         $item->addAssemblyItem($childItem, 'invalid quantity');
     }
 
+    public function testUpdateAssemblyItemWhenItemIsNotAnAssembly()
+    {
+        $item = $this->newInventory();
+
+        $this->assertFalse($item->updateAssemblyItem(1, 5));
+    }
+
+    public function testUpdateAssemblyItemsWhenItemIsNotAnAssembly()
+    {
+        $item = $this->newInventory();
+
+        $this->assertEquals(0, $item->updateAssemblyItems([1, 2], 5));
+    }
+
     public function testGetAssemblies()
     {
         $metric = $this->newMetric();
@@ -350,9 +364,23 @@ class InventoryAssemblyTest extends InventoryTest
 
         $table->addAssemblyItem($tableTop, 1);
 
-        $table->removeAssemblyItem($tableTop);
+        $this->assertTrue($table->removeAssemblyItem($tableTop));
 
         $this->assertNull($table->assemblies->first());
+    }
+
+    public function testRemoveAssemblyItemWhenItemIsNotAnAssembly()
+    {
+        $item = $this->newInventory();
+
+        $this->assertFalse($item->removeAssemblyItem(1));
+    }
+
+    public function testRemoveAssemblyItemsWhenItemIsNotAnAssembly()
+    {
+        $item = $this->newInventory();
+
+        $this->assertEquals(0, $item->removeAssemblyItems([1, 2]));
     }
 
     public function testGetAssemblyItemsList()
