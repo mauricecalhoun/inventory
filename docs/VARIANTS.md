@@ -113,3 +113,4 @@ To retrieve the total stock of all an items variants, use the `getTotalVariantSt
 
 > **Note**: By default this method is recursive, and retrieves variants of variants. Pass in `false` into the first
 > parameter if you only want immediate children stock.
+
