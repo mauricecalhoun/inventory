@@ -42,7 +42,7 @@ trait InventoryVariantTrait
      * Returns the parent item record
      * for the current variant.
      *
-     * @return mixed
+     * @return Model
      */
     public function getParent()
     {
@@ -56,7 +56,7 @@ trait InventoryVariantTrait
      *
      * @param string $name
      *
-     * @return mixed
+     * @return Model
      */
     public function newVariant($name = '')
     {
@@ -82,7 +82,7 @@ trait InventoryVariantTrait
      * @param int|string $categoryId
      * @param int|string $metricId
      *
-     * @return mixed
+     * @return bool|Model
      */
     public function createVariant($name = '', $description = '', $categoryId = null, $metricId = null)
     {
