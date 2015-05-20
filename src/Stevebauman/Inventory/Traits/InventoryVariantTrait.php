@@ -17,21 +17,6 @@ trait InventoryVariantTrait
     protected $variantCacheKey = 'inventory::variant.';
 
     /**
-     * Returns true / false if the current
-     * item is a variant of another item.
-     *
-     * @return bool
-     */
-    public function isVariant()
-    {
-        if ($this->parent_id) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * The belongsTo parent relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -52,10 +37,93 @@ trait InventoryVariantTrait
     }
 
     /**
+     * The hasMany recursive variants relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variantsRecursive()
+    {
+        return $this->variants()->with('variantsRecursive');
+    }
+
+    /**
+     * Returns true / false if the current
+     * item is a variant of another item.
+     *
+     * @return bool
+     */
+    public function isVariant()
+    {
+        if ($this->parent_id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns true / false if the current
+     * item has variants.
+     *
+     * @return bool
+     */
+    public function hasVariants()
+    {
+        if(count($this->getVariants()) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns all variants of the current item.
+     *
+     * This method does not retrieve variants recursively.
+     *
+     * @param bool $recursive
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getVariants($recursive = false)
+    {
+        if($recursive) {
+
+            $variants = $this->getCachedVariants();
+
+            if(!$variants) {
+                $variants = $this->variantsRecursive;
+
+                /*
+                 * Cache the variants forever since making variants
+                 * will clear this cache automatically
+                 */
+                Cache::forever($this->getVariantCacheKey(), $variants);
+            }
+
+            return $variants;
+
+        } else {
+            return $this->variants;
+        }
+    }
+
+    /**
+     * Returns the parent item record
+     * for the current variant.
+     *
+     * @return Model
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Returns the total sum of the item
      * variants stock. This method is recursive
      * by default, and includes variants of variants
-     * stock as well.
+     * total stock.
      *
      * @param bool $recursive
      *
@@ -85,41 +153,40 @@ trait InventoryVariantTrait
     }
 
     /**
-     * Returns true / false if the current
-     * item has variants.
+     * Returns the current items cached
+     * variants if they exist in the cache.
      *
-     * @return bool
+     * @return bool|\Illuminate\Database\Eloquent\Collection
      */
-    public function hasVariants()
+    public function getCachedVariants()
     {
-        if(count($this->getVariants()) > 0) {
-            return true;
+        if($this->hasCachedVariants()) {
+            return Cache::get($this->getVariantCacheKey());
         }
 
         return false;
     }
 
     /**
-     * Returns all variants of the current item.
+     * Returns true / false if cache contains
+     * the current items variants.
      *
-     * This method does not retrieve variants recursively.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return bool
      */
-    public function getVariants()
+    public function hasCachedVariants()
     {
-        return $this->variants;
+        return Cache::has($this->getVariantCacheKey());
     }
 
     /**
-     * Returns the parent item record
-     * for the current variant.
+     * Returns true / false if the items variants
+     * were cleared from the cache.
      *
-     * @return Model
+     * @return bool
      */
-    public function getParent()
+    public function forgetCachedVariants()
     {
-        return $this->parent;
+        return Cache::forget($this->getVariantCacheKey());
     }
 
     /**
@@ -232,5 +299,15 @@ trait InventoryVariantTrait
         }
 
         return false;
+    }
+
+    /**
+     * Returns the current items variants cache key.
+     *
+     * @return string
+     */
+    private function getVariantCacheKey()
+    {
+        return $this->variantCacheKey.$this->id;
     }
 }
