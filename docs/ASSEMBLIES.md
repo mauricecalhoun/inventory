@@ -1,7 +1,5 @@
 ## Assemblies
 
-> **Note**: Assemblies are still in development, this functionality will be released with 1.7. Documentation is still in progress.
-
 Inventory Assemblies allow you to create an inventory item that is assembled by several other inventory items (which may also
 be assemblies).
 
