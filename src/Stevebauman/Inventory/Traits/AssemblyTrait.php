@@ -290,7 +290,11 @@ trait AssemblyTrait
             ]);
 
             $this->forgetCachedAssemblyItems();
+
+            return true;
         }
+
+        return false;
     }
 
     /**
