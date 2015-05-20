@@ -103,12 +103,7 @@ class InventoryVariantTest extends InventoryTest
             'category_id' => 1,
         ]);
 
-        $cherryCoke = Inventory::create([
-            'name' => 'Cherry Coke',
-            'description' => 'Delicious Cherry Coke',
-            'metric_id' => 1,
-            'category_id' => 1,
-        ]);
+        $cherryCoke = $coke->createVariant('Cherry Coke');
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
@@ -133,12 +128,7 @@ class InventoryVariantTest extends InventoryTest
             'category_id' => 1,
         ]);
 
-        $cherryCoke = Inventory::create([
-            'name' => 'Cherry Coke',
-            'description' => 'Delicious Cherry Coke',
-            'metric_id' => 1,
-            'category_id' => 1,
-        ]);
+        $cherryCoke = $coke->createVariant('Cherry Coke');
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
@@ -151,6 +141,31 @@ class InventoryVariantTest extends InventoryTest
 
         $this->assertInstanceOf('Illuminate\Support\Collection', $variants);
         $this->assertEquals(1, $variants->count());
+    }
+
+    public function testGetVariantsRecursive()
+    {
+        $this->newCategory();
+        $this->newMetric();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
+
+        $vanillaLimeCherryCoke = $vanillaCherryCoke->createVariant('Vanilla Lime Cherry Coke');
+
+        $variants = $coke->getVariants(true);
+
+        $this->assertEquals('Cherry Coke', $variants->get(0)->name);
+        $this->assertEquals('Vanilla Cherry Coke', $variants->get(0)->variants->get(0)->name);
+        $this->assertEquals('Vanilla Lime Cherry Coke', $variants->get(0)->variants->get(0)->variants->get(0)->name);
     }
 
     public function testGetParent()
