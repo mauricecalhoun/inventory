@@ -223,4 +223,7 @@ You're all set!
 
 ### Upcoming Updates
 
-`1.8.*` will bring Inventory Kits. More on this update once `1.7.*` is released.
+`1.8.*` will bring Inventory Kits. Inventory Kit's are very similar to assemblies. Kits will allow you to bundle
+inventory items together and perform stock transactions on them. Stock from item's inside the kit will be automatically
+be updated when a transaction is performed on the kit, for example selling a kit would automatically remove stock from
+each kit item.
