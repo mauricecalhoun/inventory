@@ -90,6 +90,7 @@ you can simply use the built in models.
 
 - Laravel 4.* | 5.*
 - Laravel's Auth, Sentry or Sentinel if you need automatic accountability
+- A `users` database table
 
 Recommended:
 
