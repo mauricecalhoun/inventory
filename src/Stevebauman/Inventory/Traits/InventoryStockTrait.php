@@ -600,7 +600,8 @@ trait InventoryStockTrait
     private function processRecursiveRollbackOperation(Model $movement)
     {
         /*
-         * Retrieve movements that were created after the specified movement, and order them descending
+         * Retrieve movements that were created after
+         * the specified movement, and order them descending
          */
         $movements = $this
             ->movements()
