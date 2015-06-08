@@ -14,6 +14,7 @@ class CreateInventoryTables extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->softDeletes();
+
             $table->integer('category_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('metric_id')->unsigned();
@@ -36,6 +37,7 @@ class CreateInventoryTables extends Migration
         Schema::create('inventory_stocks', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('inventory_id')->unsigned();
@@ -46,8 +48,8 @@ class CreateInventoryTables extends Migration
             $table->string('bin')->nullable();
 
             /*
-             * This allows only one inventory stock to be created
-             * on a single location
+             * This allows only one inventory stock
+             * to be created on a single location
              */
             $table->unique(['inventory_id', 'location_id']);
 
@@ -67,6 +69,7 @@ class CreateInventoryTables extends Migration
         Schema::create('inventory_stock_movements', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->integer('stock_id')->unsigned();
             $table->integer('user_id')->unsigned()->nullable();
