@@ -195,6 +195,11 @@ InventorySku:
             'inventory_id',
             'code',
         );
+        
+        public function item()
+        {
+            return $this->belongsTo('Inventory', 'inventory_id', 'id');
+        }
     }
     
 InventoryStock:
