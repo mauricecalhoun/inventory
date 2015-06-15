@@ -94,7 +94,7 @@ you can simply use the built in models.
 
 Recommended:
 
-- [Stevebauman/Revision](www.github.com/stevebauman/revision) (For tracking Category and Location changes to stocks)
+- [Stevebauman/Revision](http://www.github.com/stevebauman/revision) (For tracking Category and Location changes to stocks)
 
 If you need another Auth driver supported, please send a pull request or create an issue.
 
