@@ -14,7 +14,7 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '1.7.3';
+    const VERSION = '1.7.4';
 
     /**
      * Stores the package configuration separator
@@ -48,7 +48,7 @@ class InventoryServiceProvider extends ServiceProvider
          * If the package method exists, we're using Laravel 4, if not, we're on 5
          */
         if (method_exists($this, 'package')) {
-            $this->package('stevebauman/inventory');
+            $this->package('stevebauman/inventory', 'stevebauman/inventory', __DIR__.'/..');
         } else {
             /*
              * Set the proper configuration separator since
@@ -65,20 +65,20 @@ class InventoryServiceProvider extends ServiceProvider
             /*
              * Load the inventory translations from the inventory lang folder
              */
-            $this->loadTranslationsFrom(__DIR__.'../../../lang', 'inventory');
+            $this->loadTranslationsFrom(__DIR__.'/lang', 'inventory');
 
             /*
              * Assign the configuration as publishable, and tag it as 'config'
              */
             $this->publishes([
-                __DIR__.'../../../config/config.php' => config_path('inventory.php'),
+                __DIR__.'/config/config.php' => config_path('inventory.php'),
             ], 'config');
 
             /*
              * Assign the migrations as publishable, and tag it as 'migrations'
              */
             $this->publishes([
-                __DIR__.'../../../migrations/' => base_path('database/migrations'),
+                __DIR__.'/migrations/' => base_path('database/migrations'),
             ], 'migrations');
         }
     }
@@ -121,7 +121,7 @@ class InventoryServiceProvider extends ServiceProvider
         /*
          * Include the helpers file
          */
-        include __DIR__.'../../../helpers.php';
+        include __DIR__.'/helpers.php';
     }
 
     /**
