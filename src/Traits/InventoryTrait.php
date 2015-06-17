@@ -256,8 +256,8 @@ trait InventoryTrait
              * A stock record wasn't found on this location, we'll create one
              */
             $insert = [
-                'inventory_id' => $this->id,
-                'location_id' => $location->id,
+                'inventory_id' => $this->getKey(),
+                'location_id' => $location->getKey(),
                 'quantity' => 0,
                 'aisle' => $aisle,
                 'row' => $row,
@@ -315,8 +315,8 @@ trait InventoryTrait
              * Assign the known attributes
              * so devs don't have to
              */
-            $stock->inventory_id = $this->id;
-            $stock->location_id = $location->id;
+            $stock->inventory_id = $this->getKey();
+            $stock->location_id = $location->getKey();
 
             return $stock;
         }
@@ -520,8 +520,8 @@ trait InventoryTrait
         $location = $this->getLocation($location);
 
         $stock = $this->stocks()
-            ->where('inventory_id', $this->id)
-            ->where('location_id', $location->id)
+            ->where('inventory_id', $this->getKey())
+            ->where('location_id', $location->getKey())
             ->first();
 
         if ($stock) {
@@ -620,12 +620,12 @@ trait InventoryTrait
              * Create the numerical code by the items ID
              * to accompany the prefix and pad left zeros
              */
-            $code = str_pad($this->id, $codeLength, '0', STR_PAD_LEFT);
+            $code = str_pad($this->getKey(), $codeLength, '0', STR_PAD_LEFT);
 
             /*
              * Process the generation
              */
-            return $this->processSkuGeneration($this->id, $prefix.$skuSeparator.$code);
+            return $this->processSkuGeneration($this->getKey(), $prefix.$skuSeparator.$code);
         }
 
         /*
@@ -672,7 +672,7 @@ trait InventoryTrait
             /*
              * Failed generating a new sku, we'll restore the old one
              */
-            return $this->processSkuGeneration($this->id, $previousSku->code);
+            return $this->processSkuGeneration($this->getKey(), $previousSku->code);
         }
 
         /*
@@ -721,7 +721,7 @@ trait InventoryTrait
         /*
          * No SKU exists, lets create one
          */
-        return $this->processSkuGeneration($this->id, $code);
+        return $this->processSkuGeneration($this->getKey(), $code);
     }
 
     /**
@@ -747,7 +747,7 @@ trait InventoryTrait
          * trying to find one, we'll create one
          */
         if (!$sku) {
-            return $this->processSkuGeneration($this->id, $code);
+            return $this->processSkuGeneration($this->getKey(), $code);
         }
 
         return $this->processSkuUpdate($sku, $code);

@@ -1366,7 +1366,7 @@ trait InventoryTransactionTrait
     private function generateTransactionHistory($stateBefore, $stateAfter, $quantityBefore = 0, $quantityAfter = 0)
     {
         $insert = [
-            'transaction_id' => $this->id,
+            'transaction_id' => $this->getKey(),
             'state_before' => $stateBefore,
             'state_after' => $stateAfter,
             'quantity_before' => $quantityBefore,
@@ -1386,7 +1386,7 @@ trait InventoryTransactionTrait
      */
     private function getTransactionReason($key)
     {
-        $reason = Lang::get('inventory::reasons.transactions.'.$key, ['id' => $this->id, 'date' => date('Y-m-d H:i:s')]);
+        $reason = Lang::get('inventory::reasons.transactions.'.$key, ['id' => $this->getKey(), 'date' => date('Y-m-d H:i:s')]);
 
         /*
          * Make sure we set the reason to null if no translation is found

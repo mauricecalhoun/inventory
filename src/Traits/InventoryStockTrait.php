@@ -376,7 +376,7 @@ trait InventoryStockTrait
          * Set the transaction attributes so they don't
          * need to be set manually
          */
-        $transaction->stock_id = $this->id;
+        $transaction->stock_id = $this->getKey();
         $transaction->name = $name;
 
         return $transaction;
@@ -521,7 +521,7 @@ trait InventoryStockTrait
      */
     private function processMoveOperation(Model $location)
     {
-        $this->location_id = $location->id;
+        $this->location_id = $location->getKey();
 
         $this->dbStartTransaction();
 
@@ -633,7 +633,7 @@ trait InventoryStockTrait
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
     {
         $insert = [
-            'stock_id' => $this->id,
+            'stock_id' => $this->getKey(),
             'before' => $before,
             'after' => $after,
             'reason' => $reason,

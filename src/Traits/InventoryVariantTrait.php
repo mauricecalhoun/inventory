@@ -144,7 +144,7 @@ trait InventoryVariantTrait
     {
         $variant = new $this();
 
-        $variant->parent_id = $this->id;
+        $variant->parent_id = $this->getKey();
         $variant->category_id = $this->category_id;
         $variant->metric_id = $this->metric_id;
 
@@ -209,7 +209,7 @@ trait InventoryVariantTrait
      */
     public function makeVariantOf(Model $item)
     {
-        return $this->processMakeVariant($item->id);
+        return $this->processMakeVariant($item->getKey());
     }
 
     /**

@@ -137,7 +137,7 @@ trait AssemblyTrait
 
         foreach ($items as $item) {
             $list[$level] = [
-                'id' => $item->id,
+                'id' => $item->getKey(),
                 'name' => $item->name,
                 'metric_id' => $item->metric_id,
                 'category_id' => $item->category_id,
@@ -238,7 +238,7 @@ trait AssemblyTrait
             $id = $part;
 
             if ($part instanceof Model) {
-                $id = $part->id;
+                $id = $part->getKey();
             }
 
             $attributes = array_merge(['quantity' => $quantity], $extra);
@@ -356,7 +356,7 @@ trait AssemblyTrait
      */
     private function validatePart(Model $part)
     {
-        if ((int) $part->id === (int) $this->id) {
+        if ((int) $part->getKey() === (int) $this->getKey()) {
             $message = 'An item cannot be an assembly of itself.';
 
             throw new InvalidPartException($message);
@@ -381,8 +381,8 @@ trait AssemblyTrait
      */
     private function validatePartAgainstList($value, $key)
     {
-        if ($key === 'id') {
-            if ((int) $value === (int) $this->id) {
+        if ($key === $this->getKeyName()) {
+            if ((int) $value === (int) $this->getKey()) {
                 $message = 'The inserted part exists inside the assembly tree. An item cannot be an assembly of itself.';
 
                 throw new InvalidPartException($message);
@@ -397,6 +397,6 @@ trait AssemblyTrait
      */
     private function getAssemblyCacheKey()
     {
-        return $this->assemblyCacheKey.$this->id;
+        return $this->assemblyCacheKey.$this->getKey();
     }
 }
