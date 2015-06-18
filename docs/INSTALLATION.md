@@ -32,7 +32,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.6.*"
+    "stevebauman/inventory" : "1.7.*"
 
 Now perform a `composer update` on your project's source.
 
