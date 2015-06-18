@@ -117,6 +117,8 @@ Category:
     
     class Category extends Node
     {
+        use CategoryTrait;
+        
         protected $table = 'categories';
         
         protected $scoped = ['belongs_to'];
