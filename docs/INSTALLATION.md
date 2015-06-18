@@ -139,7 +139,7 @@ Supplier:
     
         protected $table = 'suppliers';
         
-         public function items()
+        public function items()
         {
             return $this->belongsToMany('Inventory', 'inventory_suppliers', 'supplier_id')->withTimestamps();
         }
