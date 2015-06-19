@@ -378,7 +378,7 @@ trait AssemblyTrait
      */
     private function validatePartAgainstList($value, $key)
     {
-        if ($key === $this->getKeyName()) {
+        if ((string) $key === (string) $this->getKeyName()) {
             if ((int) $value === (int) $this->getKey()) {
                 $message = 'The inserted part exists inside the assembly tree. An item cannot be an assembly of itself.';
 
