@@ -54,30 +54,21 @@ class Helper
     {
         $separator = InventoryServiceProvider::$packageConfigSeparator;
 
-        /*
-         * Check if we're allowed to return no user ID to the model, if so we'll return null.
-         */
+        // Check if we're allowed to return no user ID to the model, if so we'll return null.
         if (Config::get('inventory'.$separator.'allow_no_user')) {
             return;
         }
 
-        /*
-         * Accountability is enabled, let's try and retrieve the current users ID
-         */
-        try {
-            if (class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
-                if ($class::check()) {
-                    return $class::getUser()->id;
-                }
-            } elseif (Auth::check()) {
-                return Auth::user()->getAuthIdentifier();
+        // Accountability is enabled, let's try and retrieve the current users ID.
+        if (class_exists($class = '\Cartalyst\Sentry\Facades\Laravel\Sentry') || class_exists($class = '\Cartalyst\Sentinel\Laravel\Facades\Sentinel')) {
+            if ($class::check()) {
+                return $class::getUser()->id;
             }
-        } catch (\Exception $e) {
+        } else if (Auth::check()) {
+            return Auth::user()->getAuthIdentifier();
         }
 
-        /*
-         * Couldn't get the current logged in users ID, throw exception
-         */
+        // Couldn't get the current logged in users ID, throw exception
         $message = Lang::get('inventory::exceptions.NoUserLoggedInException');
 
         throw new NoUserLoggedInException($message);
