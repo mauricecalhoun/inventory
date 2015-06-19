@@ -2,8 +2,6 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Illuminate\Support\Facades\Lang;
-
 trait SupplierTrait
 {
     /**
