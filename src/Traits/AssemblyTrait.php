@@ -40,7 +40,7 @@ trait AssemblyTrait
      */
     public function makeAssembly()
     {
-        $this->is_assembly = true;
+        $this->setAttribute('is_assembly', true);
 
         return $this->save();
     }
