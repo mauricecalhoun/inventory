@@ -461,10 +461,7 @@ trait InventoryTrait
      */
     public function getStockFromLocation(Model $location)
     {
-        $stock = $this->stocks()
-            ->where('inventory_id', $this->getKey())
-            ->where('location_id', $location->getKey())
-            ->first();
+        $stock = $this->stocks()->where('location_id', $location->getKey())->first();
 
         if ($stock) {
             return $stock;
