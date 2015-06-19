@@ -402,14 +402,16 @@ trait InventoryStockTrait
      */
     private function processTakeOperation($taking, $reason = '', $cost = 0)
     {
-        $left = $this->quantity - $taking;
+        $available = $this->getAttribute('quantity');
+
+        $left = (float) $available - (float) $taking;
 
         /*
          * If the updated total and the beginning total are the same, we'll check if
          * duplicate movements are allowed. We'll return the current record if
          * they aren't.
          */
-        if ($left == $this->quantity && !$this->allowDuplicateMovementsEnabled()) {
+        if ((float) $left === (float) $available && !$this->allowDuplicateMovementsEnabled()) {
             return $this;
         }
 
@@ -449,15 +451,15 @@ trait InventoryStockTrait
      */
     private function processPutOperation($putting, $reason = '', $cost = 0)
     {
-        $before = $this->quantity;
+        $current = $this->getAttribute('quantity');
 
-        $total = $putting + $before;
+        $total = (float) $putting + (float) $current;
 
         /*
          * If the updated total and the beginning total are the same,
          * we'll check if duplicate movements are allowed
          */
-        if ($total == $this->quantity && !$this->allowDuplicateMovementsEnabled()) {
+        if ((float) $total === (float) $current && !$this->allowDuplicateMovementsEnabled()) {
             return $this;
         }
 
@@ -629,7 +631,7 @@ trait InventoryStockTrait
      */
     private function setCost($cost = 0)
     {
-        $this->cost = $cost;
+        $this->cost = (float) $cost;
     }
 
     /**
