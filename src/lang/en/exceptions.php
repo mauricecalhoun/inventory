@@ -7,8 +7,6 @@
  */
 return [
 
-    'InvalidLocationException' => 'Location :location is invalid',
-
     'InvalidMovementException' => 'Movement :movement is invalid',
 
     'InvalidSupplierException' => 'Supplier :supplier is invalid',

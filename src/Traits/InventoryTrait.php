@@ -213,7 +213,6 @@ trait InventoryTrait
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
      *
      * @return Model
@@ -255,7 +254,6 @@ trait InventoryTrait
      * @param Model $location
      *
      * @throws StockAlreadyExistsException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -288,27 +286,19 @@ trait InventoryTrait
      * Takes the specified amount ($quantity) of stock from specified stock location.
      *
      * @param int|float|string $quantity
-     * @param $location
+     * @param Model            $location
      * @param string           $reason
      *
      * @throws StockNotFoundException
      *
      * @return array
      */
-    public function takeFromLocation($quantity, $location, $reason = '')
+    public function takeFromLocation($quantity, Model $location, $reason = '')
     {
-        /*
-         * If the specified location is an array, we must be taking from
-         * multiple locations
-         */
-        if (is_array($location)) {
-            return $this->takeFromManyLocations($quantity, $location, $reason);
-        } else {
-            $stock = $this->getStockFromLocation($location);
+        $stock = $this->getStockFromLocation($location);
 
-            if ($stock->take($quantity, $reason)) {
-                return $this;
-            }
+        if ($stock && $stock->take($quantity, $reason)) {
+            return $this;
         }
 
         return false;
@@ -367,7 +357,7 @@ trait InventoryTrait
     }
 
     /**
-     * Puts the specified amount ($quantity) of stock into the specified stock location(s).
+     * Puts the specified amount ($quantity) of stock into the specified stock location.
      *
      * @param int|float|string $quantity
      * @param $location
@@ -380,14 +370,10 @@ trait InventoryTrait
      */
     public function putToLocation($quantity, $location, $reason = '', $cost = 0)
     {
-        if (is_array($location)) {
-            return $this->putToManyLocations($quantity, $location);
-        } else {
-            $stock = $this->getStockFromLocation($location);
+        $stock = $this->getStockFromLocation($location);
 
-            if ($stock->put($quantity, $reason, $cost)) {
-                return $this;
-            }
+        if ($stock && $stock->put($quantity, $reason, $cost)) {
+            return $this;
         }
 
         return false;
@@ -470,7 +456,6 @@ trait InventoryTrait
      *
      * @param Model $location
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws StockNotFoundException
      *
      * @return mixed
