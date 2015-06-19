@@ -4,9 +4,6 @@ namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Trait InventoryVariantTrait.
- */
 trait InventoryVariantTrait
 {
     /**

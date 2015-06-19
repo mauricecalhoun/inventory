@@ -4,23 +4,16 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryStockTrait;
 
-/**
- * Class InventoryStock.
- */
 class InventoryStock extends BaseModel
 {
     use InventoryStockTrait;
 
+    /**
+     * The inventory stocks table.
+     *
+     * @var string
+     */
     protected $table = 'inventory_stocks';
-
-    protected $fillable = [
-        'inventory_id',
-        'location_id',
-        'quantity',
-        'aisle',
-        'row',
-        'bin',
-    ];
 
     /**
      * The belongsTo inventory item relationship.

@@ -16,6 +16,7 @@ class InventoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        // Unguard Eloquent for easy mass assignment
         Eloquent::unguard();
     }
 

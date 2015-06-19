@@ -2,16 +2,12 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Trait InventoryStockMovementTrait.
- */
 trait InventoryStockMovementTrait
 {
-    use UserIdentificationTrait;
-
-    use DatabaseTransactionTrait;
+    use CommonMethodsTrait;
 
     /**
      * The belongsTo stock relationship.
@@ -27,7 +23,7 @@ trait InventoryStockMovementTrait
     public static function bootInventoryStockMovementTrait()
     {
         static::creating(function (Model $record) {
-            $record->user_id = static::getCurrentUserId();
+            $record->user_id = Helper::getCurrentUserId();
         });
     }
 
@@ -40,8 +36,6 @@ trait InventoryStockMovementTrait
      */
     public function rollback($recursive = false)
     {
-        $stock = $this->stock;
-
-        return $stock->rollback($this, $recursive);
+        return $this->stock->rollback($this, $recursive);
     }
 }

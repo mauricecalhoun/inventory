@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Lang;
  */
 trait SupplierTrait
 {
-    use DatabaseTransactionTrait;
-
-    use VerifyTrait;
+    use CommonMethodsTrait;
 
     /**
      * The belongsToMany items relationship.

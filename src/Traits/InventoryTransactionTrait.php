@@ -7,28 +7,16 @@ use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
 use Stevebauman\Inventory\InventoryServiceProvider;
+use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Trait InventoryTransactionTrait.
- */
 trait InventoryTransactionTrait
 {
     /*
-     * Provides user identification
+     * Common Inventory Helper Methods
      */
-    use UserIdentificationTrait;
-
-    /*
-     * Provides database transactions
-     */
-    use DatabaseTransactionTrait;
-
-    /*
-     * Provides some verification methods
-     */
-    use VerifyTrait;
+    use CommonMethodsTrait;
 
     /**
      * Stores the state before an update.
@@ -51,7 +39,7 @@ trait InventoryTransactionTrait
     public static function bootInventoryTransactionTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = static::getCurrentUserId();
+            $model->user_id = Helper::getCurrentUserId();
 
             if (!$model->beforeState) {
                 $model->beforeState = $model::STATE_OPENED;
@@ -122,7 +110,7 @@ trait InventoryTransactionTrait
     /**
      * The hasMany histories relationship.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     abstract public function histories();
 
@@ -1361,19 +1349,23 @@ trait InventoryTransactionTrait
      * @param int|float|string $quantityBefore
      * @param int|float|string $quantityAfter
      *
-     * @return mixed
+     * @return bool|Model
      */
     private function generateTransactionHistory($stateBefore, $stateAfter, $quantityBefore = 0, $quantityAfter = 0)
     {
-        $insert = [
-            'transaction_id' => $this->getKey(),
-            'state_before' => $stateBefore,
-            'state_after' => $stateAfter,
-            'quantity_before' => $quantityBefore,
-            'quantity_after' => $quantityAfter,
-        ];
+        $history = $this->histories()->getRelated()->newInstance();
 
-        return $this->histories()->create($insert);
+        $history->setAttribute('transaction_id', $this->getKey());
+        $history->setAttribute('state_before', $stateBefore);
+        $history->setAttribute('state_after', $stateAfter);
+        $history->setAttribute('quantity_before', $quantityBefore);
+        $history->setAttribute('quantity_after', $quantityAfter);
+
+        if($history->save()) {
+            return $history;
+        }
+
+        return false;
     }
 
     /**

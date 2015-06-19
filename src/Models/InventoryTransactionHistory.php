@@ -4,23 +4,16 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
 
-/**
- * Class InventoryTransactionPeriod.
- */
 class InventoryTransactionHistory extends BaseModel
 {
     use InventoryTransactionHistoryTrait;
 
+    /**
+     * The inventory transaction histories table.
+     *
+     * @var string
+     */
     protected $table = 'inventory_transaction_histories';
-
-    protected $fillable = [
-        'user_id',
-        'transaction_id',
-        'state_before',
-        'state_after',
-        'quantity_before',
-        'quantity_after',
-    ];
 
     /**
      * The belongsTo transaction relationship.

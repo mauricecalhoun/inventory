@@ -4,19 +4,16 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventorySkuTrait;
 
-/**
- * Class InventorySku.
- */
 class InventorySku extends BaseModel
 {
     use InventorySkuTrait;
 
+    /**
+     * The inventory SKU table.
+     *
+     * @var string
+     */
     protected $table = 'inventory_skus';
-
-    protected $fillable = [
-        'inventory_id',
-        'code',
-    ];
 
     /**
      * The belongsTo item trait.

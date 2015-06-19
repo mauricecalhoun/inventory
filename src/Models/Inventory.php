@@ -6,24 +6,18 @@ use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
-/**
- * Class Inventory.
- */
 class Inventory extends BaseModel
 {
     use InventoryTrait;
     use InventoryVariantTrait;
     use AssemblyTrait;
 
+    /**
+     * The inventories table.
+     *
+     * @var string
+     */
     protected $table = 'inventories';
-
-    protected $fillable = [
-        'user_id',
-        'category_id',
-        'metric_id',
-        'name',
-        'description',
-    ];
 
     /**
      * The hasOne category relationship.

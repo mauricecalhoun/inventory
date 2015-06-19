@@ -2,9 +2,6 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-/**
- * Trait InventorySkuTrait.
- */
 trait InventorySkuTrait
 {
     /**

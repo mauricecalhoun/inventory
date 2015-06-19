@@ -2,11 +2,13 @@
 
 namespace Stevebauman\Inventory\Models;
 
-/**
- * Class Metric.
- */
 class Metric extends BaseModel
 {
+    /**
+     * The metrics table.
+     *
+     * @var string
+     */
     protected $table = 'metrics';
 
     /**

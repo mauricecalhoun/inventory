@@ -5,22 +5,16 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\InventoryTransactionTrait;
 use Stevebauman\Inventory\Interfaces\StateableInterface;
 
-/**
- * Class InventoryTransaction.
- */
 class InventoryTransaction extends BaseModel implements StateableInterface
 {
     use InventoryTransactionTrait;
 
+    /**
+     * The inventory transactions table.
+     *
+     * @var string
+     */
     protected $table = 'inventory_transactions';
-
-    protected $fillable = [
-        'user_id',
-        'stock_id',
-        'name',
-        'state',
-        'quantity',
-    ];
 
     /**
      * The belongsTo stock relationship.

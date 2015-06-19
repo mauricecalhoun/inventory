@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class AssemblyTrait.
- */
 trait AssemblyTrait
 {
     /**
@@ -169,11 +166,11 @@ trait AssemblyTrait
     public function addAssemblyItem(Model $part, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
-            if (!$this->is_assembly) {
+            if (!$this->getAttribute('is_assembly')) {
                 $this->makeAssembly();
             }
 
-            if ($part->is_assembly) {
+            if ($part->getAttribute('is_assembly')) {
                 $this->validatePart($part);
             }
 

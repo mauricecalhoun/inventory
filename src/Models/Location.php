@@ -4,17 +4,20 @@ namespace Stevebauman\Inventory\Models;
 
 use Baum\Node;
 
-/**
- * Class Location.
- */
 class Location extends Node
 {
+    /**
+     * The locations table.
+     *
+     * @var string
+     */
     protected $table = 'locations';
 
-    protected $fillable = [
-        'name',
-    ];
-
+    /**
+     * The scoped location attributes.
+     *
+     * @var array
+     */
     protected $scoped = ['belongs_to'];
 
     /**

@@ -4,23 +4,16 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
 
-/**
- * Class InventoryStockMovement.
- */
 class InventoryStockMovement extends BaseModel
 {
     use InventoryStockMovementTrait;
 
+    /**
+     * The inventory stock movements table.
+     *
+     * @var string
+     */
     protected $table = 'inventory_stock_movements';
-
-    protected $fillable = [
-        'stock_id',
-        'user_id',
-        'before',
-        'after',
-        'cost',
-        'reason',
-    ];
 
     /**
      * The belongsTo stock relationship.

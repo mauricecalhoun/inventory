@@ -117,11 +117,6 @@ class InventoryServiceProvider extends ServiceProvider
             'inventory:check-schema',
             'inventory:run-migrations',
         ]);
-
-        /*
-         * Include the helpers file
-         */
-        include __DIR__.'/helpers.php';
     }
 
     /**

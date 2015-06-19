@@ -8,34 +8,16 @@ use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\InventoryServiceProvider;
+use Stevebauman\Inventory\Helper;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Trait InventoryTrait.
- */
 trait InventoryTrait
 {
     /*
-     * Location helper functions
+     * Common Helper Methods
      */
-    use LocationTrait;
-
-    /*
-     * Verification helper functions
-     */
-    use VerifyTrait;
-
-    /*
-     * Set's the models constructor method to automatically assign the
-     * user_id's attribute to the current logged in user
-     */
-    use UserIdentificationTrait;
-
-    /*
-     * Helpers for starting database transactions
-     */
-    use DatabaseTransactionTrait;
+    use CommonMethodsTrait;
 
     /**
      * The hasOne category relationship.
@@ -83,7 +65,7 @@ trait InventoryTrait
          * is being created
          */
         static::creating(function (Model $record) {
-            $record->user_id = static::getCurrentUserId();
+            $record->user_id = Helper::getCurrentUserId();
         });
 
         /*
@@ -222,12 +204,12 @@ trait InventoryTrait
      * Creates a stock record to the current inventory item.
      *
      * @param int|float|string $quantity
-     * @param $location
+     * @param Model            $location
      * @param string           $reason
      * @param int|float|string $cost
-     * @param null             $aisle
-     * @param null             $row
-     * @param null             $bin
+     * @param string           $aisle
+     * @param string           $row
+     * @param string           $bin
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
@@ -236,14 +218,10 @@ trait InventoryTrait
      *
      * @return Model
      */
-    public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
+    public function createStockOnLocation($quantity, Model $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
     {
-        $location = $this->getLocation($location);
-
         try {
-            /*
-             * We want to make sure stock doesn't exist on the specified location already
-             */
+            // We want to make sure stock doesn't exist on the specified location already
             if ($this->getStockFromLocation($location)) {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
@@ -252,28 +230,19 @@ trait InventoryTrait
                 throw new StockAlreadyExistsException($message);
             }
         } catch (StockNotFoundException $e) {
-            /*
-             * A stock record wasn't found on this location, we'll create one
-             */
-            $insert = [
-                'inventory_id' => $this->getKey(),
-                'location_id' => $location->getKey(),
-                'quantity' => 0,
-                'aisle' => $aisle,
-                'row' => $row,
-                'bin' => $bin,
-            ];
+            // A stock record wasn't found on this location, we'll create one.
+            $stock = $this->stocks()->getRelated()->newInstance();
 
-            /*
-             * We'll perform a create so a 'first' movement is generated
-             */
-            $stock = $this->stocks()->create($insert);
+            $stock->setAttribute('inventory_id', $this->getKey());
+            $stock->setAttribute('location_id', $location->getKey());
+            $stock->setAttribute('quantity', 0);
+            $stock->setAttribute('aisle', $aisle);
+            $stock->setAttribute('row', $row);
+            $stock->setAttribute('bin', $bin);
 
-            /*
-             * Now we'll 'put' the inserted quantity onto the generated stock
-             * and return the results
-             */
-            return $stock->put($quantity, $reason, $cost);
+            if($stock->save()) {
+                return $stock->put($quantity, $reason, $cost);
+            }
         }
 
         return false;
@@ -283,17 +252,15 @@ trait InventoryTrait
      * Instantiates a new stock on the specified
      * location on the current item.
      *
-     * @param $location
+     * @param Model $location
      *
      * @throws StockAlreadyExistsException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function newStockOnLocation($location)
+    public function newStockOnLocation(Model $location)
     {
-        $location = $this->getLocation($location);
-
         try {
             /*
              * We want to make sure stock doesn't exist on the specified location already
@@ -306,17 +273,12 @@ trait InventoryTrait
                 throw new StockAlreadyExistsException($message);
             }
         } catch (StockNotFoundException $e) {
-            /*
-             * Create a new stock model instance
-             */
-            $stock = $this->stocks()->getRelated();
+            // Create a new stock model instance
+            $stock = $this->stocks()->getRelated()->newInstance();
 
-            /*
-             * Assign the known attributes
-             * so devs don't have to
-             */
-            $stock->inventory_id = $this->getKey();
-            $stock->location_id = $location->getKey();
+            // Assign the known attributes so devs don't have to
+            $stock->setAttribute('inventory_id', $this->getKey());
+            $stock->setAttribute('location_id', $location->getKey());
 
             return $stock;
         }
@@ -489,18 +451,16 @@ trait InventoryTrait
     /**
      * Moves a stock from one location to another.
      *
-     * @param $fromLocation
-     * @param $toLocation
+     * @param Model $fromLocation
+     * @param Model $toLocation
      *
      * @throws StockNotFoundException
      *
      * @return mixed
      */
-    public function moveStock($fromLocation, $toLocation)
+    public function moveStock(Model $fromLocation, Model $toLocation)
     {
         $stock = $this->getStockFromLocation($fromLocation);
-
-        $toLocation = $this->getLocation($toLocation);
 
         return $stock->moveTo($toLocation);
     }
@@ -508,17 +468,15 @@ trait InventoryTrait
     /**
      * Retrieves an inventory stock from a given location.
      *
-     * @param $location
+     * @param Model $location
      *
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws StockNotFoundException
      *
      * @return mixed
      */
-    public function getStockFromLocation($location)
+    public function getStockFromLocation(Model $location)
     {
-        $location = $this->getLocation($location);
-
         $stock = $this->stocks()
             ->where('inventory_id', $this->getKey())
             ->where('location_id', $location->getKey())
@@ -872,21 +830,20 @@ trait InventoryTrait
         $this->dbStartTransaction();
 
         try {
-            $insert = [
-                'inventory_id' => $inventoryId,
-                'code' => $code,
-            ];
+            $sku = $this->sku()->getRelated()->newInstance();
 
-            $record = $this->sku()->create($insert);
+            $sku->setAttribute('inventory_id', $inventoryId);
+            $sku->setAttribute('code', $code);
 
-            if ($record) {
+            if ($sku->save()) {
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.sku.generated', [
                     'item' => $this,
+                    'sku' => $sku,
                 ]);
 
-                return $record;
+                return $sku;
             }
         } catch (\Exception $e) {
             $this->dbRollbackTransaction();

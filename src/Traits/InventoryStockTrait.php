@@ -6,35 +6,17 @@ use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
-/**
- * Trait InventoryStockTrait.
- */
 trait InventoryStockTrait
 {
     /*
-     * Used for easily grabbing a specified location
-     */
-    use LocationTrait;
-
-    /*
      * Verification helper functions
      */
-    use VerifyTrait;
-
-    /*
-     * Set's the models constructor method to automatically assign the
-     * user_id's attribute to the current logged in user
-     */
-    use UserIdentificationTrait;
-
-    /*
-     * Helpers for starting database transactions
-     */
-    use DatabaseTransactionTrait;
+    use CommonMethodsTrait;
 
     /**
      * Stores the quantity before an update.
@@ -86,13 +68,13 @@ trait InventoryStockTrait
     abstract public function transactions();
 
     /**
-     * Overrides the models boot function to set the user ID automatically
-     * to every new record.
+     * Overrides the models boot function to set
+     * the user ID automatically to every new record.
      */
     public static function bootInventoryStockTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = $model->getCurrentUserId();
+            $model->user_id = Helper::getCurrentUserId();
 
             /*
              * Check if a reason has been set, if not
@@ -239,14 +221,12 @@ trait InventoryStockTrait
     /**
      * Moves a stock to the specified location.
      *
-     * @param $location
+     * @param Model $location
      *
      * @return bool
      */
-    public function moveTo($location)
+    public function moveTo(Model $location)
     {
-        $location = $this->getLocation($location);
-
         return $this->processMoveOperation($location);
     }
 
@@ -322,7 +302,7 @@ trait InventoryStockTrait
     /**
      * Returns the last movement on the current stock record.
      *
-     * @return mixed
+     * @return bool|Model
      */
     public function getLastMovement()
     {
@@ -339,7 +319,7 @@ trait InventoryStockTrait
      * Returns a movement depending on the specified argument. If an object is supplied, it is checked if it
      * is an instance of an eloquent model. If a numeric value is entered, it is retrieved by it's ID.
      *
-     * @param mixed $movement
+     * @param int|string|Model $movement
      *
      * @throws InvalidMovementException
      *
@@ -366,18 +346,15 @@ trait InventoryStockTrait
      *
      * @param string $name
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Model
      */
     public function newTransaction($name = '')
     {
-        $transaction = $this->transactions()->getRelated();
+        $transaction = $this->transactions()->getRelated()->newInstance();
 
-        /*
-         * Set the transaction attributes so they don't
-         * need to be set manually
-         */
-        $transaction->stock_id = $this->getKey();
-        $transaction->name = $name;
+        // Set the transaction attributes so they don't need to be set manually
+        $transaction->setAttribute('stock_id', $this->getKey());
+        $transaction->setAttribute('name', $name);
 
         return $transaction;
     }
@@ -387,7 +364,7 @@ trait InventoryStockTrait
      *
      * @param int|string $id
      *
-     * @return mixed
+     * @return null|Model
      */
     private function getMovementById($id)
     {
@@ -438,7 +415,7 @@ trait InventoryStockTrait
             return $this;
         }
 
-        $this->quantity = $left;
+        $this->setAttribute('quantity', $left);
 
         $this->setReason($reason);
 
@@ -556,7 +533,7 @@ trait InventoryStockTrait
             return $this->processRecursiveRollbackOperation($movement);
         }
 
-        $this->quantity = $movement->before;
+        $this->setAttribute('quantity', $movement->getAttribute('before'));
 
         $reason = Lang::get('inventory::reasons.rollback', [
             'id' => $movement->getOriginal('id'),
@@ -566,7 +543,7 @@ trait InventoryStockTrait
         $this->setReason($reason);
 
         if ($this->rollbackCostEnabled()) {
-            $this->setCost($movement->cost);
+            $this->setCost($movement->getAttribute('cost'));
 
             $this->reverseCost();
         }
@@ -628,19 +605,23 @@ trait InventoryStockTrait
      * @param string           $reason
      * @param int|float|string $cost
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return bool|Model
      */
     private function generateStockMovement($before, $after, $reason = '', $cost = 0)
     {
-        $insert = [
-            'stock_id' => $this->getKey(),
-            'before' => $before,
-            'after' => $after,
-            'reason' => $reason,
-            'cost' => $cost,
-        ];
+        $movement = $this->movements()->getRelated()->newInstance();
 
-        return $this->movements()->create($insert);
+        $movement->setAttribute('stock_id', $this->getKey());
+        $movement->setAttribute('before', $before);
+        $movement->setAttribute('after', $after);
+        $movement->setAttribute('reason', $reason);
+        $movement->setAttribute('cost', $cost);
+
+        if($movement->save()) {
+            return $movement;
+        }
+
+        return false;
     }
 
     /**
@@ -658,10 +639,12 @@ trait InventoryStockTrait
      */
     private function reverseCost()
     {
-        if ($this->isPositive($this->cost)) {
-            $this->setCost(-abs($this->cost));
+        $cost = $this->getAttribute('cost');
+
+        if ($this->isPositive($cost)) {
+            $this->setCost(-abs($cost));
         } else {
-            $this->setCost(abs($this->cost));
+            $this->setCost(abs($cost));
         }
     }
 

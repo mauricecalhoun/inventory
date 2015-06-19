@@ -227,7 +227,7 @@ class InventoryStockTest extends InventoryTest
         $this->assertEquals(20, $item->getTotalStock());
     }
 
-    public function testInventoryInvalidLocationException()
+    public function testInventoryGetStockFromLocationInvalidLocation()
     {
         $this->newInventoryStock();
 
@@ -235,9 +235,15 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
+        try {
+            $item->getStockFromLocation('testing');
 
-        $item->getStockFromLocation('testing');
+            $passes = false;
+        } catch (\Exception $e) {
+            $passes = true;
+        }
+
+        $this->assertTrue($passes);
     }
 
     public function testInventoryStockNewTransaction()

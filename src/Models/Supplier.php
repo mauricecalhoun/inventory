@@ -8,22 +8,12 @@ class Supplier extends BaseModel
 {
     use SupplierTrait;
 
+    /**
+     * The suppliers table.
+     *
+     * @var string
+     */
     protected $table = 'suppliers';
-
-    protected $fillable = [
-        'name',
-        'address',
-        'postal_code',
-        'zip_code',
-        'region',
-        'city',
-        'country',
-        'contact_title',
-        'contact_name',
-        'contact_phone',
-        'contact_fax',
-        'contact_email',
-    ];
 
     /**
      * The belongsToMany items relationship.
