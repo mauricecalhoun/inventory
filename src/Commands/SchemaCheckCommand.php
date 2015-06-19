@@ -7,9 +7,6 @@ use Stevebauman\Inventory\Exceptions\Commands\DependencyNotFoundException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 
-/**
- * Class SchemaCheckCommand.
- */
 class SchemaCheckCommand extends Command
 {
     /**

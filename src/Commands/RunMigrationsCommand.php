@@ -4,9 +4,6 @@ namespace Stevebauman\Inventory\Commands;
 
 use Illuminate\Console\Command;
 
-/**
- * Class RunMigrationsCommand.
- */
 class RunMigrationsCommand extends Command
 {
     /**
