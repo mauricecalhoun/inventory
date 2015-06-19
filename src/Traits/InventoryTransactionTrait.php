@@ -404,12 +404,9 @@ trait InventoryTransactionTrait
      */
     public function returnedPartial($quantity, $reason = '', $cost = 0)
     {
-        /*
-         * If the inserted quantity is equal to or greater than
-         * the quantity inside the transaction,
-         * they must be returning all of the stock
-         */
-        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+        $current = $this->getAttribute('quantity');
+
+        if ((float) $quantity === (float) $current || $quantity > $current) {
             return $this->returnedAll($reason, $cost);
         }
 
@@ -424,22 +421,16 @@ trait InventoryTransactionTrait
             $this::STATE_COMMERCE_RETURNED_PARTIAL,
         ], $this::STATE_COMMERCE_RETURNED_PARTIAL);
 
-        /*
-         * Retrieve the previous state for returning the transaction
-         * to it's original state
-         */
-        $previousState = $this->state;
+        // Retrieve the previous state for returning the transaction to it's original state
+        $previousState = $this->getAttribute('state');
 
-        /*
-         * Set a new state so a history record is created
-         */
-        $this->state = $this::STATE_COMMERCE_RETURNED_PARTIAL;
+        // Set a new state so a history record is created
+        $this->setAttribute('state', $this::STATE_COMMERCE_RETURNED_PARTIAL);
 
-        /*
-         * Set the new left-over quantity from removing
-         * the amount returned
-         */
-        $this->quantity = $this->quantity - $quantity;
+        // Set the new left-over quantity from removing the amount returned
+        $left = (float) $current - (float) $quantity;
+
+        $this->setAttribute('quantity', $left);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('returned-partial');
@@ -476,24 +467,22 @@ trait InventoryTransactionTrait
             $this::STATE_COMMERCE_RETURNED_PARTIAL,
         ], $this::STATE_COMMERCE_RETURNED);
 
-        /*
-         * Set the state to returned
-         */
-        $this->state = $this::STATE_COMMERCE_RETURNED;
+        // Set the state to returned
+        $this->setAttribute('state', $this::STATE_COMMERCE_RETURNED);
 
-        $originalQuantity = $this->quantity;
+        $current = $this->getAttribute('quantity');
 
         /*
          * Set the quantity to zero because we are
          * returning all of the stock
          */
-        $this->quantity = 0;
+        $this->setAttribute('quantity', 0);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('returned');
         }
 
-        return $this->processStockPutAndSave($originalQuantity, 'inventory.transaction.removed', $reason, $cost);
+        return $this->processStockPutAndSave($current, 'inventory.transaction.removed', $reason, $cost);
     }
 
     /**
@@ -720,28 +709,25 @@ trait InventoryTransactionTrait
      */
     public function receivedPartial($quantity, $reason = '', $cost = 0)
     {
-        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+        $current = $this->getAttribute('quantity');
+
+        if ((float) $quantity === (float) $current || $quantity > $current) {
             return $this->receivedAll($reason, $cost);
         }
 
-        /*
-         * Only allow the previous state of ordered
-         */
+        // Only allow the previous state of ordered
         $this->validatePreviousState([
             $this::STATE_ORDERED_PENDING,
         ], $this::STATE_ORDERED_RECEIVED_PARTIAL);
 
-        /*
-         * Get the left over amount of quantity still to
-         * be received
-         */
-        $left = $this->quantity - $quantity;
+        // Get the left over amount of quantity still to be received
+        $left = (float) $current - (float) $quantity;
 
-        $this->quantity = $left;
+        $this->setAttribute('quantity', $left);
 
-        $previousState = $this->state;
+        $previousState = $this->getAttribute('state');
 
-        $this->state = $this::STATE_ORDERED_RECEIVED_PARTIAL;
+        $this->setAttribute('state', $this::STATE_ORDERED_RECEIVED_PARTIAL);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('received-partial');
@@ -774,9 +760,9 @@ trait InventoryTransactionTrait
             $this::STATE_OPENED,
         ], $this::STATE_INVENTORY_ON_HOLD);
 
-        $this->quantity = $quantity;
+        $this->setAttribute('quantity', $quantity);
 
-        $this->state = $this::STATE_INVENTORY_ON_HOLD;
+        $this->setAttribute('state', $this::STATE_INVENTORY_ON_HOLD);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('hold');
@@ -858,7 +844,9 @@ trait InventoryTransactionTrait
      */
     public function releasePartial($quantity, $reason = '', $cost = 0)
     {
-        if ($quantity == $this->quantity || $quantity > $this->quantity) {
+        $current = $this->getAttribute('quantity');
+
+        if ((float) $quantity === (float) $current || $quantity > $current) {
             return $this->releaseAll($reason, $cost);
         }
 
@@ -866,11 +854,13 @@ trait InventoryTransactionTrait
             $this::STATE_INVENTORY_ON_HOLD,
         ], $this::STATE_INVENTORY_RELEASED);
 
-        $this->quantity = $this->quantity - $quantity;
+        $left = (float) $current - (float) $quantity;
 
-        $previousState = $this->state;
+        $this->setAttribute('quantity', $left);
 
-        $this->state = $this::STATE_INVENTORY_RELEASED_PARTIAL;
+        $previousState = $this->getAttribute('state');
+
+        $this->setAttribute('state', $this::STATE_INVENTORY_RELEASED_PARTIAL);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('released-partial');
@@ -961,7 +951,9 @@ trait InventoryTransactionTrait
          * a transaction for removing a quantity from the current stock
          */
         if ($this->isOnHold()) {
-            if ($quantity == $this->quantity || $quantity > $this->quantity) {
+            $current = $this->getAttribute('quantity');
+
+            if ((float) $quantity === (float) $current || $quantity > $current) {
                 return $this->removeAll();
             }
 
@@ -969,11 +961,13 @@ trait InventoryTransactionTrait
                 $this::STATE_INVENTORY_ON_HOLD,
             ], $this::STATE_INVENTORY_REMOVED_PARTIAL);
 
-            $this->quantity = $this->quantity - $quantity;
+            $left = (float) $current - (float) $quantity;
 
-            $previousState = $this->state;
+            $this->setAttribute('quantity', $left);
 
-            $this->state = $this::STATE_INVENTORY_REMOVED_PARTIAL;
+            $previousState = $this->getAttribute('state');
+
+            $this->setAttribute('state', $this::STATE_INVENTORY_REMOVED_PARTIAL);
 
             if ($this->processSave('inventory.transaction.removed.partial')) {
                 return $this->returnToPreviousState($previousState);
@@ -988,9 +982,9 @@ trait InventoryTransactionTrait
                 $this::STATE_OPENED,
             ], $this::STATE_INVENTORY_REMOVED);
 
-            $this->state = $this::STATE_INVENTORY_REMOVED;
+            $this->setAttribute('state', $this::STATE_INVENTORY_REMOVED);
 
-            $this->quantity = $quantity;
+            $this->setAttribute('quantity', (float) $quantity);
 
             if (!$reason) {
                 $reason = $this->getTransactionReason('removed');
@@ -1030,11 +1024,11 @@ trait InventoryTransactionTrait
             $this::STATE_INVENTORY_ON_HOLD,
         ], $this::STATE_CANCELLED);
 
-        $beforeQuantity = $this->quantity;
-        $beforeState = $this->state;
+        $beforeQuantity = $this->getAttribute('quantity');
+        $beforeState = $this->getAttribute('state');
 
-        $this->quantity = 0;
-        $this->state = $this::STATE_CANCELLED;
+        $this->setAttribute('quantity', 0);
+        $this->setAttribute('state', $this::STATE_CANCELLED);
 
         $event = 'inventory.transaction.cancelled';
 
@@ -1172,7 +1166,7 @@ trait InventoryTransactionTrait
      */
     private function reservedFromCheckout()
     {
-        $this->state = $this::STATE_COMMERCE_RESERVED;
+        $this->setAttribute('state', $this::STATE_COMMERCE_RESERVED);
 
         return $this->processSave('inventory.transaction.reserved');
     }
@@ -1185,7 +1179,7 @@ trait InventoryTransactionTrait
      */
     private function checkoutFromReserved()
     {
-        $this->state = $this::STATE_COMMERCE_CHECKOUT;
+        $this->setAttribute('state', $this::STATE_COMMERCE_CHECKOUT);
 
         return $this->processSave('inventory.transaction.checkout');
     }
@@ -1203,8 +1197,10 @@ trait InventoryTransactionTrait
      */
     private function validatePreviousState($allowedStates = [], $toState)
     {
-        if (!in_array($this->state, $allowedStates)) {
-            $fromState = (!$this->state ? 'NULL' : $this->state);
+        $state = $this->getAttribute('state');
+
+        if (!in_array($state, $allowedStates)) {
+            $fromState = (!$state ? 'NULL' : $state);
 
             $message = "Transaction state: $fromState cannot be changed to a: $toState state.";
 
@@ -1291,7 +1287,7 @@ trait InventoryTransactionTrait
 
         $stock->isValidQuantity($quantity);
 
-        $stock->hasEnoughStock($this->quantity);
+        $stock->hasEnoughStock($this->getAttribute('quantity'));
 
         $this->dbStartTransaction();
 
