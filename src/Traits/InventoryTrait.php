@@ -3,7 +3,6 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
 use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
@@ -676,112 +675,6 @@ trait InventoryTrait
     }
 
     /**
-     * Adds all of the specified suppliers inside
-     * the array to the current inventory item.
-     *
-     * @param array $suppliers
-     *
-     * @return bool
-     */
-    public function addSuppliers($suppliers = [])
-    {
-        foreach ($suppliers as $supplier) {
-            $this->addSupplier($supplier);
-        }
-
-        return true;
-    }
-
-    /**
-     * Removes all suppliers from the current item.
-     *
-     * @return bool
-     */
-    public function removeAllSuppliers()
-    {
-        $suppliers = $this->suppliers()->get();
-
-        foreach ($suppliers as $supplier) {
-            $this->removeSupplier($supplier);
-        }
-
-        return true;
-    }
-
-    /**
-     * Removes all of the specified suppliers inside
-     * the array from the current inventory item.
-     *
-     * @param array $suppliers
-     *
-     * @return bool
-     */
-    public function removeSuppliers($suppliers = [])
-    {
-        foreach ($suppliers as $supplier) {
-            $this->removeSupplier($supplier);
-        }
-
-        return true;
-    }
-
-    /**
-     * Adds the specified supplier to the current inventory item.
-     *
-     * @param $supplier
-     *
-     * @throws InvalidSupplierException
-     *
-     * @return bool
-     */
-    public function addSupplier($supplier)
-    {
-        $supplier = $this->getSupplier($supplier);
-
-        return $this->processSupplierAttach($supplier);
-    }
-
-    /**
-     * Removes the specified supplier from the current inventory item.
-     *
-     * @param $supplier
-     *
-     * @throws InvalidSupplierException
-     *
-     * @return bool
-     */
-    public function removeSupplier($supplier)
-    {
-        $supplier = $this->getSupplier($supplier);
-
-        return $this->processSupplierDetach($supplier);
-    }
-
-    /**
-     * Retrieves a supplier from the specified variable.
-     *
-     * @param $supplier
-     *
-     * @throws InvalidSupplierException
-     *
-     * @return mixed
-     */
-    public function getSupplier($supplier)
-    {
-        if ($this->isNumeric($supplier)) {
-            return $this->getSupplierById($supplier);
-        } elseif ($this->isModel($supplier)) {
-            return $supplier;
-        }
-
-        $message = Lang::get('inventory::exceptions.InvalidSupplierException', [
-            'supplier' => $supplier,
-        ]);
-
-        throw new InvalidSupplierException($message);
-    }
-
-    /**
      * Processes an SKU generation covered by database transactions.
      *
      * @param int|string $inventoryId
@@ -840,76 +733,6 @@ trait InventoryTrait
         }
 
         return false;
-    }
-
-    /**
-     * Processes attaching a supplier to an inventory item.
-     *
-     * @param Model $supplier
-     *
-     * @return bool
-     */
-    private function processSupplierAttach(Model $supplier)
-    {
-        $this->dbStartTransaction();
-
-        try {
-            $this->suppliers()->attach($supplier);
-
-            $this->dbCommitTransaction();
-
-            $this->fireEvent('inventory.supplier.attached', [
-                'item' => $this,
-                'supplier' => $supplier,
-            ]);
-
-            return true;
-        } catch (\Exception $e) {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
-    }
-
-    /**
-     * Processes detaching a supplier.
-     *
-     * @param Model $supplier
-     *
-     * @return bool
-     */
-    private function processSupplierDetach(Model $supplier)
-    {
-        $this->dbStartTransaction();
-
-        try {
-            $this->suppliers()->detach($supplier);
-
-            $this->dbCommitTransaction();
-
-            $this->fireEvent('inventory.supplier.detached', [
-                'item' => $this,
-                'supplier' => $supplier,
-            ]);
-
-            return true;
-        } catch (\Exception $e) {
-            $this->dbRollbackTransaction();
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a supplier by the specified ID.
-     *
-     * @param int|string $id
-     *
-     * @return mixed
-     */
-    private function getSupplierById($id)
-    {
-        return $this->suppliers()->find($id);
     }
 
     /**
