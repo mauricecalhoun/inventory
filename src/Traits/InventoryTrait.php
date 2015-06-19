@@ -629,9 +629,7 @@ trait InventoryTrait
      */
     public function createSku($code, $overwrite = false)
     {
-        /*
-         * Get the current SKU record
-         */
+        // Get the current SKU record
         $sku = $this->sku()->first();
 
         if ($sku) {
