@@ -65,7 +65,7 @@ trait InventoryTrait
          * is being created
          */
         static::creating(function (Model $record) {
-            $record->user_id = Helper::getCurrentUserId();
+            $record->setAttribute('user_id', Helper::getCurrentUserId());
         });
 
         /*

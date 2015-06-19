@@ -39,7 +39,7 @@ trait InventoryTransactionTrait
     public static function bootInventoryTransactionTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = Helper::getCurrentUserId();
+            $model->setAttribute('user_id', Helper::getCurrentUserId());
 
             if (!$model->beforeState) {
                 $model->beforeState = $model::STATE_OPENED;
@@ -83,13 +83,7 @@ trait InventoryTransactionTrait
      */
     public function postCreate()
     {
-        /*
-         * Make sure the transaction does not already have a history record
-         * before creating one
-         */
-        if (!$this->getLastHistoryRecord()) {
-            $this->generateTransactionHistory($this->beforeState, $this->state, 0, $this->quantity);
-        }
+        $this->generateTransactionHistory($this->beforeState, $this->getAttribute('state'), 0, $this->getAttribute('quantity'));
     }
 
     /**
@@ -97,7 +91,7 @@ trait InventoryTransactionTrait
      */
     public function postUpdate()
     {
-        $this->generateTransactionHistory($this->beforeState, $this->state, $this->beforeQuantity, $this->quantity);
+        $this->generateTransactionHistory($this->beforeState, $this->getAttribute('state'), $this->beforeQuantity, $this->getAttribute('quantity'));
     }
 
     /**
@@ -122,7 +116,7 @@ trait InventoryTransactionTrait
      */
     public function isCheckout()
     {
-        return ($this->state === $this::STATE_COMMERCE_CHECKOUT ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_COMMERCE_CHECKOUT ? true : false);
     }
 
     /**
@@ -133,7 +127,7 @@ trait InventoryTransactionTrait
      */
     public function isReservation()
     {
-        return ($this->state === $this::STATE_COMMERCE_RESERVED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_COMMERCE_RESERVED ? true : false);
     }
 
     /**
@@ -144,7 +138,7 @@ trait InventoryTransactionTrait
      */
     public function isBackOrder()
     {
-        return ($this->state === $this::STATE_COMMERCE_BACK_ORDERED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_COMMERCE_BACK_ORDERED ? true : false);
     }
 
     /**
@@ -155,7 +149,7 @@ trait InventoryTransactionTrait
      */
     public function isReturn()
     {
-        return ($this->state === $this::STATE_COMMERCE_RETURNED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_COMMERCE_RETURNED ? true : false);
     }
 
     /**
@@ -166,7 +160,7 @@ trait InventoryTransactionTrait
      */
     public function isSold()
     {
-        return ($this->state === $this::STATE_COMMERCE_SOLD ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_COMMERCE_SOLD ? true : false);
     }
 
     /**
@@ -177,7 +171,7 @@ trait InventoryTransactionTrait
      */
     public function isCancelled()
     {
-        return ($this->state === $this::STATE_CANCELLED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_CANCELLED ? true : false);
     }
 
     /**
@@ -188,7 +182,7 @@ trait InventoryTransactionTrait
      */
     public function isOrder()
     {
-        return ($this->state === $this::STATE_ORDERED_PENDING ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_ORDERED_PENDING ? true : false);
     }
 
     /**
@@ -199,7 +193,7 @@ trait InventoryTransactionTrait
      */
     public function isOrderReceived()
     {
-        return ($this->state === $this::STATE_ORDERED_RECEIVED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_ORDERED_RECEIVED ? true : false);
     }
 
     /**
@@ -210,7 +204,7 @@ trait InventoryTransactionTrait
      */
     public function isOnHold()
     {
-        return ($this->state === $this::STATE_INVENTORY_ON_HOLD ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_INVENTORY_ON_HOLD ? true : false);
     }
 
     /**
@@ -221,7 +215,7 @@ trait InventoryTransactionTrait
      */
     public function isReleased()
     {
-        return ($this->state === $this::STATE_INVENTORY_RELEASED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_INVENTORY_RELEASED ? true : false);
     }
 
     /**
@@ -232,7 +226,7 @@ trait InventoryTransactionTrait
      */
     public function isRemoved()
     {
-        return ($this->state === $this::STATE_INVENTORY_REMOVED ? true : false);
+        return ($this->getAttribute('state') === $this::STATE_INVENTORY_REMOVED ? true : false);
     }
 
     /**
@@ -265,9 +259,8 @@ trait InventoryTransactionTrait
             return $this->checkoutFromReserved();
         }
 
-        $this->quantity = $quantity;
-
-        $this->state = $this::STATE_COMMERCE_CHECKOUT;
+        $this->setAttribute('quantity', $quantity);
+        $this->setAttribute('state', $this::STATE_COMMERCE_CHECKOUT);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('checkout');
@@ -317,7 +310,7 @@ trait InventoryTransactionTrait
         /*
          * Mark the current state sold
          */
-        $this->state = $this::STATE_COMMERCE_SOLD;
+        $this->setAttribute('state', $this::STATE_COMMERCE_SOLD);
 
         return $this->processSave('inventory.transaction.sold');
     }
@@ -336,20 +329,15 @@ trait InventoryTransactionTrait
      */
     public function soldAmount($quantity, $reason = '', $cost = 0)
     {
-        /*
-         * Only allow a previous state of null or opened
-         */
+        // Only allow a previous state of null or opened
         $this->validatePreviousState([
             null,
             $this::STATE_OPENED,
         ], $this::STATE_COMMERCE_SOLD);
 
-        /*
-         * Mark the current state sold
-         */
-        $this->state = $this::STATE_COMMERCE_SOLD;
-
-        $this->quantity = $quantity;
+        // Mark the current state sold
+        $this->setAttribute('state', $this::STATE_COMMERCE_SOLD);
+        $this->setAttribute('quantity', $quantity);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('sold-amount');
@@ -518,9 +506,8 @@ trait InventoryTransactionTrait
             return $this->reservedFromCheckout();
         }
 
-        $this->state = $this::STATE_COMMERCE_RESERVED;
-
-        $this->quantity = $quantity;
+        $this->setAttribute('quantity', $quantity);
+        $this->setAttribute('state', $this::STATE_COMMERCE_RESERVED);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('reserved');
@@ -561,9 +548,8 @@ trait InventoryTransactionTrait
             $this::STATE_OPENED,
         ], $this::STATE_COMMERCE_BACK_ORDERED);
 
-        $this->state = $this::STATE_COMMERCE_BACK_ORDERED;
-
-        $this->quantity = $quantity;
+        $this->setAttribute('state', $this::STATE_COMMERCE_BACK_ORDERED);
+        $this->setAttribute('quantity', $quantity);
 
         return $this->processSave('inventory.transaction.back-order');
     }
@@ -590,14 +576,14 @@ trait InventoryTransactionTrait
             $this::STATE_COMMERCE_BACK_ORDERED,
         ], $this::STATE_COMMERCE_BACK_ORDER_FILLED);
 
-        $this->state = $this::STATE_COMMERCE_BACK_ORDER_FILLED;
+        $this->setAttribute('state', $this::STATE_COMMERCE_BACK_ORDER_FILLED);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('back-order-filled');
         }
 
         try {
-            return $this->processStockTakeAndSave($this->quantity, 'inventory.transaction.back-order.filled', $reason, $cost);
+            return $this->processStockTakeAndSave($this->getAttribute('quantity'), 'inventory.transaction.back-order.filled', $reason, $cost);
         } catch (NotEnoughStockException $e) {
         }
 
@@ -626,9 +612,8 @@ trait InventoryTransactionTrait
             $this::STATE_ORDERED_RECEIVED_PARTIAL,
         ], $this::STATE_ORDERED_PENDING);
 
-        $this->quantity = $quantity;
-
-        $this->state = $this::STATE_ORDERED_PENDING;
+        $this->setAttribute('quantity', $quantity);
+        $this->setAttribute('state', $this::STATE_ORDERED_PENDING);
 
         return $this->processSave('inventory.transaction.ordered');
     }
@@ -675,11 +660,11 @@ trait InventoryTransactionTrait
             $this::STATE_ORDERED_PENDING,
         ], $this::STATE_ORDERED_RECEIVED);
 
-        $received = $this->quantity;
+        $received = $this->getAttribute('quantity');
 
-        $this->quantity = 0;
+        $this->setAttribute('quantity', 0);
 
-        $this->state = $this::STATE_ORDERED_RECEIVED;
+        $this->setAttribute('state', $this::STATE_ORDERED_RECEIVED);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('received');
@@ -815,11 +800,11 @@ trait InventoryTransactionTrait
             $this::STATE_INVENTORY_ON_HOLD,
         ], $this::STATE_INVENTORY_RELEASED);
 
-        $released = $this->quantity;
+        $released = $this->getAttribute('quantity');
 
-        $this->quantity = 0;
+        $this->setAttribute('quantity', 0);
 
-        $this->state = $this::STATE_INVENTORY_RELEASED;
+        $this->setAttribute('state', $this::STATE_INVENTORY_RELEASED);
 
         if (!$reason) {
             $reason = $this->getTransactionReason('released');
@@ -919,9 +904,8 @@ trait InventoryTransactionTrait
             $this::STATE_INVENTORY_ON_HOLD,
         ], $this::STATE_INVENTORY_REMOVED);
 
-        $this->state = $this::STATE_INVENTORY_REMOVED;
-
-        $this->quantity = 0;
+        $this->setAttribute('quantity', 0);
+        $this->setAttribute('state', $this::STATE_INVENTORY_REMOVED);
 
         return $this->processSave('inventory.transaction.removed');
     }
@@ -1152,7 +1136,7 @@ trait InventoryTransactionTrait
      */
     private function returnToPreviousState($previousState)
     {
-        $this->state = $previousState;
+        $this->setAttribute('state', $previousState);
 
         return $this->processSave();
     }
