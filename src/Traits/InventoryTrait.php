@@ -360,7 +360,7 @@ trait InventoryTrait
      * Puts the specified amount ($quantity) of stock into the specified stock location.
      *
      * @param int|float|string $quantity
-     * @param $location
+     * @param Model            $location
      * @param string           $reason
      * @param int|float|string $cost
      *
@@ -368,7 +368,7 @@ trait InventoryTrait
      *
      * @return array
      */
-    public function putToLocation($quantity, $location, $reason = '', $cost = 0)
+    public function putToLocation($quantity, Model $location, $reason = '', $cost = 0)
     {
         $stock = $this->getStockFromLocation($location);
 
@@ -414,7 +414,7 @@ trait InventoryTrait
      *
      * @return array
      */
-    public function addToLocation($quantity, $location, $reason = '', $cost = 0)
+    public function addToLocation($quantity, Model $location, $reason = '', $cost = 0)
     {
         return $this->putToLocation($quantity, $location, $reason, $cost);
     }
@@ -471,7 +471,7 @@ trait InventoryTrait
             return $stock;
         } else {
             $message = Lang::get('inventory::exceptions.StockNotFoundException', [
-                'location' => $location->name,
+                'location' => $location->getAttribute('name'),
             ]);
 
             throw new StockNotFoundException($message);
@@ -486,7 +486,7 @@ trait InventoryTrait
     public function getSku()
     {
         if ($this->hasSku()) {
-            return $this->sku->code;
+            return $this->sku->getAttribute('code');
         }
 
         return;
@@ -527,20 +527,22 @@ trait InventoryTrait
             return $this->sku;
         }
 
+        $separator = InventoryServiceProvider::$packageConfigSeparator;
+
         /*
          * Get the set SKU code length from the configuration file
          */
-        $codeLength = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_code_length');
+        $codeLength = Config::get('inventory'.$separator.'sku_code_length');
 
         /*
          * Get the set SKU prefix length from the configuration file
          */
-        $prefixLength = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_prefix_length');
+        $prefixLength = Config::get('inventory'.$separator.'sku_prefix_length');
 
         /*
          * Get the set SKU separator
          */
-        $skuSeparator = Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_separator');
+        $skuSeparator = Config::get('inventory'.$separator.'sku_separator');
 
         /*
          * Make sure we trim empty spaces in the separator if it's a string, otherwise we'll
@@ -552,7 +554,7 @@ trait InventoryTrait
          * Trim the category name to remove blank spaces, then
          * grab the first 3 letters of the string, and uppercase them
          */
-        $prefix = strtoupper(substr(trim($this->category->name), 0, intval($prefixLength)));
+        $prefix = strtoupper(substr(trim($this->category->getAttribute('name')), 0, intval($prefixLength)));
 
         /*
          * We'll make sure the prefix length is greater than zero before we try and
@@ -590,37 +592,25 @@ trait InventoryTrait
         $sku = $this->sku()->first();
 
         if ($sku) {
-            /*
-             * Capture current SKU
-             */
+            // Capture current SKU
             $previousSku = $sku;
 
-            /*
-             * Delete current SKU
-             */
+            // Delete current SKU
             $sku->delete();
 
-            /*
-             * Try to generate a new SKU
-             */
+            // Try to generate a new SKU
             $newSku = $this->generateSku();
 
-            /*
-             * New sku generation successful, return it
-             */
+            // New sku generation successful, return it
             if ($newSku) {
                 return $newSku;
             }
 
-            /*
-             * Failed generating a new sku, we'll restore the old one
-             */
+            // Failed generating a new sku, we'll restore the old one
             return $this->processSkuGeneration($this->getKey(), $previousSku->code);
         }
 
-        /*
-         * Always generate an SKU if one doesn't exist
-         */
+        // Always generate an SKU if one doesn't exist
         return $this->generateSku();
     }
 
@@ -645,25 +635,18 @@ trait InventoryTrait
         $sku = $this->sku()->first();
 
         if ($sku) {
-            /*
-             * The dev doesn't want the SKU overridden,
-             * we'll thrown an exception
-             */
+            // The dev doesn't want the SKU overridden, we'll thrown an exception
             if (!$overwrite) {
                 $message = Lang::get('inventory::exceptions.SkuAlreadyExistsException');
 
                 throw new SkuAlreadyExistsException($message);
             }
 
-            /*
-             * Overwrite is true, lets update the current SKU
-             */
+            // Overwrite is true, lets update the current SKU
             return $this->updateSku($code, $sku);
         }
 
-        /*
-         * No SKU exists, lets create one
-         */
+        // No SKU exists, lets create one
         return $this->processSkuGeneration($this->getKey(), $code);
     }
 
@@ -678,9 +661,7 @@ trait InventoryTrait
      */
     public function updateSku($code, $sku = null)
     {
-        /*
-         * Get the current SKU record if one isn't supplied
-         */
+        // Get the current SKU record if one isn't supplied
         if (!$sku) {
             $sku = $this->sku()->first();
         }
@@ -793,13 +774,13 @@ trait InventoryTrait
             return $this->getSupplierById($supplier);
         } elseif ($this->isModel($supplier)) {
             return $supplier;
-        } else {
-            $message = Lang::get('inventory::exceptions.InvalidSupplierException', [
-                'supplier' => $supplier,
-            ]);
-
-            throw new InvalidSupplierException($message);
         }
+
+        $message = Lang::get('inventory::exceptions.InvalidSupplierException', [
+            'supplier' => $supplier,
+        ]);
+
+        throw new InvalidSupplierException($message);
     }
 
     /**
