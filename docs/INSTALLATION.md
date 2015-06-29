@@ -1,5 +1,8 @@
 ## Installation
 
+> **Note**: If you're looking to use Inventory with MSSQL, you will need to modify the published migrations to suit. By default,
+multiple cascade delete paths are present, and you'll need to modify and / or remove these for compatibility.
+
 ### Installation (Laravel 4)
 
 Add inventory to your `composer.json` file:
