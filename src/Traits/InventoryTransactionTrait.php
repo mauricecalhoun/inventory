@@ -262,7 +262,7 @@ trait InventoryTransactionTrait
         $this->setAttribute('quantity', $quantity);
         $this->setAttribute('state', $this::STATE_COMMERCE_CHECKOUT);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('checkout');
         }
 
@@ -339,7 +339,7 @@ trait InventoryTransactionTrait
         $this->setAttribute('state', $this::STATE_COMMERCE_SOLD);
         $this->setAttribute('quantity', $quantity);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('sold-amount');
         }
 
@@ -420,7 +420,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('quantity', $left);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('returned-partial');
         }
 
@@ -466,7 +466,7 @@ trait InventoryTransactionTrait
          */
         $this->setAttribute('quantity', 0);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('returned');
         }
 
@@ -509,7 +509,7 @@ trait InventoryTransactionTrait
         $this->setAttribute('quantity', $quantity);
         $this->setAttribute('state', $this::STATE_COMMERCE_RESERVED);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('reserved');
         }
 
@@ -578,7 +578,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_COMMERCE_BACK_ORDER_FILLED);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('back-order-filled');
         }
 
@@ -666,7 +666,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_ORDERED_RECEIVED);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('received');
         }
 
@@ -714,7 +714,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_ORDERED_RECEIVED_PARTIAL);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('received-partial');
         }
 
@@ -749,7 +749,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_INVENTORY_ON_HOLD);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('hold');
         }
 
@@ -806,7 +806,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_INVENTORY_RELEASED);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('released');
         }
 
@@ -847,7 +847,7 @@ trait InventoryTransactionTrait
 
         $this->setAttribute('state', $this::STATE_INVENTORY_RELEASED_PARTIAL);
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('released-partial');
         }
 
@@ -970,7 +970,7 @@ trait InventoryTransactionTrait
 
             $this->setAttribute('quantity', (float) $quantity);
 
-            if (!$reason) {
+            if (empty($reason)) {
                 $reason = $this->getTransactionReason('removed');
             }
 
@@ -1016,7 +1016,7 @@ trait InventoryTransactionTrait
 
         $event = 'inventory.transaction.cancelled';
 
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = $this->getTransactionReason('cancelled');
         }
 
@@ -1103,7 +1103,9 @@ trait InventoryTransactionTrait
     public function setQuantityAttribute($quantity)
     {
         if (!$this->isPositive($quantity)) {
-            $message = Lang::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'exceptions.InvalidQuantityException');
+            $path = 'inventory'.InventoryServiceProvider::$packageConfigSeparator.'exceptions.InvalidQuantityException';
+
+            $message = Lang::get($path);
 
             throw new InvalidQuantityException($message);
         }
@@ -1364,7 +1366,7 @@ trait InventoryTransactionTrait
          * Make sure we set the reason to null if no translation is found
          * so the default stock change reason is used
          */
-        if (!$reason) {
+        if (empty($reason)) {
             $reason = null;
         }
 
