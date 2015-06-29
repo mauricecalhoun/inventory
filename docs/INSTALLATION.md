@@ -1,7 +1,7 @@
 ## Installation
 
 > **Note**: If you're looking to use Inventory with MSSQL, you will need to modify the published migrations to suit. By default,
-multiple cascade delete paths are present, and you'll need to modify and / or remove these for compatibility.
+multiple cascade delete paths are present on foreign keys, and you'll need to modify and / or remove these for compatibility.
 
 ### Installation (Laravel 4)
 
