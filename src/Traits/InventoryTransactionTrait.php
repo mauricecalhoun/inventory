@@ -246,8 +246,8 @@ trait InventoryTransactionTrait
     public function checkout($quantity = 0, $reason = '', $cost = 0)
     {
         /*
-         * Only allow a transaction that has a previous state of null, opened and reserved
-         * to use the checkout function
+         * Only allow a transaction that has a previous state of
+         * null, opened and reserved to use the checkout function
          */
         $this->validatePreviousState([
             null,
