@@ -509,40 +509,30 @@ trait InventoryTrait
      */
     public function generateSku()
     {
-        /*
-         * Make sure sku generation is enabled and the item has a category, if not we'll return false.
-         */
+        // Make sure sku generation is enabled and the item has a category, if not we'll return false.
         if (!$this->skusEnabled() || !$this->hasCategory()) {
             return false;
         }
 
-        /*
-         * If the item already has an SKU, we'll return it
-         */
+        // If the item already has an SKU, we'll return it
         if ($this->hasSku()) {
             return $this->sku;
         }
 
         $separator = InventoryServiceProvider::$packageConfigSeparator;
 
-        /*
-         * Get the set SKU code length from the configuration file
-         */
+        // Get the set SKU code length from the configuration file
         $codeLength = Config::get('inventory'.$separator.'sku_code_length');
 
-        /*
-         * Get the set SKU prefix length from the configuration file
-         */
+        // Get the set SKU prefix length from the configuration file
         $prefixLength = Config::get('inventory'.$separator.'sku_prefix_length');
 
-        /*
-         * Get the set SKU separator
-         */
+        // Get the set SKU separator
         $skuSeparator = Config::get('inventory'.$separator.'sku_separator');
 
         /*
-         * Make sure we trim empty spaces in the separator if it's a string, otherwise we'll
-         * set it to NULL
+         * Make sure we trim empty spaces in the separator
+         * if it's a string, otherwise we'll set it to NULL
          */
         $skuSeparator = (is_string($skuSeparator) ? trim($skuSeparator) : null);
 
@@ -553,8 +543,8 @@ trait InventoryTrait
         $prefix = strtoupper(substr(trim($this->category->getAttribute('name')), 0, intval($prefixLength)));
 
         /*
-         * We'll make sure the prefix length is greater than zero before we try and
-         * generate an SKU
+         * We'll make sure the prefix length is greater
+         * than zero before we try and generate an SKU
          */
         if (strlen($prefix) > 0) {
             /*
@@ -563,15 +553,11 @@ trait InventoryTrait
              */
             $code = str_pad($this->getKey(), $codeLength, '0', STR_PAD_LEFT);
 
-            /*
-             * Process the generation
-             */
+            // Return and process the generation
             return $this->processSkuGeneration($this->getKey(), $prefix.$skuSeparator.$code);
         }
 
-        /*
-         * Always return false on generation failure
-         */
+        // Always return false on generation failure
         return false;
     }
 
