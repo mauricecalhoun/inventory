@@ -2,12 +2,12 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Helper;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
