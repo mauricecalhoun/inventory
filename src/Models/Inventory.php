@@ -26,7 +26,7 @@ class Inventory extends BaseModel
      */
     public function category()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Category', 'id', 'category_id');
+        return $this->hasOne(config('inventory.models.category'), 'id', 'category_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class Inventory extends BaseModel
      */
     public function metric()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Metric', 'id', 'metric_id');
+        return $this->hasOne(config('inventory.models.metric'), 'id', 'metric_id');
     }
 
     /**
@@ -46,7 +46,7 @@ class Inventory extends BaseModel
      */
     public function sku()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\InventorySku', 'inventory_id', 'id');
+        return $this->hasOne(config('inventory.models.inventory_sku'), 'inventory_id', 'id');
     }
 
     /**
@@ -56,7 +56,7 @@ class Inventory extends BaseModel
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock'), 'inventory_id', 'id');
     }
 
     /**
@@ -66,7 +66,7 @@ class Inventory extends BaseModel
      */
     public function suppliers()
     {
-        return $this->belongsToMany('Stevebauman\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+        return $this->belongsToMany(config('inventory.models.supplier'), 'inventory_suppliers', 'inventory_id')->withTimestamps();
     }
 
     /**

@@ -18,6 +18,6 @@ class Metric extends BaseModel
      */
     public function items()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\Inventory', 'metric_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory'), 'metric_id', 'id');
     }
 }

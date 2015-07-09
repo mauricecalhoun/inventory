@@ -27,6 +27,6 @@ class Location extends Node
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'location_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock'), 'location_id', 'id');
     }
 }
