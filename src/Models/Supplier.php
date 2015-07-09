@@ -22,6 +22,6 @@ class Supplier extends BaseModel
      */
     public function items()
     {
-        return $this->belongsToMany('Stevebauman\Inventory\Models\Inventory', 'inventory_suppliers', 'supplier_id')->withTimestamps();
+        return $this->belongsToMany(config('inventory.models.inventory'), 'inventory_suppliers', 'supplier_id')->withTimestamps();
     }
 }

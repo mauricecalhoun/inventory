@@ -64,4 +64,33 @@ return [
      */
     'sku_separator' => '',
 
+    /*
+     * The model classes to use if you chose to override them.
+     *
+     * For example, if you create your own Inventory class that extends
+     * Stevebauman\Inventory\Models\Inventory , then you can add:
+     * 'models' => [
+     *   'inventory' => 'App\Inventory'
+     * ]
+     *
+     * All keys are the classnames in snake_case. Any entries that are missing
+     * will use the default Stevebauman classes. BaseModel cannot be extended in this way.
+     *
+     * @var array
+     */
+    'models' => [
+        'category' => 'Stevebauman\Inventory\Models\Category',
+        'inventory' => 'Stevebauman\Inventory\Models\Inventory',
+        'inventory_sku' => 'Stevebauman\Inventory\Models\InventorySku',
+        'inventory_stock' => 'Stevebauman\Inventory\Models\InventoryStock',
+        'inventory_stock_movement' => 'Stevebauman\Inventory\Models\InventoryStockMovement',
+        'inventory_transaction' => 'Stevebauman\Inventory\Models\InventoryTransaction',
+        'inventory_transaction_history' => 'Stevebauman\Inventory\Models\InventoryTransactionHistory',
+        'location' => 'Stevebauman\Inventory\Models\Location',
+        'inventory' => 'Stevebauman\Inventory\Models\Inventory',
+        'metric' => 'Stevebauman\Inventory\Models\Metric',
+        'supplier' => 'Stevebauman\Inventory\Models\Supplier',
+    ],
+
+
 ];

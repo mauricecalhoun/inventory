@@ -23,7 +23,7 @@ class InventoryTransaction extends BaseModel implements StateableInterface
      */
     public function stock()
     {
-        return $this->belongsTo('Stevebauman\Inventory\Models\InventoryStock', 'stock_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory_stock'), 'stock_id', 'id');
     }
 
     /**
@@ -33,6 +33,6 @@ class InventoryTransaction extends BaseModel implements StateableInterface
      */
     public function histories()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryTransactionHistory', 'transaction_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_transaction_history'), 'transaction_id', 'id');
     }
 }

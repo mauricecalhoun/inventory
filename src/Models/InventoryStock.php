@@ -22,7 +22,7 @@ class InventoryStock extends BaseModel
      */
     public function item()
     {
-        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory'), 'inventory_id', 'id');
     }
 
     /**
@@ -32,7 +32,7 @@ class InventoryStock extends BaseModel
      */
     public function movements()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStockMovement', 'stock_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock_movement'), 'stock_id', 'id');
     }
 
     /**
@@ -42,7 +42,7 @@ class InventoryStock extends BaseModel
      */
     public function transactions()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryTransaction', 'stock_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_transaction'), 'stock_id', 'id');
     }
 
     /**
@@ -52,6 +52,6 @@ class InventoryStock extends BaseModel
      */
     public function location()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
+        return $this->hasOne(config('inventory.models.location'), 'id', 'location_id');
     }
 }

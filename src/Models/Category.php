@@ -30,6 +30,6 @@ class Category extends Node
      */
     public function inventories()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\Inventory', 'category_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory'), 'category_id', 'id');
     }
 }
