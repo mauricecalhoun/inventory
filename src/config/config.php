@@ -87,10 +87,8 @@ return [
         'inventory_transaction' => 'Stevebauman\Inventory\Models\InventoryTransaction',
         'inventory_transaction_history' => 'Stevebauman\Inventory\Models\InventoryTransactionHistory',
         'location' => 'Stevebauman\Inventory\Models\Location',
-        'inventory' => 'Stevebauman\Inventory\Models\Inventory',
         'metric' => 'Stevebauman\Inventory\Models\Metric',
         'supplier' => 'Stevebauman\Inventory\Models\Supplier',
     ],
-
 
 ];
