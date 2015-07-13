@@ -150,14 +150,15 @@ Supplier:
 
 Inventory:
 
+    use Stevebauman\Inventory\Traits\AssemblyTrait;
     use Stevebauman\Inventory\Traits\InventoryTrait;
     use Stevebauman\Inventory\Traits\InventoryVariantTrait;
-    use Stevebauman\Inventory\Traits\AssemblyTrait;
     
     class Inventory extends Model
     {
         use InventoryTrait;
         use InventoryVariantTrait;
+        use AssemblyTrait;
     
         protected $table = 'inventory';
         
