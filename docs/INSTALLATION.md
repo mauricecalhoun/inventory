@@ -152,7 +152,7 @@ Inventory:
 
     use Stevebauman\Inventory\Traits\InventoryTrait;
     use Stevebauman\Inventory\Traits\InventoryVariantTrait;
-    use AssemblyTrait;
+    use Stevebauman\Inventory\Traits\AssemblyTrait;
     
     class Inventory extends Model
     {
@@ -186,8 +186,10 @@ Inventory:
             return $this->belongsToMany('Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
         }
         
-        public function assemblies() {
-            return $this->belongsToMany( $this , 'inventory_assemblies' , 'inventory_id' , 'part_id') ->withPivot(['quantity'])->withTimestamps();
+        public function assemblies()
+        {
+            return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')
+                ->withPivot(['quantity'])->withTimestamps();
         }
     }
     
