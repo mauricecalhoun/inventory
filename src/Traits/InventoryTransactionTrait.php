@@ -6,6 +6,7 @@ use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
+use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
@@ -1102,7 +1103,7 @@ trait InventoryTransactionTrait
     public function setQuantityAttribute($quantity)
     {
         if (!$this->isPositive($quantity)) {
-            $path = 'inventory.exceptions.InvalidQuantityException';
+            $path = 'inventory'.InventoryServiceProvider::$packageConfigSeparator.'exceptions.InvalidQuantityException';
 
             $message = Lang::get($path);
 

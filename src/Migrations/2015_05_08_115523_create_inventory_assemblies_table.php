@@ -14,11 +14,12 @@ class CreateInventoryAssembliesTable extends Migration
 
             $table->increments('id');
             $table->timestamps();
-            $table->integer('inventoryable_id');
-            $table->string('inventoryable_type');
-            $table->integer('inventoryable_part_id');
-            $table->string('inventoryable_part_type');
+            $table->integer('inventory_id')->unsigned();
+            $table->integer('part_id')->unsigned();
             $table->integer('quantity')->nullable();
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
+            $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
 
         });
     }
