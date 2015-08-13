@@ -2,7 +2,6 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\InvalidMovementException;
 use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
@@ -40,18 +39,21 @@ trait InventoryStockTrait
     private $beforeQuantity = 0;
 
     /**
+     * The morphTo stockable owner relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function stockable()
+    {
+        return $this->morphTo();
+    }
+
+    /**
      * The hasOne location relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     abstract public function location();
-
-    /**
-     * The belongsTo item relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    abstract public function item();
 
     /**
      * The hasMany movements relationship.
@@ -661,7 +663,7 @@ trait InventoryStockTrait
      */
     private function allowDuplicateMovementsEnabled()
     {
-        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'allow_duplicate_movements');
+        return Config::get('inventory.allow_duplicate_movements');
     }
 
     /**
@@ -673,6 +675,6 @@ trait InventoryStockTrait
      */
     private function rollbackCostEnabled()
     {
-        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'rollback_cost');
+        return Config::get('inventory.rollback_cost');
     }
 }

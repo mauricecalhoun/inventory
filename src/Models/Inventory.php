@@ -52,11 +52,11 @@ class Inventory extends BaseModel
     /**
      * The hasMany stocks relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+        return $this->morphMany('Stevebauman\Inventory\Models\InventoryStock', 'stockable');
     }
 
     /**

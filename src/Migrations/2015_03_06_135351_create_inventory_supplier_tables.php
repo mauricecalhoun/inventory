@@ -32,16 +32,12 @@ class CreateInventorySupplierTables extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('inventory_id')->unsigned();
+            $table->integer('inventoryable_id');
+            $table->string('inventoryable_type');
+
             $table->integer('supplier_id')->unsigned();
 
-            $table->foreign('inventory_id')->references('id')->on('inventories')
-                ->onUpdate('restrict')
-                ->onDelete('cascade');
-
-            $table->foreign('supplier_id')->references('id')->on('suppliers')
-                ->onUpdate('restrict')
-                ->onDelete('cascade');
+            $table->foreign('supplier_id')->references('id')->on('suppliers');
         });
     }
 

@@ -27,6 +27,7 @@ class InventoryTest extends FunctionalTestCase
      */
     protected function newInventory(array $attributes = [])
     {
+
         $metric = $this->newMetric();
 
         $category = $this->newCategory();

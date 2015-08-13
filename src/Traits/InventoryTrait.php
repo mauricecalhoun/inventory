@@ -5,7 +5,6 @@ namespace Stevebauman\Inventory\Traits;
 use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
-use Stevebauman\Inventory\InventoryServiceProvider;
 use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -40,9 +39,9 @@ trait InventoryTrait
     abstract public function sku();
 
     /**
-     * The hasMany stocks relationship.
+     * The morphMany stocks relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     abstract public function stocks();
 
@@ -94,14 +93,10 @@ trait InventoryTrait
      */
     public static function findBySku($sku)
     {
-        /*
-         * Create a new static instance
-         */
+        // Create a new static instance
         $instance = new static();
 
-        /*
-         * Try and find the SKU record
-         */
+        // Try and find the SKU record
         $sku = $instance
             ->sku()
             ->getRelated()
@@ -109,17 +104,12 @@ trait InventoryTrait
             ->where('code', $sku)
             ->first();
 
-        /*
-         * Check if the SKU was found, and if an item is
-         * attached to the SKU we'll return it
-         */
+        // Check if the SKU was found, and if an item
+        // is attached to the SKU we'll return it
         if ($sku && $sku->item) {
             return $sku->item;
         }
 
-        /*
-         * Return false on failure
-         */
         return false;
     }
 
@@ -186,7 +176,7 @@ trait InventoryTrait
             return $this->metric->symbol;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -231,7 +221,8 @@ trait InventoryTrait
             // A stock record wasn't found on this location, we'll create one.
             $stock = $this->stocks()->getRelated()->newInstance();
 
-            $stock->setAttribute('inventory_id', $this->getKey());
+            $stock->setAttribute('stockable_id', $this->getKey());
+            $stock->setAttribute('stockable_type', get_class($this));
             $stock->setAttribute('location_id', $location->getKey());
             $stock->setAttribute('quantity', 0);
             $stock->setAttribute('aisle', $aisle);
@@ -259,9 +250,8 @@ trait InventoryTrait
     public function newStockOnLocation(Model $location)
     {
         try {
-            /*
-             * We want to make sure stock doesn't exist on the specified location already
-             */
+            // We want to make sure stock doesn't exist
+            // on the specified location already
             if ($this->getStockFromLocation($location)) {
                 $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
                     'location' => $location->name,
@@ -274,7 +264,8 @@ trait InventoryTrait
             $stock = $this->stocks()->getRelated()->newInstance();
 
             // Assign the known attributes so devs don't have to
-            $stock->setAttribute('inventory_id', $this->getKey());
+            $stock->setAttribute('stockable_id', $this->getKey());
+            $stock->setAttribute('stockable_type', get_class($this));
             $stock->setAttribute('location_id', $location->getKey());
 
             return $stock;
@@ -485,7 +476,7 @@ trait InventoryTrait
             return $this->sku->getAttribute('code');
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -519,38 +510,28 @@ trait InventoryTrait
             return $this->sku;
         }
 
-        $separator = InventoryServiceProvider::$packageConfigSeparator;
-
         // Get the set SKU code length from the configuration file
-        $codeLength = Config::get('inventory'.$separator.'sku_code_length');
+        $codeLength = Config::get('inventory.sku_code_length', 6);
 
         // Get the set SKU prefix length from the configuration file
-        $prefixLength = Config::get('inventory'.$separator.'sku_prefix_length');
+        $prefixLength = Config::get('inventory.sku_prefix_length', 3);
 
         // Get the set SKU separator
-        $skuSeparator = Config::get('inventory'.$separator.'sku_separator');
+        $skuSeparator = Config::get('inventory.sku_separator', '');
 
-        /*
-         * Make sure we trim empty spaces in the separator
-         * if it's a string, otherwise we'll set it to NULL
-         */
+        // Make sure we trim empty spaces in the separator if
+        // it's a string, otherwise we'll set it to NULL
         $skuSeparator = (is_string($skuSeparator) ? trim($skuSeparator) : null);
 
-        /*
-         * Trim the category name to remove blank spaces, then
-         * grab the first 3 letters of the string, and uppercase them
-         */
+        // Trim the category name to remove blank spaces, then grab
+        // the first 3 letters of the string, and uppercase them
         $prefix = strtoupper(substr(trim($this->category->getAttribute('name')), 0, intval($prefixLength)));
 
-        /*
-         * We'll make sure the prefix length is greater
-         * than zero before we try and generate an SKU
-         */
+        // We'll make sure the prefix length is greater
+        // than zero before we try and generate an SKU
         if (strlen($prefix) > 0) {
-            /*
-             * Create the numerical code by the items ID
-             * to accompany the prefix and pad left zeros
-             */
+            // Create the numerical code by the items ID to
+            // accompany the prefix and pad left zeros
             $code = str_pad($this->getKey(), $codeLength, '0', STR_PAD_LEFT);
 
             // Return and process the generation
@@ -646,10 +627,7 @@ trait InventoryTrait
             $sku = $this->sku()->first();
         }
 
-        /*
-         * If an SKU still doesn't exist after
-         * trying to find one, we'll create one
-         */
+        // If an SKU still doesn't exist after trying to find one, we'll create one
         if (!$sku) {
             return $this->processSkuGeneration($this->getKey(), $code);
         }
@@ -726,6 +704,6 @@ trait InventoryTrait
      */
     private function skusEnabled()
     {
-        return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'skus_enabled', false);
+        return Config::get('inventory.skus_enabled', false);
     }
 }
