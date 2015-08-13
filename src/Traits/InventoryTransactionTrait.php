@@ -1103,9 +1103,7 @@ trait InventoryTransactionTrait
     public function setQuantityAttribute($quantity)
     {
         if (!$this->isPositive($quantity)) {
-            $path = 'inventory'.InventoryServiceProvider::$packageConfigSeparator.'exceptions.InvalidQuantityException';
-
-            $message = Lang::get($path);
+            $message = Lang::get('inventory::exceptions.InvalidQuantityException');
 
             throw new InvalidQuantityException($message);
         }
