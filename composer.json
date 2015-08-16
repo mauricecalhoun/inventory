@@ -16,7 +16,7 @@
         "baum/baum": "1.1.*"
     },
     "require-dev": {
-        "orchestra/testbench": "3.1.*",
+        "orchestra/testbench": "3.1.*"
     },
     "archive": {
         "exclude": ["/tests"]
