@@ -160,7 +160,7 @@ Inventory:
         use InventoryVariantTrait;
         use AssemblyTrait;
     
-        protected $table = 'inventory';
+        protected $table = 'inventories';
         
         public function category()
         {
