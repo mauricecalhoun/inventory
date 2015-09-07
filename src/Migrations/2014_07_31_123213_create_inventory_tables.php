@@ -17,7 +17,7 @@ class CreateInventoryTables extends Migration
 
             $table->integer('category_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('metric_id')->unsigned();
+            $table->integer('metric_id')->unsigned()->nullable();
             $table->string('name');
             $table->text('description')->nullable();
 
