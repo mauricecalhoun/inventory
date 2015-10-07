@@ -166,6 +166,8 @@ trait InventoryVariantTrait
     public function createVariant($name = '', $description = '', $categoryId = null, $metricId = null)
     {
         $variant = $this->newVariant($name);
+        
+        $this->dbStartTransaction();
 
         try {
             if (!empty($description)) {
