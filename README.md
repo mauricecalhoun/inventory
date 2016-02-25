@@ -1,5 +1,4 @@
 # Inventory
-(https://github.com/stevebauman/inventory/blob/master/inventory-banner.jpg)
 
 [![Travis CI](https://img.shields.io/travis/stevebauman/inventory/v1.7.5.svg?style=flat-square)](https://travis-ci.org/stevebauman/inventory)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/stevebauman/inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
