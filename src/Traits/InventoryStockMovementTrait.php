@@ -19,6 +19,8 @@ trait InventoryStockMovementTrait
     /**
      * Overrides the models boot function to set
      * the user ID automatically to every new record.
+     *
+     * @return void
      */
     public static function bootInventoryStockMovementTrait()
     {

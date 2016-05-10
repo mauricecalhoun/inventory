@@ -1,10 +1,5 @@
 <?php
 
-/**
- * The Inventory Exceptions language file.
- *
- * @author Steve Bauman
- */
 return [
 
     'InvalidMovementException' => 'Movement :movement is invalid',

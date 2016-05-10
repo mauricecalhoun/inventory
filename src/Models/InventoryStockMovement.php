@@ -4,7 +4,7 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
 
-class InventoryStockMovement extends BaseModel
+class InventoryStockMovement extends Model
 {
     use InventoryStockMovementTrait;
 

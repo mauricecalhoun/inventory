@@ -219,7 +219,7 @@ trait InventoryVariantTrait
      *
      * @return $this|bool
      */
-    private function processMakeVariant($itemId)
+    protected function processMakeVariant($itemId)
     {
         $this->dbStartTransaction();
 

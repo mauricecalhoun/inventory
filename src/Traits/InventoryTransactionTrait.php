@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Lang;
 
 trait InventoryTransactionTrait
 {
-    /*
-     * Common Inventory Helper Methods
-     */
     use CommonMethodsTrait;
 
     /**
@@ -35,6 +32,8 @@ trait InventoryTransactionTrait
     /**
      * Overrides the models boot function to generate a new transaction history
      * record when it is created and updated.
+     * 
+     * @return void
      */
     public static function bootInventoryTransactionTrait()
     {
@@ -1134,7 +1133,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function returnToPreviousState($previousState)
+    protected function returnToPreviousState($previousState)
     {
         $this->setAttribute('state', $previousState);
 
@@ -1148,7 +1147,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function reservedFromCheckout()
+    protected function reservedFromCheckout()
     {
         $this->setAttribute('state', $this::STATE_COMMERCE_RESERVED);
 
@@ -1161,7 +1160,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function checkoutFromReserved()
+    protected function checkoutFromReserved()
     {
         $this->setAttribute('state', $this::STATE_COMMERCE_CHECKOUT);
 
@@ -1179,7 +1178,7 @@ trait InventoryTransactionTrait
      *
      * @return bool
      */
-    private function validatePreviousState($allowedStates = [], $toState)
+    protected function validatePreviousState($allowedStates = [], $toState)
     {
         $state = $this->getAttribute('state');
 
@@ -1204,7 +1203,7 @@ trait InventoryTransactionTrait
      *
      * @return bool
      */
-    private function validateStateIsAvailable($state)
+    protected function validateStateIsAvailable($state)
     {
         if (!in_array($state, $this->getAvailableStates())) {
             $message = "State: $state is an invalid state, and cannot be used.";
@@ -1229,7 +1228,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function processStockPutAndSave($quantity, $event = '', $reason = '', $cost = 0)
+    protected function processStockPutAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
         $stock = $this->getStockRecord();
 
@@ -1265,7 +1264,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function processStockTakeAndSave($quantity, $event = '', $reason = '', $cost = 0)
+    protected function processStockTakeAndSave($quantity, $event = '', $reason = '', $cost = 0)
     {
         $stock = $this->getStockRecord();
 
@@ -1300,7 +1299,7 @@ trait InventoryTransactionTrait
      *
      * @return $this|bool
      */
-    private function processSave($event = '')
+    protected function processSave($event = '')
     {
         $this->dbStartTransaction();
 
@@ -1331,7 +1330,7 @@ trait InventoryTransactionTrait
      *
      * @return bool|Model
      */
-    private function generateTransactionHistory($stateBefore, $stateAfter, $quantityBefore = 0, $quantityAfter = 0)
+    protected function generateTransactionHistory($stateBefore, $stateAfter, $quantityBefore = 0, $quantityAfter = 0)
     {
         $history = $this->histories()->getRelated()->newInstance();
 
@@ -1356,7 +1355,7 @@ trait InventoryTransactionTrait
      *
      * @return string
      */
-    private function getTransactionReason($key)
+    protected function getTransactionReason($key)
     {
         $reason = Lang::get('inventory::reasons.transactions.'.$key, ['id' => $this->getKey(), 'date' => date('Y-m-d H:i:s')]);
 
@@ -1376,7 +1375,7 @@ trait InventoryTransactionTrait
      *
      * @return array
      */
-    private function getAvailableStates()
+    protected function getAvailableStates()
     {
         return [
             self::STATE_COMMERCE_CHECKOUT,

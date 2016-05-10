@@ -4,7 +4,7 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventorySkuTrait;
 
-class InventorySku extends BaseModel
+class InventorySku extends Model
 {
     use InventorySkuTrait;
 

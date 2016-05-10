@@ -100,10 +100,8 @@ trait AssemblyTrait
             if (!$results) {
                 $results = $this->assembliesRecursive;
 
-                /*
-                 * Cache forever since adding / removing assembly
-                 * items will automatically clear this cache
-                 */
+                // Cache forever since adding / removing assembly
+                // items will automatically clear this cache.
                 Cache::forever($this->getAssemblyCacheKey(), $results);
             }
 
@@ -134,12 +132,12 @@ trait AssemblyTrait
 
         foreach ($items as $item) {
             $list[$level] = [
-                'id' => $item->getKey(),
-                'name' => $item->name,
-                'metric_id' => $item->metric_id,
-                'category_id' => $item->category_id,
-                'quantity' => $item->pivot->quantity,
-                'depth' => $depth,
+                'id'            => $item->getKey(),
+                'name'          => $item->name,
+                'metric_id'     => $item->metric_id,
+                'category_id'   => $item->category_id,
+                'quantity'      => $item->pivot->quantity,
+                'depth'         => $depth,
             ];
 
             if ($item->is_assembly && $recursive) {
@@ -351,7 +349,7 @@ trait AssemblyTrait
      *
      * @throws InvalidPartException
      */
-    private function validatePart(Model $part)
+    protected function validatePart(Model $part)
     {
         if ((int) $part->getKey() === (int) $this->getKey()) {
             $message = 'An item cannot be an assembly of itself.';
@@ -376,7 +374,7 @@ trait AssemblyTrait
      *
      * @throws InvalidPartException
      */
-    private function validatePartAgainstList($value, $key)
+    protected function validatePartAgainstList($value, $key)
     {
         if ((string) $key === (string) $this->getKeyName()) {
             if ((int) $value === (int) $this->getKey()) {
@@ -392,7 +390,7 @@ trait AssemblyTrait
      *
      * @return string
      */
-    private function getAssemblyCacheKey()
+    protected function getAssemblyCacheKey()
     {
         return $this->assemblyCacheKey.$this->getKey();
     }

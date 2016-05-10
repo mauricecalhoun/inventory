@@ -2,7 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
-class Metric extends BaseModel
+class Metric extends Model
 {
     /**
      * The hasMany inventory items relationship.

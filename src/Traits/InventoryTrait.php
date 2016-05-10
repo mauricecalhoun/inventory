@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Lang;
 
 trait InventoryTrait
 {
-    /*
-     * Common Helper Methods
-     */
     use CommonMethodsTrait;
 
     /**
@@ -654,7 +651,7 @@ trait InventoryTrait
      *
      * @return bool|mixed
      */
-    private function processSkuGeneration($inventoryId, $code)
+    protected function processSkuGeneration($inventoryId, $code)
     {
         $this->dbStartTransaction();
 
@@ -690,7 +687,7 @@ trait InventoryTrait
      *
      * @return mixed|bool
      */
-    private function processSkuUpdate(Model $sku, $code)
+    protected function processSkuUpdate(Model $sku, $code)
     {
         $this->dbStartTransaction();
 
@@ -713,7 +710,7 @@ trait InventoryTrait
      *
      * @return mixed
      */
-    private function skusEnabled()
+    protected function skusEnabled()
     {
         return Config::get('inventory.skus_enabled', false);
     }

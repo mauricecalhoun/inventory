@@ -4,7 +4,7 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\SupplierTrait;
 
-class Supplier extends BaseModel
+class Supplier extends Model
 {
     use SupplierTrait;
 

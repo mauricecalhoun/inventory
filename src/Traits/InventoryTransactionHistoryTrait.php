@@ -9,6 +9,8 @@ trait InventoryTransactionHistoryTrait
 {
     /**
      * Make sure we try and assign the current user if enabled.
+     *
+     * @return void
      */
     public static function bootInventoryTransactionHistoryTrait()
     {

@@ -6,7 +6,7 @@ use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
-class Inventory extends BaseModel
+class Inventory extends Model
 {
     use InventoryTrait;
     use InventoryVariantTrait;

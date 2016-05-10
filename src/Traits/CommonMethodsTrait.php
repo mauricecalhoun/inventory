@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -10,35 +11,22 @@ use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 trait CommonMethodsTrait
 {
     /**
-     * Returns the models identifier key.
-     *
-     * @return int|string
+     * {@inheritdoc}
      */
     abstract public function getKey();
 
     /**
-     * Returns the models identifier key name.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     abstract public function getKeyName();
 
     /**
-     * Returns a attribute from the model.
-     *
-     * @param string $key
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     abstract public function getAttribute($key);
 
     /**
-     * Set a given attribute on the model.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return void
+     * {@inheritdoc}
      */
     abstract public function setAttribute($key, $value);
 
@@ -115,7 +103,7 @@ trait CommonMethodsTrait
      *
      * @return bool
      */
-    private function isNumeric($number)
+    protected function isNumeric($number)
     {
         return (is_numeric($number) ? true : false);
     }
@@ -127,7 +115,7 @@ trait CommonMethodsTrait
      *
      * @return bool
      */
-    private function isPositive($number)
+    protected function isPositive($number)
     {
         if ($this->isNumeric($number)) {
             return ($number >= 0 ? true : false);
@@ -144,8 +132,8 @@ trait CommonMethodsTrait
      *
      * @return bool
      */
-    private function isModel($model)
+    protected function isModel($model)
     {
-        return is_subclass_of($model, 'Illuminate\Database\Eloquent\Model');
+        return $model instanceof Model;
     }
 }
