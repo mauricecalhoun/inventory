@@ -10,13 +10,6 @@ class Category extends Node
     use CategoryTrait;
 
     /**
-     * The category table.
-     *
-     * @var string
-     */
-    protected $table = 'categories';
-
-    /**
      * The scoped category attrbiutes.
      *
      * @var array

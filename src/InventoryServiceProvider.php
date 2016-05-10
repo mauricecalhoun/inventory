@@ -14,16 +14,9 @@ class InventoryServiceProvider extends ServiceProvider
     const VERSION = '1.8.0';
 
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
+     * {@inheritdoc}
      */
-    protected $defer = false;
-
-    /**
-     * Boot the service provider.
-     */
-    public function boot()
+    public function register()
     {
         // Load the inventory translations from the inventory lang folder
         $this->loadTranslationsFrom(__DIR__.'/Lang', 'inventory');
@@ -39,15 +32,8 @@ class InventoryServiceProvider extends ServiceProvider
         ], 'migrations');
     }
 
-    public function register()
-    {
-        //
-    }
-
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function provides()
     {

@@ -7,13 +7,6 @@ use Baum\Node;
 class Location extends Node
 {
     /**
-     * The locations table.
-     *
-     * @var string
-     */
-    protected $table = 'locations';
-
-    /**
      * The scoped location attributes.
      *
      * @var array
@@ -27,6 +20,6 @@ class Location extends Node
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'location_id', 'id');
+        return $this->hasMany(InventoryStock::class, 'location_id', 'id');
     }
 }
