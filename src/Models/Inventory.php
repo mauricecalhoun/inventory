@@ -1,10 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\AssemblyTrait;
-use Stevebauman\Inventory\Traits\InventoryVariantTrait;
-use Stevebauman\Inventory\Traits\InventoryTrait;
+use Trexology\Inventory\Traits\AssemblyTrait;
+use Trexology\Inventory\Traits\InventoryVariantTrait;
+use Trexology\Inventory\Traits\InventoryTrait;
 
 class Inventory extends Model
 {

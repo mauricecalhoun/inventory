@@ -1,11 +1,11 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
-use Stevebauman\Inventory\Exceptions\StockNotFoundException;
-use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
-use Stevebauman\Inventory\Helper;
+use Trexology\Inventory\Exceptions\SkuAlreadyExistsException;
+use Trexology\Inventory\Exceptions\StockNotFoundException;
+use Trexology\Inventory\Exceptions\StockAlreadyExistsException;
+use Trexology\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
@@ -208,7 +208,7 @@ trait InventoryTrait
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
-     * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
+     * @throws \Trexology\Inventory\Exceptions\NoUserLoggedInException
      *
      * @return Model
      */

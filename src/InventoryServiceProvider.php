@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory;
+namespace Trexology\Inventory;
 
 use Illuminate\Support\ServiceProvider;
 

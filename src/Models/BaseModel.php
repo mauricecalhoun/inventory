@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 

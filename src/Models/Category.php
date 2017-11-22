@@ -1,8 +1,8 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\CategoryTrait;
+use Trexology\Inventory\Traits\CategoryTrait;
 use Baum\Node;
 
 class Category extends Node
@@ -23,6 +23,6 @@ class Category extends Node
      */
     public function inventories()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\Inventory', 'category_id', 'id');
+        return $this->hasMany('Trexology\Inventory\Models\Inventory', 'category_id', 'id');
     }
 }

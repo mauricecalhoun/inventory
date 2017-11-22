@@ -1,13 +1,13 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
-use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Exceptions\StockNotFoundException;
-use Stevebauman\Inventory\Exceptions\InvalidTransactionStateException;
-use Stevebauman\Inventory\InventoryServiceProvider;
-use Stevebauman\Inventory\Helper;
+use Trexology\Inventory\Exceptions\InvalidQuantityException;
+use Trexology\Inventory\Exceptions\NotEnoughStockException;
+use Trexology\Inventory\Exceptions\StockNotFoundException;
+use Trexology\Inventory\Exceptions\InvalidTransactionStateException;
+use Trexology\Inventory\InventoryServiceProvider;
+use Trexology\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 
@@ -236,8 +236,8 @@ trait InventoryTransactionTrait
      * @param string           $reason
      * @param int|float|string $cost
      *
-     * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\NotEnoughStockException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      * @throws InvalidTransactionStateException
      *
      * @return $this|bool
@@ -277,8 +277,8 @@ trait InventoryTransactionTrait
      * @param string           $reason
      * @param int|float|string $cost
      *
-     * @throws \Stevebauman\Inventory\Exceptions\NotEnoughStockException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\NotEnoughStockException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      * @throws InvalidTransactionStateException
      *
      * @return $this|bool

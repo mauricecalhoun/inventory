@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Tests;
+namespace Trexology\Inventory\Tests;
 
 use Orchestra\Testbench\TestCase;
 
@@ -29,7 +29,7 @@ abstract class FunctionalTestCase extends TestCase
     protected function getPackageProviders()
     {
         return [
-            'Inventory' => 'Stevebauman\Inventory\InventoryServiceProvider',
+            'Inventory' => 'Trexology\Inventory\InventoryServiceProvider',
         ];
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\InvalidPartException;
+use Trexology\Inventory\Exceptions\InvalidPartException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -157,7 +157,7 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      *
      * @return $this
      */
@@ -196,7 +196,7 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      *
      * @return int
      */
@@ -223,7 +223,7 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      *
      * @return $this|bool
      */
@@ -260,7 +260,7 @@ trait AssemblyTrait
      * @param int|float|string $quantity
      * @param array            $extra
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidQuantityException
+     * @throws \Trexology\Inventory\Exceptions\InvalidQuantityException
      *
      * @return int
      */

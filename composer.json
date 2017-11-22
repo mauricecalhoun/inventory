@@ -1,11 +1,11 @@
 {
-    "name": "stevebauman/inventory",
+    "name": "trexology/laravel-inventory",
     "description": "Inventory management using Laravel 4 / 5",
     "keywords": ["laravel", "inventory", "inventory-management"],
     "authors": [
         {
-            "name": "Steve Bauman",
-            "email": "steven_bauman@outlook.com"
+            "name": "Trex Lim",
+            "email": "trexlim@gmail.com"
         }
     ],
     "license": "MIT",
@@ -23,14 +23,23 @@
     },
     "autoload": {
         "psr-4": {
-            "Stevebauman\\Inventory\\": "src/"
+            "Trexology\\Inventory\\": "src/"
         }
     },
     "autoload-dev":
     {
         "psr-4": {
-            "Stevebauman\\Inventory\\Tests\\": "tests/"
+            "Trexology\\Inventory\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+    "laravel": {
+      "providers": [
+        "Trexology\\Inventory\\InventoryServiceProvider"
+      ],
+      "aliases": {
+      }
+    }
+  }
 }

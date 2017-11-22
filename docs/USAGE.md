@@ -191,14 +191,14 @@ There are some built in 'questions' you can ask your retrieved records. Many mor
     /*
     * Returns true if the quantity entered is less than or equal to the amount of available stock.
     *
-    * This will throw a Stevebauman\Inventory\Exceptions\NotEnoughStockException if there is not enough
+    * This will throw a Trexology\Inventory\Exceptions\NotEnoughStockException if there is not enough
     */
     $stock->hasEnoughStock($quantity = 0);
     
     /*
     * Returns true if the quantity entered is a valid quantity for updating the stock with.
     *
-    * This will throw a Stevebauman\Inventory\Exceptions\InvalidQuantityException if it is not valid
+    * This will throw a Trexology\Inventory\Exceptions\InvalidQuantityException if it is not valid
     */
     $stock->isValidQuantity($quantity);
 
@@ -295,7 +295,7 @@ the method `createSku($code, $overwrite = false)` on your Inventory record like 
 This function contains no validation besides checking if an item already has an SKU, so you can create your own
 ways of generating unique SKU's.
 
-If an item already has an SKU, and `createSku($code)` is called, then an `Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException`
+If an item already has an SKU, and `createSku($code)` is called, then an `Trexology\Inventory\Exceptions\SkuAlreadyExistsException`
 will be thrown.
 
 If you'd like to overwrite the SKU if it exists, pass in `true` into the second argument in the function like so:
@@ -409,7 +409,7 @@ Occurs when you're trying to take more stock than available. Use a try/catch blo
         
         return "Successfully removed $quantity";
         
-    } catch(Stevebauman\Inventory\Exceptions\NotEnoughStockException)
+    } catch(Trexology\Inventory\Exceptions\NotEnoughStockException)
     {
         return "There wasn't enough stock to perform this action. Please try again.";
     }
@@ -424,7 +424,7 @@ Occurs when a stock of the item already exists at the specified location. Use a 
         
         return "Successfully moved stock to $location->name";
         
-    } catch(Stevebauman\Inventory\Exceptions\StockAlreadyExistsException)
+    } catch(Trexology\Inventory\Exceptions\StockAlreadyExistsException)
     {
         return "Stock already exists at this location. Please try again.";
     }
@@ -443,7 +443,7 @@ occurring, or you can use a try/catch block when processing actions involving qu
         
         return "Successfully added $quantity";
         
-    } catch(Stevebauman\Inventory\Exceptions\InvalidQuantityException)
+    } catch(Trexology\Inventory\Exceptions\InvalidQuantityException)
     {
         return "The quantity you entered is invalid. Please try again.";
     }
@@ -578,7 +578,7 @@ The trait:
     
 On your models:
     
-    use Stevebauman\Inventory\Traits\InventoryTrait;
+    use Trexology\Inventory\Traits\InventoryTrait;
     
     class Inventory extends Eloquent
     {

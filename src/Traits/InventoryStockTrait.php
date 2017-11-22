@@ -1,11 +1,11 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Exceptions\InvalidMovementException;
-use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
-use Stevebauman\Inventory\Helper;
+use Trexology\Inventory\Exceptions\NotEnoughStockException;
+use Trexology\Inventory\Exceptions\InvalidMovementException;
+use Trexology\Inventory\Exceptions\InvalidQuantityException;
+use Trexology\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;

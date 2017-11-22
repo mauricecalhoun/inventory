@@ -12,9 +12,9 @@
 >
     <filter>
         <whitelist>
-            <directory>src/Stevebauman/Inventory</directory>
+            <directory>src/trexology/laravel-inventory</directory>
             <exclude>
-                <file>src/Stevebauman/Inventory/InventoryServiceProvider.php</file>
+                <file>src/trexology/laravel-inventory/InventoryServiceProvider.php</file>
             </exclude>
         </whitelist>
     </filter>

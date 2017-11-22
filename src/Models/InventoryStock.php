@@ -1,8 +1,8 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventoryStockTrait;
+use Trexology\Inventory\Traits\InventoryStockTrait;
 
 class InventoryStock extends Model
 {
