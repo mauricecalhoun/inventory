@@ -5,9 +5,9 @@ multiple cascade delete paths are present on foreign keys, and you'll need to mo
 
 ### Installation (Laravel 4)
 
-Add inventory to your `composer.json` file:
+Run the following command:
 
-    "trexology/laravel-inventory" : "1.8.*"
+    composer require trexology/laravel-inventory
 
 Now perform a `composer update` on your project's source.
 
@@ -33,9 +33,9 @@ Be sure to publish the configuration if you'd like to customize inventory:
 
 ### Installation (Laravel 5)
 
-Add inventory to your `composer.json` file:
+Run the following command:
 
-    "trexology/laravel-inventory" : "1.8.*"
+    composer require trexology/laravel-inventory
 
 Now perform a `composer update` on your project's source.
 

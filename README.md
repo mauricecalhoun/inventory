@@ -1,16 +1,5 @@
 # Inventory
 
-[![Travis CI](https://img.shields.io/travis/trexology/laravel-inventory/v1.7.5.svg?style=flat-square)](https://travis-ci.org/trexology/laravel-inventory)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/trexology/laravel-inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trexology/laravel-inventory/?branch=master)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9.svg?style=flat-square)](https://insight.sensiolabs.com/projects/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9)
-[![Latest Stable Version](https://img.shields.io/packagist/v/trexology/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/trexology/laravel-inventory)
-[![Total Downloads](https://img.shields.io/packagist/dt/trexology/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/trexology/laravel-inventory)
-[![License](https://img.shields.io/packagist/l/trexology/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/trexology/laravel-inventory)
-
-## Index
-
-[![Join the chat at https://gitter.im/trexology/laravel-inventory](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/trexology/laravel-inventory?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 <ul>
     <li>
         <a href="#description">Description</a>
@@ -93,7 +82,7 @@ you can simply use the built in models.
 
 Recommended:
 
-- [Trexology/Revision](http://www.github.com/stevebauman/revision) (For tracking Category and Location changes to stocks)
+- [Stevebauman/Revision](http://www.github.com/stevebauman/revision) (For tracking Category and Location changes to stocks)
 
 If you need another Auth driver supported, please send a pull request or create an issue.
 
