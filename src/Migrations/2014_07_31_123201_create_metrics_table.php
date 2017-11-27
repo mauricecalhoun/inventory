@@ -10,7 +10,7 @@ class CreateMetricsTable extends Migration
      */
     public function up()
     {
-        Schema::create('metrics', function (Blueprint $table) {
+        Schema::create('inventory_metrics', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 

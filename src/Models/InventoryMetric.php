@@ -2,7 +2,7 @@
 
 namespace Trexology\Inventory\Models;
 
-class Metric extends Model
+class InventoryMetric extends Model
 {
     /**
      * The hasMany inventory items relationship.

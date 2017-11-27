@@ -97,28 +97,28 @@ Create the models, but keep in mind the models need:
 
 You are free to modify anything else (such as table names, model names, namespace etc!).
 
-Metric:
+InventoryMetric:
 
-    class Metric extends Model
+    class InventoryMetric extends Model
     {
         protected $table = 'metrics';
     }
 
-Location:
+InventoryLocation:
 
     use Baum\Node;
 
-    class Location extends Node
+    class InventoryLocation extends Node
     {
         protected $table = 'locations';
     }
 
-Category:
+InventoryCategory:
 
     use Trexology\Inventory\Traits\CategoryTrait;
     use Baum\Node;
 
-    class Category extends Node
+    class InventoryCategory extends Node
     {
         use CategoryTrait;
 
@@ -132,11 +132,11 @@ Category:
         }
     }
 
-Supplier:
+InventorySupplier:
 
     use Trexology\Inventory\Traits\SupplierTrait;
 
-    class Supplier extends BaseModel
+    class InventorySupplier extends BaseModel
     {
         use SupplierTrait;
 
