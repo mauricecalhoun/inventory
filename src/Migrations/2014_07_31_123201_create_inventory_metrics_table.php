@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMetricsTable extends Migration
+class CreateInventoryMetricsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -29,6 +29,6 @@ class CreateMetricsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('metrics');
+        Schema::dropIfExists('inventory_metrics');
     }
 }

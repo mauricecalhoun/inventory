@@ -21,7 +21,7 @@ class CreateInventoryTables extends Migration
             $table->string('name');
             $table->text('description')->nullable();
 
-            $table->foreign('category_id')->references('id')->on('categories')
+            $table->foreign('category_id')->references('id')->on('inventory_categories')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -29,7 +29,7 @@ class CreateInventoryTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
-            $table->foreign('metric_id')->references('id')->on('metrics')
+            $table->foreign('metric_id')->references('id')->on('inventory_metrics')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
@@ -61,7 +61,7 @@ class CreateInventoryTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
 
-            $table->foreign('location_id')->references('id')->on('locations')
+            $table->foreign('location_id')->references('id')->on('inventory_locations')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
