@@ -104,11 +104,11 @@ InventoryMetric:
         protected $table = 'metrics';
     }
 
-InventoryLocation:
+Location:
 
     use Baum\Node;
 
-    class InventoryLocation extends Node
+    class Location extends Node
     {
         protected $table = 'locations';
     }

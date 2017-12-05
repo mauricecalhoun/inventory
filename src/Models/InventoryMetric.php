@@ -4,6 +4,10 @@ namespace Trexology\Inventory\Models;
 
 class InventoryMetric extends Model
 {
+  protected $fillable = [
+              'name',
+              'symbol',
+            ];
     /**
      * The hasMany inventory items relationship.
      *

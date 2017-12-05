@@ -61,7 +61,7 @@ class CreateInventoryTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
 
-            $table->foreign('location_id')->references('id')->on('inventory_locations')
+            $table->foreign('location_id')->references('id')->on('locations')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
         });
@@ -76,6 +76,7 @@ class CreateInventoryTables extends Migration
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();
+            $table->morphs('receiver')->nullable();
             $table->string('reason')->nullable();
 
             $table->foreign('stock_id')->references('id')->on('inventory_stocks')

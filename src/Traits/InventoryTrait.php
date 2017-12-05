@@ -164,7 +164,7 @@ trait InventoryTrait
      */
     public function hasCategory()
     {
-        if ($this->category) {
+        if ($this->inventoryCategory) {
             return true;
         }
 

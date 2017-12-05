@@ -18,6 +18,13 @@ class Inventory extends Model
      * @var string
      */
     protected $table = 'inventories';
+    protected $fillable = [
+  							'name',
+  							'description',
+                'category_id',
+                'metric_id',
+                'user_id'
+  						];
 
     /**
      * The hasOne category relationship.
@@ -26,7 +33,7 @@ class Inventory extends Model
      */
     public function category()
     {
-        return $this->hasOne(Category::class);
+        return $this->hasOne(InventoryCategory::class,'id','category_id');
     }
 
     /**
@@ -36,7 +43,7 @@ class Inventory extends Model
      */
     public function metric()
     {
-        return $this->hasOne(Metric::class);
+        return $this->hasOne(InventoryMetric::class,'id','metric_id');
     }
 
     /**

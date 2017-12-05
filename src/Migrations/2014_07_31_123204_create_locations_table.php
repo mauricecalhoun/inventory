@@ -3,14 +3,14 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInventoryLocationsTable extends Migration
+class CreateLocationsTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('inventory_locations', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->integer('parent_id')->nullable()->index();
@@ -32,6 +32,6 @@ class CreateInventoryLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inventory_locations');
+        Schema::dropIfExists('locations');
     }
 }

@@ -9,6 +9,10 @@ class InventoryCategory extends Node
 {
     use CategoryTrait;
 
+    protected $fillable = [
+                'name',
+              ];
+
     /**
      * The scoped category attrbiutes.
      *

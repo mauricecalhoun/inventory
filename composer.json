@@ -34,12 +34,12 @@
     },
     "minimum-stability": "stable",
     "extra": {
-    "laravel": {
-      "providers": [
-        "Trexology\\Inventory\\InventoryServiceProvider"
-      ],
-      "aliases": {
+      "laravel": {
+        "providers": [
+          "Trexology\\Inventory\\InventoryServiceProvider"
+        ],
+        "aliases": {
+        }
       }
     }
-  }
 }

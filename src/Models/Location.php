@@ -4,7 +4,7 @@ namespace Trexology\Inventory\Models;
 
 use Baum\Node;
 
-class InventoryLocation extends Node
+class Location extends Node
 {
     /**
      * The scoped location attributes.
