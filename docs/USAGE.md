@@ -424,7 +424,7 @@ Occurs when a stock of the item already exists at the specified location. Use a 
 
         return "Successfully moved stock to $location->name";
 
-    } catch(Trexology\Inventory\Exceptions\StockAlreadyExistsException)
+    } catch(Trexology\Inventory\Exceptions\StockAlreadyExistsException $e)
     {
         return "Stock already exists at this location. Please try again.";
     }
@@ -443,7 +443,7 @@ occurring, or you can use a try/catch block when processing actions involving qu
 
         return "Successfully added $quantity";
 
-    } catch(Trexology\Inventory\Exceptions\InvalidQuantityException)
+    } catch(Trexology\Inventory\Exceptions\InvalidQuantityException $e)
     {
         return "The quantity you entered is invalid. Please try again.";
     }
