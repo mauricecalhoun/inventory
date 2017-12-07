@@ -29,6 +29,13 @@ trait InventoryStockTrait
     public $cost = 0;
 
     /**
+     * Stores the receiver object.
+     *
+     * @varObject
+     */
+    public $receiver = null;
+
+    /**
      * Stores the quantity before an update.
      *
      * @var int|float|string
@@ -117,7 +124,7 @@ trait InventoryStockTrait
      */
     public function postUpdate()
     {
-        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost);
+        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver);
     }
 
     /**
@@ -149,9 +156,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function remove($quantity, $reason = '', $cost = 0)
+    public function remove($quantity, $reason = '', $cost = 0, $receiver = null)
     {
-        return $this->take($quantity, $reason, $cost);
+        return $this->take($quantity, $reason, $cost, $receiver);
     }
 
     /**
@@ -166,9 +173,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function take($quantity, $reason = '', $cost = 0)
+    public function take($quantity, $reason = '', $cost = 0, $receiver = null)
     {
-        return $this->processTakeOperation($quantity, $reason, $cost);
+        return $this->processTakeOperation($quantity, $reason, $cost, $receiver);
     }
 
     /**
@@ -385,7 +392,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    protected function processTakeOperation($taking, $reason = '', $cost = 0)
+    protected function processTakeOperation($taking, $reason = '', $cost = 0, $receiver = null)
     {
         if($this->isValidQuantity($taking) && $this->hasEnoughStock($taking)) {
             $available = $this->getAttribute('quantity');
@@ -407,8 +414,9 @@ trait InventoryStockTrait
 
             $this->setCost($cost);
 
-            $this->dbStartTransaction();
+            $this->receiver = $receiver;
 
+            $this->dbStartTransaction();
             try {
                 if ($this->save()) {
                     $this->dbCommitTransaction();
@@ -594,13 +602,17 @@ trait InventoryStockTrait
      *
      * @return bool|Model
      */
-    protected function generateStockMovement($before, $after, $reason = '', $cost = 0)
+    protected function generateStockMovement($before, $after, $reason = '', $cost = 0, $receiver = null)
     {
         $movement = $this->movements()->getRelated()->newInstance();
 
         $movement->setAttribute('stock_id', $this->getKey());
         $movement->setAttribute('before', $before);
         $movement->setAttribute('after', $after);
+        if ($receiver) {
+          $movement->setAttribute('receiver_id', $receiver->id);
+          $movement->setAttribute('receiver_type', get_class($receiver));
+        }
         $movement->setAttribute('reason', $reason);
         $movement->setAttribute('cost', $cost);
 
