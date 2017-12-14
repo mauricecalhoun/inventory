@@ -530,11 +530,11 @@ trait InventoryStockTrait
     protected function processRollbackOperation(Model $movement, $recursive = false)
     {
         if ($recursive) {
-            dd(false);
             return $this->processRecursiveRollbackOperation($movement);
         }
 
-        $this->setAttribute('quantity', $movement->getAttribute('before'));
+        $amt = $movement->getAttribute('after')- $movement->getAttribute('before');
+        $this->setAttribute('quantity', $this->quantity - $amt);
 
         $reason = Lang::get('inventory::reasons.rollback', [
             'id' => $movement->getOriginal('id'),
