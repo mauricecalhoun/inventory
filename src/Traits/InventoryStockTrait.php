@@ -29,11 +29,12 @@ trait InventoryStockTrait
     public $cost = 0;
 
     /**
-     * Stores the receiver object.
+     * Stores the receiver params.
      *
-     * @varObject
+     * @var string
      */
-    public $receiver = null;
+    public $receiver_id = null;
+    public $receiver_type = null;
 
     /**
      * Stores the quantity before an update.
@@ -114,7 +115,7 @@ trait InventoryStockTrait
      */
     public function postCreate()
     {
-        $this->generateStockMovement(0, $this->getAttribute('quantity'), $this->reason, $this->cost);
+        $this->generateStockMovement(0, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver_id, $this->receiver_type);
     }
 
     /**
@@ -124,7 +125,7 @@ trait InventoryStockTrait
      */
     public function postUpdate()
     {
-        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver);
+        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver_id, $this->receiver_type);
     }
 
     /**
@@ -156,9 +157,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function remove($quantity, $reason = '', $cost = 0, $receiver = null)
+    public function remove($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
-        return $this->take($quantity, $reason, $cost, $receiver);
+        return $this->take($quantity, $reason, $cost, $receiver_id, $receiver_type);
     }
 
     /**
@@ -173,9 +174,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function take($quantity, $reason = '', $cost = 0, $receiver = null)
+    public function take($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
-        return $this->processTakeOperation($quantity, $reason, $cost, $receiver);
+        return $this->processTakeOperation($quantity, $reason, $cost, $receiver_id, $receiver_type);
     }
 
     /**
@@ -187,9 +188,9 @@ trait InventoryStockTrait
      *
      * @return $this
      */
-    public function add($quantity, $reason = '', $cost = 0)
+    public function add($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
-        return $this->put($quantity, $reason, $cost);
+        return $this->put($quantity, $reason, $cost, $receiver_id, $receiver_type);
     }
 
     /**
@@ -203,9 +204,9 @@ trait InventoryStockTrait
      *
      * @return $this
      */
-    public function put($quantity, $reason = '', $cost = 0)
+    public function put($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
-        return $this->processPutOperation($quantity, $reason, $cost);
+        return $this->processPutOperation($quantity, $reason, $cost, $receiver_id, $receiver_type);
     }
 
     /**
@@ -392,7 +393,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    protected function processTakeOperation($taking, $reason = '', $cost = 0, $receiver = null)
+    protected function processTakeOperation($taking, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
         if($this->isValidQuantity($taking) && $this->hasEnoughStock($taking)) {
             $available = $this->getAttribute('quantity');
@@ -414,7 +415,8 @@ trait InventoryStockTrait
 
             $this->setCost($cost);
 
-            $this->receiver = $receiver;
+            $this->receiver_id = $receiver_id;
+            $this->receiver_type = $receiver_type;
 
             $this->dbStartTransaction();
             try {
@@ -444,7 +446,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    protected function processPutOperation($putting, $reason = '', $cost = 0)
+    protected function processPutOperation($putting, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
         if($this->isValidQuantity($putting)) {
             $current = $this->getAttribute('quantity');
@@ -462,6 +464,9 @@ trait InventoryStockTrait
             $this->setReason($reason);
 
             $this->setCost($cost);
+
+            $this->receiver_id = $receiver_id;
+            $this->receiver_type = $receiver_type;
 
             $this->dbStartTransaction();
 
@@ -525,6 +530,7 @@ trait InventoryStockTrait
     protected function processRollbackOperation(Model $movement, $recursive = false)
     {
         if ($recursive) {
+            dd(false);
             return $this->processRecursiveRollbackOperation($movement);
         }
 
@@ -536,6 +542,9 @@ trait InventoryStockTrait
         ]);
 
         $this->setReason($reason);
+
+        $this->receiver_id = $movement->receiver_id;
+        $this->receiver_type = $movement->receiver_type;
 
         if ($this->rollbackCostEnabled()) {
             $this->setCost($movement->getAttribute('cost'));
@@ -602,16 +611,16 @@ trait InventoryStockTrait
      *
      * @return bool|Model
      */
-    protected function generateStockMovement($before, $after, $reason = '', $cost = 0, $receiver = null)
+    protected function generateStockMovement($before, $after, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null)
     {
         $movement = $this->movements()->getRelated()->newInstance();
 
         $movement->setAttribute('stock_id', $this->getKey());
         $movement->setAttribute('before', $before);
         $movement->setAttribute('after', $after);
-        if ($receiver) {
-          $movement->setAttribute('receiver_id', $receiver->id);
-          $movement->setAttribute('receiver_type', get_class($receiver));
+        if ($receiver_id && $receiver_type) {
+          $movement->setAttribute('receiver_id', $receiver_id);
+          $movement->setAttribute('receiver_type', $receiver_type);
         }
         $movement->setAttribute('reason', $reason);
         $movement->setAttribute('cost', $cost);
