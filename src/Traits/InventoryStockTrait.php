@@ -246,6 +246,42 @@ trait InventoryStockTrait
     }
 
     /**
+     * Return stock assigned to an entity. Stock may be disposed of during the process of returning
+     *
+     * @param mixed $movement
+     * @param bool  $recursive
+     *
+     * @return $this|bool
+     */
+    public function returnStock($movement, $collect_amt, $collect_reason, $dispose_amt, $dispose_reason)
+    {
+        if (!$movement) {
+            $movement = $this->getLastMovement();
+        }
+
+        $amt = $movement->getAttribute('before') - $movement->getAttribute('after');
+        $balance = $amt - $dispose_amt - $collect_amt;
+        if ($amt > 0 && $balance >= 0) {
+          $movement->returned = true; // Prevent duplicate return for this movements
+          $movement->save();
+
+          // $reason = Lang::get('inventory::reasons.rollback', [
+          //     'id' => $movement->getOriginal('id'),
+          //     'date' => $movement->getOriginal('created_at'),
+          // ]);
+          $bal_reason = "Balance leftover from returning stock";
+          $this->put($amt,$collect_reason,0,$movement->receiver_id,$movement->receiver_type);
+          $this->take($dispose_amt,$dispose_reason);
+          if ($balance > 0) {
+            $this->take($balance,$bal_reason,0,$movement->receiver_id,$movement->receiver_type);
+          }
+
+        }
+
+        return false;
+    }
+
+    /**
      * Rolls back a specific movement.
      *
      * @param mixed $movement

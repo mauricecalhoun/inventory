@@ -78,6 +78,7 @@ class CreateInventoryTables extends Migration
             $table->decimal('cost', 8, 2)->default(0)->nullable();
             $table->nullableMorphs('receiver');
             $table->string('reason')->nullable();
+            $table->boolean('returned')->default(0);
 
             $table->foreign('stock_id')->references('id')->on('inventory_stocks')
                 ->onUpdate('restrict')

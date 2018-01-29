@@ -40,4 +40,16 @@ trait InventoryStockMovementTrait
     {
         return $this->stock->rollback($this, $recursive);
     }
+
+    /**
+     * Rolls back the current movement.
+     *
+     * @param bool $recursive
+     *
+     * @return mixed
+     */
+    public function returnStock($collect_amt, $collect_reason, $dispose_amt, $dispose_reason)
+    {
+        return $this->stock->returnStock($this, $collect_amt, $collect_reason, $dispose_amt, $dispose_reason);
+    }
 }
