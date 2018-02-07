@@ -269,7 +269,7 @@ trait InventoryStockTrait
           //     'id' => $movement->getOriginal('id'),
           //     'date' => $movement->getOriginal('created_at'),
           // ]);
-          $bal_reason = "Balance leftover from returning stock";
+          $bal_reason = "Balance leftover from stock redistribution. (id: $movement->id)";
           $this->put($amt,$collect_reason,0,$movement->receiver_id,$movement->receiver_type);
           $this->take($dispose_amt,$dispose_reason);
           if ($balance > 0) {
