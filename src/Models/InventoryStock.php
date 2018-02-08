@@ -8,6 +8,10 @@ class InventoryStock extends Model
 {
     use InventoryStockTrait;
 
+    protected $casts = [
+        'serial' => 'array',
+    ];
+
     /**
      * The belongsTo inventory item relationship.
      *

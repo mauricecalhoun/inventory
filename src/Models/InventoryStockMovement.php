@@ -8,6 +8,10 @@ class InventoryStockMovement extends Model
 {
     use InventoryStockMovementTrait;
 
+    protected $casts = [
+        'serial' => 'array',
+    ];
+    
     /**
      * The belongsTo stock relationship.
      *
