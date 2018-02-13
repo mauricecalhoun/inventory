@@ -212,7 +212,7 @@ trait InventoryTrait
      *
      * @return Model
      */
-    public function createStockOnLocation($quantity, Model $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
+    public function createStockOnLocation($quantity, Model $location, $reason = '', $cost = 0, $serial = null, $aisle = null, $row = null, $bin = null)
     {
         try {
             // We want to make sure stock doesn't exist on the specified location already
@@ -235,7 +235,7 @@ trait InventoryTrait
             $stock->setAttribute('bin', $bin);
 
             if($stock->save()) {
-                return $stock->put($quantity, $reason, $cost);
+                return $stock->put($quantity, $reason, $cost, null, null, $serial);
             }
         }
 
