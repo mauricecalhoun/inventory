@@ -510,7 +510,7 @@ trait InventoryStockTrait
             }
 
             if (is_string($serial)) {
-              $serial = explode(',', $serial);
+              $serial = preg_split('@,@', $serial, NULL, PREG_SPLIT_NO_EMPTY);
             }
             if ($this->serial) {
               $this->serial = array_merge($this->serial,$serial);
