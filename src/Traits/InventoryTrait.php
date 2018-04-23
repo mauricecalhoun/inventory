@@ -234,7 +234,7 @@ trait InventoryTrait
             $stock->setAttribute('row', $row);
             $stock->setAttribute('bin', $bin);
 
-            if($stock->save()) {
+            if($stock->save() && $quantity > 0) {
                 return $stock->put($quantity, $reason, $cost, null, null, $serial);
             }
         }
