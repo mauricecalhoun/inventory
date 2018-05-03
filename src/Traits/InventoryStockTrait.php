@@ -269,22 +269,24 @@ trait InventoryStockTrait
         $amt = $movement->getAttribute('before') - $movement->getAttribute('after');
         $balance = $amt - $dispose_amt - $collect_amt;
         if ($amt > 0 && $balance >= 0) {
-          $movement->returned = true; // Prevent duplicate return for this movements
-          $movement->save();
-
           // $bal_reason = Lang::get('inventory::reasons.rollback', [
           //     'id' => $movement->getOriginal('id'),
           //     'date' => $movement->getOriginal('created_at'),
           // ]);
           $bal_reason = "Balance leftover from stock redistribution. (id: $movement->id)";
 
-          $bal_serial = array_diff($movement->serial, $collect_serial,$dispose_serial);
+          $bal_serial = null;
+          if (is_array($collect_serial) && is_array($dispose_serial)) {
+            $bal_serial = array_diff($movement->serial, $collect_serial,$dispose_serial);
+          }
           $this->put($amt,$collect_reason,0,$movement->receiver_id,$movement->receiver_type,$collect_serial);
-          $this->take($dispose_amt,$dispose_reason,$dispose_serial);
+          $this->take($dispose_amt,$dispose_reason,0,null,null,$dispose_serial);
           if ($balance > 0) {
             $this->take($balance,$bal_reason,0,$movement->receiver_id,$movement->receiver_type,$bal_serial);
           }
 
+          $movement->returned = true; // Prevent duplicate return for this movements
+          $movement->save();
         }
 
         return false;
@@ -456,9 +458,9 @@ trait InventoryStockTrait
             $this->setAttribute('quantity', $left);
 
             if (is_string($serial)) {
-              $serial = explode(',', $serial);
+              $serial = preg_split('@,@', $serial, NULL, PREG_SPLIT_NO_EMPTY);
             }
-            if ($this->serial) {
+            if ($this->serial && is_array($serial)) {
               $this->serial = array_diff($this->serial,$serial);
             }
 
@@ -512,10 +514,10 @@ trait InventoryStockTrait
             if (is_string($serial)) {
               $serial = preg_split('@,@', $serial, NULL, PREG_SPLIT_NO_EMPTY);
             }
-            if ($this->serial) {
+            if ($this->serial && is_array($serial)) {
               $this->serial = array_merge($this->serial,$serial);
             }
-            else{
+            else {
               $this->serial = $serial;
             }
             $this->quantity = $total;

@@ -48,8 +48,8 @@ trait InventoryStockMovementTrait
      *
      * @return mixed
      */
-    public function returnStock($collect_amt, $collect_reason, $dispose_amt, $dispose_reason)
+    public function returnStock($collect_amt, $collect_reason, $collect_serial, $dispose_amt, $dispose_reason, $dispose_serial)
     {
-        return $this->stock->returnStock($this, $collect_amt, $collect_reason, $dispose_amt, $dispose_reason);
+        return $this->stock->returnStock($this, $collect_amt, $collect_reason, $collect_serial, $dispose_amt, $dispose_reason, $dispose_serial);
     }
 }
