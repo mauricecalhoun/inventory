@@ -2,7 +2,7 @@
 
 namespace Trexology\Inventory\Models;
 
-class InventoryMetric extends Model
+class InventoryMetric extends BaseModel
 {
   protected $fillable = [
               'name',

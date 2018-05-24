@@ -517,7 +517,7 @@ trait InventoryStockTrait
             if ($this->serial && is_array($serial)) {
               $this->serial = array_merge($this->serial,$serial);
             }
-            else {
+            elseif (!$this->serial) {
               $this->serial = $serial;
             }
             $this->quantity = $total;
