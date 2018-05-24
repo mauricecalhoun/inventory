@@ -4,7 +4,7 @@ namespace Trexology\Inventory\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Model extends Eloquent
+class BaseModel extends Eloquent
 {
     //
 }

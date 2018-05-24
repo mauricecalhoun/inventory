@@ -4,7 +4,7 @@ namespace Trexology\Inventory\Models;
 
 use Trexology\Inventory\Traits\InventorySkuTrait;
 
-class InventorySku extends Model
+class InventorySku extends BaseModel
 {
     use InventorySkuTrait;
 

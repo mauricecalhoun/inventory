@@ -6,7 +6,7 @@ use Trexology\Inventory\Traits\AssemblyTrait;
 use Trexology\Inventory\Traits\InventoryVariantTrait;
 use Trexology\Inventory\Traits\InventoryTrait;
 
-class Inventory extends Model
+class Inventory extends BaseModel
 {
     use InventoryTrait;
     use InventoryVariantTrait;

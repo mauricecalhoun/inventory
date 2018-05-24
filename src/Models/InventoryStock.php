@@ -4,7 +4,7 @@ namespace Trexology\Inventory\Models;
 
 use Trexology\Inventory\Traits\InventoryStockTrait;
 
-class InventoryStock extends Model
+class InventoryStock extends BaseModel
 {
     use InventoryStockTrait;
 

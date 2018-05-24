@@ -4,7 +4,7 @@ namespace Trexology\Inventory\Models;
 
 use Trexology\Inventory\Traits\SupplierTrait;
 
-class InventorySupplier extends Model
+class InventorySupplier extends BaseModel
 {
     use SupplierTrait;
 

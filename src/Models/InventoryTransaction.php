@@ -5,7 +5,7 @@ namespace Trexology\Inventory\Models;
 use Trexology\Inventory\Traits\InventoryTransactionTrait;
 use Trexology\Inventory\Interfaces\StateableInterface;
 
-class InventoryTransaction extends Model implements StateableInterface
+class InventoryTransaction extends BaseModel implements StateableInterface
 {
     use InventoryTransactionTrait;
 

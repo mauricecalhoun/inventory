@@ -4,14 +4,14 @@ namespace Trexology\Inventory\Models;
 
 use Trexology\Inventory\Traits\InventoryStockMovementTrait;
 
-class InventoryStockMovement extends Model
+class InventoryStockMovement extends BaseModel
 {
     use InventoryStockMovementTrait;
 
     protected $casts = [
         'serial' => 'array',
     ];
-    
+
     /**
      * The belongsTo stock relationship.
      *
