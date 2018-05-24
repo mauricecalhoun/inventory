@@ -458,8 +458,9 @@ trait InventoryStockTrait
             $this->setAttribute('quantity', $left);
 
             if (is_string($serial)) {
-              $serial = preg_split('@,@', $serial, NULL, PREG_SPLIT_NO_EMPTY);
+              $serial = preg_split("/\s*,\s*/", trim($serial), -1, PREG_SPLIT_NO_EMPTY);
             }
+
             if ($this->serial && is_array($serial)) {
               $this->serial = array_diff($this->serial,$serial);
             }
@@ -512,7 +513,7 @@ trait InventoryStockTrait
             }
 
             if (is_string($serial)) {
-              $serial = preg_split('@,@', $serial, NULL, PREG_SPLIT_NO_EMPTY);
+              $serial = preg_split("/\s*,\s*/", trim($serial), -1, PREG_SPLIT_NO_EMPTY);
             }
             if ($this->serial && is_array($serial)) {
               $this->serial = array_merge($this->serial,$serial);
