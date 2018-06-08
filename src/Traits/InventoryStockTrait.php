@@ -103,6 +103,12 @@ trait InventoryStockTrait
             // so we can create generate an update with it.
             $model->beforeQuantity = $model->getOriginal('quantity');
 
+            // Check if a serial number has been changed,
+            $original = json_decode($model->getOriginal('serial'));
+            if ($model->serial != $original && $model->quantity == $model->getOriginal('quantity')) {
+              $model->reason = "Serial number adjustment";
+            }
+
             // Check if a reason has been set, if not let's
             // retrieve the default change reason.
             if (!$model->reason) {
