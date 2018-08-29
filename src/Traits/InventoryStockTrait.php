@@ -268,6 +268,9 @@ trait InventoryStockTrait
      */
     public function returnStock($movement, $collect_amt, $collect_reason, $collect_serial, $dispose_amt, $dispose_reason,$dispose_serial)
     {
+        $collect_serial = is_null($collect_serial) ? [] : $collect_serial;
+        $dispose_serial = is_null($dispose_serial) ? [] : $dispose_serial;
+
         if (!$movement) {
             $movement = $this->getLastMovement();
         }
