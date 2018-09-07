@@ -270,6 +270,7 @@ trait InventoryStockTrait
     {
         $collect_serial = is_null($collect_serial) ? [] : $collect_serial;
         $dispose_serial = is_null($dispose_serial) ? [] : $dispose_serial;
+        $movement_serial = is_null($movement->serial) ? [] : $dispose_serial;
 
         if (!$movement) {
             $movement = $this->getLastMovement();
@@ -286,7 +287,7 @@ trait InventoryStockTrait
 
           $bal_serial = null;
           if (is_array($collect_serial) && is_array($dispose_serial)) {
-            $bal_serial = array_diff($movement->serial, $collect_serial,$dispose_serial);
+            $bal_serial = array_diff($movement_serial, $collect_serial,$dispose_serial);
           }
           $this->put($amt,$collect_reason,0,$movement->receiver_id,$movement->receiver_type,$collect_serial);
           $this->take($dispose_amt,$dispose_reason,0,null,null,$dispose_serial);
