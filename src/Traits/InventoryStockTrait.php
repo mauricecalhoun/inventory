@@ -270,7 +270,7 @@ trait InventoryStockTrait
     {
         $collect_serial = is_null($collect_serial) ? [] : $collect_serial;
         $dispose_serial = is_null($dispose_serial) ? [] : $dispose_serial;
-        $movement_serial = is_null($movement->serial) ? [] : $dispose_serial;
+        $movement_serial = is_null($movement->serial) ? [] : $movement->serial;
 
         if (!$movement) {
             $movement = $this->getLastMovement();
