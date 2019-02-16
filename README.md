@@ -7,6 +7,12 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://img.shields.io/packagist/l/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 
+## 🚨 Abandoned 🚨
+
+This package was created years ago to supplement an internal application that was in development. The project was cancelled, and I have no time and use to maintain this repository. If anyone would like to take over and maintain this package, please contact me at steven_bauman@outlook.com, or create an issue.
+
+Thank you!
+
 ## Index
 
 [![Join the chat at https://gitter.im/stevebauman/inventory](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/stevebauman/inventory?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
