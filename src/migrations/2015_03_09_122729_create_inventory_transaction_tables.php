@@ -11,10 +11,10 @@ class CreateInventoryTransactionTables extends Migration
     public function up()
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('stock_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
@@ -29,10 +29,10 @@ class CreateInventoryTransactionTables extends Migration
         });
 
         Schema::create('inventory_transaction_histories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('transaction_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('transaction_id')->unsigned();
 
             /*
              * Allows tracking states for each transaction

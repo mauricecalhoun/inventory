@@ -11,13 +11,13 @@ class CreateInventoryTables extends Migration
     public function up()
     {
         Schema::create('inventories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('metric_id')->unsigned();
+            $table->bigInteger('category_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
 
@@ -35,13 +35,13 @@ class CreateInventoryTables extends Migration
         });
 
         Schema::create('inventory_stocks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('location_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('inventory_id')->unsigned();
+            $table->bigInteger('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
             $table->string('aisle')->nullable();
             $table->string('row')->nullable();
@@ -67,7 +67,7 @@ class CreateInventoryTables extends Migration
         });
 
         Schema::create('inventory_stock_movements', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
 

@@ -11,10 +11,10 @@ class CreateMetricsTable extends Migration
     public function up()
     {
         Schema::create('metrics', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
 
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');
 
