@@ -9,9 +9,7 @@
 
 ## 🚨 Abandoned 🚨
 
-This package was created years ago to supplement an internal application that was in development. The project was cancelled, and I have no time and use to maintain this repository. If anyone would like to take over and maintain this package, please contact me at steven_bauman@outlook.com, or create an issue.
-
-Thank you!
+This package has been taken over by @mauricecalhoun.
 
 ## Index
 
