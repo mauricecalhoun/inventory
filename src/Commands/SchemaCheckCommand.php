@@ -63,7 +63,7 @@ class SchemaCheckCommand extends Command
      * @throws DatabaseTableReservedException
      * @throws DependencyNotFoundException
      */
-    public function fire()
+    public function handle()
     {
         if ($this->checkDependencies()) {
             $this->info('Schema dependencies are all good!');

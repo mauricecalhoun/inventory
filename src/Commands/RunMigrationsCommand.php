@@ -26,7 +26,7 @@ class RunMigrationsCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
         $this->call('migrate', [
             '--path' => 'vendor/stevebauman/inventory/src/migrations',
