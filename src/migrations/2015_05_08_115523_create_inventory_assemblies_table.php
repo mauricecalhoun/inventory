@@ -12,11 +12,11 @@ class CreateInventoryAssembliesTable extends Migration
     {
         Schema::create('inventory_assemblies', function (Blueprint $table) {
 
-            $table->increments('id');
-            $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('part_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->bigInteger('inventory_id')->unsigned();
+            $table->bigInteger('part_id')->unsigned();
             $table->integer('quantity')->nullable();
+            $table->timestamps();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');

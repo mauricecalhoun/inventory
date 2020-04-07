@@ -34,12 +34,12 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
     private function migrateTables()
     {
         DB::schema()->create('users', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
         });
 
         DB::schema()->create('metrics', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('name');
@@ -51,7 +51,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('categories', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->integer('parent_id')->nullable()->index();
             $table->integer('lft')->nullable()->index();
@@ -67,9 +67,9 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('locations', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('parent_id')->nullable()->index();
+            $table->bigInteger('parent_id')->nullable()->index();
             $table->integer('lft')->nullable()->index();
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
@@ -83,12 +83,12 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventories', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
-            $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('metric_id')->unsigned();
+            $table->bigInteger('category_id')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
 
@@ -106,11 +106,11 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_stocks', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('location_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('inventory_id')->unsigned();
+            $table->bigInteger('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
             $table->string('aisle')->nullable();
             $table->string('row')->nullable();
@@ -136,10 +136,10 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_stock_movements', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('stock_id')->unsigned();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->bigInteger('stock_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();
@@ -155,9 +155,9 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_skus', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
+            $table->bigInteger('inventory_id')->unsigned();
             $table->string('code', 20);
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
@@ -171,7 +171,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('suppliers', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
 
             $table->string('name');
@@ -189,11 +189,11 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_suppliers', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
 
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('supplier_id')->unsigned();
+            $table->bigInteger('inventory_id')->unsigned();
+            $table->bigInteger('supplier_id')->unsigned();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')
@@ -205,10 +205,10 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_transactions', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('stock_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
@@ -223,10 +223,10 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->create('inventory_transaction_histories', function ($table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('transaction_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('transaction_id')->unsigned();
 
             /*
              * Allows tracking states for each transaction
@@ -250,7 +250,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         });
 
         DB::schema()->table('inventories', function ($table) {
-            $table->integer('parent_id')->unsigned()->nullable()->after('id');
+            $table->bigInteger('parent_id')->unsigned()->nullable()->after('id');
 
             $table->foreign('parent_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')
@@ -263,10 +263,10 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
 
         DB::schema()->create('inventory_assemblies', function ($table) {
 
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('part_id')->unsigned();
+            $table->bigInteger('inventory_id')->unsigned();
+            $table->bigInteger('part_id')->unsigned();
             $table->integer('quantity')->nullable();
 
             // Extra column for testing

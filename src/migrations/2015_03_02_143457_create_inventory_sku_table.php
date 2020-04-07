@@ -11,9 +11,9 @@ class CreateInventorySkuTable extends Migration
     public function up()
     {
         Schema::create('inventory_skus', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
+            $table->bigInteger('inventory_id')->unsigned();
             $table->string('code');
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
