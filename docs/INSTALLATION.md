@@ -1,10 +1,13 @@
 ## Installation
 
+> **Note**: If you're looking to use Inventory with MSSQL, you will need to modify the published migrations to suit. By default,
+multiple cascade delete paths are present on foreign keys, and you'll need to modify and / or remove these for compatibility.
+
 ### Installation (Laravel 4)
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.6.*"
+    "stevebauman/inventory" : "1.7.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -32,7 +35,7 @@ Be sure to publish the configuration if you'd like to customize inventory:
 
 Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "1.6.*"
+    "stevebauman/inventory" : "1.7.*"
 
 Now perform a `composer update` on your project's source.
 
@@ -117,6 +120,8 @@ Category:
     
     class Category extends Node
     {
+        use CategoryTrait;
+        
         protected $table = 'categories';
         
         protected $scoped = ['belongs_to'];
@@ -137,7 +142,7 @@ Supplier:
     
         protected $table = 'suppliers';
         
-         public function items()
+        public function items()
         {
             return $this->belongsToMany('Inventory', 'inventory_suppliers', 'supplier_id')->withTimestamps();
         }
@@ -145,6 +150,7 @@ Supplier:
 
 Inventory:
 
+    use Stevebauman\Inventory\Traits\AssemblyTrait;
     use Stevebauman\Inventory\Traits\InventoryTrait;
     use Stevebauman\Inventory\Traits\InventoryVariantTrait;
     
@@ -152,8 +158,9 @@ Inventory:
     {
         use InventoryTrait;
         use InventoryVariantTrait;
+        use AssemblyTrait;
     
-        protected $table = 'inventory';
+        protected $table = 'inventories';
         
         public function category()
         {
@@ -178,6 +185,12 @@ Inventory:
         public function suppliers()
         {
             return $this->belongsToMany('Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+        }
+        
+        public function assemblies()
+        {
+            return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')
+                ->withPivot(['quantity'])->withTimestamps();
         }
     }
     

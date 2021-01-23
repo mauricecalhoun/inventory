@@ -2,13 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
-/**
- * Class Metric.
- */
-class Metric extends BaseModel
+class Metric extends Model
 {
-    protected $table = 'metrics';
-
     /**
      * The hasMany inventory items relationship.
      *
@@ -16,6 +11,6 @@ class Metric extends BaseModel
      */
     public function items()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\Inventory', 'metric_id', 'id');
+        return $this->hasMany(Inventory::class, 'metric_id', 'id');
     }
 }

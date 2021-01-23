@@ -2,25 +2,20 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Stevebauman\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Trait InventoryTransactionHistoryTrait.
- */
 trait InventoryTransactionHistoryTrait
 {
-    /*
-     * Provides user identification to the model
-     */
-    use UserIdentificationTrait;
-
     /**
      * Make sure we try and assign the current user if enabled.
+     *
+     * @return void
      */
     public static function bootInventoryTransactionHistoryTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = static::getCurrentUserId();
+            $model->setAttribute('user_id', Helper::getCurrentUserId());
         });
     }
 

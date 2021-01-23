@@ -4,26 +4,9 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\SupplierTrait;
 
-class Supplier extends BaseModel
+class Supplier extends Model
 {
     use SupplierTrait;
-
-    protected $table = 'suppliers';
-
-    protected $fillable = [
-        'name',
-        'address',
-        'postal_code',
-        'zip_code',
-        'region',
-        'city',
-        'country',
-        'contact_title',
-        'contact_name',
-        'contact_phone',
-        'contact_fax',
-        'contact_email',
-    ];
 
     /**
      * The belongsToMany items relationship.
@@ -32,6 +15,6 @@ class Supplier extends BaseModel
      */
     public function items()
     {
-        return $this->belongsToMany('Stevebauman\Inventory\Models\Inventory', 'inventory_suppliers', 'supplier_id')->withTimestamps();
+        return $this->belongsToMany(Inventory::class, 'inventory_suppliers', 'supplier_id')->withTimestamps();
     }
 }

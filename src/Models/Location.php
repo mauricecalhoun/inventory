@@ -4,17 +4,13 @@ namespace Stevebauman\Inventory\Models;
 
 use Baum\Node;
 
-/**
- * Class Location.
- */
 class Location extends Node
 {
-    protected $table = 'locations';
-
-    protected $fillable = [
-        'name',
-    ];
-
+    /**
+     * The scoped location attributes.
+     *
+     * @var array
+     */
     protected $scoped = ['belongs_to'];
 
     /**
@@ -24,6 +20,6 @@ class Location extends Node
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'location_id', 'id');
+        return $this->hasMany(InventoryStock::class, 'location_id', 'id');
     }
 }

@@ -1,13 +1,6 @@
 <?php
 
-/**
- * The Inventory Exceptions language file.
- *
- * @author Steve Bauman
- */
 return [
-
-    'InvalidLocationException' => 'Location :location is invalid',
 
     'InvalidMovementException' => 'Movement :movement is invalid',
 

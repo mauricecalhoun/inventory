@@ -6,24 +6,18 @@ use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
 
-/**
- * Class Inventory.
- */
-class Inventory extends BaseModel
+class Inventory extends Model
 {
     use InventoryTrait;
     use InventoryVariantTrait;
     use AssemblyTrait;
 
+    /**
+     * The inventories table.
+     *
+     * @var string
+     */
     protected $table = 'inventories';
-
-    protected $fillable = [
-        'user_id',
-        'category_id',
-        'metric_id',
-        'name',
-        'description',
-    ];
 
     /**
      * The hasOne category relationship.
@@ -32,7 +26,7 @@ class Inventory extends BaseModel
      */
     public function category()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Category', 'id', 'category_id');
+        return $this->hasOne(Category::class);
     }
 
     /**
@@ -42,7 +36,7 @@ class Inventory extends BaseModel
      */
     public function metric()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Metric', 'id', 'metric_id');
+        return $this->hasOne(Metric::class);
     }
 
     /**
@@ -52,7 +46,7 @@ class Inventory extends BaseModel
      */
     public function sku()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\InventorySku', 'inventory_id', 'id');
+        return $this->hasOne(InventorySku::class, 'inventory_id', 'id');
     }
 
     /**
@@ -62,7 +56,7 @@ class Inventory extends BaseModel
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+        return $this->hasMany(InventoryStock::class, 'inventory_id', 'id');
     }
 
     /**
@@ -72,7 +66,7 @@ class Inventory extends BaseModel
      */
     public function suppliers()
     {
-        return $this->belongsToMany('Stevebauman\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+        return $this->belongsToMany(Supplier::class, 'inventory_suppliers', 'inventory_id')->withTimestamps();
     }
 
     /**

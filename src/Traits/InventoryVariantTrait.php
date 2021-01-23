@@ -4,9 +4,6 @@ namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Trait InventoryVariantTrait.
- */
 trait InventoryVariantTrait
 {
     /**
@@ -169,6 +166,8 @@ trait InventoryVariantTrait
     public function createVariant($name = '', $description = '', $categoryId = null, $metricId = null)
     {
         $variant = $this->newVariant($name);
+        
+        $this->dbStartTransaction();
 
         try {
             if (!empty($description)) {
@@ -220,7 +219,7 @@ trait InventoryVariantTrait
      *
      * @return $this|bool
      */
-    private function processMakeVariant($itemId)
+    protected function processMakeVariant($itemId)
     {
         $this->dbStartTransaction();
 

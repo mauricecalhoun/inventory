@@ -4,23 +4,9 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
 
-/**
- * Class InventoryTransactionPeriod.
- */
-class InventoryTransactionHistory extends BaseModel
+class InventoryTransactionHistory extends Model
 {
     use InventoryTransactionHistoryTrait;
-
-    protected $table = 'inventory_transaction_histories';
-
-    protected $fillable = [
-        'user_id',
-        'transaction_id',
-        'state_before',
-        'state_after',
-        'quantity_before',
-        'quantity_after',
-    ];
 
     /**
      * The belongsTo transaction relationship.
@@ -29,6 +15,6 @@ class InventoryTransactionHistory extends BaseModel
      */
     public function transaction()
     {
-        return $this->belongsTo('Stevebauman\Inventory\Models\InventoryTransaction', 'transaction_id', 'id');
+        return $this->belongsTo(InventoryTransaction::class);
     }
 }

@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class AssemblyTrait.
- */
 trait AssemblyTrait
 {
     /**
@@ -43,7 +40,7 @@ trait AssemblyTrait
      */
     public function makeAssembly()
     {
-        $this->is_assembly = true;
+        $this->setAttribute('is_assembly', true);
 
         return $this->save();
     }
@@ -103,10 +100,8 @@ trait AssemblyTrait
             if (!$results) {
                 $results = $this->assembliesRecursive;
 
-                /*
-                 * Cache forever since adding / removing assembly
-                 * items will automatically clear this cache
-                 */
+                // Cache forever since adding / removing assembly
+                // items will automatically clear this cache.
                 Cache::forever($this->getAssemblyCacheKey(), $results);
             }
 
@@ -137,12 +132,12 @@ trait AssemblyTrait
 
         foreach ($items as $item) {
             $list[$level] = [
-                'id' => $item->getKey(),
-                'name' => $item->name,
-                'metric_id' => $item->metric_id,
-                'category_id' => $item->category_id,
-                'quantity' => $item->pivot->quantity,
-                'depth' => $depth,
+                'id'            => $item->getKey(),
+                'name'          => $item->name,
+                'metric_id'     => $item->metric_id,
+                'category_id'   => $item->category_id,
+                'quantity'      => $item->pivot->quantity,
+                'depth'         => $depth,
             ];
 
             if ($item->is_assembly && $recursive) {
@@ -169,11 +164,11 @@ trait AssemblyTrait
     public function addAssemblyItem(Model $part, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
-            if (!$this->is_assembly) {
+            if (!$this->getAttribute('is_assembly')) {
                 $this->makeAssembly();
             }
 
-            if ($part->is_assembly) {
+            if ($part->getAttribute('is_assembly')) {
                 $this->validatePart($part);
             }
 
@@ -354,7 +349,7 @@ trait AssemblyTrait
      *
      * @throws InvalidPartException
      */
-    private function validatePart(Model $part)
+    protected function validatePart(Model $part)
     {
         if ((int) $part->getKey() === (int) $this->getKey()) {
             $message = 'An item cannot be an assembly of itself.';
@@ -379,9 +374,9 @@ trait AssemblyTrait
      *
      * @throws InvalidPartException
      */
-    private function validatePartAgainstList($value, $key)
+    protected function validatePartAgainstList($value, $key)
     {
-        if ($key === $this->getKeyName()) {
+        if ((string) $key === (string) $this->getKeyName()) {
             if ((int) $value === (int) $this->getKey()) {
                 $message = 'The inserted part exists inside the assembly tree. An item cannot be an assembly of itself.';
 
@@ -395,7 +390,7 @@ trait AssemblyTrait
      *
      * @return string
      */
-    private function getAssemblyCacheKey()
+    protected function getAssemblyCacheKey()
     {
         return $this->assemblyCacheKey.$this->getKey();
     }

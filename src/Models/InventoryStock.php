@@ -4,23 +4,9 @@ namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\InventoryStockTrait;
 
-/**
- * Class InventoryStock.
- */
-class InventoryStock extends BaseModel
+class InventoryStock extends Model
 {
     use InventoryStockTrait;
-
-    protected $table = 'inventory_stocks';
-
-    protected $fillable = [
-        'inventory_id',
-        'location_id',
-        'quantity',
-        'aisle',
-        'row',
-        'bin',
-    ];
 
     /**
      * The belongsTo inventory item relationship.
@@ -29,7 +15,7 @@ class InventoryStock extends BaseModel
      */
     public function item()
     {
-        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
+        return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
 
     /**
@@ -39,7 +25,7 @@ class InventoryStock extends BaseModel
      */
     public function movements()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStockMovement', 'stock_id', 'id');
+        return $this->hasMany(InventoryStockMovement::class, 'stock_id', 'id');
     }
 
     /**
@@ -49,7 +35,7 @@ class InventoryStock extends BaseModel
      */
     public function transactions()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryTransaction', 'stock_id', 'id');
+        return $this->hasMany(InventoryTransaction::class, 'stock_id', 'id');
     }
 
     /**
@@ -59,6 +45,6 @@ class InventoryStock extends BaseModel
      */
     public function location()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Location', 'id', 'location_id');
+        return $this->hasOne(Location::class);
     }
 }

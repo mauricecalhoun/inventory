@@ -1,10 +1,5 @@
 <?php
 
-/**
- * The Inventory reasons language file.
- *
- * @author Steve Bauman
- */
 return [
 
     'first_record' => 'First Item Record; Stock Increase',
@@ -41,4 +36,5 @@ return [
 
         'cancelled' => 'Cancellation occurred on Transaction ID :id on :date',
     ],
+    
 ];

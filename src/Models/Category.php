@@ -5,19 +5,15 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\CategoryTrait;
 use Baum\Node;
 
-/**
- * Class Category.
- */
 class Category extends Node
 {
     use CategoryTrait;
 
-    protected $table = 'categories';
-
-    protected $fillable = [
-        'name',
-    ];
-
+    /**
+     * The scoped category attrbiutes.
+     *
+     * @var array
+     */
     protected $scoped = ['belongs_to'];
 
     /**

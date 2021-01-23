@@ -2,9 +2,6 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-/**
- * Trait CategoryTrait.
- */
 trait CategoryTrait
 {
     /**
