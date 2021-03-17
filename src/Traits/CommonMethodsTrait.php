@@ -63,7 +63,7 @@ trait CommonMethodsTrait
      */
     protected function fireEvent($name, $args = [])
     {
-        return Event::fire((string) $name, (array) $args);
+        return Event::dispatch((string) $name, (array) $args);
     }
 
     /**
