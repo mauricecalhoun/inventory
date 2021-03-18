@@ -13,7 +13,7 @@
         "php": ">=5.4.0",
         "illuminate/database": "5.*|^6.0",
         "illuminate/support": "5.*|^6.0",
-        "baum/baum": "^2.0@alpha*"
+        "baum/baum": "^2.0@alpha"
     },
     "require-dev": {
         "orchestra/testbench": "3.1.*"
