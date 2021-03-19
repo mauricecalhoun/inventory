@@ -29,4 +29,24 @@ class InventoryCategory extends Node
     {
         return $this->hasMany('Trexology\Inventory\Models\Inventory', 'category_id', 'id');
     }
+    
+    /**
+     * Override the "default" left column name.
+     *
+     * @return string
+     */
+    public function getDefaultLeftColumnName()
+    {
+      return 'lft';
+    }
+
+    /**
+     * Override the "default" right column name.
+     *
+     * @return string
+     */
+    public function getDefaultRightColumnName()
+    {
+        return 'rgt';
+    }
 }
