@@ -66,6 +66,7 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
         $transaction->checkout(5)->returned('testing');
 
         $this->assertEquals(5, $transaction->quantity);
@@ -86,6 +87,8 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
         $transaction->sold(5)->returned('testing');
 
         $this->assertEquals(5, $transaction->quantity);
@@ -96,7 +99,7 @@ class InventoryTransactionReturnedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->returned(5);
     }

@@ -79,7 +79,7 @@ class InventoryTransactionCancelledTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->cancel()->cancel();
     }

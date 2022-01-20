@@ -1,23 +1,26 @@
 {
-    "name": "stevebauman/inventory",
-    "description": "Inventory management using Laravel 4 / 5",
+    "name": "dvicklund/inventory",
+    "description": "Inventory management using Laravel 8",
     "keywords": ["laravel", "inventory", "inventory-management"],
     "authors": [
         {
             "name": "Steve Bauman",
             "email": "steven_bauman@outlook.com"
+        },
+        {
+            "name": "David Vicklund",
+            "email": "david@vicklund.com"
         }
     ],
     "license": "MIT",
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/database": "4.* | 5.*",
-        "illuminate/support": "4.* | 5.*",
-        "baum/baum": "1.0.* | 1.1.*"
+        "php": ">=7.3.0",
+        "laravel/framework": "^8.0",
+        "gazsp/baum": "^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*",
-        "mockery/mockery": "0.9.*"
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.0"
     },
     "archive": {
       "exclude": ["/tests"]
@@ -33,5 +36,10 @@
           "Stevebauman\\Inventory\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
+    }
 }

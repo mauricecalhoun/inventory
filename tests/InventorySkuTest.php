@@ -300,7 +300,7 @@ class InventorySkuTest extends InventoryTest
 
         Lang::shouldReceive('get')->once()->andReturn('Failed');
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException');
 
         $item->createSku('test');
     }

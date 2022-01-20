@@ -27,7 +27,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->sold(5000);
     }
@@ -36,7 +36,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->sold('50a');
     }
@@ -95,7 +95,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->soldAmount('40a');
     }
@@ -104,7 +104,7 @@ class InventoryTransactionSoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->soldAmount(5000);
     }

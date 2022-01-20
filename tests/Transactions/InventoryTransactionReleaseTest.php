@@ -56,6 +56,7 @@ class InventoryTransactionReleaseTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
         $transaction->hold(5)->release('asddsa');
 
         $this->assertEquals(5, $transaction->quantity);
@@ -65,7 +66,7 @@ class InventoryTransactionReleaseTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->ordered(5)->release();
     }

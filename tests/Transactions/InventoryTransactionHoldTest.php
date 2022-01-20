@@ -26,7 +26,7 @@ class InventoryTransactionHoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->hold('40a');
     }
@@ -35,7 +35,7 @@ class InventoryTransactionHoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->ordered(5)->hold(5);
     }
@@ -44,7 +44,7 @@ class InventoryTransactionHoldTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->hold(500);
     }

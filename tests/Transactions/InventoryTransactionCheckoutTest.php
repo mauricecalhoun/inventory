@@ -49,7 +49,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->checkout(5000);
     }
@@ -58,7 +58,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->checkout('30as');
     }
@@ -94,7 +94,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->checkout(5)->checkout(500);
     }
@@ -150,7 +150,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->checkout(5)->sold(500);
     }
@@ -193,7 +193,7 @@ class InventoryTransactionCheckoutTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->checkout(5)->reserved()->sold()->returned()->reserved(5);
 

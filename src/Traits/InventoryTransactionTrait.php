@@ -382,12 +382,14 @@ trait InventoryTransactionTrait
      * @param int|float|string $quantity
      * @param string           $reason
      * @param int|float|string $cost
+     * 
+     * @throws InvalidQuantityException
      *
      * @return $this|bool
      */
     public function returned($quantity = 0, $reason = '', $cost = 0)
     {
-        if ($quantity) {
+        if ($quantity && $this->isValidQuantity($quantity)) {
             /*
              * Quantity was specified, we must be
              * returning a partial amount of quantity
@@ -813,7 +815,7 @@ trait InventoryTransactionTrait
      */
     public function release($quantity = 0, $reason = '', $cost = 0)
     {
-        if ($quantity) {
+        if ($quantity && $this->isValidQuantity($quantity)) {
             return $this->releasePartial($quantity, $reason, $cost);
         }
 
@@ -918,7 +920,7 @@ trait InventoryTransactionTrait
      */
     public function remove($quantity = 0, $reason = '', $cost = 0)
     {
-        if ($quantity) {
+        if ($quantity && $this->isValidQuantity($quantity)) {
             return $this->removePartial($quantity, $reason, $cost);
         }
 

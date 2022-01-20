@@ -8,7 +8,7 @@ use Stevebauman\Inventory\Tests\InventoryStockTest;
 
 class InventoryTransactionTest extends InventoryStockTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ class InventoryTransactionTest extends InventoryStockTest
 
         $transaction->stock_id = 15;
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
 
         $transaction->getStockRecord();
     }
@@ -46,7 +46,7 @@ class InventoryTransactionTest extends InventoryStockTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->state = 'test';
     }
@@ -56,6 +56,8 @@ class InventoryTransactionTest extends InventoryStockTest
         $transaction = $this->newTransaction();
 
         $transaction->state = InventoryTransaction::STATE_COMMERCE_RESERVED;
+
+        $this->assertEquals($transaction->state, InventoryTransaction::STATE_COMMERCE_RESERVED);
     }
 
     public function testInventoryTransactionGetByState()

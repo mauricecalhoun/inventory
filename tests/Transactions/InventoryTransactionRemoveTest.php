@@ -36,6 +36,8 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
         $transaction->hold(5)->remove('testing');
 
         $this->assertEquals(5, $transaction->quantity);
@@ -56,7 +58,7 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->remove('10a');
     }
@@ -65,7 +67,7 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->remove();
     }
@@ -74,7 +76,7 @@ class InventoryTransactionRemoveTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->ordered(5)->remove();
     }

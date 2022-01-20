@@ -56,7 +56,7 @@ class InventoryTransactionOrderedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->ordered('40a');
     }
@@ -65,7 +65,7 @@ class InventoryTransactionOrderedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->reserved(5)->ordered(10);
     }

@@ -118,6 +118,7 @@ class InventoryAssemblyTest extends InventoryTest
         $item = $this->newInventory();
 
         try {
+            $this->expectError('TypeError');
             $item->addAssemblyItem('invalid item');
 
             $passes = false;
@@ -140,7 +141,7 @@ class InventoryAssemblyTest extends InventoryTest
 
         Lang::shouldReceive('get')->once()->andReturn('Invalid Quantity');
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $item->addAssemblyItem($childItem, 'invalid quantity');
     }
@@ -207,7 +208,7 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $item->category_id,
         ]);
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $item->addAssemblyItem($childItem, 'invalid quantity');
     }
@@ -490,7 +491,7 @@ class InventoryAssemblyTest extends InventoryTest
             'category_id' => $category->id,
         ]);
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
 
         $table->addAssemblyItem($table);
     }
@@ -541,7 +542,7 @@ class InventoryAssemblyTest extends InventoryTest
 
         $screws->addAssemblyItem($metal, 5);
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
 
         /*
          * Since metal is already apart of screws,

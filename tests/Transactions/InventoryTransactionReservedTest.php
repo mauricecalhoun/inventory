@@ -27,7 +27,7 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $transaction->reserved(100);
     }
@@ -36,7 +36,7 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $transaction->reserved('40a');
     }
@@ -45,7 +45,7 @@ class InventoryTransactionReservedTest extends InventoryTransactionTest
     {
         $transaction = $this->newTransaction();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidTransactionStateException');
 
         $transaction->hold(5)->reserved(20);
     }

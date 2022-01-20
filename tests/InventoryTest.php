@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class InventoryTest extends FunctionalTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -127,7 +127,7 @@ class InventoryTest extends FunctionalTestCase
         $stock = $item->newStockOnLocation($location);
         $stock->save();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
 
         $item->newStockOnLocation($location);
     }
@@ -140,7 +140,7 @@ class InventoryTest extends FunctionalTestCase
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $item->createStockOnLocation('invalid quantity', $location);
     }

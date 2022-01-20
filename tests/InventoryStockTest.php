@@ -94,7 +94,7 @@ class InventoryStockTest extends InventoryTest
     {
         $stock = $this->newInventoryStock();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $stock->isValidQuantity('40a');
         $stock->isValidQuantity('5,000');
@@ -107,7 +107,7 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidMovementException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidMovementException');
 
         $stock->getMovement('testing');
     }
@@ -125,7 +125,7 @@ class InventoryStockTest extends InventoryTest
     {
         $stock = $this->newInventoryStock();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
         $stock->updateQuantity(-100);
     }
@@ -136,7 +136,7 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\NotEnoughStockException');
 
         $stock->take(1000);
     }
@@ -151,7 +151,7 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
 
         $item->createStockOnLocation(1, $location);
     }
@@ -164,7 +164,7 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\StockNotFoundException');
 
         $item->getStockFromLocation($location);
     }
@@ -235,7 +235,7 @@ class InventoryStockTest extends InventoryTest
 
         Lang::shouldReceive('get')->once();
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidLocationException');
 
         $item->getStockFromLocation('testing');
     }

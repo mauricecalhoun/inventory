@@ -88,7 +88,7 @@ class InventorySupplierTest extends InventoryTest
 
         $item = Inventory::find(1);
 
-        $this->setExpectedException('Stevebauman\Inventory\Exceptions\InvalidSupplierException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidSupplierException');
 
         $item->addSupplier('testing');
         $item->removeSupplier('testing');
