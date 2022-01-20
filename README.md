@@ -7,9 +7,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 [![License](https://img.shields.io/packagist/l/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
 
-## 🚨 Abandoned 🚨
-
-This package has been taken over by @mauricecalhoun.
+This package has been taken over by @dvicklund.
 
 ## Index
 
@@ -91,7 +89,7 @@ you can simply use the built in models.
 
 ### Requirements
 
-- Laravel 4.* | 5.*
+- Laravel 8.*
 - Laravel's Auth, Sentry or Sentinel if you need automatic accountability
 - A `users` database table
 
