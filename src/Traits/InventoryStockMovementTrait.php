@@ -27,7 +27,7 @@ trait InventoryStockMovementTrait
     public static function bootInventoryStockMovementTrait()
     {
         static::creating(function (Model $record) {
-            $record->user_id = static::getCurrentUserId();
+            $record->created_by = static::getCurrentUserId();
         });
     }
 

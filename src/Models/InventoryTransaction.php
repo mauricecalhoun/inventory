@@ -15,7 +15,7 @@ class InventoryTransaction extends BaseModel implements StateableInterface
     protected $table = 'inventory_transactions';
 
     protected $fillable = [
-        'user_id',
+        'created_by',
         'stock_id',
         'name',
         'state',

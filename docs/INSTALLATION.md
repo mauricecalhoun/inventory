@@ -254,7 +254,7 @@ InventoryStockMovement:
         
         protected $fillable = array(
             'stock_id',
-            'user_id',
+            'created_by',
             'before',
             'after',
             'cost',
@@ -279,7 +279,7 @@ InventoryTransaction:
         protected $table = 'inventory_transactions';
     
         protected $fillable = array(
-            'user_id',
+            'created_by',
             'stock_id',
             'name',
             'state',
@@ -308,7 +308,7 @@ InventoryTransactionHistory:
         protected $table = 'inventory_transaction_histories';
     
         protected $fillable = array(
-            'user_id',
+            'created_by',
             'transaction_id',
             'state_before',
             'state_after',

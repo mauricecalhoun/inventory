@@ -51,7 +51,7 @@ trait InventoryTransactionTrait
     public static function bootInventoryTransactionTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = static::getCurrentUserId();
+            $model->created_by = static::getCurrentUserId();
 
             if (!$model->beforeState) {
                 $model->beforeState = $model::STATE_OPENED;

@@ -28,7 +28,7 @@ trait InventoryTrait
 
     /*
      * Set's the models constructor method to automatically assign the
-     * user_id's attribute to the current logged in user
+     * created_by's attribute to the current logged in user
      */
     use UserIdentificationTrait;
 
@@ -83,7 +83,7 @@ trait InventoryTrait
          * is being created
          */
         static::creating(function (Model $record) {
-            $record->user_id = static::getCurrentUserId();
+            $record->created_by = static::getCurrentUserId();
         });
 
         /*

@@ -13,13 +13,13 @@ class CreateInventoryTransactionTables extends Migration
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -31,7 +31,7 @@ class CreateInventoryTransactionTables extends Migration
         Schema::create('inventory_transaction_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('transaction_id')->unsigned();
 
             /*
@@ -46,7 +46,7 @@ class CreateInventoryTransactionTables extends Migration
             $table->string('quantity_before');
             $table->string('quantity_after');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 

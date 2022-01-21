@@ -14,7 +14,7 @@ class InventoryTransactionHistory extends BaseModel
     protected $table = 'inventory_transaction_histories';
 
     protected $fillable = [
-        'user_id',
+        'created_by',
         'transaction_id',
         'state_before',
         'state_after',

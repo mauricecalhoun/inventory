@@ -27,7 +27,7 @@ trait InventoryStockTrait
 
     /*
      * Set's the models constructor method to automatically assign the
-     * user_id's attribute to the current logged in user
+     * created_by's attribute to the current logged in user
      */
     use UserIdentificationTrait;
 
@@ -92,7 +92,7 @@ trait InventoryStockTrait
     public static function bootInventoryStockTrait()
     {
         static::creating(function (Model $model) {
-            $model->user_id = $model->getCurrentUserId();
+            $model->created_by = $model->getCurrentUserId();
 
             /*
              * Check if a reason has been set, if not

@@ -15,7 +15,7 @@ class InventoryStockMovement extends BaseModel
 
     protected $fillable = [
         'stock_id',
-        'user_id',
+        'created_by',
         'before',
         'after',
         'cost',

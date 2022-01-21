@@ -42,11 +42,11 @@ abstract class FunctionalTestCase extends TestCase
         DB::schema()->create('metrics', function ($table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });
@@ -88,7 +88,7 @@ abstract class FunctionalTestCase extends TestCase
             $table->timestamps();
             $table->softDeletes();
             $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
@@ -97,7 +97,7 @@ abstract class FunctionalTestCase extends TestCase
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -109,7 +109,7 @@ abstract class FunctionalTestCase extends TestCase
         DB::schema()->create('inventory_stocks', function ($table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('inventory_id')->unsigned();
             $table->integer('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
@@ -123,7 +123,7 @@ abstract class FunctionalTestCase extends TestCase
              */
             $table->unique(['inventory_id', 'location_id']);
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -140,7 +140,7 @@ abstract class FunctionalTestCase extends TestCase
             $table->increments('id');
             $table->timestamps();
             $table->integer('stock_id')->unsigned();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();
@@ -150,7 +150,7 @@ abstract class FunctionalTestCase extends TestCase
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });
@@ -208,13 +208,13 @@ abstract class FunctionalTestCase extends TestCase
         DB::schema()->create('inventory_transactions', function ($table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -226,7 +226,7 @@ abstract class FunctionalTestCase extends TestCase
         DB::schema()->create('inventory_transaction_histories', function ($table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('transaction_id')->unsigned();
 
             /*
@@ -241,7 +241,7 @@ abstract class FunctionalTestCase extends TestCase
             $table->string('quantity_before');
             $table->string('quantity_after');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 

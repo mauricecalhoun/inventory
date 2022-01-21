@@ -131,7 +131,7 @@ If an exception occurs during a stock change, it is automatically reversed using
 
 If you look at your database, inside your `inventory_stock_movements` table, you should see 4 records:
 
-    | id | stock_id | user_id | before | after | cost | reason |
+    | id | stock_id | created_by | before | after | cost | reason |
        1     1           1       0.00    20.00   0.00    
        2     1           1       20.00   23.00   5.20    'I bought some'   
        3     1           1       23.00   8.00    0.00    'I drank it'

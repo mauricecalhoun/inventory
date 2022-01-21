@@ -14,11 +14,11 @@ class CreateMetricsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });

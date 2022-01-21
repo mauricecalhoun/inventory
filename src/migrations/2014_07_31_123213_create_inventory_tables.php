@@ -16,7 +16,7 @@ class CreateInventoryTables extends Migration
             $table->softDeletes();
 
             $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
@@ -25,7 +25,7 @@ class CreateInventoryTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -39,7 +39,7 @@ class CreateInventoryTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->integer('inventory_id')->unsigned();
             $table->integer('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
@@ -53,7 +53,7 @@ class CreateInventoryTables extends Migration
              */
             $table->unique(['inventory_id', 'location_id']);
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
 
@@ -72,7 +72,7 @@ class CreateInventoryTables extends Migration
             $table->softDeletes();
 
             $table->integer('stock_id')->unsigned();
-            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();
@@ -82,7 +82,7 @@ class CreateInventoryTables extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onUpdate('restrict')
                 ->onDelete('set null');
         });
