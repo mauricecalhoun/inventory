@@ -23,7 +23,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $chocolateMilk->save();
 
@@ -47,7 +47,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $name = 'Cherry Coke';
         $description = 'Delicious Cherry Coke';
@@ -84,7 +84,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -108,7 +108,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -133,7 +133,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -190,7 +190,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -223,7 +223,7 @@ class InventoryVariantTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $location = $this->newLocation();
 

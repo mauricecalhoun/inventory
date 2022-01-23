@@ -43,7 +43,7 @@ class InventorySkuTest extends InventoryTest
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
 
-        Event::shouldReceive('fire')->once();
+        Event::shouldReceive('dispatch')->once();
 
         $sku = $this->newInventorySku();
 

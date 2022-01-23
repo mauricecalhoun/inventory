@@ -16,7 +16,7 @@ class InventoryAssemblyTest extends InventoryTest
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
 
-        Event::shouldReceive('fire')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $item->makeAssembly();
 

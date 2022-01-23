@@ -11,10 +11,12 @@ abstract class FunctionalTestCase extends TestCase
     {
         parent::setUp();
 
+        // Event::fake();
+
         $this->configureDatabase();
         $this->migrateTables();
     }
-
+    
     private function configureDatabase()
     {
         $db = new DB();

@@ -40,7 +40,7 @@ class InventoryStockTest extends InventoryTest
         $stock = $this->newInventoryStock();
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
-        Event::shouldReceive('fire')->once();
+        Event::shouldReceive('dispatch')->once();
 
         $stock->put(10, 'Added some', 15);
 
@@ -52,7 +52,7 @@ class InventoryStockTest extends InventoryTest
         $stock = $this->newInventoryStock();
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
-        Event::shouldReceive('fire')->once();
+        Event::shouldReceive('dispatch')->once();
 
         $stock->take(10, 'Removed some', 15);
 
@@ -70,7 +70,7 @@ class InventoryStockTest extends InventoryTest
         ]);
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
-        Event::shouldReceive('fire')->once();
+        Event::shouldReceive('dispatch')->once();
 
         $stock->moveTo($newLocation);
 
