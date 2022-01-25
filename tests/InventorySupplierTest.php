@@ -5,26 +5,9 @@ namespace Stevebauman\Inventory\Tests;
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
 
-class InventorySupplierTest extends InventoryTest
+class InventorySupplierTest extends FunctionalTestCase
 {
-    protected function newSupplier()
-    {
-        return Supplier::create([
-            'name' => 'Supplier',
-            'address' => '123 Fake St',
-            'postal_code' => '12345',
-            'zip_code' => '12345',
-            'region' => 'ON',
-            'city' => 'Toronto',
-            'country' => 'Canada',
-            'contact_title' => 'Manager',
-            'contact_name' => 'John Doe',
-            'contact_phone' => '555 555 5555',
-            'contact_fax' => '555 555 5555',
-            'contact_email' => 'john.doe@email.com',
-        ]);
-    }
-
+    
     public function testInventorySupplierAttach()
     {
         $item = $this->newInventory();
@@ -40,7 +23,11 @@ class InventorySupplierTest extends InventoryTest
 
     public function testInventorySupplierDetach()
     {
-        $this->testInventorySupplierAttach();
+        $item1 = $this->newInventory();
+
+        $newSupplier = $this->newSupplier();
+
+        $item1->addSupplier($newSupplier);
 
         $item = Inventory::find(1);
 
@@ -49,9 +36,17 @@ class InventorySupplierTest extends InventoryTest
 
     public function testInventorySupplierDetachAll()
     {
-        $this->testInventorySupplierAttach();
+        $item1 = $this->newInventory();
 
-        $this->testInventorySupplierAttach();
+        $newSupplier = $this->newSupplier();
+
+        $item1->addSupplier($newSupplier);
+
+        $item2 = $this->newInventory();
+
+        $newSupplier = $this->newSupplier();
+
+        $item2->addSupplier($newSupplier);
 
         $item = Inventory::find(1);
 
@@ -73,7 +68,11 @@ class InventorySupplierTest extends InventoryTest
 
     public function testSupplierDetachItem()
     {
-        $this->testSupplierAttachItem();
+        $item1 = $this->newInventory();
+
+        $newSupplier = $this->newSupplier();
+
+        $item1->addSupplier($newSupplier);
 
         $item = Inventory::find(1);
 
@@ -84,7 +83,11 @@ class InventorySupplierTest extends InventoryTest
 
     public function testSupplierInvalidSupplierException()
     {
-        $this->testSupplierAttachItem();
+        $item1 = $this->newInventory();
+
+        $newSupplier = $this->newSupplier();
+
+        $item1->addSupplier($newSupplier);
 
         $item = Inventory::find(1);
 

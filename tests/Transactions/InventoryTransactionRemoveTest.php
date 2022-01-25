@@ -4,8 +4,9 @@ namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
-class InventoryTransactionRemoveTest extends InventoryTransactionTest
+class InventoryTransactionRemoveTest extends FunctionalTestCase
 {
     public function testInventoryTransactionRemove()
     {

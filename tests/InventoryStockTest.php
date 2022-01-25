@@ -9,25 +9,8 @@ use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 
-class InventoryStockTest extends InventoryTest
+class InventoryStockTest extends FunctionalTestCase
 {
-    protected function newInventoryStock()
-    {
-        $item = $this->newInventory();
-
-        $location = $this->newLocation();
-
-        $stock = new InventoryStock();
-        $stock->inventory_id = $item->id;
-        $stock->location_id = $location->id;
-        $stock->quantity = 20;
-        $stock->cost = '5.20';
-        $stock->reason = 'I bought some';
-        $stock->save();
-
-        return $stock;
-    }
-
     public function testInventoryStockCreation()
     {
         $stock = $this->newInventoryStock();

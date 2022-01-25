@@ -2,13 +2,11 @@
 
 namespace Stevebauman\Inventory\Tests;
 
-use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
-use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Database\Eloquent\Model as Eloquent;
+// use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class InventoryTest extends FunctionalTestCase
 {
@@ -16,62 +14,7 @@ class InventoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        Eloquent::unguard();
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return Inventory
-     */
-    protected function newInventory(array $attributes = [])
-    {
-        $metric = $this->newMetric();
-
-        $category = $this->newCategory();
-
-        if(count($attributes) > 0) {
-            return Inventory::create($attributes);
-        }
-
-        return Inventory::create([
-            'metric_id' => $metric->id,
-            'category_id' => $category->id,
-            'name' => 'Milk',
-            'description' => 'Delicious Milk',
-        ]);
-    }
-
-    /**
-     * @return Metric
-     */
-    protected function newMetric()
-    {
-        return Metric::create([
-            'name' => 'Litres',
-            'symbol' => 'L',
-        ]);
-    }
-
-    /**
-     * @return Location
-     */
-    protected function newLocation()
-    {
-        return Location::create([
-            'name' => 'Warehouse',
-            'belongs_to' => '',
-        ]);
-    }
-
-    /**
-     * @return Category
-     */
-    protected function newCategory()
-    {
-        return Category::create([
-            'name' => 'Drinks',
-        ]);
+        // Eloquent::unguard();
     }
 
     public function testInventoryHasMetric()

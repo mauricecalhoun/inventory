@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 
-class InventoryAssemblyTest extends FunctionalTestCase
+class InventoryBundleTest extends FunctionalTestCase
 {
-    public function testMakeAssembly()
+    public function testMakeBundle()
     {
         $item = $this->newInventory();
 
@@ -18,12 +18,12 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Event::shouldReceive('dispatch')->once()->andReturn(true);
 
-        $item->makeAssembly();
+        $item->makeBundle();
 
-        $this->assertTrue($item->is_assembly);
+        $this->assertTrue($item->is_bundle);
     }
 
-    public function testAddAssemblyItem()
+    public function testAddBundleItem()
     {
         $item = $this->newInventory();
 
@@ -35,15 +35,15 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->once()->andReturn(true);
 
-        $item->addAssemblyItem($childItem, 10);
+        $item->addBundleItem($childItem, 10);
 
-        $items = $item->assemblies;
+        $items = $item->bundles;
 
         $this->assertEquals('Child Item', $items->first()->name);
         $this->assertEquals(10, $items->first()->pivot->quantity);
     }
 
-    public function testAddAssemblyItems()
+    public function testAddBundleItems()
     {
         $item = $this->newInventory();
 
@@ -61,9 +61,9 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->twice()->andReturn(true);
 
-        $item->addAssemblyItems([$childItem, $childItem2], 10);
+        $item->addBundleItems([$childItem, $childItem2], 10);
 
-        $items = $item->assemblies;
+        $items = $item->bundles;
 
         $this->assertEquals('Child Item', $items->get(0)->name);
         $this->assertEquals(10, $items->get(0)->pivot->quantity);
@@ -72,7 +72,7 @@ class InventoryAssemblyTest extends FunctionalTestCase
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
-    public function testAddSameAssemblyItems()
+    public function testAddSameBundleItems()
     {
         $item = $this->newInventory();
 
@@ -84,15 +84,15 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->twice()->andReturn(true);
 
-        $item->addAssemblyItems([$childItem, $childItem]);
+        $item->addBundleItems([$childItem, $childItem]);
 
         Cache::shouldReceive('has')->once()->andReturn(false);
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
-        $this->assertEquals(2, $item->getAssemblyItems()->count());
+        $this->assertEquals(2, $item->getBundleItems()->count());
     }
 
-    public function testAddAssemblyItemExtraAttributes()
+    public function testAddBundleItemExtraAttributes()
     {
         $item = $this->newInventory();
 
@@ -104,22 +104,22 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->once()->andReturn(true);
 
-        $item->addAssemblyItem($childItem, 10, ['extra' => 'testing']);
+        $item->addBundleItem($childItem, 10, ['extra' => 'testing']);
 
         /*
          * Tests that the extra array is merged
          * and updated successfully with the quantity
          */
-        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
+        $this->assertEquals(10, $item->bundles()->first()->pivot->quantity);
     }
 
-    public function testAddInvalidAssemblyItem()
+    public function testAddInvalidBundleItem()
     {
         $item = $this->newInventory();
 
         try {
             $this->expectError('TypeError');
-            $item->addAssemblyItem('invalid item');
+            $item->addBundleItem('invalid item');
 
             $passes = false;
         } catch (\Exception $e) {
@@ -129,7 +129,7 @@ class InventoryAssemblyTest extends FunctionalTestCase
         $this->assertTrue($passes);
     }
 
-    public function testAddInvalidQuantityWithAssemblyItem()
+    public function testAddInvalidQuantityWithBundleItem()
     {
         $item = $this->newInventory();
 
@@ -143,10 +143,10 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
-        $item->addAssemblyItem($childItem, 'invalid quantity');
+        $item->addBundleItem($childItem, 'invalid quantity');
     }
 
-    public function testUpdateAssemblyItem()
+    public function testUpdateBundleItem()
     {
         $item = $this->newInventory();
 
@@ -158,18 +158,18 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->times(3)->andReturn(true);
 
-        $item->addAssemblyItem($childItem);
+        $item->addBundleItem($childItem);
 
-        $item->updateAssemblyItem($childItem, 5);
+        $item->updateBundleItem($childItem, 5);
 
-        $this->assertEquals(5, $item->assemblies()->first()->pivot->quantity);
+        $this->assertEquals(5, $item->bundles()->first()->pivot->quantity);
 
-        $item->updateAssemblyItem($childItem->id, 10);
+        $item->updateBundleItem($childItem->id, 10);
 
-        $this->assertEquals(10, $item->assemblies()->first()->pivot->quantity);
+        $this->assertEquals(10, $item->bundles()->first()->pivot->quantity);
     }
 
-    public function testUpdateAssemblyItems()
+    public function testUpdateBundleItems()
     {
         $item = $this->newInventory();
 
@@ -187,18 +187,18 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->times(4)->andReturn(true);
 
-        $item->addAssemblyItem($childItem);
-        $item->addAssemblyItem($childItem2);
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem2);
 
-        $item->updateAssemblyItems([$childItem, $childItem2], 10);
+        $item->updateBundleItems([$childItem, $childItem2], 10);
 
-        $items = $item->assemblies()->get();
+        $items = $item->bundles()->get();
 
         $this->assertEquals(10, $items->get(0)->pivot->quantity);
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
-    public function testUpdateInvalidQuantityWithAssemblyItem()
+    public function testUpdateInvalidQuantityWithBundleItem()
     {
         $item = $this->newInventory();
 
@@ -210,24 +210,24 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
-        $item->addAssemblyItem($childItem, 'invalid quantity');
+        $item->addBundleItem($childItem, 'invalid quantity');
     }
 
-    public function testUpdateAssemblyItemWhenItemIsNotAnAssembly()
+    public function testUpdateBundleItemWhenItemIsNotAnBundle()
     {
         $item = $this->newInventory();
 
-        $this->assertFalse($item->updateAssemblyItem(1, 5));
+        $this->assertFalse($item->updateBundleItem(1, 5));
     }
 
-    public function testUpdateAssemblyItemsWhenItemIsNotAnAssembly()
+    public function testUpdateBundleItemsWhenItemIsNotAnBundle()
     {
         $item = $this->newInventory();
 
-        $this->assertEquals(0, $item->updateAssemblyItems([1, 2], 5));
+        $this->assertEquals(0, $item->updateBundleItems([1, 2], 5));
     }
 
-    public function testGetAssemblies()
+    public function testGetBundles()
     {
         $metric = $this->newMetric();
 
@@ -253,10 +253,10 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->twice()->andReturn(true);
 
-        $table->addAssemblyItem($tableTop, 1);
-        $table->addAssemblyItem($tableLegs, 4);
+        $table->addBundleItem($tableTop, 1);
+        $table->addBundleItem($tableLegs, 4);
 
-        $items = $table->assemblies;
+        $items = $table->bundles;
 
         $this->assertEquals(2, $items->count());
 
@@ -269,7 +269,7 @@ class InventoryAssemblyTest extends FunctionalTestCase
         $this->assertNull($items->get(2));
     }
 
-    public function testGetAssembliesRecursive()
+    public function testGetBundlesRecursive()
     {
         $metric = $this->newMetric();
 
@@ -301,16 +301,16 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->times(4)->andReturn(true);
 
-        $table->addAssemblyItem($tableTop, 1);
-        $table->addAssemblyItem($tableLegs, 4);
+        $table->addBundleItem($tableTop, 1);
+        $table->addBundleItem($tableLegs, 4);
 
-        $tableTop->addAssemblyItem($screws, 1);
-        $tableLegs->addAssemblyItem($screws, 2);
+        $tableTop->addBundleItem($screws, 1);
+        $tableLegs->addBundleItem($screws, 2);
 
         Cache::shouldReceive('has')->once()->andReturn(false);
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
-        $items = $table->getAssemblyItems();
+        $items = $table->getBundleItems();
 
         $this->assertEquals(2, $items->count());
 
@@ -321,29 +321,29 @@ class InventoryAssemblyTest extends FunctionalTestCase
         $this->assertEquals(4, $items->get(1)->pivot->quantity);
 
         // One screw item exists on each model
-        $this->assertEquals(1, $items->get(0)->assemblies->count());
-        $this->assertEquals(1, $items->get(1)->assemblies->count());
+        $this->assertEquals(1, $items->get(0)->bundles->count());
+        $this->assertEquals(1, $items->get(1)->bundles->count());
 
         // One screw for table top
-        $this->assertEquals('Screws', $items->get(0)->assemblies->get(0)->name);
-        $this->assertEquals(1, $items->get(0)->assemblies->get(0)->pivot->quantity);
+        $this->assertEquals('Screws', $items->get(0)->bundles->get(0)->name);
+        $this->assertEquals(1, $items->get(0)->bundles->get(0)->pivot->quantity);
 
         // Two screws for table legs
-        $this->assertEquals('Screws', $items->get(1)->assemblies->get(0)->name);
-        $this->assertEquals(2, $items->get(1)->assemblies->get(0)->pivot->quantity);
+        $this->assertEquals('Screws', $items->get(1)->bundles->get(0)->name);
+        $this->assertEquals(2, $items->get(1)->bundles->get(0)->pivot->quantity);
     }
 
-    public function testGetAssemblyItemsCached()
+    public function testGetBundleItemsCached()
     {
         $item = $this->newInventory();
 
         Cache::shouldReceive('has')->once()->andReturn(true);
         Cache::shouldReceive('get')->once()->andReturn('cached items');
 
-        $this->assertEquals('cached items', $item->getAssemblyItems());
+        $this->assertEquals('cached items', $item->getBundleItems());
     }
 
-    public function testRemoveAssemblyItem()
+    public function testRemoveBundleItem()
     {
         $metric = $this->newMetric();
 
@@ -363,28 +363,32 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->twice()->andReturn(true);
 
-        $table->addAssemblyItem($tableTop, 1);
+        $table->addBundleItem($tableTop, 1);
 
-        $this->assertTrue($table->removeAssemblyItem($tableTop));
+        $this->assertTrue($table->removeBundleItem($tableTop));
 
-        $this->assertNull($table->assemblies->first());
+        $this->assertNull($table->bundles->first());
     }
 
-    public function testRemoveAssemblyItemWhenItemIsNotAnAssembly()
+    public function testRemoveBundleItemWhenItemIsNotAnBundle()
     {
         $item = $this->newInventory();
 
-        $this->assertFalse($item->removeAssemblyItem(1));
+        $this->assertFalse($item->removeBundleItem(1));
     }
 
-    public function testRemoveAssemblyItemsWhenItemIsNotAnAssembly()
+    public function testRemoveBundleItemsWhenItemIsNotAnBundle()
     {
         $item = $this->newInventory();
 
-        $this->assertEquals(0, $item->removeAssemblyItems([1, 2]));
+        $this->assertEquals(0, $item->removeBundleItems([1, 2]));
+
+        $bundleItems = $item->getBundleItems();
+
+        $this->assertEquals(0, count($bundleItems));
     }
 
-    public function testGetAssemblyItemsList()
+    public function testGetBundleItemsList()
     {
         $metric = $this->newMetric();
 
@@ -434,21 +438,21 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->times(7)->andReturn(true);
 
-        $table->addAssemblyItem($tableTop, 1);
-        $table->addAssemblyItem($tableLegs, 4);
+        $table->addBundleItem($tableTop, 1);
+        $table->addBundleItem($tableLegs, 4);
 
-        $tableTop->addAssemblyItem($screws, 1);
-        $tableLegs->addAssemblyItem($screws, 2);
+        $tableTop->addBundleItem($screws, 1);
+        $tableLegs->addBundleItem($screws, 2);
 
-        $screws->addAssemblyItem($metal, 5);
+        $screws->addBundleItem($metal, 5);
 
-        $metal->addAssemblyItem($ore, 10);
-        $metal->addAssemblyItem($flux, 5);
+        $metal->addBundleItem($ore, 10);
+        $metal->addBundleItem($flux, 5);
 
         Cache::shouldReceive('has')->once()->andReturn(false);
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
-        $list = $table->getAssemblyItemsList();
+        $list = $table->getBundleItemsList();
 
         $this->assertEquals('Table Top', $list[0]['name']);
         $this->assertEquals('Table Legs', $list[1]['name']);
@@ -493,7 +497,7 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
 
-        $table->addAssemblyItem($table);
+        $table->addBundleItem($table);
     }
 
     public function testNestedInvalidPartException()
@@ -534,49 +538,49 @@ class InventoryAssemblyTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->times(5)->andReturn(true);
 
-        $table->addAssemblyItem($tableTop, 1);
-        $table->addAssemblyItem($tableLegs, 4);
+        $table->addBundleItem($tableTop, 1);
+        $table->addBundleItem($tableLegs, 4);
 
-        $tableTop->addAssemblyItem($screws, 1);
-        $tableLegs->addAssemblyItem($screws, 2);
+        $tableTop->addBundleItem($screws, 1);
+        $tableLegs->addBundleItem($screws, 2);
 
-        $screws->addAssemblyItem($metal, 5);
+        $screws->addBundleItem($metal, 5);
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
 
         /*
          * Since metal is already apart of screws,
-         * adding table as an assembly item of metal
+         * adding table as an bundle item of metal
          * would cause an infinite recursive query
          */
-        $metal->addAssemblyItem($table);
+        $metal->addBundleItem($table);
     }
 
-    public function testHasCachedAssemblyItems()
+    public function testHasCachedBundleItems()
     {
         $item = $this->newInventory();
 
         Cache::shouldReceive('has')->once()->andReturn(false);
 
-        $this->assertFalse($item->hasCachedAssemblyItems());
+        $this->assertFalse($item->hasCachedBundleItems());
     }
 
-    public function testGetCachedAssemblyItems()
+    public function testGetCachedBundleItems()
     {
         $item = $this->newInventory();
 
         Cache::shouldReceive('has')->once()->andReturn(true);
         Cache::shouldReceive('get')->once()->andReturn('cached items');
 
-        $this->assertEquals('cached items', $item->getCachedAssemblyItems());
+        $this->assertEquals('cached items', $item->getCachedBundleItems());
     }
 
-    public function testForgetCachedAssemblyItems()
+    public function testForgetCachedBundleItems()
     {
         $item = $this->newInventory();
 
         Cache::shouldReceive('forget')->once()->andReturn(true);
 
-        $this->assertTrue($item->forgetCachedAssemblyItems());
+        $this->assertTrue($item->forgetCachedBundleItems());
     }
 }

@@ -4,32 +4,20 @@ namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
-use Stevebauman\Inventory\Tests\InventoryStockTest;
+use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
-class InventoryTransactionTest extends InventoryStockTest
+class InventoryTransactionTest extends FunctionalTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+    // public function setUp(): void
+    // {
+    //     parent::setUp();
 
-        InventoryTransaction::flushEventListeners();
-        InventoryTransaction::boot();
+    //     InventoryTransaction::flushEventListeners();
+    //     InventoryTransaction::boot();
 
-        InventoryTransactionHistory::flushEventListeners();
-        InventoryTransactionHistory::boot();
-    }
-
-    /**
-     * Returns a new stock transaction for easier testing.
-     *
-     * @return mixed
-     */
-    protected function newTransaction()
-    {
-        $stock = $this->newInventoryStock();
-
-        return $stock->newTransaction();
-    }
+    //     InventoryTransactionHistory::flushEventListeners();
+    //     InventoryTransactionHistory::boot();
+    // }
 
     public function testInventoryTransactionStockNotFoundException()
     {

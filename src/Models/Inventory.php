@@ -5,6 +5,7 @@ namespace Stevebauman\Inventory\Models;
 use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
+use Stevebauman\Inventory\Traits\BundleTrait;
 
 /**
  * Class Inventory.
@@ -14,6 +15,7 @@ class Inventory extends BaseModel
     use InventoryTrait;
     use InventoryVariantTrait;
     use AssemblyTrait;
+    use BundleTrait;
 
     protected $table = 'inventories';
 
@@ -83,5 +85,15 @@ class Inventory extends BaseModel
     public function assemblies()
     {
         return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
+    }
+
+    /**
+     * The belongsToMany bundles relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function bundles()
+    {
+        return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
     }
 }

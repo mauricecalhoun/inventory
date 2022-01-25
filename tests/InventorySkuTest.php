@@ -10,15 +10,8 @@ use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Inventory;
 use Stevebauman\Inventory\Models\InventorySku;
 
-class InventorySkuTest extends InventoryTest
+class InventorySkuTest extends FunctionalTestCase
 {
-    protected function newInventorySku()
-    {
-        $item = $this->newInventory();
-
-        return $item->generateSku();
-    }
-
     public function testInventorySkuGeneration()
     {
         /*

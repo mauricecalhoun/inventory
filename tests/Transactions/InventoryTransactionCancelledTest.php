@@ -4,8 +4,9 @@ namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
-class InventoryTransactionCancelledTest extends InventoryTransactionTest
+class InventoryTransactionCancelledTest extends FunctionalTestCase
 {
     public function testInventoryTransactionCancelAfterReserved()
     {

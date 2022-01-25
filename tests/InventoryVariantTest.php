@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\Inventory;
 
-class InventoryVariantTest extends InventoryTest
+class InventoryVariantTest extends FunctionalTestCase
 {
     public function testNewVariant()
     {

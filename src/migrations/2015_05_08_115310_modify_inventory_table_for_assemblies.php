@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ModifyInventoryTableForAssemblies extends Migration
+class ModifyInventoryTableForAssembliesAndBundles extends Migration
 {
     /**
      * Run the migrations.
@@ -12,6 +12,7 @@ class ModifyInventoryTableForAssemblies extends Migration
     {
         Schema::table('inventories', function (Blueprint $table) {
             $table->boolean('is_assembly')->default(false);
+            $table->boolean('is_bundle')->default(false);
         });
     }
 
@@ -22,6 +23,7 @@ class ModifyInventoryTableForAssemblies extends Migration
     {
         Schema::table('inventories', function (Blueprint $table) {
             $table->dropColumn('is_assembly');
+            $table->dropColumn('is_bundle');
         });
     }
 }

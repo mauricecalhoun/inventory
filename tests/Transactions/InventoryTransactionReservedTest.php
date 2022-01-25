@@ -4,8 +4,9 @@ namespace Stevebauman\Inventory\Tests\Transactions;
 
 use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
+use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
-class InventoryTransactionReservedTest extends InventoryTransactionTest
+class InventoryTransactionReservedTest extends FunctionalTestCase
 {
     public function testInventoryTransactionReserved()
     {

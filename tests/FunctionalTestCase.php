@@ -4,6 +4,15 @@ namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPUnit\Framework\TestCase;
+use Stevebauman\Inventory\Models\Inventory;
+use Stevebauman\Inventory\Models\InventoryStock;
+use Stevebauman\Inventory\Models\Location;
+use Stevebauman\Inventory\Models\Metric;
+use Stevebauman\Inventory\Models\Category;
+use Stevebauman\Inventory\Models\Supplier;
+// use Stevebauman\Inventory\Models\InventoryTransaction;
+// use Stevebauman\Inventory\Models\InventoryTransactionHistory;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 abstract class FunctionalTestCase extends TestCase
 {
@@ -11,10 +20,10 @@ abstract class FunctionalTestCase extends TestCase
     {
         parent::setUp();
 
-        // Event::fake();
-
         $this->configureDatabase();
         $this->migrateTables();
+
+        Eloquent::unguard();
     }
     
     private function configureDatabase()
@@ -262,6 +271,7 @@ abstract class FunctionalTestCase extends TestCase
 
         DB::schema()->table('inventories', function ($table) {
             $table->boolean('is_assembly')->default(false);
+            $table->boolean('is_bundle')->default(false);
         });
 
         DB::schema()->create('inventory_assemblies', function ($table) {
@@ -277,7 +287,137 @@ abstract class FunctionalTestCase extends TestCase
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
-
         });
+
+        DB::schema()->create('inventory_bundles', function ($table) {
+
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('inventory_id')->unsigned();
+            $table->integer('part_id')->unsigned();
+            $table->integer('quantity')->nullable();
+
+            // Extra column for testing
+            $table->string('extra')->nullable();
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
+            $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return Inventory
+     */
+    protected function newInventory(array $attributes = [])
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        if(count($attributes) > 0) {
+            return Inventory::create($attributes);
+        }
+
+        return Inventory::create([
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'name' => 'Milk',
+            'description' => 'Delicious Milk',
+        ]);
+    }
+
+    /**
+     * @return Metric
+     */
+    protected function newMetric()
+    {
+        return Metric::create([
+            'name' => 'Litres',
+            'symbol' => 'L',
+        ]);
+    }
+
+    /**
+     * @return Location
+     */
+    protected function newLocation()
+    {
+        return Location::create([
+            'name' => 'Warehouse',
+            'belongs_to' => '',
+        ]);
+    }
+
+    /**
+     * @return Category
+     */
+    protected function newCategory()
+    {
+        return Category::create([
+            'name' => 'Drinks',
+        ]);
+    }
+
+    /**
+     * @return Supplier
+     */
+    protected function newSupplier()
+    {
+        return Supplier::create([
+            'name' => 'Supplier',
+            'address' => '123 Fake St',
+            'postal_code' => '12345',
+            'zip_code' => '12345',
+            'region' => 'ON',
+            'city' => 'Toronto',
+            'country' => 'Canada',
+            'contact_title' => 'Manager',
+            'contact_name' => 'John Doe',
+            'contact_phone' => '555 555 5555',
+            'contact_fax' => '555 555 5555',
+            'contact_email' => 'john.doe@email.com',
+        ]);
+    }
+
+    /**
+     * @return InventoryStock
+     */
+    protected function newInventoryStock()
+    {
+        $item = $this->newInventory();
+
+        $location = $this->newLocation();
+
+        $stock = new InventoryStock();
+        $stock->inventory_id = $item->id;
+        $stock->location_id = $location->id;
+        $stock->quantity = 20;
+        $stock->cost = '5.20';
+        $stock->reason = 'I bought some';
+        $stock->save();
+
+        return $stock;
+    }
+
+    /**
+     * @return InventorySku
+     */
+    protected function newInventorySku()
+    {
+        $item = $this->newInventory();
+
+        return $item->generateSku();
+    }
+
+    /**
+     * @return InventoryStockTransaction
+     */
+    protected function newTransaction()
+    {
+        $stock = $this->newInventoryStock();
+
+        return $stock->newTransaction();
     }
 }
