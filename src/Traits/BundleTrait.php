@@ -181,22 +181,23 @@ trait BundleTrait
 
             $attributes = array_merge(['quantity' => $quantity], $extra);
             
-            if ($this->hasComponent($component)) {
-                $this->updateBundleItem($component, $quantity, $extra);
+            $oldQuant = $this->hasComponent($component);
+
+            if ($oldQuant > 0) {
+                $this->updateBundleItem($component, $quantity + $oldQuant, $extra);
             } else {
-
+                if ($this->bundles()->save($component, $attributes)) {
+                    $this->fireEvent('inventory.bundle.component-added', [
+                        'item' => $this,
+                        'component' => $component,
+                    ]);
+        
+                    $this->forgetCachedBundleItems();
+        
+                    return $this;
+                }
             }
 
-            if ($this->bundles()->save($component, $attributes)) {
-                $this->fireEvent('inventory.bundle.component-added', [
-                    'item' => $this,
-                    'component' => $component,
-                ]);
-    
-                $this->forgetCachedBundleItems();
-    
-                return $this;
-            }
         }
 
         return false;
@@ -425,11 +426,14 @@ trait BundleTrait
         }
 
         //TODO: this breaks everything for some reason :\
-        $bundleItems = $this->getBundleItems();
+        // $bundleItems = $this->getBundleItems(true)->toArray();
+
+        $bundleItems = $this->bundles()->getResults();
 
         if(count($bundleItems) > 0) {
             foreach ($bundleItems as $i) {
-                if ($i->id == $compID) return true;
+                // We want to return the quantity here so that we can increment it properly later on
+                if ($i->id == $compID) return $i->pivot->quantity;
             }
         }
         

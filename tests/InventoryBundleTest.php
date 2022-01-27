@@ -91,7 +91,7 @@ class InventoryBundleTest extends FunctionalTestCase
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
         $this->assertEquals(1, $item->getBundleItems()->count());
-        $this->assertEquals(4, $item->getBundleItemsList()[0]->quantity);
+        $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
     }
 
     public function testAddBundleItemExtraAttributes()
