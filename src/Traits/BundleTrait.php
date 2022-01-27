@@ -2,7 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\InvalidPartException;
+use Stevebauman\Inventory\Exceptions\InvalidComponentException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -87,7 +87,7 @@ trait BundleTrait
     }
 
     /**
-     * Returns all of the bundles items. If recursive
+     * Returns all of the bundle's items. If recursive
      * is true, the entire nested bundles collection
      * is returned.
      *
@@ -117,8 +117,6 @@ trait BundleTrait
     }
 
     /**
-     * TODO: Perhaps not applicable to bundles
-     * 
      * Returns all of the bundles items in an
      * easy to work with array.
      *
@@ -148,7 +146,7 @@ trait BundleTrait
             ];
 
             if ($item->is_bundle && $recursive) {
-                $list[$level]['parts'] = $item->getBundleItemsList(true, $depth);
+                $list[$level]['components'] = $item->getBundleItemsList(true, $depth);
             }
 
             $level++;
@@ -158,9 +156,11 @@ trait BundleTrait
     }
 
     /**
+     * TODO: check "hasItem" and add quantity to that, if applicable
+     * 
      * Adds an item to the current bundle.
      *
-     * @param Model            $part
+     * @param Model            $component
      * @param int|float|string $quantity
      * @param array            $extra
      *
@@ -168,27 +168,33 @@ trait BundleTrait
      *
      * @return $this
      */
-    public function addBundleItem(Model $part, $quantity = 1, array $extra = [])
+    public function addBundleItem(Model $component, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
             if (!$this->is_bundle) {
                 $this->makeBundle();
             }
 
-            if ($part->is_bundle) {
-                $this->validateComponent($part);
+            if ($component->is_bundle) {
+                $this->validateComponent($component);
             }
 
             $attributes = array_merge(['quantity' => $quantity], $extra);
+            
+            if ($this->hasComponent($component)) {
+                $this->updateBundleItem($component, $quantity, $extra);
+            } else {
 
-            if ($this->bundles()->save($part, $attributes)) {
-                $this->fireEvent('inventory.bundle.part-added', [
+            }
+
+            if ($this->bundles()->save($component, $attributes)) {
+                $this->fireEvent('inventory.bundle.component-added', [
                     'item' => $this,
-                    'part' => $part,
+                    'component' => $component,
                 ]);
-
+    
                 $this->forgetCachedBundleItems();
-
+    
                 return $this;
             }
         }
@@ -197,9 +203,10 @@ trait BundleTrait
     }
 
     /**
-     * Adds multiple parts to the current items bundle.
+     * 
+     * Adds multiple components to the current items bundle.
      *
-     * @param array            $parts
+     * @param array            $components
      * @param int|float|string $quantity
      * @param array            $extra
      *
@@ -207,13 +214,13 @@ trait BundleTrait
      *
      * @return int
      */
-    public function addBundleItems(array $parts, $quantity = 1, array $extra = [])
+    public function addBundleItems(array $components, $quantity = 1, array $extra = [])
     {
         $count = 0;
 
-        if (count($parts) > 0) {
-            foreach ($parts as $part) {
-                if ($this->addBundleItem($part, $quantity, $extra)) {
+        if (count($components) > 0) {
+            foreach ($components as $component) {
+                if ($this->addBundleItem($component, $quantity, $extra)) {
                     $count++;
                 }
             }
@@ -223,10 +230,10 @@ trait BundleTrait
     }
 
     /**
-     * Updates the inserted parts quantity for the current
+     * Updates the inserted components quantity for the current
      * item's bundle.
      *
-     * @param int|string|Model $part
+     * @param int|string|Model $component
      * @param int|float|string $quantity
      * @param array            $extra
      *
@@ -234,21 +241,21 @@ trait BundleTrait
      *
      * @return $this|bool
      */
-    public function updateBundleItem($part, $quantity = 1, array $extra = [])
+    public function updateBundleItem($component, $quantity = 1, array $extra = [])
     {
         if ($this->isValidQuantity($quantity)) {
-            $id = $part;
+            $id = $component;
 
-            if ($part instanceof Model) {
-                $id = $part->getKey();
+            if ($component instanceof Model) {
+                $id = $component->getKey();
             }
 
             $attributes = array_merge(['quantity' => $quantity], $extra);
 
             if ($this->bundles()->updateExistingPivot($id, $attributes)) {
-                $this->fireEvent('inventory.bundle.part-updated', [
+                $this->fireEvent('inventory.bundle.component-updated', [
                     'item' => $this,
-                    'part' => $part,
+                    'component' => $component,
                 ]);
 
                 $this->forgetCachedBundleItems();
@@ -261,9 +268,9 @@ trait BundleTrait
     }
 
     /**
-     * Updates multiple parts with the specified quantity.
+     * Updates multiple components with the specified quantity.
      *
-     * @param array            $parts
+     * @param array            $components
      * @param int|float|string $quantity
      * @param array            $extra
      *
@@ -271,13 +278,13 @@ trait BundleTrait
      *
      * @return int
      */
-    public function updateBundleItems(array $parts, $quantity, array $extra = [])
+    public function updateBundleItems(array $components, $quantity, array $extra = [])
     {
         $count = 0;
 
-        if (count($parts) > 0) {
-            foreach ($parts as $part) {
-                if ($this->updateBundleItem($part, $quantity, $extra)) {
+        if (count($components) > 0) {
+            foreach ($components as $component) {
+                if ($this->updateBundleItem($component, $quantity, $extra)) {
                     $count++;
                 }
             }
@@ -287,19 +294,19 @@ trait BundleTrait
     }
 
     /**
-     * Removes the specified part from
+     * Removes the specified component from
      * the current items bundle.
      *
-     * @param int|string|Model $part
+     * @param int|string|Model $component
      *
      * @return bool
      */
-    public function removeBundleItem($part)
+    public function removeBundleItem($component)
     {
-        if ($this->bundles()->detach($part)) {
-            $this->fireEvent('inventory.bundle.part-removed', [
+        if ($this->bundles()->detach($component)) {
+            $this->fireEvent('inventory.bundle.component-removed', [
                 'item' => $this,
-                'part' => $part,
+                'component' => $component,
             ]);
 
             $this->forgetCachedBundleItems();
@@ -311,19 +318,19 @@ trait BundleTrait
     }
 
     /**
-     * Removes multiple parts from the current items bundle.
+     * Removes multiple components from the current items bundle.
      *
-     * @param array $parts
+     * @param array $components
      *
      * @return int
      */
-    public function removeBundleItems(array $parts)
+    public function removeBundleItems(array $components)
     {
         $count = 0;
 
-        if (count($parts) > 0) {
-            foreach ($parts as $part) {
-                if ($this->removeBundleItem($part)) {
+        if (count($components) > 0) {
+            foreach ($components as $component) {
+                if ($this->removeBundleItem($component)) {
                     $count++;
                 }
             }
@@ -346,25 +353,25 @@ trait BundleTrait
     }
 
     /**
-     * Validates that the inserted parts bundle
+     * Validates that the inserted components bundle
      * does not contain the current item. This
      * prevents infinite recursion.
      *
-     * @param Model $part
+     * @param Model $component
      *
      * @return bool
      *
-     * @throws InvalidPartException
+     * @throws InvalidComponentException
      */
-    private function validateComponent(Model $part)
+    private function validateComponent(Model $component)
     {
-        if ((int) $part->getKey() === (int) $this->getKey()) {
+        if ((int) $component->getKey() === (int) $this->getKey()) {
             $message = 'An item cannot be an bundle of itself.';
 
-            throw new InvalidPartException($message);
+            throw new InvalidComponentException($message);
         }
 
-        $list = $part->getBundleItemsList();
+        $list = $component->getBundleItemsList();
 
         array_walk_recursive($list, [$this, 'validateComponentAgainstList']);
 
@@ -379,15 +386,15 @@ trait BundleTrait
      * @param mixed      $value
      * @param int|string $key
      *
-     * @throws InvalidPartException
+     * @throws InvalidComponentException
      */
     private function validateComponentAgainstList($value, $key)
     {
         if ($key === $this->getKeyName()) {
             if ((int) $value === (int) $this->getKey()) {
-                $message = 'The inserted part exists inside the bundle tree. An item cannot be an bundle of itself.';
+                $message = 'The inserted component exists inside the bundle tree. An item cannot be an bundle of itself.';
 
-                throw new InvalidPartException($message);
+                throw new InvalidComponentException($message);
             }
         }
     }
@@ -400,5 +407,32 @@ trait BundleTrait
     private function getBundleCacheKey()
     {
         return $this->bundleCacheKey.$this->getKey();
+    }
+
+    /**
+     * Checks if the given item is already contained in the bundle
+     * 
+     * @param Model     $component
+     * 
+     * @return boolean
+     */
+    private function hasComponent(Model $component) 
+    {
+        $compID = null;
+
+        if($component instanceof Model) {
+            $compID = $component->id;
+        }
+
+        //TODO: this breaks everything for some reason :\
+        $bundleItems = $this->getBundleItems();
+
+        if(count($bundleItems) > 0) {
+            foreach ($bundleItems as $i) {
+                if ($i->id == $compID) return true;
+            }
+        }
+        
+        return false;
     }
 }

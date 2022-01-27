@@ -8,17 +8,6 @@ use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
 class InventoryTransactionTest extends FunctionalTestCase
 {
-    // public function setUp(): void
-    // {
-    //     parent::setUp();
-
-    //     InventoryTransaction::flushEventListeners();
-    //     InventoryTransaction::boot();
-
-    //     InventoryTransactionHistory::flushEventListeners();
-    //     InventoryTransactionHistory::boot();
-    // }
-
     public function testInventoryTransactionStockNotFoundException()
     {
         $transaction = $this->newTransaction();

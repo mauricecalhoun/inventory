@@ -6,17 +6,9 @@ use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\Lang;
-// use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class InventoryTest extends FunctionalTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // Eloquent::unguard();
-    }
-
     public function testInventoryHasMetric()
     {
         $item = $this->newInventory();

@@ -7,6 +7,8 @@
  */
 return [
 
+    'InvalidComponentException' => 'Component already exists in this bundle',
+
     'InvalidLocationException' => 'Location :location is invalid',
 
     'InvalidMovementException' => 'Movement :movement is invalid',

@@ -72,6 +72,7 @@ class InventoryBundleTest extends FunctionalTestCase
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
+    // TODO: this should increment the quantity of a single item
     public function testAddSameBundleItems()
     {
         $item = $this->newInventory();
@@ -84,12 +85,13 @@ class InventoryBundleTest extends FunctionalTestCase
 
         Cache::shouldReceive('forget')->twice()->andReturn(true);
 
-        $item->addBundleItems([$childItem, $childItem]);
+        $item->addBundleItems([$childItem, $childItem, $childItem, $childItem]);
 
         Cache::shouldReceive('has')->once()->andReturn(false);
         Cache::shouldReceive('forever')->once()->andReturn(true);
 
-        $this->assertEquals(2, $item->getBundleItems()->count());
+        $this->assertEquals(1, $item->getBundleItems()->count());
+        $this->assertEquals(4, $item->getBundleItemsList()[0]->quantity);
     }
 
     public function testAddBundleItemExtraAttributes()
@@ -461,29 +463,29 @@ class InventoryBundleTest extends FunctionalTestCase
         $this->assertEquals(1, $list[0]['depth']);
         $this->assertEquals(1, $list[1]['depth']);
 
-        $this->assertEquals('Screws', $list[0]['parts'][0]['name']);
-        $this->assertEquals('Screws', $list[1]['parts'][0]['name']);
+        $this->assertEquals('Screws', $list[0]['components'][0]['name']);
+        $this->assertEquals('Screws', $list[1]['components'][0]['name']);
 
         // Validate Screw Depth
-        $this->assertEquals(2, $list[0]['parts'][0]['depth']);
-        $this->assertEquals(2, $list[1]['parts'][0]['depth']);
+        $this->assertEquals(2, $list[0]['components'][0]['depth']);
+        $this->assertEquals(2, $list[1]['components'][0]['depth']);
 
-        $this->assertEquals('Metal', $list[0]['parts'][0]['parts'][0]['name']);
-        $this->assertEquals('Metal', $list[1]['parts'][0]['parts'][0]['name']);
+        $this->assertEquals('Metal', $list[0]['components'][0]['components'][0]['name']);
+        $this->assertEquals('Metal', $list[1]['components'][0]['components'][0]['name']);
 
         // Validate Metal Depth
-        $this->assertEquals(3, $list[0]['parts'][0]['parts'][0]['depth']);
-        $this->assertEquals(3, $list[1]['parts'][0]['parts'][0]['depth']);
+        $this->assertEquals(3, $list[0]['components'][0]['components'][0]['depth']);
+        $this->assertEquals(3, $list[1]['components'][0]['components'][0]['depth']);
 
-        $this->assertEquals('Ore', $list[0]['parts'][0]['parts'][0]['parts'][0]['name']);
-        $this->assertEquals('Ore', $list[1]['parts'][0]['parts'][0]['parts'][0]['name']);
+        $this->assertEquals('Ore', $list[0]['components'][0]['components'][0]['components'][0]['name']);
+        $this->assertEquals('Ore', $list[1]['components'][0]['components'][0]['components'][0]['name']);
 
         // Validate Ore Depth
-        $this->assertEquals(4, $list[0]['parts'][0]['parts'][0]['parts'][0]['depth']);
-        $this->assertEquals(4, $list[1]['parts'][0]['parts'][0]['parts'][0]['depth']);
+        $this->assertEquals(4, $list[0]['components'][0]['components'][0]['components'][0]['depth']);
+        $this->assertEquals(4, $list[1]['components'][0]['components'][0]['components'][0]['depth']);
     }
 
-    public function testInvalidPartException()
+    public function testInvalidComponentException()
     {
         $metric = $this->newMetric();
 
@@ -495,12 +497,12 @@ class InventoryBundleTest extends FunctionalTestCase
             'category_id' => $category->id,
         ]);
 
-        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidComponentException');
 
         $table->addBundleItem($table);
     }
 
-    public function testNestedInvalidPartException()
+    public function testNestedInvalidComponentException()
     {
         $metric = $this->newMetric();
 
@@ -546,7 +548,7 @@ class InventoryBundleTest extends FunctionalTestCase
 
         $screws->addBundleItem($metal, 5);
 
-        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidPartException');
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidComponentException');
 
         /*
          * Since metal is already apart of screws,

@@ -94,6 +94,6 @@ class Inventory extends BaseModel
      */
     public function bundles()
     {
-        return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
+        return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'component_id')->withPivot(['quantity'])->withTimestamps();
     }
 }
