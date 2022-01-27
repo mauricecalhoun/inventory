@@ -82,7 +82,7 @@ class InventoryBundleTest extends FunctionalTestCase
             'category_id' => $item->category_id,
         ]);
 
-        Cache::shouldReceive('forget')->twice()->andReturn(true);
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
 
         $item->addBundleItems([$childItem, $childItem, $childItem, $childItem]);
 
