@@ -86,8 +86,8 @@ class InventoryBundleTest extends FunctionalTestCase
 
         $item->addBundleItems([$childItem, $childItem, $childItem, $childItem]);
 
-        Cache::shouldReceive('has')->once()->andReturn(false);
-        Cache::shouldReceive('forever')->once()->andReturn(true);
+        Cache::shouldReceive('has')->twice()->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
 
         $this->assertEquals(1, $item->getBundleItems()->count());
         $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
