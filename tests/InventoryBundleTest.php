@@ -72,7 +72,7 @@ class InventoryBundleTest extends FunctionalTestCase
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
-    public function testAddSameBundleItems()
+    public function testAddSameBundleItemsSimultaneously()
     {
         $item = $this->newInventory();
 
@@ -91,6 +91,52 @@ class InventoryBundleTest extends FunctionalTestCase
 
         $this->assertEquals(1, $item->getBundleItems()->count());
         $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
+    }
+
+    public function testAddSameBundleItemsIncrementally()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+
+        Cache::shouldReceive('has')->twice()->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
+
+        $this->assertEquals(1, $item->getBundleItems()->count());
+        $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
+    }
+
+    public function testAddSameBundleItemsWithMixedMethods() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
+        $item->addBundleItem($childItem, 4);
+        $item->addBundleItems([$childItem, $childItem], 2);
+        $item->addBundleItem($childItem);
+
+        Cache::shouldReceive('has')->twice(2)->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
+
+        $this->assertEquals(1, $item->getBundleItems()->count());
+        $this->assertEquals(9, $item->getBundleItems()->first()->pivot->quantity);
     }
 
     public function testAddBundleItemExtraAttributes()
