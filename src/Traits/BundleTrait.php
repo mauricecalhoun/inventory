@@ -156,8 +156,6 @@ trait BundleTrait
     }
 
     /**
-     * TODO: check "hasItem" and add quantity to that, if applicable
-     * 
      * Adds an item to the current bundle.
      *
      * @param Model            $component
@@ -424,9 +422,6 @@ trait BundleTrait
         if($component instanceof Model) {
             $compID = $component->id;
         }
-
-        //TODO: this breaks everything for some reason :\
-        // $bundleItems = $this->getBundleItems(true)->toArray();
 
         $bundleItems = $this->bundles()->getResults();
 

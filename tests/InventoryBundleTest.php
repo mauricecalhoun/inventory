@@ -72,7 +72,6 @@ class InventoryBundleTest extends FunctionalTestCase
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
-    // TODO: this should increment the quantity of a single item
     public function testAddSameBundleItems()
     {
         $item = $this->newInventory();
