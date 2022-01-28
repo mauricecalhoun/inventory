@@ -143,31 +143,6 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(1, $variants->count());
     }
 
-    public function testGetVariantsRecursive()
-    {
-        $category = $this->newCategory();
-        $metric = $this->newMetric();
-
-        $coke = Inventory::create([
-            'name' => 'Coke',
-            'description' => 'Delicious Pop',
-            'metric_id' => $metric->id,
-            'category_id' => $category->id,
-        ]);
-
-        $cherryCoke = $coke->createVariant('Cherry Coke');
-
-        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
-
-        $vanillaLimeCherryCoke = $vanillaCherryCoke->createVariant('Vanilla Lime Cherry Coke');
-
-        $variants = $coke->getVariants(true);
-
-        $this->assertEquals($cherryCoke->name, $variants->get(0)->name);
-        $this->assertEquals($vanillaCherryCoke->name, $variants->get(0)->variants->get(0)->name);
-        $this->assertEquals($vanillaLimeCherryCoke->name, $variants->get(0)->variants->get(0)->variants->get(0)->name);
-    }
-
     public function testGetParent()
     {
         $category = $this->newCategory();
@@ -233,12 +208,33 @@ class InventoryVariantTest extends FunctionalTestCase
         // Stock change reasons (one for create, one for put, for both items)
         Lang::shouldReceive('get')->times(4)->andReturn('Default Reason');
 
-        // $cherryCoke->createStockOnLocation(20, $location);
-
         $vanillaCherryCoke->createStockOnLocation(40, $location);
 
         $this->assertEquals(40, $coke->getTotalVariantStock());
         $this->assertEquals(0, $coke->getTotalStock());
+    }
+
+    public function testParentsCannotBeVariants()
+    {
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidVariantException');
+
+        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
+
+        $vanillaCherryCoke->makeVariantOf($cherryCoke);
     }
 
     public function testParentsCannotHaveLocation() 

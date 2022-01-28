@@ -3,6 +3,8 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Lang;
+use Stevebauman\Inventory\Exceptions\InvalidVariantException;
 
 /**
  * Trait InventoryVariantTrait.
@@ -27,16 +29,6 @@ trait InventoryVariantTrait
     public function variants()
     {
         return $this->hasMany(get_class($this) , 'parent_id');
-    }
-
-    /**
-     * The hasMany recursive variants relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function variantsRecursive()
-    {
-        return $this->variants()->with('variantsRecursive');
     }
 
     /**
@@ -72,19 +64,14 @@ trait InventoryVariantTrait
     /**
      * Returns all variants of the current item.
      *
-     * This method does not retrieve variants recursively.
-     *
-     * @param bool $recursive
+     * This method does not retrieve variants recursively as this
+     * is no longer a feature.  Variants must only be one level deep.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getVariants($recursive = false)
+    public function getVariants()
     {
-        if($recursive) {
-            return $this->variantsRecursive;
-        } else {
-            return $this->variants;
-        }
+        return $this->variants;
     }
 
     /**
@@ -100,15 +87,11 @@ trait InventoryVariantTrait
 
     /**
      * Returns the total sum of the item
-     * variants stock. This method is recursive
-     * by default, and includes variants of variants
-     * total stock.
-     *
-     * @param bool $recursive
+     * variants stock.
      *
      * @return int|float
      */
-    public function getTotalVariantStock($recursive = true)
+    public function getTotalVariantStock()
     {
         $quantity = 0;
 
@@ -117,14 +100,6 @@ trait InventoryVariantTrait
         if(count($variants) > 0) {
             foreach($variants as $variant) {
                 $quantity = $quantity + $variant->getTotalStock();
-
-                /*
-                 * If the developer wants complete recursive variant stock,
-                 * we'll return a complete quantity for the variants variants
-                 */
-                if($recursive && $variant->hasVariants()) {
-                    $quantity = $quantity + $variant->getTotalVariantStock();
-                }
             }
         }
 
@@ -165,38 +140,46 @@ trait InventoryVariantTrait
      * @param int|string $metricId
      *
      * @return bool|Model
+     * 
+     * @throws InvalidVariantException
      */
     public function createVariant($name = '', $description = '', $categoryId = null, $metricId = null)
     {
-        $variant = $this->newVariant($name);
-
-        try {
-            if (!empty($description)) {
-                $variant->description = $description;
+        if (!$this->isVariant()) {
+            $variant = $this->newVariant($name);
+    
+            try {
+                if (!empty($description)) {
+                    $variant->description = $description;
+                }
+    
+                if ($categoryId !== null) {
+                    $variant->category_id = $categoryId;
+                }
+    
+                if ($metricId !== null) {
+                    $variant->metric_id = $metricId;
+                }
+    
+                if ($variant->save()) {
+                    $this->dbCommitTransaction();
+    
+                    $this->fireEvent('inventory.variant.created', [
+                        'item' => $this,
+                    ]);
+    
+                    return $variant;
+                }
+            } catch (\Exception $e) {
+                $this->dbRollbackTransaction();
             }
+    
+            return false;
+        } else {
+            $message = Lang::get('inventory::exceptions.InvalidVariantException');
 
-            if ($categoryId !== null) {
-                $variant->category_id = $categoryId;
-            }
-
-            if ($metricId !== null) {
-                $variant->metric_id = $metricId;
-            }
-
-            if ($variant->save()) {
-                $this->dbCommitTransaction();
-
-                $this->fireEvent('inventory.variant.created', [
-                    'item' => $this,
-                ]);
-
-                return $variant;
-            }
-        } catch (\Exception $e) {
-            $this->dbRollbackTransaction();
+            throw new InvalidVariantException($message);
         }
-
-        return false;
     }
 
     /**
