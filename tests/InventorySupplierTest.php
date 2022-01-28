@@ -29,9 +29,9 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
-        $this->assertTrue($item->removeSupplier(1));
+        $this->assertTrue($item->removeSupplier($newSupplier->id));
     }
 
     public function testInventorySupplierDetachAll()
@@ -48,7 +48,7 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item2->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
         $item->removeAllSuppliers();
 

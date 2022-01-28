@@ -4,6 +4,7 @@
  * The Inventory Exceptions language file.
  *
  * @author Steve Bauman
+ * @author David Vicklund
  */
 return [
 
@@ -27,6 +28,8 @@ return [
 
     'StockNotFoundException' => 'No stock was found from location :location',
 
-    'SkuAlreadyExistsException' => 'An SKU already exists for this item',
+    'SkuAlreadyExistsException' => 'A SKU already exists for this item',
+
+    'IsParentException' => 'Item :parentName is a parent to one or more variants',
 
 ];

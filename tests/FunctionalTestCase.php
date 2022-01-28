@@ -272,6 +272,7 @@ abstract class FunctionalTestCase extends TestCase
         DB::schema()->table('inventories', function ($table) {
             $table->boolean('is_assembly')->default(false);
             $table->boolean('is_bundle')->default(false);
+            $table->boolean('is_parent')->default(false);
         });
 
         DB::schema()->create('inventory_assemblies', function ($table) {

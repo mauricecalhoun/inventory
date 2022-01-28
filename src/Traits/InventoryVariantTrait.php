@@ -209,25 +209,29 @@ trait InventoryVariantTrait
      */
     public function makeVariantOf(Model $item)
     {
-        return $this->processMakeVariant($item->getKey());
+        return $this->processMakeVariant($item);
     }
 
     /**
      * Processes making the current item a variant
      * of the specified item ID.
      *
-     * @param int|string $itemId
+     * @param Model $item
      *
      * @return $this|bool
      */
-    private function processMakeVariant($itemId)
+    private function processMakeVariant($item)
     {
         $this->dbStartTransaction();
 
         try {
-            $this->parent_id = $itemId;
+            $this->parent_id = $item->getKey();
+
+            $item->is_parent = true;
 
             if ($this->save()) {
+                $item->save();
+
                 $this->dbCommitTransaction();
 
                 $this->fireEvent('inventory.variant.made', [

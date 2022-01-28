@@ -7,6 +7,7 @@ use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
 use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
+use Stevebauman\Inventory\Exceptions\IsParentException;
 use Stevebauman\Inventory\InventoryServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
@@ -27,8 +28,8 @@ trait InventoryTrait
     use VerifyTrait;
 
     /*
-     * Set's the models constructor method to automatically assign the
-     * created_by's attribute to the current logged in user
+     * Sets the model's constructor method to automatically assign the
+     * created_by attribute to the current logged in user
      */
     use UserIdentificationTrait;
 
@@ -233,50 +234,60 @@ trait InventoryTrait
      * @throws StockNotFoundException
      * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
      * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
+     * @throws \Stevebauman\Inventory\Exceptions\IsParentException
      *
      * @return Model
      */
     public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
     {
-        $location = $this->getLocation($location);
+        if (!$this->is_parent) {
 
-        try {
-            /*
-             * We want to make sure stock doesn't exist on the specified location already
-             */
-            if ($this->getStockFromLocation($location)) {
-                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
-                    'location' => $location->name,
-                ]);
-
-                throw new StockAlreadyExistsException($message);
+            $location = $this->getLocation($location);
+    
+            try {
+                /*
+                 * We want to make sure stock doesn't exist on the specified location already
+                 */
+                if ($this->getStockFromLocation($location)) {
+                    $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
+                        'location' => $location->name,
+                    ]);
+    
+                    throw new StockAlreadyExistsException($message);
+                }
+            } catch (StockNotFoundException $e) {
+                /*
+                 * A stock record wasn't found on this location, we'll create one
+                 */
+                $insert = [
+                    'inventory_id' => $this->getKey(),
+                    'location_id' => $location->getKey(),
+                    'quantity' => 0,
+                    'aisle' => $aisle,
+                    'row' => $row,
+                    'bin' => $bin,
+                ];
+    
+                /*
+                 * We'll perform a create so a 'first' movement is generated
+                 */
+                $stock = $this->stocks()->create($insert);
+    
+                /*
+                 * Now we'll 'put' the inserted quantity onto the generated stock
+                 * and return the results
+                 */
+                return $stock->put($quantity, $reason, $cost);
             }
-        } catch (StockNotFoundException $e) {
-            /*
-             * A stock record wasn't found on this location, we'll create one
-             */
-            $insert = [
-                'inventory_id' => $this->getKey(),
-                'location_id' => $location->getKey(),
-                'quantity' => 0,
-                'aisle' => $aisle,
-                'row' => $row,
-                'bin' => $bin,
-            ];
+    
+            return false;
+        } else {
+            $message = Lang::get('inventory::exceptions.IsParentException', [
+                'parentName' => $this->name,
+            ]);
 
-            /*
-             * We'll perform a create so a 'first' movement is generated
-             */
-            $stock = $this->stocks()->create($insert);
-
-            /*
-             * Now we'll 'put' the inserted quantity onto the generated stock
-             * and return the results
-             */
-            return $stock->put($quantity, $reason, $cost);
+            throw new IsParentException($message);
         }
-
-        return false;
     }
 
     /**
@@ -292,33 +303,41 @@ trait InventoryTrait
      */
     public function newStockOnLocation($location)
     {
-        $location = $this->getLocation($location);
-
-        try {
-            /*
-             * We want to make sure stock doesn't exist on the specified location already
-             */
-            if ($this->getStockFromLocation($location)) {
-                $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
-                    'location' => $location->name,
-                ]);
-
-                throw new StockAlreadyExistsException($message);
+        if (!$this->is_parent) {
+            $location = $this->getLocation($location);
+    
+            try {
+                /*
+                 * We want to make sure stock doesn't exist on the specified location already
+                 */
+                if ($this->getStockFromLocation($location)) {
+                    $message = Lang::get('inventory::exceptions.StockAlreadyExistsException', [
+                        'location' => $location->name,
+                    ]);
+    
+                    throw new StockAlreadyExistsException($message);
+                }
+            } catch (StockNotFoundException $e) {
+                /*
+                 * Create a new stock model instance
+                 */
+                $stock = $this->stocks()->getRelated();
+    
+                /*
+                 * Assign the known attributes
+                 * so devs don't have to
+                 */
+                $stock->inventory_id = $this->getKey();
+                $stock->location_id = $location->getKey();
+    
+                return $stock;
             }
-        } catch (StockNotFoundException $e) {
-            /*
-             * Create a new stock model instance
-             */
-            $stock = $this->stocks()->getRelated();
+        } else {
+            $message = Lang::get('inventory::exceptions.IsParentException', [
+                'parentName' => $this->name,
+            ]);
 
-            /*
-             * Assign the known attributes
-             * so devs don't have to
-             */
-            $stock->inventory_id = $this->getKey();
-            $stock->location_id = $location->getKey();
-
-            return $stock;
+            throw new IsParentException($message);
         }
     }
 
@@ -763,11 +782,19 @@ trait InventoryTrait
      */
     public function addSuppliers($suppliers = [])
     {
-        foreach ($suppliers as $supplier) {
-            $this->addSupplier($supplier);
-        }
+        if (!$this->is_parent) {
+            foreach ($suppliers as $supplier) {
+                $this->addSupplier($supplier);
+            }
+    
+            return true;
+        } else {
+            $message = Lang::get('inventory::exceptions.IsParentException', [
+                'parentName' => $this->name,
+            ]);
 
-        return true;
+            throw new IsParentException($message);
+        }
     }
 
     /**
@@ -814,9 +841,17 @@ trait InventoryTrait
      */
     public function addSupplier($supplier)
     {
-        $supplier = $this->getSupplier($supplier);
+        if (!$this->is_parent) {
+            $supplier = $this->getSupplier($supplier);
+    
+            return $this->processSupplierAttach($supplier);
+        } else {
+            $message = Lang::get('inventory::exceptions.IsParentException', [
+                'parentName' => $this->name,
+            ]);
 
-        return $this->processSupplierAttach($supplier);
+            throw new IsParentException($message);
+        }
     }
 
     /**

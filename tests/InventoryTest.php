@@ -34,9 +34,9 @@ class InventoryTest extends FunctionalTestCase
 
         Lang::shouldReceive('get')->once();
 
-        $item->createStockOnLocation(10, $location);
+        $newStock = $item->createStockOnLocation(10, $location);
 
-        $stock = InventoryStock::find(1);
+        $stock = InventoryStock::find($newStock->id);
 
         $this->assertEquals(10, $stock->quantity);
     }
@@ -49,8 +49,8 @@ class InventoryTest extends FunctionalTestCase
 
         $stock = $item->newStockOnLocation($location);
 
-        $this->assertEquals(1, $stock->inventory_id);
-        $this->assertEquals(1, $stock->location_id);
+        $this->assertEquals($item->id, $stock->inventory_id);
+        $this->assertEquals($location->id, $stock->location_id);
     }
 
     public function testInventoryNewStockOnLocationFailure()
@@ -89,9 +89,9 @@ class InventoryTest extends FunctionalTestCase
 
     public function testInventoryDoesNotHaveCategory()
     {
-        $this->newInventory();
+        $newItem = $this->newInventory();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($newItem->id);
         $item->category_id = null;
         $item->save();
 
