@@ -358,4 +358,23 @@ class InventoryVariantTest extends FunctionalTestCase
 
         $coke->newStockOnLocation($location);
     }
+
+    public function testInventoryBecomesParentWhenVariantAdded() {
+        $metric = $this->newMetric();
+        
+        $category = $this->newCategory();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Honestly why drink brown fizzy garbage water',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->assertTrue($coke->is_parent);
+    }
 }
