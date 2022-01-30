@@ -10,8 +10,6 @@ use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Supplier;
-// use Stevebauman\Inventory\Models\InventoryTransaction;
-// use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 abstract class FunctionalTestCase extends TestCase

@@ -33,4 +33,6 @@ return [
     'IsParentException' => 'Item :parentName is a parent to one or more variants',
 
     'InvalidVariantException' => 'Cannot create a variant of a variant',
+
+    'NonEmptyBundleException' => 'Cannot unmake a non-empty bundle'
 ];

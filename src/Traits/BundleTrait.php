@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Stevebauman\Inventory\Exceptions\InvalidComponentException;
+use Stevebauman\Inventory\Exceptions\NonEmptyBundleException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -37,7 +38,7 @@ trait BundleTrait
     }
 
     /**
-     * Makes the current item an bundle.
+     * Makes the current item a bundle.
      *
      * @return $this
      */
@@ -46,6 +47,25 @@ trait BundleTrait
         $this->is_bundle = true;
 
         return $this->save();
+    }
+
+    /**
+     * Makes the current item no longer a bundle, as long as
+     * it has no bundle components.
+     *
+     * @return $this
+     */
+    public function unmakeBundle()
+    {
+        if (count($this->bundles()->getResults()) == 0) {
+            $this->is_bundle = false;
+            
+            return $this->save();
+        } else {
+            $message = 'Cannot unmake non empty bundle.';
+
+            throw new NonEmptyBundleException($message);
+        }
     }
 
     /**

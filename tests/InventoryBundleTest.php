@@ -630,4 +630,30 @@ class InventoryBundleTest extends FunctionalTestCase
 
         $this->assertTrue($item->forgetCachedBundleItems());
     }
+
+    public function testShouldNotUnmakeBundleWithExistingBundleItems() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory();
+
+        $item->addBundleItem($childItem);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\NonEmptyBundleException');
+
+        $item->unmakeBundle();
+    }
+
+    public function testShouldUnmakeBundleIfNoBundleItemsLeft() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory();
+
+        $item->addBundleItem($childItem);
+
+        $item->removeBundleItem($childItem);
+
+        $item->unmakeBundle();
+
+        $this->assertFalse($item->is_bundle);
+    }
 }
