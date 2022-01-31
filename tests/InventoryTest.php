@@ -97,4 +97,48 @@ class InventoryTest extends FunctionalTestCase
 
         $this->assertFalse($item->hasCategory());
     }
+
+    public function testCanCreateInventoryAsParent() {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+        
+        $newItem = Inventory::create([
+            'name' => 'Widget',
+            'description' => 'It\'s a thing that does stuff',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'is_parent' => true,
+        ]);
+
+        $newItem->save();
+
+        $item = Inventory::find($newItem->id);
+
+        $this->assertTrue((boolean) $item->is_parent);
+    }
+
+    public function testCannotPutStockAndLocationOnParent() {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+        
+        $newItem = Inventory::create([
+            'name' => 'Widget',
+            'description' => 'It\'s a thing that does other things',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'is_parent' => true,
+        ]);
+
+        $newItem->save();
+
+        $item = Inventory::find($newItem->id);
+
+        $location = $this->newLocation();
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+        
+        $item->newStockOnLocation(10, $location);
+    }
 }
