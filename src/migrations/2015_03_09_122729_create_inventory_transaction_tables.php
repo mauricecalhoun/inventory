@@ -11,7 +11,7 @@ class CreateInventoryTransactionTables extends Migration
     public function up()
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
             $table->integer('created_by')->unsigned()->nullable();
             $table->integer('stock_id')->unsigned();

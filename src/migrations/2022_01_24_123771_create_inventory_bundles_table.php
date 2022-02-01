@@ -12,7 +12,7 @@ class CreateInventoryBundlesTable extends Migration
     {
         Schema::create('inventory_bundles', function (Blueprint $table) {
 
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
             $table->integer('inventory_id')->unsigned();
             $table->integer('component_id')->unsigned();
