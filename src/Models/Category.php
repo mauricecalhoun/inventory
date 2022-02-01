@@ -27,6 +27,6 @@ class Category extends Node
      */
     public function inventories()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\Inventory', 'category_id', 'id');
+        return $this->hasMany(Inventory::class, 'category_id', 'id');
     }
 }

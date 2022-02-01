@@ -25,6 +25,6 @@ class InventorySku extends BaseModel
      */
     public function item()
     {
-        return $this->belongsTo('Stevebauman\Inventory\Models\Inventory', 'inventory_id', 'id');
+        return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
 }

@@ -34,7 +34,7 @@ class Inventory extends BaseModel
      */
     public function category()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Category', 'id', 'category_id');
+        return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class Inventory extends BaseModel
      */
     public function metric()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\Metric', 'id', 'metric_id');
+        return $this->hasOne(Metric::class, 'id', 'metric_id');
     }
 
     /**
@@ -54,7 +54,7 @@ class Inventory extends BaseModel
      */
     public function sku()
     {
-        return $this->hasOne('Stevebauman\Inventory\Models\InventorySku', 'inventory_id', 'id');
+        return $this->hasOne(InventorySku::class, 'inventory_id', 'id');
     }
 
     /**
@@ -64,7 +64,7 @@ class Inventory extends BaseModel
      */
     public function stocks()
     {
-        return $this->hasMany('Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+        return $this->hasMany(InventoryStock::class, 'inventory_id', 'id');
     }
 
     /**
@@ -74,7 +74,7 @@ class Inventory extends BaseModel
      */
     public function suppliers()
     {
-        return $this->belongsToMany('Stevebauman\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+        return $this->belongsToMany(Supplier::class, 'inventory_suppliers', 'inventory_id')->withTimestamps();
     }
 
     /**
@@ -96,4 +96,14 @@ class Inventory extends BaseModel
     {
         return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'component_id')->withPivot(['quantity'])->withTimestamps();
     }
+
+    // /**
+    //  * The hasMany attributes relationship.
+    //  * 
+    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    //  */
+    // public function attributes() 
+    // {
+    //     return $this->hasManyThrough('Stevebauman\Inventory\Models\Attribute', 'id', 'attribute_id');
+    // }
 }
