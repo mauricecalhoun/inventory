@@ -13,11 +13,13 @@ return [
     'InvalidLocationException' => 'Location :location is invalid',
 
     'InvalidMovementException' => 'Movement :movement is invalid',
-
+    
     'InvalidSupplierException' => 'Supplier :supplier is invalid',
-
+    
     'InvalidItemException' => 'Item :item is invalid',
-
+    
+    'InvalidCustomAttributeException' => 'Custom attribute :attribute is invalid',
+    
     'InvalidQuantityException' => 'Quantity :quantity is invalid',
 
     'NotEnoughStockException' => 'Not enough stock. Tried to take :quantity but only :available is available',
@@ -34,5 +36,6 @@ return [
 
     'InvalidVariantException' => 'Cannot create a variant of a variant',
 
-    'NonEmptyBundleException' => 'Cannot unmake a non-empty bundle'
+    'NonEmptyBundleException' => 'Cannot unmake a non-empty bundle',
+
 ];

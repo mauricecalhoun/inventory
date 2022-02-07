@@ -302,6 +302,50 @@ abstract class FunctionalTestCase extends TestCase
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('component_id')->references('id')->on('inventories')->onDelete('cascade');
         });
+
+        DB::schema()->create('custom_attributes', function ($table) {
+            $table->id();
+            $table->string('name', 255);
+            $table->string('display_name', 255);
+            $table->string('value_type', 6)->notnull();
+            $table->boolean('reserved');
+            $table->enum('display_type', ['dropdown', 'string', 'currency', 'decimal', 'integer', 'date', 'time']);
+            $table->boolean('has_default');
+            $table->timestamp('created_at')->useCurrent();
+            $table
+                ->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
+
+        });
+
+        DB::schema()->create('custom_attribute_values', function($table) {
+            $table->id();
+            $table->foreignId('inventory_id');
+            $table->foreignId('custom_attribute_id');
+            $table->string('string_val', 8191)->nullable();
+            $table->decimal('num_val', 16, 4)->nullable();  // 123,456,789,012.3456
+            $table->dateTime('date_val')->nullable();
+
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
+            $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
+
+            $table->unique(['inventory_id', 'custom_attribute_id']);
+        });
+
+        DB::schema()->create('custom_attribute_defaults', function($table) {
+            $table->id();
+            $table->foreignId('inventory_id');
+            $table->foreignId('custom_attribute_id');
+            $table->string('string_val', 8191)->nullable();
+            $table->decimal('num_val', 16, 4)->nullable();  // 123,456,789,012.3456
+            $table->dateTime('date_val')->nullable();
+            
+            $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
+            $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
+
+            $table->unique(['inventory_id', 'custom_attribute_id']);
+        });
     }
 
     /**

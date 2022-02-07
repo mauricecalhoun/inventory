@@ -3,19 +3,21 @@
 namespace Stevebauman\Inventory\Models;
 
 use Stevebauman\Inventory\Traits\AssemblyTrait;
+use Stevebauman\Inventory\Traits\CustomAttributeTrait;
+use Stevebauman\Inventory\Traits\BundleTrait;
 use Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Stevebauman\Inventory\Traits\InventoryTrait;
-use Stevebauman\Inventory\Traits\BundleTrait;
 
 /**
  * Class Inventory.
  */
 class Inventory extends BaseModel
 {
+    use AssemblyTrait;
+    use CustomAttributeTrait;
+    use BundleTrait;
     use InventoryTrait;
     use InventoryVariantTrait;
-    use AssemblyTrait;
-    use BundleTrait;
 
     protected $table = 'inventories';
 
@@ -74,7 +76,8 @@ class Inventory extends BaseModel
      */
     public function suppliers()
     {
-        return $this->belongsToMany(Supplier::class, 'inventory_suppliers', 'inventory_id')->withTimestamps();
+        return $this->belongsToMany(Supplier::class, 'inventory_suppliers', 'inventory_id')
+            ->withTimestamps();
     }
 
     /**
@@ -84,7 +87,9 @@ class Inventory extends BaseModel
      */
     public function assemblies()
     {
-        return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')->withPivot(['quantity'])->withTimestamps();
+        return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')
+            ->withPivot(['quantity'])
+            ->withTimestamps();
     }
 
     /**
@@ -94,16 +99,44 @@ class Inventory extends BaseModel
      */
     public function bundles()
     {
-        return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'component_id')->withPivot(['quantity'])->withTimestamps();
+        return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'component_id')
+            ->withPivot(['quantity'])
+            ->withTimestamps();
     }
 
-    // /**
-    //  * The hasMany attributes relationship.
-    //  * 
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    //  */
-    // public function attributes() 
+    /**
+     * The hasManyThrough customAttributes relationship.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    // public function customAttributes() 
     // {
-    //     return $this->hasManyThrough('Stevebauman\Inventory\Models\Attribute', 'id', 'attribute_id');
+    //     return $this->hasManyThrough(Attribute::class, AttributeValue::class, 'attribute_id', 'id', 'attribute_id', 'attribute_id');
     // }
+    public function customAttributes()
+    {
+        return $this->belongsToMany(CustomAttribute::class, 'custom_attribute_values', 'inventory_id', 'custom_attribute_id');
+    }
+
+    /**
+     * The belongsToMany attributeValues relationship.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+
+     public function customAttributeValues()
+     {
+         return $this->hasMany(CustomAttributeValue::class, 'inventory_id');
+     }
+
+     /**
+     * The hasMany attributeValues relationship.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+
+    public function customAttributeDefaults()
+    {
+        return $this->hasMany(CustomAttributeDefault::class, 'inventory_id');
+    }
 }

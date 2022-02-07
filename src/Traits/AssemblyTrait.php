@@ -391,7 +391,7 @@ trait AssemblyTrait
     }
 
     /**
-     * Returns the current items assemblies cache key.
+     * Returns the current item's assemblies cache key.
      *
      * @return string
      */
