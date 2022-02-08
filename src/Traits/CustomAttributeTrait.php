@@ -330,7 +330,7 @@ trait CustomAttributeTrait
                 'inventory_id' => $itemKey,
                 'string_val' => $type == 'string' ? $value : null,
                 'num_val' => $type == 'num' ? $value : null,
-                'date_val' => $type == 'date' ? $value : null,
+                'date_val' => $type == 'date' ? date('Y-m-d H:i:s', strtotime($value)) : null,
             ];
     
             return $this->customAttributeValues()->create($attrVal);
