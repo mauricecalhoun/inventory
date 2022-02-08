@@ -3,11 +3,11 @@
 namespace Stevebauman\Inventory\Models;
 
 /**
- * Class CustomAttributeValue.
+ * Class CustomAttributeDefault.
  */
-class CustomAttributeValue extends BaseModel
+class CustomAttributeDefault extends BaseModel
 {
-    protected $table = 'custom_attribute_values';
+    protected $table = 'custom_attribute_defaults';
 
     public $timestamps = false;
 
