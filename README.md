@@ -77,8 +77,10 @@ Inventory is a fully tested, PSR compliant Laravel inventory solution. It provid
 - Inventory Stock movement tracking
 - Inventory SKU generation
 - Inventory Assembly management (Bill of Materials)
+- Inventory Bundle management
 - Inventory Supplier management
 - Inventory Transaction management
+- Inventory Custom Attributes
 
 All movements, stocks and inventory items are automatically given the current logged in user's ID. All inventory actions
 such as puts/removes/creations are covered by Laravel's built in database transactions. If any exception occurs
