@@ -223,16 +223,23 @@ trait CustomAttributeTrait
         
         $existingAttr = $this->getCustomAttribute($name);
         
-        $default = is_null($defaultValue) ? false : true;
+        $defaultIsNull = is_null($defaultValue);
 
-        $defaultValue = is_null($defaultValue) ? null : $defaultValue;
+        $hasDefault = $defaultIsNull ? false : true;
+
+        // Validate default value matches type
+        if ($hasDefault) {
+            $this->validateAttribute($defaultValue, $rawType);
+        }
+
+        $defaultValue = $defaultIsNull ? null : $defaultValue;
  
         // If the customAttribute exists on this item, check if it's of the correct type
         if ($existingAttr) {
             if ($type == $existingAttr->value_type) {
                 throw new InvalidCustomAttributeException('Cannot add same attribute '.$displayName.' twice');
             } else {
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $default, $defaultValue);
+                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue);
                 
                 return $createdCustomAttribute;
             }
@@ -243,9 +250,9 @@ trait CustomAttributeTrait
             if ($anyExistingAttr) {
                 //If the attribute exists, we initialize a linked 
                 // customAttributeValue by setting a null value
-                $this->setCustomAttribute($anyExistingAttr->id, $rawType, $defaultValue);
+                $this->setCustomAttribute($anyExistingAttr->id, $defaultValue, $rawType);
 
-                if ($default) {
+                if ($hasDefault) {
                     $this->setCustomAttributeDefault($anyExistingAttr, $defaultValue);
                 }
 
@@ -254,9 +261,9 @@ trait CustomAttributeTrait
                 // If no similarly-typed customAttribute found, create a new customAttribute
                 // TODO: set last parameter to calculated 'has_default' value?
 
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $default, $defaultValue);
+                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue);
                 
-                if ($default) {
+                if ($hasDefault) {
                     $this->setCustomAttributeDefault($createdCustomAttribute, $defaultValue);
                 }
 
@@ -265,6 +272,30 @@ trait CustomAttributeTrait
         }
 
         return false;
+    }
+
+    /**
+     * Validates the input attribute against the given type and
+     * throws an InvalidCustomAttributeException if invalid
+     *
+     * @param mixed $value
+     * @param string $type
+     * 
+     * @return void
+     * 
+     * @throws InvalidCustomAttributeException
+     */
+    private function validateAttribute($value, $type) {
+        // We allow null values
+        if(!is_null($value)) {
+            if ($type == 'num' && !is_numeric($value)) {
+                $message = '"'.$value.'" is an invalid number value';
+                throw new InvalidCustomAttributeException($message);
+            } else if ($type == 'date' && (!strtotime($value) || !date('Y-m-d', strtotime($value)))) {
+                $message = '"'.$value.'" is an invalid date value';
+                throw new InvalidCustomAttributeException($message);
+            }
+        }
     }
 
     /**
@@ -297,7 +328,7 @@ trait CustomAttributeTrait
          * Then we need to initialize the new custom attribute with an
          * empty value to link it with the current inventory item
          */
-        $this->setCustomAttribute($createdAttr->id, $rawType, $defaultValue);
+        $this->setCustomAttribute($createdAttr->id, $defaultValue, $rawType);
 
         return $createdAttr;
     }
@@ -307,15 +338,23 @@ trait CustomAttributeTrait
      * and value
      * 
      * @param int $id
-     * @param string $type
      * @param mixed $value
+     * @param string $type default = null
      * 
      * @return mixed
      */
-    public function setCustomAttribute($id, $type, $value) 
+    public function setCustomAttribute($id, $value, $type = null) 
     {
         try {
+            $existingAttrObj = $this->getCustomAttribute($id);
+
             $existingAttrValObj = $this->getCustomAttributeValueObj($id);
+
+            if (!$type) {
+                $type = $existingAttrObj->value_type;
+            }
+
+            $this->validateAttribute($value, $type);
 
             $valKey = $type . '_val';
     
@@ -323,6 +362,10 @@ trait CustomAttributeTrait
     
             return $existingAttrValObj->save();
         } catch (\Exception $e) {
+            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$id.', and can not create without a type');
+
+            $this->validateAttribute($value, $type);
+
             $itemKey = $this->getKey();
             
             $attrVal = [

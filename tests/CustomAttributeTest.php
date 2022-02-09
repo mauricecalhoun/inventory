@@ -87,7 +87,7 @@ class CustomAttributeTest extends FunctionalTestCase
         
         $attr = $item->addCustomAttribute('string', 'Property');
 
-        $item->setCustomAttribute($attr->id, 'string', 'this is a value');
+        $item->setCustomAttribute($attr->id, 'this is a value');
 
         $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
     }
@@ -98,7 +98,7 @@ class CustomAttributeTest extends FunctionalTestCase
         
         $attr = $item->addCustomAttribute('integer', 'Number Property');
 
-        $item->setCustomAttribute($attr->id, 'num', 42);
+        $item->setCustomAttribute($attr->id, 42);
 
         $this->assertEquals(42, $item->getCustomAttributeValue('number_property'));
     }
@@ -111,11 +111,24 @@ class CustomAttributeTest extends FunctionalTestCase
 
         $date = getdate();
 
-        $dateFormatted = $date['mon'].'-'.$date['mday'].'-'.$date['year'];
+        $dateFormatted = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
 
-        $item->setCustomAttribute($attr->id, 'date', $dateFormatted);
+        $item->setCustomAttribute($attr->id, $dateFormatted);
 
-        $this->assertEquals($dateFormatted, $item->getCustomAttributeValue('date_property'));
+        $this->assertEquals(strtotime($dateFormatted), strtotime($item->getCustomAttributeValue('date_property')));
+    }
+
+    public function testCanSetDateCustomAttributeValueWithTimestamp()
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('time', 'Time Property');
+        
+        $time = time();
+
+        $item->setCustomAttribute($attr->id, $time);
+
+        $this->assertEquals($time, $item->getCustomAttributeValue('time_property'));
     }
 
     public function testCanRemoveCustomAttribute() 
@@ -131,7 +144,8 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->getCustomAttributeValue('property');
     }
 
-    public function testCannotAddSameAttributeTwice() {
+    public function testCannotAddSameAttributeTwice() 
+    {
         $item = $this->newInventory();
 
         $item->addCustomAttribute('string', 'String Property');
@@ -141,7 +155,8 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->addCustomAttribute('string', 'String Property');
     }
 
-    public function testCanAddExistingAttributeToItem() {
+    public function testCanAddExistingAttributeToItem() 
+    {
         $item1 = $this->newInventory();
         $item2 = $this->newInventory();
 
@@ -164,20 +179,22 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals('default value', $item->getCustomAttributeValue('property'));
     }
 
-    public function testCanChangeCustomAttributeValueWithDefault() {
+    public function testCanChangeCustomAttributeValueWithDefault() 
+    {
         $item = $this->newInventory();
 
-        $attr = $item->addCustomAttribute('date', 'Date Property', '2-2-22');
+        $attr = $item->addCustomAttribute('date', 'Date Property', '22-2-2');
 
-        $this->assertEquals('2-2-22', $item->getCustomAttributeValue($attr->id));
+        $this->assertEquals(strtotime('22-2-2'), strtotime($item->getCustomAttributeValue($attr->id)));
 
-        $item->setCustomAttribute($attr->id, 'date', '3-3-33');
+        $item->setCustomAttribute($attr->id, '33-3-3');
 
-        $this->assertEquals('3-3-33', $item->getCustomAttributeValue($attr->id));
-        $this->assertEquals('2-2-22', $item->getCustomAttributeDefault($attr->id));
+        $this->assertEquals(strtotime('33-3-3'), strtotime($item->getCustomAttributeValue($attr->id)));
+        $this->assertEquals(strtotime('22-2-2'), strtotime($item->getCustomAttributeDefault($attr->id)));
     }
 
-    public function testCanChangeCustomAttributeDefaultValue() {
+    public function testCanChangeCustomAttributeDefaultValue() 
+    {
         $item = $this->newInventory();
 
         $item->addCustomAttribute('integer', 'Number Property', 10);
@@ -185,5 +202,43 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->setCustomAttributeDefault('number_property', 42);
 
         $this->assertEquals(42, $item->getCustomAttributeDefault('number_property'));
+    }
+
+    public function testCannotCreateNumericCustomAttributeWithInvalidDefault() 
+    {
+        $item = $this->newInventory();
+        
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->addCustomAttribute('integer', 'Number Property', 'not a number');
+    }
+
+    public function testCannotCreateDateCustomAttributeWithInvalidDefault() 
+    {
+        $item = $this->newInventory();
+        
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->addCustomAttribute('date', 'Date Property', 'not a date');
+    }
+
+    public function testCannotCreateTimeCustomAttributeWithInvalidDefault() 
+    {
+        $item = $this->newInventory();
+        
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->addCustomAttribute('time', 'Time Property', 'not a time');
+    }
+
+    public function testCannotSetNumericCustomAttributeWithInvalidValue() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('integer', 'Number Property');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->setCustomAttribute($attr->id, 'not a number');
     }
 }
