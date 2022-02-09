@@ -14,34 +14,49 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 abstract class FunctionalTestCase extends TestCase
 {
+    protected static $db = null;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->configureDatabase();
-        $this->migrateTables();
-
-        Eloquent::unguard();
+        // $this->configureDatabase();
+        // $this->migrateTables();
     }
     
-    private function configureDatabase()
+    public static function setUpBeforeClass(): void
     {
-        $db = new DB();
-
-        $db->addConnection([
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-        ]);
-
-        $db->bootEloquent();
-
-        $db->setAsGlobal();
+        if (!FunctionalTestCase::$db) {
+            FunctionalTestCase::configureDatabase();
+            FunctionalTestCase::migrateTables();
+            Eloquent::unguard();
+        }
     }
 
-    private function migrateTables()
+    private static function configureDatabase()
+    {
+        $db = FunctionalTestCase::$db;
+
+        if (!$db) {
+            $db = new DB();
+
+            $db->addConnection([
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+            ], 'default');
+
+            $db->getConnection('default');
+            
+            $db->bootEloquent();
+    
+            $db->setAsGlobal();   
+        }
+    }
+
+    private static function migrateTables()
     {
         DB::schema()->create('users', function ($table) {
             $table->increments('id');
