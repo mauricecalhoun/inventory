@@ -128,7 +128,7 @@ class CustomAttributeTest extends FunctionalTestCase
 
         $item->setCustomAttribute($attr->id, $time);
 
-        $this->assertEquals($time, $item->getCustomAttributeValue('time_property'));
+        $this->assertEquals($time, strtotime($item->getCustomAttributeValue('time_property')));
     }
 
     public function testCanRemoveCustomAttribute() 

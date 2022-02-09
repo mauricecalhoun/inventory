@@ -356,6 +356,10 @@ trait CustomAttributeTrait
 
             $this->validateAttribute($value, $type);
 
+            if ($type == 'date') {
+                $value = $this->formatDateValue($value);
+            }
+
             $valKey = $type . '_val';
     
             $existingAttrValObj->$valKey = $value;
@@ -373,10 +377,25 @@ trait CustomAttributeTrait
                 'inventory_id' => $itemKey,
                 'string_val' => $type == 'string' ? $value : null,
                 'num_val' => $type == 'num' ? $value : null,
-                'date_val' => $type == 'date' ? date('Y-m-d H:i:s', strtotime($value)) : null,
+                'date_val' => $type == 'date' ? $this->formatDateValue($value) : null,
             ];
     
             return $this->customAttributeValues()->create($attrVal);
+        }
+    }
+
+    /**
+     * Formats a date value to be consumed by database
+     *
+     * @param string|int $value
+     * 
+     * @return string
+     */
+    private function formatDateValue($value) {
+        if (is_numeric($value)) {
+            return date('Y-m-d H:i:s', $value);
+        } else {
+            return date('Y-m-d H:i:s', strtotime($value));
         }
     }
 
