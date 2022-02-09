@@ -241,4 +241,26 @@ class CustomAttributeTest extends FunctionalTestCase
         
         $item->setCustomAttribute($attr->id, 'not a number');
     }
+
+    public function testCannotSetDateCustomAttributeWithInvalidValue() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('date', 'Date Property');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->setCustomAttribute($attr->id, 'not a date');
+    }
+
+    public function testCannotSetTimeCustomAttributeWithInvalidValue() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('time', 'Time Property');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->setCustomAttribute($attr->id, 'not a time');
+    }
 }
