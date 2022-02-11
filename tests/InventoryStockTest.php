@@ -57,7 +57,7 @@ class InventoryStockTest extends FunctionalTestCase
 
         $stock->moveTo($newLocation);
 
-        $this->assertEquals(2, $stock->location_id);
+        $this->assertEquals($newLocation->id, $stock->location_id);
     }
 
     public function testStockIsValidQuantitySuccess()
@@ -126,17 +126,17 @@ class InventoryStockTest extends FunctionalTestCase
 
     public function testStockAlreadyExistsException()
     {
-        $this->newInventoryStock();
+        $stock = $this->newInventoryStock();
 
-        $location = Location::find(1);
+        $location = Location::find($stock->location_id);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($stock->inventory_id);
 
         Lang::shouldReceive('get')->once();
 
         $this->expectException('Stevebauman\Inventory\Exceptions\StockAlreadyExistsException');
 
-        $item->createStockOnLocation(1, $location);
+        $item->createStockOnLocation($stock->inventory_id, $location);
     }
 
     public function testStockNotFoundException()
@@ -154,67 +154,67 @@ class InventoryStockTest extends FunctionalTestCase
 
     public function testInventoryTakeFromManyLocations()
     {
-        $this->newInventoryStock();
+        $newStock = $this->newInventoryStock();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($newStock->inventory_id);
 
-        $location = Location::find(1);
+        $location = Location::find($newStock->location_id);
 
         $item->takeFromManyLocations(10, [$location]);
 
-        $stock = InventoryStock::find(1);
+        $stock = InventoryStock::where('inventory_id', $item->id)->first();
 
         $this->assertEquals(10, $stock->quantity);
     }
 
     public function testInventoryAddToManyLocations()
     {
-        $this->newInventoryStock();
+        $newStock = $this->newInventoryStock();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($newStock->inventory_id);
 
-        $location = Location::find(1);
+        $location = Location::find($newStock->location_id);
 
         $item->addToManyLocations(10, [$location]);
 
-        $stock = InventoryStock::find(1);
+        $stock = InventoryStock::where('inventory_id', $item->id)->first();
 
         $this->assertEquals(30, $stock->quantity);
     }
 
     public function testInventoryMoveItemStock()
     {
-        $this->newInventoryStock();
+        $newStock = $this->newInventoryStock();
 
-        $locationFrom = Location::find(1);
+        $locationFrom = Location::find($newStock->location_id);
 
         $locationTo = new Location();
         $locationTo->name = 'New Location';
         $locationTo->save();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($newStock->inventory_id);
 
         $item->moveStock($locationFrom, $locationTo);
 
-        $stock = InventoryStock::find(1);
+        $stock = InventoryStock::where('inventory_id', $item->id)->first();
 
-        $this->assertEquals(2, $stock->location_id);
+        $this->assertEquals($locationTo->id, $stock->location_id);
     }
 
     public function testInventoryGetTotalStock()
     {
-        $this->newInventoryStock();
+        $stock = $this->newInventoryStock();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($stock->inventory_id);
 
         $this->assertEquals(20, $item->getTotalStock());
     }
 
     public function testInventoryInvalidLocationException()
     {
-        $this->newInventoryStock();
+        $stock = $this->newInventoryStock();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($stock->inventory_id);
 
         Lang::shouldReceive('get')->once();
 
@@ -225,9 +225,7 @@ class InventoryStockTest extends FunctionalTestCase
 
     public function testInventoryStockNewTransaction()
     {
-        $this->newInventoryStock();
-
-        $stock = InventoryStock::find(1);
+        $stock = $this->newInventoryStock();
 
         $transaction = $stock->newTransaction();
 

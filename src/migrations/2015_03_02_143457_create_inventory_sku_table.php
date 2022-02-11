@@ -13,7 +13,7 @@ class CreateInventorySkuTable extends Migration
         Schema::create('inventory_skus', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
             $table->string('code');
 
             $table->foreign('inventory_id')->references('id')->on('inventories')

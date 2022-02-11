@@ -13,8 +13,8 @@ class CreateInventoryTransactionTables extends Migration
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('stock_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
@@ -31,8 +31,8 @@ class CreateInventoryTransactionTables extends Migration
         Schema::create('inventory_transaction_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('transaction_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('transaction_id')->unsigned();
 
             /*
              * Allows tracking states for each transaction

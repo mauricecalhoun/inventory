@@ -37,7 +37,7 @@ class CreateCustomAttributesTables extends Migration
             $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
             $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
 
-            $table->unique(['inventory_id', 'custom_attribute_id']);
+            $table->unique(['inventory_id', 'custom_attribute_id'], 'values_inventory_attribute_id_unique');
         });
 
         Schema::create('custom_attribute_defaults', function(Blueprint $table) {
@@ -51,7 +51,7 @@ class CreateCustomAttributesTables extends Migration
             $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
             $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
 
-            $table->unique(['inventory_id', 'custom_attribute_id']);
+            $table->unique(['inventory_id', 'custom_attribute_id'], 'defaults_inventory_attribute_id_unique');
         });
     }
 

@@ -32,8 +32,8 @@ class CreateInventorySupplierTables extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('supplier_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('supplier_id')->unsigned();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')

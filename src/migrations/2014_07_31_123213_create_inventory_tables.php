@@ -15,9 +15,9 @@ class CreateInventoryTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('metric_id')->unsigned();
+            $table->foreignId('category_id')->unsigned()->nullable();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
 
@@ -39,9 +39,9 @@ class CreateInventoryTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('location_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
             $table->string('aisle')->nullable();
             $table->string('row')->nullable();
@@ -71,8 +71,8 @@ class CreateInventoryTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('stock_id')->unsigned();
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreignId('stock_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();

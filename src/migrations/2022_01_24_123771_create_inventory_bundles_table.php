@@ -14,8 +14,8 @@ class CreateInventoryBundlesTable extends Migration
 
             $table->id();
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('component_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('component_id')->unsigned();
             $table->integer('quantity')->nullable();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');

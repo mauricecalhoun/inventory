@@ -14,7 +14,7 @@ class CreateMetricsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreignId('created_by')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');
 

@@ -14,8 +14,8 @@ class CreateInventoryAssembliesTable extends Migration
 
             $table->id();
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('part_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('part_id')->unsigned();
             $table->integer('quantity')->nullable();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');

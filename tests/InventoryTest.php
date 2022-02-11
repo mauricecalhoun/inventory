@@ -20,7 +20,7 @@ class InventoryTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
 
-        $metric = Metric::find(1);
+        $metric = Metric::find($item->metric_id);
         $metric->delete();
 
         $this->assertFalse($item->hasMetric());
