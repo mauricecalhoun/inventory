@@ -11,9 +11,12 @@ use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Supplier;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 abstract class FunctionalTestCase extends TestCase
 {
+    use DatabaseTransactions;
+
     protected static $db = null;
     protected static $connection = null;
 
