@@ -291,7 +291,7 @@ trait CustomAttributeTrait
             if ($type == 'num' && !is_numeric($value)) {
                 $message = '"'.$value.'" is an invalid number value';
                 throw new InvalidCustomAttributeException($message);
-            } else if ($type == 'date' && (!strtotime($value) || !date('Y-m-d', strtotime($value)))) {
+            } else if ($type == 'date' && (!strtotime($value) && !is_numeric($value))) {
                 $message = '"'.$value.'" is an invalid date value';
                 throw new InvalidCustomAttributeException($message);
             }
