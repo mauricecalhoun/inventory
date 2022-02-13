@@ -60,8 +60,8 @@ class CreateCustomAttributesTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('custom_attributes');
         Schema::dropIfExists('custom_attribute_values');
         Schema::dropIfExists('custom_attribute_defaults');
+        Schema::dropIfExists('custom_attributes');
     }
 }
