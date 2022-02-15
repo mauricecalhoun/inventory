@@ -14,7 +14,7 @@ class RunMigrationsCommand extends Command
      *
      * @var string
      */
-    protected $name = 'inventory:run-migrations';
+    protected $signature = 'inventory:run-migrations';
 
     /**
      * The console command description.
@@ -26,10 +26,10 @@ class RunMigrationsCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
         $this->call('migrate', [
-            '--path' => 'vendor/stevebauman/inventory/src/migrations',
+            '--path' => 'vendor/dvicklund/inventory/src/migrations',
         ]);
     }
 }
