@@ -180,20 +180,20 @@ class InventorySkuTest extends FunctionalTestCase
         $item->category_id = null;
         $item->save();
 
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
+        // /*
+        //  * SKU generation is enabled
+        //  */
+        // Config::shouldReceive('get')->once()->andReturn(true);
 
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
+        // /*
+        //  * SKU code limit
+        //  */
+        // Config::shouldReceive('get')->once()->andReturn(6);
 
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
+        // /*
+        //  * SKU prefix limit
+        //  */
+        // Config::shouldReceive('get')->once()->andReturn(3);
         $this->assertFalse($item->generateSku());
     }
 
@@ -213,6 +213,10 @@ class InventorySkuTest extends FunctionalTestCase
          * SKU prefix limit
          */
         Config::shouldReceive('get')->once()->andReturn(3);
+
+        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
+
+        Event::shouldReceive('dispatch')->once();
 
         $newSku = $this->newInventorySku();
 
