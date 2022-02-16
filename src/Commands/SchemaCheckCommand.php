@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 
 /**
  * Class SchemaCheckCommand.
+ * 
+ * @codeCoverageIgnore
  */
 class SchemaCheckCommand extends Command
 {

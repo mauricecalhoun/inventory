@@ -5,6 +5,8 @@
  *
  * @author Steve Bauman
  * @author David Vicklund
+ * 
+ * @codeCoverageIgnore
  */
 return [
 

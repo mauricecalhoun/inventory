@@ -5,9 +5,20 @@ namespace Stevebauman\Inventory\Tests;
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
 
+/**
+ * Inventory Supplier Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\InventoryTrait
+ */
 class InventorySupplierTest extends FunctionalTestCase
 {
-    
+    /**
+     * Test inventory supplier attach
+     * 
+     * @covers ::addSupplier
+     *
+     * @return void
+     */
     public function testInventorySupplierAttach()
     {
         $item = $this->newInventory();
@@ -21,6 +32,13 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals('Supplier', $supplier->name);
     }
 
+    /**
+     * Test inventory supplier detach
+     * 
+     * @covers ::removeSupplier
+     *
+     * @return void
+     */
     public function testInventorySupplierDetach()
     {
         $item1 = $this->newInventory();
@@ -34,6 +52,13 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertTrue($item->removeSupplier($newSupplier->id));
     }
 
+    /**
+     * Test inventory supplier detach all
+     * 
+     * @covers ::removeAllSuppliers
+     *
+     * @return void
+     */
     public function testInventorySupplierDetachAll()
     {
         $item1 = $this->newInventory();
@@ -55,6 +80,13 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals(0, $item->suppliers()->count());
     }
 
+    /**
+     * Test supplier attach item
+     * 
+     * @covers ::addSupplier
+     *
+     * @return void
+     */
     public function testSupplierAttachItem()
     {
         $item = $this->newInventory();
@@ -66,6 +98,13 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals($supplier->name, $item->suppliers()->first()->name);
     }
 
+    /**
+     * Test supplier detach item
+     * 
+     * @covers ::removeSupplier
+     *
+     * @return void
+     */
     public function testSupplierDetachItem()
     {
         $item1 = $this->newInventory();
@@ -74,13 +113,21 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
-        $item->removeSupplier(1);
+        $item->removeSupplier($newSupplier->id);
 
         $this->assertEquals(0, $item->suppliers()->count());
     }
 
+    /**
+     * Test supplier invalid supplier exception
+     * 
+     * @covers ::addSupplier
+     * @covers ::removeSupplier
+     *
+     * @return void
+     */
     public function testSupplierInvalidSupplierException()
     {
         $item1 = $this->newInventory();
@@ -89,7 +136,7 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidSupplierException');
 

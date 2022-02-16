@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Checkout Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionCheckoutTest extends FunctionalTestCase
 {
     public function testInventoryTransactionCheckout()

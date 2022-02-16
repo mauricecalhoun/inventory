@@ -7,6 +7,11 @@ use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * Inventory Test
+ * 
+ * @coversDefaultClass \Traits\InventoryTrait
+ */
 class InventoryTest extends FunctionalTestCase
 {
     public function testInventoryHasMetric()

@@ -2,6 +2,7 @@
 
 /**
  * The Inventory configuration file.
+ * @codeCoverageIgnore
  */
 return [
 

@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * Class InventoryServiceProvider.
+ * 
+ * @codeCoverageIgnore
  */
 class InventoryServiceProvider extends ServiceProvider
 {

@@ -52,6 +52,11 @@ abstract class FunctionalTestCase extends TestCase
             $db = new DB();
 
             $db->addConnection([
+                // 'driver' => 'mysql',
+                // 'database' => 'test_usurper',
+                // 'username' => 'sail',
+                // 'password' => 'password',
+                // 'host' => 'localhost',
                 'driver' => 'sqlite',
                 'database' => ':memory:',
                 'charset' => 'utf8',

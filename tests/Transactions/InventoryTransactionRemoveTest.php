@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Remove Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionRemoveTest extends FunctionalTestCase
 {
     public function testInventoryTransactionRemove()

@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Inventory Assembly Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\AssemblyTrait
+ */
 class InventoryAssemblyTest extends FunctionalTestCase
 {
     public function testMakeAssembly()
@@ -34,6 +39,8 @@ class InventoryAssemblyTest extends FunctionalTestCase
         ]);
 
         Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $item->addAssemblyItem($childItem, 10);
 
@@ -103,6 +110,8 @@ class InventoryAssemblyTest extends FunctionalTestCase
         ]);
 
         Cache::shouldReceive('forget')->once()->andReturn(true);
+
+        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $item->addAssemblyItem($childItem, 10, ['extra' => 'testing']);
 
@@ -209,6 +218,8 @@ class InventoryAssemblyTest extends FunctionalTestCase
         ]);
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
+
+        Lang::shouldReceive('get')->once();
 
         $item->addAssemblyItem($childItem, 'invalid quantity');
     }
@@ -433,6 +444,7 @@ class InventoryAssemblyTest extends FunctionalTestCase
         ]);
 
         Cache::shouldReceive('forget')->times(7)->andReturn(true);
+        Event::shouldReceive('dispatch')->times(7)->andReturn(true);
 
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);
@@ -533,6 +545,8 @@ class InventoryAssemblyTest extends FunctionalTestCase
         ]);
 
         Cache::shouldReceive('forget')->times(5)->andReturn(true);
+
+        Event::shouldReceive('dispatch')->times(5)->andReturn(true);
 
         $table->addAssemblyItem($tableTop, 1);
         $table->addAssemblyItem($tableLegs, 4);

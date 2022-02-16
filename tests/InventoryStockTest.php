@@ -9,6 +9,11 @@ use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 
+/**
+ * Inventory Stock Test
+ * 
+ * @coversDefaultClass \Traits\InventoryStockTrait
+ */
 class InventoryStockTest extends FunctionalTestCase
 {
     public function testInventoryStockCreation()

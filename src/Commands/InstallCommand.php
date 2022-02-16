@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 /**
  * Class InstallCommand.
+ * 
+ * @codeCoverageIgnore
  */
 class InstallCommand extends Command
 {

@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 /**
  * Class RunMigrationsCommand.
+ * 
+ * @codeCoverageIgnore
  */
 class RunMigrationsCommand extends Command
 {

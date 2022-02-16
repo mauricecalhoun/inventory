@@ -6,6 +6,11 @@ use Stevebauman\Inventory\Models\InventoryTransactionHistory;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionTest extends FunctionalTestCase
 {
     public function testInventoryTransactionStockNotFoundException()

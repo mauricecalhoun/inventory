@@ -8,8 +8,20 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\Inventory;
 
+/**
+ * Inventory Variant Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\InventoryVariantTrait
+ */
 class InventoryVariantTest extends FunctionalTestCase
 {
+    /**
+     * Test new variant
+     *  
+     * @covers ::newVariant
+     * 
+     * @return void
+     */
     public function testNewVariant()
     {
         $item = $this->newInventory();
@@ -32,6 +44,14 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals($chocolateMilk->metric_id, $milk->metric_id);
     }
 
+    /**
+     * Test create variant
+     * 
+     * @covers ::createVariant
+     * @covers ::isVariant
+     *
+     * @return void
+     */
     public function testCreateVariant()
     {
         $category = $this->newCategory();
@@ -62,6 +82,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals($metric->id, $cherryCoke->metric_id);
     }
 
+    /**
+     * Test make variant
+     * 
+     * @covers ::makeVariantOf
+     *
+     * @return void
+     */
     public function testMakeVariant()
     {
         $category = $this->newCategory();
@@ -91,6 +118,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals($cherryCoke->parent_id, $coke->id);
     }
 
+    /**
+     * Test is variant
+     *
+     * @covers ::isVariant
+     * 
+     * @return void
+     */
     public function testIsVariant()
     {
         $category = $this->newCategory();
@@ -112,10 +146,20 @@ class InventoryVariantTest extends FunctionalTestCase
 
         $cherryCoke->makeVariantOf($coke);
 
-        $this->assertFalse($coke->isVariant());
-        $this->assertTrue($cherryCoke->isVariant());
+        $isCokeVariant = $coke->isVariant();
+        $isCherryVariant = $cherryCoke->isVariant();
+
+        $this->assertFalse($isCokeVariant);
+        $this->assertTrue($isCherryVariant);
     }
 
+    /**
+     * Test get variants
+     * 
+     * @covers ::getVariants
+     *
+     * @return void
+     */
     public function testGetVariants()
     {
         $category = $this->newCategory();
@@ -143,6 +187,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(1, $variants->count());
     }
 
+    /**
+     * Test get parent
+     * 
+     * @covers ::getParent
+     *
+     * @return void
+     */
     public function testGetParent()
     {
         $category = $this->newCategory();
@@ -175,6 +226,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(null, $parent->parent_id);
     }
 
+    /**
+     * Test get total variant stock
+     * 
+     * @covers ::getTotalVariantStock
+     *
+     * @return void
+     */
     public function testGetTotalVariantStock()
     {
         $category = $this->newCategory();
@@ -206,7 +264,7 @@ class InventoryVariantTest extends FunctionalTestCase
         Config::shouldReceive('get')->twice()->andReturn(true);
 
         // Stock change reasons (one for create, one for put, for both items)
-        Lang::shouldReceive('get')->times(4)->andReturn('Default Reason');
+        Lang::shouldReceive('get')->once()->andReturn('Default Reason');
 
         $vanillaCherryCoke->createStockOnLocation(40, $location);
 
@@ -214,6 +272,14 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(0, $coke->getTotalStock());
     }
 
+    /**
+     * Test parents cannot be variants
+     * 
+     * @covers ::makeVariantOf
+     * @covers \Stevebauman\Inventory\Exceptions\InvalidVariantException
+     *
+     * @return void
+     */
     public function testParentsCannotBeVariants()
     {
         $category = $this->newCategory();
@@ -237,6 +303,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $vanillaCherryCoke->makeVariantOf($cherryCoke);
     }
 
+    /**
+     * Test parents cannot have location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::createStockOnLocation
+     *
+     * @return void
+     */
     public function testParentsCannotHaveLocation() 
     {
         $location = $this->newLocation();
@@ -261,6 +334,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $coke->createStockOnLocation(10, $location);
     }
 
+    /**
+     * Test cannot add supplier to parent
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::addSupplier
+     *
+     * @return void
+     */
     public function testCannotAddSupplierToParent() 
     {
         $metric = $this->newMetric();
@@ -285,6 +365,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $coke->addSupplier($supplier);
     }
 
+    /**
+     * Test cannot add suppliers to parent
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::addSuppliers
+     *
+     * @return void
+     */
     public function testCannotAddSuppliersToParent() 
     {
         $metric = $this->newMetric();
@@ -311,6 +398,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $coke->addSuppliers([$supplier1, $supplier2]);
     }
 
+    /**
+     * Test parents cannot create stock on location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::createStockOnLocation
+     *
+     * @return void
+     */
     public function testParentsCannotCreateStockOnLocation()
     {
         $metric = $this->newMetric();
@@ -335,6 +429,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $coke->createStockOnLocation(10, $location);
     }
 
+    /**
+     * Test parents cannot have new stock on location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::newStockOnLocation
+     *
+     * @return void
+     */
     public function testParentsCannotHaveNewStockOnLocation()
     {
         $metric = $this->newMetric();
@@ -359,6 +460,13 @@ class InventoryVariantTest extends FunctionalTestCase
         $coke->newStockOnLocation($location);
     }
 
+    /**
+     * Test inventory becomes parent when variant added
+     * 
+     * @covers ::makeVariantOf
+     *
+     * @return void
+     */
     public function testInventoryBecomesParentWhenVariantAdded() {
         $metric = $this->newMetric();
         

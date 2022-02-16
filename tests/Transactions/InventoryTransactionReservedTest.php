@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Reserved Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionReservedTest extends FunctionalTestCase
 {
     public function testInventoryTransactionReserved()

@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Inventory Bundle Test
+ * 
+ * @coversDefaultClass \Traits\BundleTrait
+ */
 class InventoryBundleTest extends FunctionalTestCase
 {
     public function testMakeBundle()

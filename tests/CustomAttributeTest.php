@@ -2,6 +2,11 @@
 
 namespace Stevebauman\Inventory\Tests;
 
+/**
+ * Custom Attribute Test
+ * 
+ * @coversDefaultClass CustomAttributeTrait
+ */
 class CustomAttributeTest extends FunctionalTestCase
 {
     public function testCanAddCustomStringAttribute()
