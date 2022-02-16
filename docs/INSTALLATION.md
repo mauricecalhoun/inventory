@@ -42,7 +42,7 @@ Then insert the service provider in your `config/app.php` config file:
     
 Either publish the assets to customize the database tables using:
 
-    php artisan vendor:publish
+    php artisan vendor:publish OR sail artisan inventory:publish-migrations
    
 And then run the migrations:
 
