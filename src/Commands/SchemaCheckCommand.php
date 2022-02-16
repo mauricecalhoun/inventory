@@ -17,7 +17,7 @@ class SchemaCheckCommand extends Command
      *
      * @var string
      */
-    protected $name = 'inventory:check-schema';
+    protected $signature = 'inventory:check-schema';
 
     /**
      * The console command description.
@@ -48,6 +48,7 @@ class SchemaCheckCommand extends Command
         'categories',
         'suppliers',
         'inventory',
+        'inventories',
         'inventory_skus',
         'inventory_stocks',
         'inventory_stock_movements',
@@ -55,7 +56,21 @@ class SchemaCheckCommand extends Command
         'inventory_transactions',
         'inventory_transaction_histories',
         'inventory_assemblies',
+        'inventory_bundles',
+        'custom_attributes',
+        'custom_attribute_values',
+        'custom_attribute_defaults'
     ];
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * Executes the console command.
@@ -63,7 +78,7 @@ class SchemaCheckCommand extends Command
      * @throws DatabaseTableReservedException
      * @throws DependencyNotFoundException
      */
-    public function fire()
+    public function handle()
     {
         if ($this->checkDependencies()) {
             $this->info('Schema dependencies are all good!');
