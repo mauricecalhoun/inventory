@@ -112,12 +112,20 @@ class InventoryServiceProvider extends ServiceProvider
         });
 
         /*
+         * Bind the publish migrations command
+         */
+        $this->app->bind('inventory:publish-migrations', function () {
+            return new Commands\PublishMigrationsCommand();
+        });
+
+        /*
          * Register the commands
          */
         $this->commands([
             'inventory:install',
             'inventory:check-schema',
             'inventory:run-migrations',
+            'inventory:publish-migrations'
         ]);
 
         /*
