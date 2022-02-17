@@ -20,7 +20,17 @@ class CreateCustomAttributesTables extends Migration
             $table->string('display_name', 255);
             $table->string('value_type', 6)->notnull();
             $table->boolean('reserved');
-            $table->enum('display_type', ['dropdown', 'string', 'currency', 'decimal', 'integer', 'date', 'time']);
+            $table->enum('display_type', [
+                'boolean',
+                'dropdown', 
+                'string', 
+                'currency', 
+                'decimal', 
+                'integer', 
+                'date', 
+                'time',
+                'longText',
+            ]);
             $table->boolean('has_default');
             $table->timestamp('created_at')->useCurrent();
             $table

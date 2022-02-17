@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 /**
  * Class PublishMigrations.
+ * 
+ * @codeCoverageIgnore
  */
 class PublishMigrationsCommand extends Command
 {

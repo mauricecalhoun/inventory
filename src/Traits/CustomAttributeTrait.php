@@ -208,6 +208,10 @@ trait CustomAttributeTrait
                 $rawType = 'string';
                 break;
 
+            case 'longText':
+                $rawType = 'string';
+                break;
+
             default:
                 $message = $type . ' is an invalid custom attribute type';
                 throw new InvalidCustomAttributeException($message);
