@@ -155,30 +155,10 @@ trait CustomAttributeTrait
      */
     public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false, $rule = null)
     {
-        /**
-         * //TODO: should try to add a custom customAttribute to an inventory item.
-         * 
-         * //If the customAttribute exists (lookup by name), attach that 
-         * //customAttribute to this item.
-         * 
-         * //Otherwise, create a new customAttribute and attach it to this item. 
-         * 
-         * //Check if defaultValue is set, and add an customAttributeDefaultValue 
-         * //entry after creating/using the customAttribute.
-         * 
-         * //Check that displayType is a valid type.
-         * 
-         * //Save everything in the database.
-         * 
-         * //TODO: "required" boolean field
-         * TODO: "rule" regex field
-         * 
-         */
-
         // If we're given an invalid regex rule, that's easy to check and pop
         // out an exception, so we do so here.  We will not do validation on
-        // the set value later, as this field is primarily for front-end form
-        // field validation.
+        // the set value before inserting into the database, as this field is 
+        // primarily for front-end form field validation.
         if (!is_null($rule)) {
             $testString = '1234567890abcdefghijklmnopqrstuvwxyz';
             if (@preg_match($rule, $testString) === false) {
