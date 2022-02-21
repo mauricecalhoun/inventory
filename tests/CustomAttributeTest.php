@@ -301,6 +301,15 @@ class CustomAttributeTest extends FunctionalTestCase
 
         $item->addCustomAttribute('string', 'Another Fresh String Prop', 'def', false, '/\/');
     }
+
+    public function testCannotGiveLongTextCustomAttributeRegexRule()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('longText', 'Freshest Longest Text I\'ve seen', 'default', false, '/test/');
+    }
     
     public function testCannotCreateCustomAttributeWithInvalidType()
     {

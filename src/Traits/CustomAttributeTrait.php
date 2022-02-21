@@ -161,7 +161,10 @@ trait CustomAttributeTrait
         // primarily for front-end form field validation.
         if (!is_null($rule)) {
             $testString = '1234567890abcdefghijklmnopqrstuvwxyz';
-            if (@preg_match($rule, $testString) === false) {
+            if ($type == 'longText') {
+                throw new InvalidCustomAttributeException('Cannot create longText attribute with regular expression rule');
+            }
+            else if (@preg_match($rule, $testString) === false) {
                 throw new InvalidCustomAttributeException('Cannot create custom attribute - invalid regular expression provided');
             }
         }
