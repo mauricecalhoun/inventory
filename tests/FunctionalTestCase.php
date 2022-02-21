@@ -79,9 +79,7 @@ abstract class FunctionalTestCase extends TestCase
                 $table->id();
                 $table->string('name');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('metrics')) {
             DB::schema()->create('metrics', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -93,9 +91,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('set null');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('categories')) {
             DB::schema()->create('categories', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -111,9 +107,7 @@ abstract class FunctionalTestCase extends TestCase
                 */
                 $table->string('belongs_to')->nullable();
             });
-        // }
 
-        // if (!DB::schema()->hasTable('locations')) {
             DB::schema()->create('locations', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -129,9 +123,7 @@ abstract class FunctionalTestCase extends TestCase
                 */
                 $table->string('belongs_to')->nullable();
             });
-        // }
 
-        // if (!DB::schema()->hasTable('inventories')) {
             DB::schema()->create('inventories', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -154,9 +146,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
-
-        // if (!DB::schema()->hasTable('inventory_stocks')) {
+    
             DB::schema()->create('inventory_stocks', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -186,9 +176,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
-
-        // if (!DB::schema()->hasTable('inventory_stock_movements')) {
+      
             DB::schema()->create('inventory_stock_movements', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -207,9 +195,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('set null');
             });
-        // }
-
-        // if (!DB::schema()->hasTable('inventory_skus')) {
+        
             DB::schema()->create('inventory_skus', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -225,9 +211,7 @@ abstract class FunctionalTestCase extends TestCase
                 */
                 $table->unique(['code']);
             });
-        // }
-
-        // if (!DB::schema()->hasTable('suppliers')) {
+       
             DB::schema()->create('suppliers', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -245,9 +229,7 @@ abstract class FunctionalTestCase extends TestCase
                 $table->string('contact_fax')->nullable();
                 $table->string('contact_email')->nullable();
             });
-        // }
 
-        // if (!DB::schema()->hasTable('inventory_suppliers')) {
             DB::schema()->create('inventory_suppliers', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -263,9 +245,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('inventory_transactions')) {
             DB::schema()->create('inventory_transactions', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -283,9 +263,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('inventory_transaction_histories')) {
             DB::schema()->create('inventory_transaction_histories', function ($table) {
                 $table->id();
                 $table->timestamps();
@@ -312,9 +290,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasColumn('inventories', 'parent_id')) {
             DB::schema()->table('inventories', function ($table) {
                 $table->foreignId('parent_id')->unsigned()->nullable()->after('id');
     
@@ -322,17 +298,13 @@ abstract class FunctionalTestCase extends TestCase
                     ->onUpdate('restrict')
                     ->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasColumn('inventories', 'is_assembly')) {
             DB::schema()->table('inventories', function ($table) {
                 $table->boolean('is_assembly')->default(false);
                 $table->boolean('is_bundle')->default(false);
                 $table->boolean('is_parent')->default(false);
             });
-        // }
-            
-        // if (!DB::schema()->hasTable('inventory_assemblies')) {
+
             DB::schema()->create('inventory_assemblies', function ($table) {
 
                 $table->id();
@@ -347,9 +319,7 @@ abstract class FunctionalTestCase extends TestCase
                 $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
                 $table->foreign('part_id')->references('id')->on('inventories')->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('inventory_bundles')) {
             DB::schema()->create('inventory_bundles', function ($table) {
 
                 $table->id();
@@ -364,15 +334,14 @@ abstract class FunctionalTestCase extends TestCase
                 $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
                 $table->foreign('component_id')->references('id')->on('inventories')->onDelete('cascade');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('custom_attributes')) {
             DB::schema()->create('custom_attributes', function ($table) {
                 $table->id();
                 $table->string('name', 255);
                 $table->string('display_name', 255);
                 $table->string('value_type', 6)->notnull();
                 $table->boolean('reserved');
+                $table->boolean('required');
                 $table->enum('display_type', [
                     'dropdown', 
                     'string', 
@@ -391,9 +360,7 @@ abstract class FunctionalTestCase extends TestCase
                     ->useCurrentOnUpdate();
 
             });
-        // }
 
-        // if (!DB::schema()->hasTable('custom_attribute_values')) {
             DB::schema()->create('custom_attribute_values', function($table) {
                 $table->id();
                 $table->foreignId('inventory_id');
@@ -407,9 +374,7 @@ abstract class FunctionalTestCase extends TestCase
 
                 $table->unique(['inventory_id', 'custom_attribute_id'], 'values_inventory_attribute_id_unique');
             });
-        // }
 
-        // if (!DB::schema()->hasTable('custom_attribute_defaults')) {
             DB::schema()->create('custom_attribute_defaults', function($table) {
                 $table->id();
                 $table->foreignId('inventory_id');

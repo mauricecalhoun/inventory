@@ -20,6 +20,7 @@ class CreateCustomAttributesTables extends Migration
             $table->string('display_name', 255);
             $table->string('value_type', 6)->notnull();
             $table->boolean('reserved');
+            $table->boolean('required');
             $table->enum('display_type', [
                 'boolean',
                 'dropdown', 

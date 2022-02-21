@@ -74,6 +74,55 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals(0, $item->suppliers()->count());
     }
 
+    public function testInventorySupplierAddMany()
+    {
+        $item = $this->newInventory();
+
+        $supp1 = $this->newSupplier();
+
+        $supp2 = $this->newSupplier();
+    
+        $supp3 = $this->newSupplier();
+
+        $item->addSuppliers([$supp1, $supp2, $supp3]);
+
+        $this->assertEquals(3, $item->suppliers()->count());
+    }
+
+    public function testInventorySupplierRemoveMany()
+    {
+        $item = $this->newInventory();
+
+        $supp1 = $this->newSupplier();
+
+        $supp2 = $this->newSupplier();
+    
+        $supp3 = $this->newSupplier();
+
+        $item->addSuppliers([$supp1, $supp2, $supp3]);
+
+        $item->removeSuppliers([$supp1, $supp2, $supp3]);
+
+        $this->assertEquals(0, $item->suppliers()->count());
+    }
+
+    public function testInventorySupplierRemoveSubset()
+    {
+        $item = $this->newInventory();
+
+        $newSupplier1 = $this->newSupplier();
+
+        $newSupplier2 = $this->newSupplier();
+        
+        $item->addSupplier($newSupplier1);
+
+        $item->addSupplier($newSupplier2);
+
+        $item->removeSuppliers([$newSupplier1, $newSupplier2]);
+
+        $this->assertEquals(0, $item->suppliers()->count());
+    }
+
     /**
      * Test supplier attach item
      *

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Stevebauman\Inventory\Models\CustomAttribute;
 use Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException;
+use Stevebauman\Inventory\Exceptions\RequiredCustomAttributeException;
 
 /**
  * Class CustomAttributeTrait.
@@ -145,9 +146,8 @@ trait CustomAttributeTrait
      *
      * @param string $type
      * @param string $displayName
-     * @param string $name
      * @param mixed $defaultValue
-     * @param enum $displayType
+     * @param boolean $required
      * 
      * @return Model|boolean
      * 
@@ -170,7 +170,7 @@ trait CustomAttributeTrait
          * 
          * //Save everything in the database.
          * 
-         * TODO: "required" boolean field
+         * //TODO: "required" boolean field
          * TODO: "rule" regex field
          * 
          */
@@ -260,7 +260,7 @@ trait CustomAttributeTrait
                 return $anyExistingAttr;
             } else {
                 // If no existing customAttribute found, create a new customAttribute
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue);
+                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue, $required);
                 
                 if ($hasDefault) {
                     $this->setCustomAttributeDefault($createdCustomAttribute, $defaultValue);
@@ -310,7 +310,7 @@ trait CustomAttributeTrait
      * 
      * @return boolean
      */
-    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null)
+    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false)
     {
         $newCustomAttribute = [
             'name' => $name,
@@ -319,6 +319,7 @@ trait CustomAttributeTrait
             'reserved' => false,
             'display_type' => $type,
             'has_default' => $hasDefault,
+            'required' => $required,
         ];
 
         $createdAttr = $this->customAttributes()->create($newCustomAttribute);
@@ -347,6 +348,10 @@ trait CustomAttributeTrait
         try {
             $existingAttrObj = $this->getCustomAttribute($id);
 
+            if (is_null($value) && $existingAttrObj->required) {
+                throw new RequiredCustomAttributeException('Cannot set required attribute to null');
+            }
+
             $existingAttrValObj = $this->getCustomAttributeValueObj($id);
 
             if (!$type) {
@@ -364,6 +369,8 @@ trait CustomAttributeTrait
             $existingAttrValObj->$valKey = $value;
     
             return $existingAttrValObj->save();
+        } catch (RequiredCustomAttributeException $e) {
+            throw $e;
         } catch (\Exception $e) {
             if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$id.', and can not create without a type');
 

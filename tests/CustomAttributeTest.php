@@ -273,7 +273,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $item = $this->newInventory();
 
         // fourth argument should be 'required' field
-        $attr = $item->addCustomAttribute('integer', 'Number Property', 42, true);
+        $attr = $item->addCustomAttribute('integer', 'Required Number Property', 42, true);
 
         $this->assertTrue($attr->required);
     }
@@ -319,9 +319,9 @@ class CustomAttributeTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
 
-        $attr = $item->addCustomAttribute('integer', 'Number Property', 42, true);
+        $attr = $item->addCustomAttribute('string', 'Required String Property', 'a million', true);
 
-        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        $this->expectException('\Stevebauman\Inventory\Exceptions\RequiredCustomAttributeException');
 
         $item->setCustomAttribute($attr->id, null);
     }
