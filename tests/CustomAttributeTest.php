@@ -4,86 +4,113 @@ namespace Stevebauman\Inventory\Tests;
 
 /**
  * Custom Attribute Test
- * 
- * @coversDefaultClass CustomAttributeTrait
  */
 class CustomAttributeTest extends FunctionalTestCase
 {
+    /*
+     *  "Can" tests 
+     */
     public function testCanAddCustomStringAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('string', 'Property');
+        $attr = $item->addCustomAttribute('string', 'Property');
         
         $this->assertTrue($item->hasCustomAttribute('property'));
         $this->assertEquals('string', $item->getCustomAttribute('property')->value_type);
+        $this->assertEquals('string', $item->getCustomAttribute('property')->display_type);
         $this->assertEquals('Property', $item->getCustomAttribute('property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomDropdownAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('dropdown', 'Dropdown Property');
+        $attr = $item->addCustomAttribute('dropdown', 'Dropdown Property');
         
         $this->assertTrue($item->hasCustomAttribute('dropdown_property'));
         $this->assertEquals('string', $item->getCustomAttribute('dropdown_property')->value_type);
+        $this->assertEquals('dropdown', $item->getCustomAttribute('dropdown_property')->display_type);
         $this->assertEquals('Dropdown Property', $item->getCustomAttribute('dropdown_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomIntegerAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('integer', 'Integer Property');
+        $attr = $item->addCustomAttribute('integer', 'Integer Property');
 
         $this->assertTrue($item->hasCustomAttribute('integer_property'));
         $this->assertEquals('num', $item->getCustomAttribute('integer_property')->value_type);
+        $this->assertEquals('integer', $item->getCustomAttribute('integer_property')->display_type);
         $this->assertEquals('Integer Property', $item->getCustomAttribute('integer_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomDecimalAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('decimal', 'Decimal Property');
+        $attr = $item->addCustomAttribute('decimal', 'Decimal Property');
 
         $this->assertTrue($item->hasCustomAttribute('decimal_property'));
         $this->assertEquals('num', $item->getCustomAttribute('decimal_property')->value_type);
+        $this->assertEquals('decimal', $item->getCustomAttribute('decimal_property')->display_type);
         $this->assertEquals('Decimal Property', $item->getCustomAttribute('decimal_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomCurrencyAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('currency', 'Currency Property');
+        $attr = $item->addCustomAttribute('currency', 'Currency Property');
 
         $this->assertTrue($item->hasCustomAttribute('currency_property'));
         $this->assertEquals('num', $item->getCustomAttribute('currency_property')->value_type);
+        $this->assertEquals('currency', $item->getCustomAttribute('currency_property')->display_type);
         $this->assertEquals('Currency Property', $item->getCustomAttribute('currency_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomDateAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('date', 'Date Property');
+        $attr = $item->addCustomAttribute('date', 'Date Property');
 
         $this->assertTrue($item->hasCustomAttribute('date_property'));
         $this->assertEquals('date', $item->getCustomAttribute('date_property')->value_type);
+        $this->assertEquals('date', $item->getCustomAttribute('date_property')->display_type);
         $this->assertEquals('Date Property', $item->getCustomAttribute('date_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCanAddCustomTimeAttribute()
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('time', 'Time Property');
+        $attr = $item->addCustomAttribute('time', 'Time Property');
 
         $this->assertTrue($item->hasCustomAttribute('time_property'));
         $this->assertEquals('date', $item->getCustomAttribute('time_property')->value_type);
         $this->assertEquals('Time Property', $item->getCustomAttribute('time_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
+    }
+
+    public function testCanAddCustomLongTextAttribute()
+    {   
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('longText', 'Long Text Property');
+
+        $this->assertTrue($item->hasCustomAttribute('long_text_property'));
+        $this->assertEquals('string', $item->getCustomAttribute('long_text_property')->value_type);
+        $this->assertEquals('longText', $item->getCustomAttribute('long_text_property')->display_type);
+        $this->assertEquals('Long Text Property', $item->getCustomAttribute('long_text_property')->display_name);
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
     
     public function testCanSetStringCustomAttributeValue() 
@@ -140,13 +167,30 @@ class CustomAttributeTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
 
-        $item->addCustomAttribute('string', 'Property');
+        $attr = $item->addCustomAttribute('string', 'Property');
 
-        $item->removeCustomAttribute('property');
+        $this->assertTrue($item->removeCustomAttribute('property'));
 
         $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
 
         $item->getCustomAttributeValue('property');
+        
+        $attributes = $item->getCustomAttributes();
+
+        $this->assertFalse($attributes->contains($attr));
+    }
+
+    public function testCannotRemoveNonExistentCustomAttribute() 
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('string', 'Property');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->removeCustomAttribute('not a property');
+
+        $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
 
     public function testCannotAddSameAttributeTwice() 
@@ -179,9 +223,24 @@ class CustomAttributeTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
     
-        $item->addCustomAttribute('string', 'Property', 'default value');
+        $item->addCustomAttribute('string', 'Fresh Property', 'default value');
     
-        $this->assertEquals('default value', $item->getCustomAttributeValue('property'));
+        $this->assertEquals('default value', $item->getCustomAttributeValue('fresh_property'));
+    }
+
+    public function testCanAddDefaultToExistingCustomAttribute()
+    {
+        $item = $this->newInventory();
+    
+        $attr = $item->addCustomAttribute('string', 'New Property');
+
+        $this->assertFalse($attr->has_default);
+
+        $item->setCustomAttributeDefault($attr, 'default value');
+
+        $this->assertEquals('default value', $item->getCustomAttributeDefault($attr->id));
+
+        $this->assertTrue($attr->has_default);
     }
 
     public function testCanChangeCustomAttributeValueWithDefault() 
@@ -207,6 +266,82 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->setCustomAttributeDefault('number_property', 42);
 
         $this->assertEquals(42, $item->getCustomAttributeDefault('number_property'));
+    }
+
+    public function testCanAddRequiredCustomAttribute()
+    {
+        $item = $this->newInventory();
+
+        // fourth argument should be 'required' field
+        $attr = $item->addCustomAttribute('integer', 'Number Property', 42, true);
+
+        $this->assertTrue($attr->required);
+    }
+
+
+    /*
+     *  "Cannot" tests
+     */
+
+    
+    public function testCannotCreateCustomAttributeWithInvalidType()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('bad type', 'Bad Property');
+    }
+
+    public function testCannotAddCustomAttributeWithSameNameAndTypeAsExisting()
+    {
+        $item = $this->newInventory();
+
+        $item->addCustomAttribute('string', 'Prop');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('string', 'Prop');
+    }
+
+    public function testCannotAddCustomAttributeWithSameNameAndDifferentTypeAsExisting()
+    {
+        $item = $this->newInventory();
+
+        $item->addCustomAttribute('string', 'Prop');
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('integer', 'Prop');
+    }
+
+    public function testCannotSetRequiredCustomAttributeToNull()
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('integer', 'Number Property', 42, true);
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->setCustomAttribute($attr->id, null);
+    }
+
+    public function testCannotGetValueOfNonexistentCustomAttribute()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->getCustomAttributeValue('not an attribute even a little');
+    }
+
+    public function testCannotGetDefaultValueOfNonexistentCustomAttribute()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+        
+        $item->getCustomAttributeDefault('not an attribute at all');
     }
 
     public function testCannotCreateNumericCustomAttributeWithInvalidDefault() 

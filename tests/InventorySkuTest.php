@@ -254,6 +254,13 @@ class InventorySkuTest extends FunctionalTestCase
         $this->assertEquals('Milk', $item->name);
     }
 
+    public function testInventoryFindBySkuWithNonexistentSku()
+    {  
+        $item = Inventory::findBySku('not a sku at all even');
+
+        $this->assertFalse($item);
+    }
+
     public function testInventorySkuBlankCategoryName()
     {
         /*

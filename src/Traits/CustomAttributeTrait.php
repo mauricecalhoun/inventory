@@ -35,62 +35,63 @@ trait CustomAttributeTrait
      */
     abstract public function customAttributeDefaults();
 
-    /**
-     * Returns the current item's custom attribute cache key
-     * 
-     * @return string
-     */
-    private function getCustomAttributeCacheKey()
-    {
-        return $this->customAttributeCacheKey.$this->getKey();
-    }
+    // NOTE: Cached attributes are unused in current implementation
+    // /**
+    //  * Returns the current item's custom attribute cache key
+    //  * 
+    //  * @return string
+    //  */
+    // private function getCustomAttributeCacheKey()
+    // {
+    //     return $this->customAttributeCacheKey.$this->getKey();
+    // }
 
-    /**
-     * Returns boolean based on whether the current item
-     * has cached custom attributes
-     * 
-     * @return bool
-     */
-    public function hasCachedCustomAttributes() 
-    {
-        return Cache::has($this->getCustomAttributeCacheKey());
-    }
+    // /**
+    //  * Returns boolean based on whether the current item
+    //  * has cached custom attributes
+    //  * 
+    //  * @return bool
+    //  */
+    // public function hasCachedCustomAttributes() 
+    // {
+    //     return Cache::has($this->getCustomAttributeCacheKey());
+    // }
 
-    /**
-     * Puts the given custom attribute into the cache for
-     * the current item
-     * 
-     * @return bool
-     */
-    public function addCachedCustomAttribute($attr) 
-    {
-        return Cache::forever($this->getCustomAttributeCacheKey(), $attr);
-    }
+    // /**
+    //  * Puts the given custom attribute into the cache for
+    //  * the current item
+    //  * 
+    //  * @return bool
+    //  */
+    // public function addCachedCustomAttribute($attr) 
+    // {
+    //     return Cache::forever($this->getCustomAttributeCacheKey(), $attr);
+    // }
 
-    /**
-     * Returns the current item's cached custom attributes if
-     * they exist in the cache, or false otherwise
-     * 
-     * @return bool|Collection
-     */
-    public function getCachedCustomAttributes() 
-    {
-        if ($this->hasCachedCustomAttributes()) {
-            return Cache::get($this->getCustomAttributeCacheKey());
-        }
+    // /**
+    //  * Returns the current item's cached custom attributes if
+    //  * they exist in the cache, or false otherwise
+    //  * 
+    //  * @return bool|Collection
+    //  */
+    // public function getCachedCustomAttributes() 
+    // {
+    //     if ($this->hasCachedCustomAttributes()) {
+    //         return Cache::get($this->getCustomAttributeCacheKey());
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    /**
-     * Removes the current item's custom attributes from the cache
-     * 
-     * @return bool
-     */
-    public function forgetCachedCustomAttributes()
-    {
-        return Cache::forget($this->getCustomAttributeCacheKey());
-    }
+    // /**
+    //  * Removes the current item's custom attributes from the cache
+    //  * 
+    //  * @return bool
+    //  */
+    // public function forgetCachedCustomAttributes()
+    // {
+    //     return Cache::forget($this->getCustomAttributeCacheKey());
+    // }
 
     /**
      * Returns true if item has given custom attribute, or 
@@ -152,22 +153,26 @@ trait CustomAttributeTrait
      * 
      * @throws InvalidCustomAttributeException
      */
-    public function addCustomAttribute($type, $displayName, $defaultValue = null, $name = null)
+    public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false)
     {
         /**
-         * TODO: should try to add a custom customAttribute to an inventory item.
+         * //TODO: should try to add a custom customAttribute to an inventory item.
          * 
          * //If the customAttribute exists (lookup by name), attach that 
          * //customAttribute to this item.
          * 
          * //Otherwise, create a new customAttribute and attach it to this item. 
          * 
-         * Check if defaultValue is set, and add an customAttributeDefaultValue 
-         * entry after creating/using the customAttribute.
+         * //Check if defaultValue is set, and add an customAttributeDefaultValue 
+         * //entry after creating/using the customAttribute.
          * 
-         * Check that displayType is a valid type.
+         * //Check that displayType is a valid type.
          * 
-         * Save everything in the database.
+         * //Save everything in the database.
+         * 
+         * TODO: "required" boolean field
+         * TODO: "rule" regex field
+         * 
          */
 
         
@@ -218,35 +223,27 @@ trait CustomAttributeTrait
                 break;
         }
 
-        // Infer the name field from the displayName parameter,
-        // if $name is not provided.
-        if (!$name) {
-            $name = strtolower($displayName);
-            $name = preg_replace('/\s+/', '_', $name);
-        }
-        
-        $existingAttr = $this->getCustomAttribute($name);
+        // Format snake-case "name" attribute from display name
+        $name = strtolower($displayName);
+        $name = preg_replace('/\s+/', '_', $name);
         
         $defaultIsNull = is_null($defaultValue);
-
+        
         $hasDefault = $defaultIsNull ? false : true;
-
+        
         // Validate default value matches type
         if ($hasDefault) {
             $this->validateAttribute($defaultValue, $rawType);
         }
-
+        
         $defaultValue = $defaultIsNull ? null : $defaultValue;
- 
+
+        // Check if existing attribute of that name
+        $existingAttr = $this->getCustomAttribute($name);
+        
         // If the customAttribute exists on this item, check if it's of the correct type
         if ($existingAttr) {
-            if ($type == $existingAttr->value_type) {
-                throw new InvalidCustomAttributeException('Cannot add same attribute '.$displayName.' twice');
-            } else {
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue);
-                
-                return $createdCustomAttribute;
-            }
+            throw new InvalidCustomAttributeException('Cannot add same attribute '.$displayName.' twice');
         } else {
             // Check that the attribute exists at all - not just on this item.
             $anyExistingAttr = CustomAttribute::where('name', $name)->where('value_type', $rawType)->first();
@@ -262,9 +259,7 @@ trait CustomAttributeTrait
 
                 return $anyExistingAttr;
             } else {
-                // If no similarly-typed customAttribute found, create a new customAttribute
-                // TODO: set last parameter to calculated 'has_default' value?
-
+                // If no existing customAttribute found, create a new customAttribute
                 $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue);
                 
                 if ($hasDefault) {
@@ -579,11 +574,6 @@ trait CustomAttributeTrait
     
             $existingAttrDefaultObj->$valKey = $value;
             
-            if (!$attrObj->has_default) {
-                $attrObj->has_default = true;
-                $attrObj->save();
-            }
-            
             return $existingAttrDefaultObj->save();
         } catch (\Exception $e) {
             $itemKey = $this->getKey();
@@ -596,10 +586,8 @@ trait CustomAttributeTrait
                 'date_val' => $type == 'date' ? $value : null,
             ];
     
-            if (!$attrObj->has_default) {
-                $attrObj->has_default = true;
-                $attrObj->save();
-            }
+            $attrObj->has_default = true;
+            $attrObj->save();
 
             return $this->customAttributeDefaults()->create($attrDefault);
         }

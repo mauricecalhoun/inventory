@@ -14,8 +14,6 @@ class InventorySupplierTest extends FunctionalTestCase
 {
     /**
      * Test inventory supplier attach
-     * 
-     * @covers ::addSupplier
      *
      * @return void
      */
@@ -35,8 +33,6 @@ class InventorySupplierTest extends FunctionalTestCase
     /**
      * Test inventory supplier detach
      * 
-     * @covers ::removeSupplier
-     *
      * @return void
      */
     public function testInventorySupplierDetach()
@@ -54,8 +50,6 @@ class InventorySupplierTest extends FunctionalTestCase
 
     /**
      * Test inventory supplier detach all
-     * 
-     * @covers ::removeAllSuppliers
      *
      * @return void
      */
@@ -82,8 +76,6 @@ class InventorySupplierTest extends FunctionalTestCase
 
     /**
      * Test supplier attach item
-     * 
-     * @covers ::addSupplier
      *
      * @return void
      */
@@ -100,8 +92,6 @@ class InventorySupplierTest extends FunctionalTestCase
 
     /**
      * Test supplier detach item
-     * 
-     * @covers ::removeSupplier
      *
      * @return void
      */
@@ -122,9 +112,6 @@ class InventorySupplierTest extends FunctionalTestCase
 
     /**
      * Test supplier invalid supplier exception
-     * 
-     * @covers ::addSupplier
-     * @covers ::removeSupplier
      *
      * @return void
      */

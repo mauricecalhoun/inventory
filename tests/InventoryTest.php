@@ -31,6 +31,25 @@ class InventoryTest extends FunctionalTestCase
         $this->assertFalse($item->hasMetric());
     }
 
+    public function testCanGetMetricSymbol()
+    {
+        $item = $this->newInventory();
+
+        $metricSymbol = $item->getMetricSymbol();
+
+        $this->assertEquals('L', $metricSymbol);
+    }
+
+    public function testCanGetNullWhenNoMetricSymbol()
+    {
+        $item = $this->newInventory();
+
+        $metric = Metric::find($item->metric_id);
+        $metric->delete();
+
+        $this->assertNull($item->getMetricSymbol());
+    }
+
     public function testInventoryCreateStockOnLocation()
     {
         $item = $this->newInventory();
