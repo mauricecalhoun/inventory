@@ -122,7 +122,8 @@ class InventoryTest extends FunctionalTestCase
         $this->assertFalse($item->hasCategory());
     }
 
-    public function testCanCreateInventoryAsParent() {
+    public function testCanCreateInventoryAsParent() 
+    {
         $metric = $this->newMetric();
 
         $category = $this->newCategory();
@@ -142,7 +143,8 @@ class InventoryTest extends FunctionalTestCase
         $this->assertTrue((boolean) $item->is_parent);
     }
 
-    public function testCannotPutStockAndLocationOnParent() {
+    public function testCannotPutStockAndLocationOnParent() 
+    {
         $metric = $this->newMetric();
 
         $category = $this->newCategory();
