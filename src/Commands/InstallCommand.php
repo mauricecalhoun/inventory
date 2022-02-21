@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 /**
  * Class InstallCommand.
+ * 
+ * @codeCoverageIgnore
  */
 class InstallCommand extends Command
 {
@@ -14,7 +16,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $name = 'inventory:install';
+    protected $signature = 'inventory:install';
 
     /**
      * The console command description.
@@ -24,11 +26,21 @@ class InstallCommand extends Command
     protected $description = 'Runs the inventory migrations';
 
     /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire()
+    public function handle()
     {
         $this->info('Checking Database Schema');
 

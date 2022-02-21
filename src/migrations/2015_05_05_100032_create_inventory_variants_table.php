@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateInventoryVariantsTable extends Migration
 {
     /**
@@ -11,7 +15,7 @@ class CreateInventoryVariantsTable extends Migration
     public function up()
     {
         Schema::table('inventories', function (Blueprint $table) {
-            $table->integer('parent_id')->unsigned()->nullable()->after('id');
+            $table->foreignId('parent_id')->unsigned()->nullable()->after('id');
 
             $table->foreign('parent_id')->references('id')->on('inventories')
                 ->onUpdate('restrict')

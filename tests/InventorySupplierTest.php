@@ -5,9 +5,18 @@ namespace Stevebauman\Inventory\Tests;
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
 
+/**
+ * Inventory Supplier Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\InventoryTrait
+ */
 class InventorySupplierTest extends FunctionalTestCase
 {
-    
+    /**
+     * Test inventory supplier attach
+     *
+     * @return void
+     */
     public function testInventorySupplierAttach()
     {
         $item = $this->newInventory();
@@ -21,6 +30,11 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals('Supplier', $supplier->name);
     }
 
+    /**
+     * Test inventory supplier detach
+     * 
+     * @return void
+     */
     public function testInventorySupplierDetach()
     {
         $item1 = $this->newInventory();
@@ -29,11 +43,16 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
-        $this->assertTrue($item->removeSupplier(1));
+        $this->assertTrue($item->removeSupplier($newSupplier->id));
     }
 
+    /**
+     * Test inventory supplier detach all
+     *
+     * @return void
+     */
     public function testInventorySupplierDetachAll()
     {
         $item1 = $this->newInventory();
@@ -48,13 +67,67 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item2->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
         $item->removeAllSuppliers();
 
         $this->assertEquals(0, $item->suppliers()->count());
     }
 
+    public function testInventorySupplierAddMany()
+    {
+        $item = $this->newInventory();
+
+        $supp1 = $this->newSupplier();
+
+        $supp2 = $this->newSupplier();
+    
+        $supp3 = $this->newSupplier();
+
+        $item->addSuppliers([$supp1, $supp2, $supp3]);
+
+        $this->assertEquals(3, $item->suppliers()->count());
+    }
+
+    public function testInventorySupplierRemoveMany()
+    {
+        $item = $this->newInventory();
+
+        $supp1 = $this->newSupplier();
+
+        $supp2 = $this->newSupplier();
+    
+        $supp3 = $this->newSupplier();
+
+        $item->addSuppliers([$supp1, $supp2, $supp3]);
+
+        $item->removeSuppliers([$supp1, $supp2, $supp3]);
+
+        $this->assertEquals(0, $item->suppliers()->count());
+    }
+
+    public function testInventorySupplierRemoveSubset()
+    {
+        $item = $this->newInventory();
+
+        $newSupplier1 = $this->newSupplier();
+
+        $newSupplier2 = $this->newSupplier();
+        
+        $item->addSupplier($newSupplier1);
+
+        $item->addSupplier($newSupplier2);
+
+        $item->removeSuppliers([$newSupplier1, $newSupplier2]);
+
+        $this->assertEquals(0, $item->suppliers()->count());
+    }
+
+    /**
+     * Test supplier attach item
+     *
+     * @return void
+     */
     public function testSupplierAttachItem()
     {
         $item = $this->newInventory();
@@ -66,6 +139,11 @@ class InventorySupplierTest extends FunctionalTestCase
         $this->assertEquals($supplier->name, $item->suppliers()->first()->name);
     }
 
+    /**
+     * Test supplier detach item
+     *
+     * @return void
+     */
     public function testSupplierDetachItem()
     {
         $item1 = $this->newInventory();
@@ -74,13 +152,18 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
-        $item->removeSupplier(1);
+        $item->removeSupplier($newSupplier->id);
 
         $this->assertEquals(0, $item->suppliers()->count());
     }
 
+    /**
+     * Test supplier invalid supplier exception
+     *
+     * @return void
+     */
     public function testSupplierInvalidSupplierException()
     {
         $item1 = $this->newInventory();
@@ -89,7 +172,7 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $item1->addSupplier($newSupplier);
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($item1->id);
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidSupplierException');
 

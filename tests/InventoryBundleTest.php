@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Inventory Bundle Test
+ * 
+ * @coversDefaultClass \Traits\BundleTrait
+ */
 class InventoryBundleTest extends FunctionalTestCase
 {
     public function testMakeBundle()
@@ -72,8 +77,7 @@ class InventoryBundleTest extends FunctionalTestCase
         $this->assertEquals(10, $items->get(1)->pivot->quantity);
     }
 
-    // TODO: this should increment the quantity of a single item
-    public function testAddSameBundleItems()
+    public function testAddSameBundleItemsSimultaneously()
     {
         $item = $this->newInventory();
 
@@ -83,15 +87,61 @@ class InventoryBundleTest extends FunctionalTestCase
             'category_id' => $item->category_id,
         ]);
 
-        Cache::shouldReceive('forget')->twice()->andReturn(true);
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
 
         $item->addBundleItems([$childItem, $childItem, $childItem, $childItem]);
 
-        Cache::shouldReceive('has')->once()->andReturn(false);
-        Cache::shouldReceive('forever')->once()->andReturn(true);
+        Cache::shouldReceive('has')->twice()->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
 
         $this->assertEquals(1, $item->getBundleItems()->count());
         $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
+    }
+
+    public function testAddSameBundleItemsIncrementally()
+    {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+        $item->addBundleItem($childItem);
+
+        Cache::shouldReceive('has')->twice()->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
+
+        $this->assertEquals(1, $item->getBundleItems()->count());
+        $this->assertEquals(4, $item->getBundleItems()->first()->pivot->quantity);
+    }
+
+    public function testAddSameBundleItemsWithMixedMethods() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory([
+            'name' => 'Child Item',
+            'metric_id' => $item->metric_id,
+            'category_id' => $item->category_id,
+        ]);
+
+        Cache::shouldReceive('forget')->times(4)->andReturn(true);
+
+        $item->addBundleItem($childItem, 4);
+        $item->addBundleItems([$childItem, $childItem], 2);
+        $item->addBundleItem($childItem);
+
+        Cache::shouldReceive('has')->twice(2)->andReturn(false);
+        Cache::shouldReceive('forever')->twice()->andReturn(true);
+
+        $this->assertEquals(1, $item->getBundleItems()->count());
+        $this->assertEquals(9, $item->getBundleItems()->first()->pivot->quantity);
     }
 
     public function testAddBundleItemExtraAttributes()
@@ -584,5 +634,31 @@ class InventoryBundleTest extends FunctionalTestCase
         Cache::shouldReceive('forget')->once()->andReturn(true);
 
         $this->assertTrue($item->forgetCachedBundleItems());
+    }
+
+    public function testShouldNotUnmakeBundleWithExistingBundleItems() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory();
+
+        $item->addBundleItem($childItem);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\NonEmptyBundleException');
+
+        $item->unmakeBundle();
+    }
+
+    public function testShouldUnmakeBundleIfNoBundleItemsLeft() {
+        $item = $this->newInventory();
+
+        $childItem = $this->newInventory();
+
+        $item->addBundleItem($childItem);
+
+        $item->removeBundleItem($childItem);
+
+        $item->unmakeBundle();
+
+        $this->assertFalse($item->is_bundle);
     }
 }

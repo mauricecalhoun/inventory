@@ -6,6 +6,11 @@ use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Inventory;
 use Stevebauman\Inventory\Models\Category;
 
+/**
+ * Inventory Category Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\CategoryTrait
+ */
 class InventoryCategoryTest extends FunctionalTestCase
 {
     public function testScopedInventories()

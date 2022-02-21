@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateInventoryBundlesTable extends Migration
 {
     /**
@@ -12,10 +16,10 @@ class CreateInventoryBundlesTable extends Migration
     {
         Schema::create('inventory_bundles', function (Blueprint $table) {
 
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('component_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('component_id')->unsigned();
             $table->integer('quantity')->nullable();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');

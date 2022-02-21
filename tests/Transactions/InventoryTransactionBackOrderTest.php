@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Back Order Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionBackOrderTest extends FunctionalTestCase
 {
     public function testInventoryTransactionBackOrder()

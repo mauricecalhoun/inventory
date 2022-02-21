@@ -6,6 +6,8 @@
  * @param $node
  *
  * @return string
+ * 
+ * @codeCoverageIgnore
  */
 if (!function_exists('renderNode')) {
     function renderNode($node)

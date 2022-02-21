@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateInventorySkuTable extends Migration
 {
     /**
@@ -11,9 +15,9 @@ class CreateInventorySkuTable extends Migration
     public function up()
     {
         Schema::create('inventory_skus', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
-            $table->integer('inventory_id')->unsigned();
+            $table->foreignId('inventory_id')->unsigned();
             $table->string('code');
 
             $table->foreign('inventory_id')->references('id')->on('inventories')

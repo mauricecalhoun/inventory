@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\InventoryTransaction;
 use Stevebauman\Inventory\Tests\FunctionalTestCase;
 
+/**
+ * Inventory Transaction Hold Test
+ * 
+ * @coversDefaultClass \InventoryTransaction
+ */
 class InventoryTransactionHoldTest extends FunctionalTestCase
 {
     public function testInventoryTransactionHold()

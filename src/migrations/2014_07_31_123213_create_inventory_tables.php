@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateInventoryTables extends Migration
 {
     /**
@@ -11,13 +15,13 @@ class CreateInventoryTables extends Migration
     public function up()
     {
         Schema::create('inventories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('category_id')->unsigned()->nullable();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('metric_id')->unsigned();
+            $table->foreignId('category_id')->unsigned()->nullable();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('metric_id')->unsigned();
             $table->string('name');
             $table->text('description')->nullable();
 
@@ -35,13 +39,13 @@ class CreateInventoryTables extends Migration
         });
 
         Schema::create('inventory_stocks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('inventory_id')->unsigned();
-            $table->integer('location_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('inventory_id')->unsigned();
+            $table->foreignId('location_id')->unsigned();
             $table->decimal('quantity', 8, 2)->default(0);
             $table->string('aisle')->nullable();
             $table->string('row')->nullable();
@@ -67,12 +71,12 @@ class CreateInventoryTables extends Migration
         });
 
         Schema::create('inventory_stock_movements', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->integer('stock_id')->unsigned();
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreignId('stock_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
             $table->decimal('before', 8, 2)->default(0);
             $table->decimal('after', 8, 2)->default(0);
             $table->decimal('cost', 8, 2)->default(0)->nullable();

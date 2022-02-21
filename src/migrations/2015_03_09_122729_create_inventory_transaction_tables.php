@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateInventoryTransactionTables extends Migration
 {
     /**
@@ -11,10 +15,10 @@ class CreateInventoryTransactionTables extends Migration
     public function up()
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('stock_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('stock_id')->unsigned();
             $table->string('name')->nullable();
             $table->string('state');
             $table->decimal('quantity', 8, 2)->default(0);
@@ -31,8 +35,8 @@ class CreateInventoryTransactionTables extends Migration
         Schema::create('inventory_transaction_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->nullable();
-            $table->integer('transaction_id')->unsigned();
+            $table->foreignId('created_by')->unsigned()->nullable();
+            $table->foreignId('transaction_id')->unsigned();
 
             /*
              * Allows tracking states for each transaction

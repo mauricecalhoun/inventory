@@ -8,13 +8,25 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\Inventory;
 
+/**
+ * Inventory Variant Test
+ * 
+ * @coversDefaultClass \Stevebauman\Inventory\Traits\InventoryVariantTrait
+ */
 class InventoryVariantTest extends FunctionalTestCase
 {
+    /**
+     * Test new variant
+     *  
+     * @covers ::newVariant
+     * 
+     * @return void
+     */
     public function testNewVariant()
     {
-        $this->newInventory();
+        $item = $this->newInventory();
 
-        $milk = Inventory::find(1);
+        $milk = Inventory::find($item->id);
 
         $chocolateMilk = $milk->newVariant();
 
@@ -32,16 +44,24 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals($chocolateMilk->metric_id, $milk->metric_id);
     }
 
+    /**
+     * Test create variant
+     * 
+     * @covers ::createVariant
+     * @covers ::isVariant
+     *
+     * @return void
+     */
     public function testCreateVariant()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
@@ -55,30 +75,37 @@ class InventoryVariantTest extends FunctionalTestCase
         $cherryCoke = $coke->createVariant($name, $description);
 
         $this->assertTrue($cherryCoke->isVariant());
-        $this->assertEquals(1, $cherryCoke->parent_id);
+        $this->assertEquals($coke->id, $cherryCoke->parent_id);
         $this->assertEquals($name, $cherryCoke->name);
         $this->assertEquals($description, $cherryCoke->description);
-        $this->assertEquals(1, $cherryCoke->category_id);
-        $this->assertEquals(1, $cherryCoke->metric_id);
+        $this->assertEquals($category->id, $cherryCoke->category_id);
+        $this->assertEquals($metric->id, $cherryCoke->metric_id);
     }
 
+    /**
+     * Test make variant
+     * 
+     * @covers ::makeVariantOf
+     *
+     * @return void
+     */
     public function testMakeVariant()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         $cherryCoke = Inventory::create([
             'name' => 'Cherry Coke',
             'description' => 'Delicious Cherry Coke',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
@@ -91,16 +118,23 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals($cherryCoke->parent_id, $coke->id);
     }
 
+    /**
+     * Test is variant
+     *
+     * @covers ::isVariant
+     * 
+     * @return void
+     */
     public function testIsVariant()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         $cherryCoke = $coke->createVariant('Cherry Coke');
@@ -112,20 +146,30 @@ class InventoryVariantTest extends FunctionalTestCase
 
         $cherryCoke->makeVariantOf($coke);
 
-        $this->assertFalse($coke->isVariant());
-        $this->assertTrue($cherryCoke->isVariant());
+        $isCokeVariant = $coke->isVariant();
+        $isCherryVariant = $cherryCoke->isVariant();
+
+        $this->assertFalse($isCokeVariant);
+        $this->assertTrue($isCherryVariant);
     }
 
+    /**
+     * Test get variants
+     * 
+     * @covers ::getVariants
+     *
+     * @return void
+     */
     public function testGetVariants()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         $cherryCoke = $coke->createVariant('Cherry Coke');
@@ -143,48 +187,30 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(1, $variants->count());
     }
 
-    public function testGetVariantsRecursive()
-    {
-        $this->newCategory();
-        $this->newMetric();
-
-        $coke = Inventory::create([
-            'name' => 'Coke',
-            'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
-        ]);
-
-        $cherryCoke = $coke->createVariant('Cherry Coke');
-
-        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
-
-        $vanillaLimeCherryCoke = $vanillaCherryCoke->createVariant('Vanilla Lime Cherry Coke');
-
-        $variants = $coke->getVariants(true);
-
-        $this->assertEquals($cherryCoke->name, $variants->get(0)->name);
-        $this->assertEquals($vanillaCherryCoke->name, $variants->get(0)->variants->get(0)->name);
-        $this->assertEquals($vanillaLimeCherryCoke->name, $variants->get(0)->variants->get(0)->variants->get(0)->name);
-    }
-
+    /**
+     * Test get parent
+     * 
+     * @covers ::getParent
+     *
+     * @return void
+     */
     public function testGetParent()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         $cherryCoke = Inventory::create([
             'name' => 'Cherry Coke',
             'description' => 'Delicious Cherry Coke',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
@@ -200,25 +226,32 @@ class InventoryVariantTest extends FunctionalTestCase
         $this->assertEquals(null, $parent->parent_id);
     }
 
+    /**
+     * Test get total variant stock
+     * 
+     * @covers ::getTotalVariantStock
+     *
+     * @return void
+     */
     public function testGetTotalVariantStock()
     {
-        $this->newCategory();
-        $this->newMetric();
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
 
         $coke = Inventory::create([
             'name' => 'Coke',
             'description' => 'Delicious Pop',
-            'metric_id' => 1,
-            'category_id' => 1,
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
         ]);
 
         $cherryCoke = $coke->createVariant('Cherry Coke');
 
         $cherryCoke->makeVariantOf($coke);
 
-        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
+        $vanillaCherryCoke = $coke->createVariant('Vanilla Cherry Coke');
 
-        $vanillaCherryCoke->makeVariantOf($cherryCoke);
+        $vanillaCherryCoke->makeVariantOf($coke);
 
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
@@ -231,12 +264,225 @@ class InventoryVariantTest extends FunctionalTestCase
         Config::shouldReceive('get')->twice()->andReturn(true);
 
         // Stock change reasons (one for create, one for put, for both items)
-        Lang::shouldReceive('get')->times(4)->andReturn('Default Reason');
+        Lang::shouldReceive('get')->once()->andReturn('Default Reason');
 
-        $cherryCoke->createStockOnLocation(20, $location);
-
-        $vanillaCherryCoke->createStockOnLocation(20, $location);
+        $vanillaCherryCoke->createStockOnLocation(40, $location);
 
         $this->assertEquals(40, $coke->getTotalVariantStock());
+        $this->assertEquals(0, $coke->getTotalStock());
+    }
+
+    /**
+     * Test parents cannot be variants
+     * 
+     * @covers ::makeVariantOf
+     * @covers \Stevebauman\Inventory\Exceptions\InvalidVariantException
+     *
+     * @return void
+     */
+    public function testParentsCannotBeVariants()
+    {
+        $category = $this->newCategory();
+        $metric = $this->newMetric();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidVariantException');
+
+        $vanillaCherryCoke = $cherryCoke->createVariant('Vanilla Cherry Coke');
+
+        $vanillaCherryCoke->makeVariantOf($cherryCoke);
+    }
+
+    /**
+     * Test parents cannot have location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::createStockOnLocation
+     *
+     * @return void
+     */
+    public function testParentsCannotHaveLocation() 
+    {
+        $location = $this->newLocation();
+
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Delicious Pop',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+
+        $coke->createStockOnLocation(10, $location);
+    }
+
+    /**
+     * Test cannot add supplier to parent
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::addSupplier
+     *
+     * @return void
+     */
+    public function testCannotAddSupplierToParent() 
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $supplier = $this->newSupplier();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Actually coke is kinda gross',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+
+        $coke->addSupplier($supplier);
+    }
+
+    /**
+     * Test cannot add suppliers to parent
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::addSuppliers
+     *
+     * @return void
+     */
+    public function testCannotAddSuppliersToParent() 
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $supplier1 = $this->newSupplier();
+
+        $supplier2 = $this->newSupplier();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Actually coke is kinda gross',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+
+        $coke->addSuppliers([$supplier1, $supplier2]);
+    }
+
+    /**
+     * Test parents cannot create stock on location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::createStockOnLocation
+     *
+     * @return void
+     */
+    public function testParentsCannotCreateStockOnLocation()
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'No really, I\'m getting sick of it',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $location = $this->newLocation();
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+
+        $coke->createStockOnLocation(10, $location);
+    }
+
+    /**
+     * Test parents cannot have new stock on location
+     * 
+     * @covers \Stevebauman\Inventory\Traits\InventoryTrait::newStockOnLocation
+     *
+     * @return void
+     */
+    public function testParentsCannotHaveNewStockOnLocation()
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'No really, I\'m getting sick of it',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $location = $this->newLocation();
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+
+        $coke->newStockOnLocation($location);
+    }
+
+    /**
+     * Test inventory becomes parent when variant added
+     * 
+     * @covers ::makeVariantOf
+     *
+     * @return void
+     */
+    public function testInventoryBecomesParentWhenVariantAdded() {
+        $metric = $this->newMetric();
+        
+        $category = $this->newCategory();
+
+        $coke = Inventory::create([
+            'name' => 'Coke',
+            'description' => 'Honestly why drink brown fizzy garbage water',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+        ]);
+
+        $cherryCoke = $coke->createVariant('Cherry Coke');
+
+        $cherryCoke->makeVariantOf($coke);
+
+        $this->assertTrue($coke->is_parent);
     }
 }

@@ -4,6 +4,8 @@
  * The Inventory reasons language file.
  *
  * @author Steve Bauman
+ * 
+ * @codeCoverageIgnore
  */
 return [
 

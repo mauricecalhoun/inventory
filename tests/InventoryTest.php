@@ -7,6 +7,11 @@ use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * Inventory Test
+ * 
+ * @coversDefaultClass \Traits\InventoryTrait
+ */
 class InventoryTest extends FunctionalTestCase
 {
     public function testInventoryHasMetric()
@@ -20,10 +25,29 @@ class InventoryTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
 
-        $metric = Metric::find(1);
+        $metric = Metric::find($item->metric_id);
         $metric->delete();
 
         $this->assertFalse($item->hasMetric());
+    }
+
+    public function testCanGetMetricSymbol()
+    {
+        $item = $this->newInventory();
+
+        $metricSymbol = $item->getMetricSymbol();
+
+        $this->assertEquals('L', $metricSymbol);
+    }
+
+    public function testCanGetNullWhenNoMetricSymbol()
+    {
+        $item = $this->newInventory();
+
+        $metric = Metric::find($item->metric_id);
+        $metric->delete();
+
+        $this->assertNull($item->getMetricSymbol());
     }
 
     public function testInventoryCreateStockOnLocation()
@@ -34,9 +58,9 @@ class InventoryTest extends FunctionalTestCase
 
         Lang::shouldReceive('get')->once();
 
-        $item->createStockOnLocation(10, $location);
+        $newStock = $item->createStockOnLocation(10, $location);
 
-        $stock = InventoryStock::find(1);
+        $stock = InventoryStock::find($newStock->id);
 
         $this->assertEquals(10, $stock->quantity);
     }
@@ -49,8 +73,8 @@ class InventoryTest extends FunctionalTestCase
 
         $stock = $item->newStockOnLocation($location);
 
-        $this->assertEquals(1, $stock->inventory_id);
-        $this->assertEquals(1, $stock->location_id);
+        $this->assertEquals($item->id, $stock->inventory_id);
+        $this->assertEquals($location->id, $stock->location_id);
     }
 
     public function testInventoryNewStockOnLocationFailure()
@@ -89,12 +113,58 @@ class InventoryTest extends FunctionalTestCase
 
     public function testInventoryDoesNotHaveCategory()
     {
-        $this->newInventory();
+        $newItem = $this->newInventory();
 
-        $item = Inventory::find(1);
+        $item = Inventory::find($newItem->id);
         $item->category_id = null;
         $item->save();
 
         $this->assertFalse($item->hasCategory());
+    }
+
+    public function testCanCreateInventoryAsParent() 
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+        
+        $newItem = Inventory::create([
+            'name' => 'Widget',
+            'description' => 'It\'s a thing that does stuff',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'is_parent' => true,
+        ]);
+
+        $newItem->save();
+
+        $item = Inventory::find($newItem->id);
+
+        $this->assertTrue((boolean) $item->is_parent);
+    }
+
+    public function testCannotPutStockAndLocationOnParent() 
+    {
+        $metric = $this->newMetric();
+
+        $category = $this->newCategory();
+        
+        $newItem = Inventory::create([
+            'name' => 'Widget',
+            'description' => 'It\'s a thing that does other things',
+            'metric_id' => $metric->id,
+            'category_id' => $category->id,
+            'is_parent' => true,
+        ]);
+
+        $newItem->save();
+
+        $item = Inventory::find($newItem->id);
+
+        $location = $this->newLocation();
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\IsParentException');
+        
+        $item->newStockOnLocation(10, $location);
     }
 }

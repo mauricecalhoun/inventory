@@ -15,7 +15,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.3.0",
-        "laravel/framework": "^8.65",
+        "laravel/framework": "^9.0",
         "gazsp/baum": "^2.0"
     },
     "require-dev": {

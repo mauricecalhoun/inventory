@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateMetricsTable extends Migration
 {
     /**
@@ -11,10 +15,10 @@ class CreateMetricsTable extends Migration
     public function up()
     {
         Schema::create('metrics', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->timestamps();
 
-            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreignId('created_by')->unsigned()->nullable();
             $table->string('name');
             $table->string('symbol');
 
