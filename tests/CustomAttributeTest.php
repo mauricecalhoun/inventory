@@ -278,11 +278,29 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertTrue($attr->required);
     }
 
+    public function testCanAddCustomAttributeWithRegexRule()
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('string', 'Freshest String Prop', 'def', false, '/s{1}/');
+
+        $this->assertEquals('/s{1}/', $item->getCustomAttribute($attr)->rule);
+    }
+
 
     /*
      *  "Cannot" tests
      */
 
+
+    public function testCannotAddCustomAttributeWithInvalidRegexRule()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('string', 'Another Fresh String Prop', 'def', false, '/\/');
+    }
     
     public function testCannotCreateCustomAttributeWithInvalidType()
     {

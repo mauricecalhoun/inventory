@@ -153,7 +153,7 @@ trait CustomAttributeTrait
      * 
      * @throws InvalidCustomAttributeException
      */
-    public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false)
+    public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false, $rule = null)
     {
         /**
          * //TODO: should try to add a custom customAttribute to an inventory item.
@@ -175,6 +175,16 @@ trait CustomAttributeTrait
          * 
          */
 
+        // If we're given an invalid regex rule, that's easy to check and pop
+        // out an exception, so we do so here.  We will not do validation on
+        // the set value later, as this field is primarily for front-end form
+        // field validation.
+        if (!is_null($rule)) {
+            $testString = '1234567890abcdefghijklmnopqrstuvwxyz';
+            if (@preg_match($rule, $testString) === false) {
+                throw new InvalidCustomAttributeException('Cannot create custom attribute - invalid regular expression provided');
+            }
+        }
         
         /* 
          * Infer raw type from the $type parameter.  We will
@@ -260,7 +270,7 @@ trait CustomAttributeTrait
                 return $anyExistingAttr;
             } else {
                 // If no existing customAttribute found, create a new customAttribute
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue, $required);
+                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue, $required, $rule);
                 
                 if ($hasDefault) {
                     $this->setCustomAttributeDefault($createdCustomAttribute, $defaultValue);
@@ -307,10 +317,12 @@ trait CustomAttributeTrait
      * @param string $type
      * @param boolean $hasDefault
      * @param mixed $defaultValue
+     * @param boolean $required
+     * @param string $rule
      * 
      * @return boolean
      */
-    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false)
+    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false, $rule = null)
     {
         $newCustomAttribute = [
             'name' => $name,
@@ -320,6 +332,7 @@ trait CustomAttributeTrait
             'display_type' => $type,
             'has_default' => $hasDefault,
             'required' => $required,
+            'rule' => $rule,
         ];
 
         $createdAttr = $this->customAttributes()->create($newCustomAttribute);
