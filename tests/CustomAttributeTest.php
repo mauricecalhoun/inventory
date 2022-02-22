@@ -282,9 +282,12 @@ class CustomAttributeTest extends FunctionalTestCase
     {
         $item = $this->newInventory();
 
-        $attr = $item->addCustomAttribute('string', 'Freshest String Prop', 'def', false, '/s{1}/');
+        $attr = $item->addCustomAttribute('string', 'Freshest String Prop', 'def', false, '/s{1}/', 'Should have one \'s\'');
 
         $this->assertEquals('/s{1}/', $item->getCustomAttribute($attr)->rule);
+
+        // If given a regex rule, it should also have a human-readable description of that rule
+        $this->assertEquals('Should have one \'s\'', $item->getCustomAttribute($attr)->rule_desc);
     }
 
 
@@ -299,7 +302,25 @@ class CustomAttributeTest extends FunctionalTestCase
 
         $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
 
-        $item->addCustomAttribute('string', 'Another Fresh String Prop', 'def', false, '/\/');
+        $item->addCustomAttribute('string', 'Another Fresh String Prop', 'def', false, '/\/', 'description');
+    }
+
+    public function testCannotAddCustomAttributeWithRegexButNoRuleDescription()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('string', 'Freshest String Around', 'default', false, '/s/');
+    }
+
+    public function testCannotGiveLongTextCustomAttributeRegexRule()
+    {
+        $item = $this->newInventory();
+
+        $this->expectException('\Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException');
+
+        $item->addCustomAttribute('longText', 'Freshest Longest Text I\'ve seen', 'default', false, '/test/', 'rule description');
     }
     
     public function testCannotCreateCustomAttributeWithInvalidType()

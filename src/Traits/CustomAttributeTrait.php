@@ -153,7 +153,7 @@ trait CustomAttributeTrait
      * 
      * @throws InvalidCustomAttributeException
      */
-    public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false, $rule = null)
+    public function addCustomAttribute($type, $displayName, $defaultValue = null, $required = false, $rule = null, $ruleDesc = null)
     {
         // If we're given an invalid regex rule, that's easy to check and pop
         // out an exception, so we do so here.  We will not do validation on
@@ -161,8 +161,14 @@ trait CustomAttributeTrait
         // primarily for front-end form field validation.
         if (!is_null($rule)) {
             $testString = '1234567890abcdefghijklmnopqrstuvwxyz';
-            if (@preg_match($rule, $testString) === false) {
+            if ($type == 'longText') {
+                throw new InvalidCustomAttributeException('Cannot create longText attribute with regular expression rule');
+            }
+            else if (@preg_match($rule, $testString) === false) {
                 throw new InvalidCustomAttributeException('Cannot create custom attribute - invalid regular expression provided');
+            } 
+            else if (is_null($ruleDesc)) {
+                throw new InvalidCustomAttributeException('Cannot create custom attribute with regex rule but no description');
             }
         }
         
@@ -250,7 +256,7 @@ trait CustomAttributeTrait
                 return $anyExistingAttr;
             } else {
                 // If no existing customAttribute found, create a new customAttribute
-                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue, $required, $rule);
+                $createdCustomAttribute = $this->createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue, $required, $rule, $ruleDesc);
                 
                 if ($hasDefault) {
                     $this->setCustomAttributeDefault($createdCustomAttribute, $defaultValue);
@@ -302,7 +308,7 @@ trait CustomAttributeTrait
      * 
      * @return boolean
      */
-    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false, $rule = null)
+    private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false, $rule = null, $ruleDesc = null)
     {
         $newCustomAttribute = [
             'name' => $name,
@@ -313,6 +319,7 @@ trait CustomAttributeTrait
             'has_default' => $hasDefault,
             'required' => $required,
             'rule' => $rule,
+            'rule_desc' => $ruleDesc,
         ];
 
         $createdAttr = $this->customAttributes()->create($newCustomAttribute);
