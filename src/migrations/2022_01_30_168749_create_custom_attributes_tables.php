@@ -33,7 +33,8 @@ class CreateCustomAttributesTables extends Migration
                 'longText',
             ]);
             $table->boolean('has_default');
-            $table->string('rule', 1000)->nullable();
+            $table->string('rule', 256)->nullable();
+            $table->string('rule_desc', 256)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table
                 ->timestamp('updated_at')
