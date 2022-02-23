@@ -80,20 +80,6 @@ trait InventoryTrait
      */
     abstract public function customAttributes();
 
-    // /**
-    //  * The hasMaany attributeValues relationship.
-    //  * 
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    //  */
-    // abstract public function attributeValues();
-
-    // /**
-    //  * The hasMaany attributeDefaults relationship.
-    //  * 
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    //  */
-    // abstract public function attributeDefaults();
-
     /**
      * Overrides the models boot function to set the user
      * ID automatically to every new record.
