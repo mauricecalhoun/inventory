@@ -228,9 +228,9 @@ abstract class FunctionalTestCase extends TestCase
                 $table->timestamps();
 
                 $table->string('name');
+                $table->string('code', 6)->unique();
                 $table->string('address')->nullable();
                 $table->string('postal_code')->nullable();
-                $table->string('zip_code')->nullable();
                 $table->string('region')->nullable();
                 $table->string('city')->nullable();
                 $table->string('country')->nullable();
@@ -484,9 +484,9 @@ abstract class FunctionalTestCase extends TestCase
     {
         return Supplier::create([
             'name' => 'Supplier',
+            'code' => 'SUP' . rand(10, 100),
             'address' => '123 Fake St',
             'postal_code' => '12345',
-            'zip_code' => '12345',
             'region' => 'ON',
             'city' => 'Toronto',
             'country' => 'Canada',
