@@ -312,6 +312,45 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals('Should have one \'s\'', $item->getCustomAttribute($attr)->rule_desc);
     }
 
+    public function testCanAddExistingCustomAttributeToNewInventoryItemById()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $item2->setCustomAttribute($attr->id, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
+    }
+
+    public function testCanAddExistingCustomAttributeToNewInventoryItemByName()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $attr2 = $item2->setCustomAttribute($attr->name, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
+    }
+
+    public function testCanAddExistingCustomAttributeToNewInventoryItemByModel()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $item2->setCustomAttribute($attr, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
+    }
+
 
     /*
      *  "Cannot" tests
