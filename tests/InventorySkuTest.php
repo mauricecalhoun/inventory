@@ -103,6 +103,7 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventorySkuRegeneration()
     {
+        Config::shouldReceive('get')->once()->andReturn(true);
         DB::shouldReceive('beginTransaction')->once()->andReturn(true);
         DB::shouldReceive('commit')->once()->andReturn(true);
         Event::shouldReceive('dispatch')->once();

@@ -135,6 +135,17 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
     }
 
+    public function testCanSetStringCustomAttributeValueByModel() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('string', 'Property');
+
+        $item->setCustomAttribute($attr, 'this is a value');
+
+        $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
+    }
+
     public function testCanSetNumberCustomAttributeValue() 
     {
         $item = $this->newInventory();
