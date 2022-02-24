@@ -333,7 +333,7 @@ class CustomAttributeTest extends FunctionalTestCase
 
         $item2 = $this->newInventory();
 
-        $item2->setCustomAttribute($attr->name, 'Another value');
+        $attr2 = $item2->setCustomAttribute($attr->name, 'Another value');
 
         $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
     }

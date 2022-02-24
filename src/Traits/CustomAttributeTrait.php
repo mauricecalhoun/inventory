@@ -337,7 +337,7 @@ trait CustomAttributeTrait
      * Sets an customAttributeValue with the given customAttribute name
      * and value
      * 
-     * @param int $id
+     * @param int|string|Model $id
      * @param mixed $value
      * @param string $type default = null
      * 
@@ -346,10 +346,16 @@ trait CustomAttributeTrait
     public function setCustomAttribute($id, $value, $type = null) 
     {
         /**
-         * TODO: Ability to add existing custom attribute to inventory item that does not have it
+         * TODO: Ability to add existing custom attribute to inventory item that does not have it assigned already
          */
         try {
-            $existingAttrObj = $this->getCustomAttribute($id);
+            $existingAttrObj = null;
+
+            if ($this->hasCustomAttribute($id)) {
+                $existingAttrObj = $this->getCustomAttribute($id);
+            } else {
+                $existingAttrObj = $this->resolveCustomAttributeObject($id);
+            }
 
             if (is_null($value) && $existingAttrObj->required) {
                 throw new RequiredCustomAttributeException('Cannot set required attribute to null');
@@ -359,6 +365,10 @@ trait CustomAttributeTrait
 
             if (!$type) {
                 $type = $existingAttrObj->value_type;
+            }
+            
+            if (!$existingAttrObj || !$existingAttrValObj) {
+                throw new \Exception();
             }
 
             $this->validateAttribute($value, $type);
@@ -382,7 +392,7 @@ trait CustomAttributeTrait
             $itemKey = $this->getKey();
             
             $attrVal = [
-                'custom_attribute_id' => $id,
+                'custom_attribute_id' => $this->resolveCustomAttributeObject($id)->id,
                 'inventory_id' => $itemKey,
                 'string_val' => $type == 'string' ? $value : null,
                 'num_val' => $type == 'num' ? $value : null,
@@ -431,7 +441,7 @@ trait CustomAttributeTrait
 
             return $attrValObj->$key; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute value with key ' . $attr);
         }
 
         return false;
@@ -448,7 +458,11 @@ trait CustomAttributeTrait
      */
     public function resolveCustomAttributeObject($attr) 
     {
-        $attrObj = $this->getCustomAttribute($attr);
+        if ($attr instanceof Model) return $attr;
+
+        $attrObj = $this->hasCustomAttribute($attr) ? 
+            $this->getCustomAttribute($attr) :
+            CustomAttribute::where('id', $attr)->orWhere('name', $attr)->first();
 
         if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key '.$attr);
 
@@ -527,10 +541,11 @@ trait CustomAttributeTrait
         try {
             $attrObj = $this->resolveCustomAttributeObject($attr);
 
-            return $this->customAttributeValues()
+            $attrValObj = $this->customAttributeValues()
                 ->where('custom_attribute_id', $attrObj->getKey())
-                ->where('inventory_id', $this->getKey())
                 ->get()->first();
+
+            return $attrValObj; 
         } catch (\Exception $e) {
             throw new InvalidCustomAttributeException('Could not get custom attribute value object with key ' . $attr);
         }
