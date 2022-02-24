@@ -345,6 +345,9 @@ trait CustomAttributeTrait
      */
     public function setCustomAttribute($id, $value, $type = null) 
     {
+        /**
+         * TODO: Ability to add existing custom attribute to inventory item that does not have it
+         */
         try {
             $existingAttrObj = $this->getCustomAttribute($id);
 

@@ -113,13 +113,35 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertTrue($item->getCustomAttributes()->contains($attr));
     }
     
-    public function testCanSetStringCustomAttributeValue() 
+    public function testCanSetStringCustomAttributeValueById() 
     {
         $item = $this->newInventory();
         
         $attr = $item->addCustomAttribute('string', 'Property');
 
         $item->setCustomAttribute($attr->id, 'this is a value');
+
+        $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
+    }
+
+    public function testCanSetStringCustomAttributeValueByName() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('string', 'Property');
+
+        $item->setCustomAttribute($attr->name, 'this is a value');
+
+        $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
+    }
+
+    public function testCanSetStringCustomAttributeValueByModel() 
+    {
+        $item = $this->newInventory();
+        
+        $attr = $item->addCustomAttribute('string', 'Property');
+
+        $item->setCustomAttribute($attr, 'this is a value');
 
         $this->assertEquals('this is a value', $item->getCustomAttributeValue('property'));
     }
@@ -288,6 +310,45 @@ class CustomAttributeTest extends FunctionalTestCase
 
         // If given a regex rule, it should also have a human-readable description of that rule
         $this->assertEquals('Should have one \'s\'', $item->getCustomAttribute($attr)->rule_desc);
+    }
+
+    public function testCanAddExistingCustomAttributeToNewInventoryItemById()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $item2->setCustomAttribute($attr->id, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
+    }
+
+    public function testCanAddExistingCustomAttributeToNewInventoryItemByName()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $item2->setCustomAttribute($attr->name, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
+    }
+
+    public function testCanAddExistingCustomAttributeToNewInventoryItemByModel()
+    {
+        $item1 = $this->newInventory();
+
+        $attr = $item1->addCustomAttribute('string', 'Newest Property as of right now');
+
+        $item2 = $this->newInventory();
+
+        $item2->setCustomAttribute($attr, 'Another value');
+
+        $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
     }
 
 

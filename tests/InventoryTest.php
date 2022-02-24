@@ -91,6 +91,35 @@ class InventoryTest extends FunctionalTestCase
         $item->newStockOnLocation($location);
     }
 
+    public function testInventoryTakeStockFromLocation()
+    {
+        $item = $this->newInventory();
+
+        $location = $this->newLocation();
+
+        $stock = $item->createStockOnLocation(20, $location);
+
+        $updatedItem = $item->takeFromLocation(10, $location);
+
+        $this->assertEquals(10, $updatedItem->stocks()->first()->quantity);
+    }
+
+    public function testInventoryTakeStockFromMultipleLocations()
+    {
+        $item = $this->newInventory();
+
+        $location1 = $this->newLocation();
+        $location2 = $this->newLocation();
+
+        $item->createStockOnLocation(20, $location1);
+        $item->createStockOnLocation(15, $location2);
+
+        $updatedStocks = $item->takeFromLocation(10, [$location1, $location2]);
+
+        $this->assertEquals(10, $updatedStocks[0]->quantity);
+        $this->assertEquals(5, $updatedStocks[1]->quantity);
+    }
+
     public function testInventoryInvalidQuantityException()
     {
         $item = $this->newInventory();
