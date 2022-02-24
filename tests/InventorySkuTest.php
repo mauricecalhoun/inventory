@@ -82,6 +82,12 @@ class InventorySkuTest extends FunctionalTestCase
          */
         Config::shouldReceive('get')->once()->andReturn('');
 
+        // Sets facade root because laravel and phpunit aren't playing
+        // nice today
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once();
+
         /*
          * Generate the SKU
          */
@@ -97,6 +103,10 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventorySkuRegeneration()
     {
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
+        Event::shouldReceive('dispatch')->once();
+        
         $newSku = $this->newInventorySku();
 
         $item = Inventory::find($newSku->inventory_id);

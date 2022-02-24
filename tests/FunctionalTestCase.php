@@ -465,7 +465,7 @@ abstract class FunctionalTestCase extends TestCase
     {
         return Supplier::create([
             'name' => 'Supplier',
-            'code' => 'SUP' . rand(10, 100),
+            'code' => 'SP' . rand(10, 1000),
             'address' => '123 Fake St',
             'postal_code' => '12345',
             'region' => 'ON',

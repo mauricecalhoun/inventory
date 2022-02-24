@@ -4,6 +4,7 @@ namespace Stevebauman\Inventory\Tests;
 
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Inventory Supplier Test
@@ -22,6 +23,11 @@ class InventorySupplierTest extends FunctionalTestCase
         $item = $this->newInventory();
 
         $newSupplier = $this->newSupplier();
+
+        // Sometimes we get "facade root not set" errors, so we have to do
+        // this on the first test.  Why?  ...  Laravel I guess is why.
+        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
+        DB::shouldReceive('commit')->once()->andReturn(true);
 
         $item->addSupplier($newSupplier);
 
