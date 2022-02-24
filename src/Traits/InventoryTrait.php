@@ -357,7 +357,7 @@ trait InventoryTrait
      *
      * @throws StockNotFoundException
      *
-     * @return array
+     * @return Model $this
      */
     public function takeFromLocation($quantity, $location, $reason = '')
     {

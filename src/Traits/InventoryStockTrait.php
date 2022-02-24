@@ -440,6 +440,10 @@ trait InventoryStockTrait
 
         $this->quantity = $left;
 
+        /**
+         * TODO: This mofo set the reason on an InventoryStock where
+         * it has no business being.
+         */ 
         $this->setReason($reason);
 
         $this->setCost($cost);

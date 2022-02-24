@@ -12,6 +12,7 @@ use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Supplier;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Faker\Factory;
 
 abstract class FunctionalTestCase extends TestCase
 {
@@ -19,6 +20,8 @@ abstract class FunctionalTestCase extends TestCase
 
     protected static $db = null;
     protected static $connection = null;
+    
+    public static $faker = null;
 
     protected function setUp(): void
     {
@@ -30,6 +33,7 @@ abstract class FunctionalTestCase extends TestCase
     
     public static function setUpBeforeClass(): void
     {
+        FunctionalTestCase::$faker = Factory::create();
         if (!FunctionalTestCase::$db) {
             FunctionalTestCase::configureDatabase();
             FunctionalTestCase::migrateTables();
@@ -465,7 +469,7 @@ abstract class FunctionalTestCase extends TestCase
     {
         return Supplier::create([
             'name' => 'Supplier',
-            'code' => 'SP' . rand(10, 1000),
+            'code' => 'SP' . FunctionalTestCase::$faker->unique()->numberBetween(10, 1000),
             'address' => '123 Fake St',
             'postal_code' => '12345',
             'region' => 'ON',
