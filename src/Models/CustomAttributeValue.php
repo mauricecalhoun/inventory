@@ -13,7 +13,7 @@ class CustomAttributeValue extends BaseModel
 
     protected $fillable = [
         'inventory_id',
-        'attribute_id',
+        'custom_attribute_id',
         'string_val',
         'num_val',
         'date_val',
