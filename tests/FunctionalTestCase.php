@@ -57,10 +57,10 @@ abstract class FunctionalTestCase extends TestCase
 
             $db->addConnection([
                 // 'driver' => 'mysql',
-                // 'database' => 'test_usurper',
+                // 'database' => 'usurper_test',
                 // 'username' => 'sail',
                 // 'password' => 'password',
-                // 'host' => 'localhost',
+                // 'host' => '127.0.0.1',
                 'driver' => 'sqlite',
                 'database' => ':memory:',
                 'charset' => 'utf8',

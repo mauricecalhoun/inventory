@@ -343,31 +343,31 @@ trait CustomAttributeTrait
      * 
      * @return mixed
      */
-    public function setCustomAttribute($id, $value, $type = null) 
+    public function setCustomAttribute($attr, $value, $type = null) 
     {
         /**
          * TODO: Ability to add existing custom attribute to inventory item that does not have it assigned already
          */
         try {
-            $existingAttrObj = null;
-
-            if ($this->hasCustomAttribute($id)) {
-                $existingAttrObj = $this->getCustomAttribute($id);
+            if ($attr instanceof Model) {
+                // do nothing
+            } else if ($this->hasCustomAttribute($attr)) {
+                $attr = $this->getCustomAttribute($attr);
             } else {
-                $existingAttrObj = $this->resolveCustomAttributeObject($id);
+                $attr = $this->resolveCustomAttributeObject($attr);
             }
 
-            if (is_null($value) && $existingAttrObj->required) {
+            if (is_null($value) && $attr->required) {
                 throw new RequiredCustomAttributeException('Cannot set required attribute to null');
             }
 
-            $existingAttrValObj = $this->getCustomAttributeValueObj($id);
+            $existingAttrValObj = $this->getCustomAttributeValueObj($attr);
 
             if (!$type) {
-                $type = $existingAttrObj->value_type;
+                $type = $attr->value_type;
             }
             
-            if (!$existingAttrObj || !$existingAttrValObj) {
+            if (!$attr || !$existingAttrValObj) {
                 throw new \Exception();
             }
 
@@ -385,14 +385,14 @@ trait CustomAttributeTrait
         } catch (RequiredCustomAttributeException $e) {
             throw $e;
         } catch (\Exception $e) {
-            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$id.', and can not create without a type');
+            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$attr.', and can not create without a type');
 
             $this->validateAttribute($value, $type);
 
             $itemKey = $this->getKey();
             
             $attrVal = [
-                'custom_attribute_id' => $this->resolveCustomAttributeObject($id)->id,
+                'custom_attribute_id' => $attr->id,
                 'inventory_id' => $itemKey,
                 'string_val' => $type == 'string' ? $value : null,
                 'num_val' => $type == 'num' ? $value : null,
