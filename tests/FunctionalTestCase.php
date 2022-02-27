@@ -223,7 +223,7 @@ abstract class FunctionalTestCase extends TestCase
                 $table->string('name');
                 $table->string('code', 6)->unique();
                 $table->string('address')->nullable();
-                $table->string('postal_code')->nullable();
+                $table->string('zip_code')->nullable();
                 $table->string('region')->nullable();
                 $table->string('city')->nullable();
                 $table->string('country')->nullable();
@@ -471,7 +471,7 @@ abstract class FunctionalTestCase extends TestCase
             'name' => 'Supplier',
             'code' => 'SP' . FunctionalTestCase::$faker->unique()->numberBetween(10, 1000),
             'address' => '123 Fake St',
-            'postal_code' => '12345',
+            'zip_code' => '12345',
             'region' => 'ON',
             'city' => 'Toronto',
             'country' => 'Canada',
