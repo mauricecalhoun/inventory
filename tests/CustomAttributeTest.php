@@ -290,6 +290,17 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals(42, $item->getCustomAttributeDefault('number_property'));
     }
 
+    public function testCanRemoveCustomAttributeDefaultValue()
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('integer', 'A further number for testing', 20);
+
+        $item->removeCustomAttributeDefault($attr);
+
+        $this->assertNull($item->getCustomAttributeDefault('a_further_number_for_testing'));
+    }
+
     public function testCanAddRequiredCustomAttribute()
     {
         $item = $this->newInventory();
