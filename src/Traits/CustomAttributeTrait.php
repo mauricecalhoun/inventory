@@ -56,13 +56,35 @@ trait CustomAttributeTrait
 
         if ($attr instanceof Model) {
             return $attr;
-        } else if (is_numeric($attr)) {
-            $res = $this->customAttributes()->where('custom_attributes.id', $attr)->get()->first();
         } else {
-            $res = $this->customAttributes()->where('custom_attributes.name', $attr)->get()->first();
+            $res = $this->customAttributes()->where('custom_attributes.name', $attr)->orWhere('custom_attributes.id', $attr)->get()->first();
         }
 
         return $res ? $res : false;
+    }
+
+    /**
+     * Resolves a customAttributeObject given an id, name, or Model
+     * - for retrieving a custom attribute object that may or may not
+     * be attached to $this inventory model
+     *
+     * @param int|string|Model $attr
+     * 
+     * @return Model
+     * 
+     * @throws InvalidCustomAttributeException
+     */
+    public function resolveCustomAttributeObject($attr) 
+    {
+        if ($attr instanceof Model) return $attr;
+
+        $attrObj = $this->hasCustomAttribute($attr) ? 
+            $this->getCustomAttribute($attr) :
+            CustomAttribute::where('id', $attr)->orWhere('name', $attr)->first();
+
+        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key "'.$attr.'"');
+
+        return $attrObj;
     }
 
     /**
@@ -417,29 +439,6 @@ trait CustomAttributeTrait
         return false;
     }
 
-    /**
-     * Resolves a customAttributeObject given an id, name, or Model
-     *
-     * @param int|string|Model $attr
-     * 
-     * @return Model
-     * 
-     * @throws InvalidCustomAttributeException
-     */
-    public function resolveCustomAttributeObject($attr) 
-    {
-        if ($attr instanceof Model) return $attr;
-
-        $attrObj = $this->hasCustomAttribute($attr) ? 
-            $this->getCustomAttribute($attr) :
-            CustomAttribute::where('id', $attr)->orWhere('name', $attr)->first();
-
-        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key "'.$attr.'"');
-
-        return $attrObj;
-    }
-
-    
     /**
      * TODO: this may not be necessary without custom_attribute_default
      * 
