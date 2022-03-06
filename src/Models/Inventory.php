@@ -105,17 +105,17 @@ class Inventory extends BaseModel
     }
 
     /**
-     * The hasManyThrough customAttributes relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * The BelongsToMany customAttributes relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    // public function customAttributes() 
-    // {
-    //     return $this->hasManyThrough(Attribute::class, AttributeValue::class, 'attribute_id', 'id', 'attribute_id', 'attribute_id');
-    // }
     public function customAttributes()
     {
-        return $this->belongsToMany(CustomAttribute::class, 'custom_attribute_values', 'inventory_id', 'custom_attribute_id');
+        return $this->belongsToMany(CustomAttribute::class, 'custom_attribute_values', 'inventory_id', 'custom_attribute_id')
+            ->withPivot("string_val", "num_val", "date_val")
+            ->as("values")
+            // ->using(CustomAttributeValues::class)
+            ->withTimestamps();
     }
 
     /**

@@ -351,10 +351,34 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals('Another value', $item2->getCustomAttributeValue($attr));
     }
 
+    public function testCanGetAllCustomAttributesForAnInventoryItem() {
+        $item = $this->newInventory();
 
+        $attr1 = $item->addCustomAttribute('string', 'A fresh as heck property');
+        $item->setCustomAttribute($attr1, 'string value');
+
+        $attr2 = $item->addCustomAttribute('integer', 'Another super fresh prop but numeric this time');
+        $item->setCustomAttribute($attr2, 42);
+
+        $attr3 = $item->addCustomAttribute('date', 'The time and day of these most freshest of properties');
+        $item->setCustomAttribute($attr3, '3-1-2021');
+
+        $allAttrs = $item->getCustomAttributes();
+        $allAttrVals = $item->getCustomAttributeValues();
+
+        $this->assertCount(3, $allAttrs);
+        $this->assertCount(3, $allAttrVals);
+        $this->assertEquals($allAttrVals['a_fresh_as_heck_property'], 'string value');
+        $this->assertEquals($allAttrVals['another_super_fresh_prop_but_numeric_this_time'], 42);
+        $this->assertEquals(strtotime($allAttrVals['the_time_and_day_of_these_most_freshest_of_properties']), strtotime('3-1-2021'));
+    }
+
+
+    
     /*
      *  "Cannot" tests
      */
+
 
 
     public function testCannotAddCustomAttributeWithInvalidRegexRule()

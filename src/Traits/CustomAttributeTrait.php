@@ -142,6 +142,23 @@ trait CustomAttributeTrait
     }
 
     /**
+     * Returns the list of all custom attribute values
+     * for this inventory item
+     * 
+     * @return Collection
+     */
+    public function getCustomAttributeValues() 
+    {
+        $attrVals = $this->customAttributes()->get()->reduce(function($carry, $item) {
+            if (!$carry) return [$item->name => $item->values[$item->value_type.'_val']];
+            else $carry[$item->name] = $item->values[$item->value_type.'_val'];
+            return $carry;
+        });
+
+        return $attrVals;
+    }
+
+    /**
      * Adds a new custom attribute to this inventory item
      *
      * @param string $type
@@ -538,6 +555,9 @@ trait CustomAttributeTrait
      */
     public function getCustomAttributeValueObj($attr) 
     {
+        // If called with no attribute to find, don't bother looking
+        // if (!$attr) return false;
+
         try {
             $attrObj = $this->resolveCustomAttributeObject($attr);
 

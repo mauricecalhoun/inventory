@@ -21,13 +21,17 @@ class CustomAttribute extends BaseModel
     ];
 
     /**
-     * The belongsToMany inventories relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+	 * The BelongsToMany customAttributes relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
     public function inventories()
     {
-        return $this->belongsToMany(Inventory::class, 'custom_attribute_values', 'custom_attribute_id', 'inventory_id');
+        return $this->belongsToMany(Inventory::class, 'custom_attribute_values', 'custom_attribute_id', 'inventory_id')
+            ->withPivot("string_val", "num_val", "date_val")
+            ->as("values")
+            // ->using(CustomAttributeValue::class)
+            ->withTimestamps();
     }
 
     /**
