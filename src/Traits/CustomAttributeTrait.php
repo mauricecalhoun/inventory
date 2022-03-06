@@ -131,7 +131,7 @@ trait CustomAttributeTrait
     }
 
     /**
-     * Returns the list of all custom attributes 
+     * Returns the list of all custom attribute models
      * for this inventory item
      * 
      * @return Collection
@@ -142,8 +142,24 @@ trait CustomAttributeTrait
     }
 
     /**
-     * Returns the list of all custom attribute values
-     * for this inventory item
+     * Returns the list of all custom attribute value
+     * models for this inventory item
+     * 
+     * @return Collection
+     */
+    public function getCustomAttributeValueObjects()
+    {
+        return $this->customAttributeValues()->get();
+    }
+
+    /**
+     * Returns a formatted list of all custom attribute 
+     * values for this inventory item with the format
+     * [
+     *   attribute_name => value,
+     *   ...,
+     * ]
+     * 
      * 
      * @return Collection
      */
@@ -231,7 +247,7 @@ trait CustomAttributeTrait
                 break;
 
             default:
-                $message = $type . ' is an invalid custom attribute type';
+                $message = '"' . $type . '" is an invalid custom attribute type';
                 throw new InvalidCustomAttributeException($message);
                 break;
         }
@@ -256,7 +272,7 @@ trait CustomAttributeTrait
         
         // If the customAttribute exists on this item, check if it's of the correct type
         if ($existingAttr) {
-            throw new InvalidCustomAttributeException('Cannot add same attribute '.$displayName.' twice');
+            throw new InvalidCustomAttributeException('Cannot add same attribute "'.$displayName.'" twice');
         } else {
             // Check that the attribute exists at all - not just on this item.
             $anyExistingAttr = CustomAttribute::where('name', $name)->where('value_type', $rawType)->first();
