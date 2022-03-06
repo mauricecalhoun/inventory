@@ -48,7 +48,7 @@ class PublishMigrationsCommand extends Command
 		$this->call('vendor:publish', [
 			'--provider' => 'Stevebauman\Inventory\InventoryServiceProvider',
 			'--tag' => 'migrations',
-            '--force'
+            '--force' => true
 		]);
 
         $this->info('Inventory Migrations has been successfully published');
