@@ -91,17 +91,6 @@ trait CustomAttributeTrait
     }
 
     /**
-     * Returns the list of all custom attribute value
-     * models for this inventory item
-     * 
-     * @return Collection
-     */
-    public function getCustomAttributeValueObjects()
-    {
-        return $this->customAttributeValues()->get();
-    }
-
-    /**
      * Returns a formatted list of all custom attribute 
      * values for this inventory item with the format
      * [
