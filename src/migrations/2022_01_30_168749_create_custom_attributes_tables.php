@@ -51,6 +51,11 @@ class CreateCustomAttributesTables extends Migration
             $table->string('string_val', 8191)->nullable();
             $table->decimal('num_val', 16, 4)->nullable();  // 123,456,789,012.3456
             $table->dateTime('date_val')->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table
+                ->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
 
             $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
             $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
