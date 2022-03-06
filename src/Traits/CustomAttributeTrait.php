@@ -3,7 +3,6 @@
 namespace Stevebauman\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use Stevebauman\Inventory\Models\CustomAttribute;
 use Stevebauman\Inventory\Exceptions\InvalidCustomAttributeException;
 use Stevebauman\Inventory\Exceptions\RequiredCustomAttributeException;
@@ -14,13 +13,6 @@ use Stevebauman\Inventory\Exceptions\RequiredCustomAttributeException;
 trait CustomAttributeTrait
 {
     use DatabaseTransactionTrait;
-
-    /**
-     * The items customAttribute cache key.
-     *
-     * @var string
-     */
-    protected $customAttributeCacheKey = 'inventory::customAttribute.';
 
     /**
      * The hasMany customAttributeValues relationship.
