@@ -130,6 +130,7 @@ class Inventory extends BaseModel
      }
 
      /**
+     * TODO: Remove this relationship and bake into the CustomAttribute model & class
      * The hasMany attributeValues relationship.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

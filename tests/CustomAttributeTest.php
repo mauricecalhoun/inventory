@@ -241,6 +241,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals($attr1->id, $attr3->id);
     }
 
+    // TODO: modify this for custom attribute default refactor
     public function testCanAddCustomAttributeWithDefault() 
     {
         $item = $this->newInventory();
@@ -250,6 +251,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals('default value', $item->getCustomAttributeValue('fresh_property'));
     }
 
+    // TODO: modify this for custom attribute default refactor
     public function testCanAddDefaultToExistingCustomAttribute()
     {
         $item = $this->newInventory();
@@ -265,6 +267,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertTrue($attr->has_default);
     }
 
+    // TODO: modify this for custom attribute default refactor
     public function testCanChangeCustomAttributeValueWithDefault() 
     {
         $item = $this->newInventory();
@@ -279,6 +282,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals(strtotime('22-2-2'), strtotime($item->getCustomAttributeDefault($attr->id)));
     }
 
+    // TODO: modify this for custom attribute default refactor
     public function testCanChangeCustomAttributeDefaultValue() 
     {
         $item = $this->newInventory();
@@ -435,6 +439,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->getCustomAttributeValue('not an attribute even a little');
     }
 
+    // TODO: maybe refactor this method
     public function testCannotGetDefaultValueOfNonexistentCustomAttribute()
     {
         $item = $this->newInventory();
@@ -444,6 +449,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->getCustomAttributeDefault('not an attribute at all');
     }
 
+    // TODO: maybe refactor this as well
     public function testCannotCreateNumericCustomAttributeWithInvalidDefault() 
     {
         $item = $this->newInventory();
@@ -453,6 +459,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->addCustomAttribute('integer', 'Number Property', 'not a number');
     }
 
+    // TODO: although maybe would be better to just rewrite the backend
     public function testCannotCreateDateCustomAttributeWithInvalidDefault() 
     {
         $item = $this->newInventory();
@@ -462,6 +469,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $item->addCustomAttribute('date', 'Date Property', 'not a date');
     }
 
+    // TODO: so that it fits with these scenarios
     public function testCannotCreateTimeCustomAttributeWithInvalidDefault() 
     {
         $item = $this->newInventory();

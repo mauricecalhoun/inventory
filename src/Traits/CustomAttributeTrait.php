@@ -30,6 +30,7 @@ trait CustomAttributeTrait
     abstract public function customAttributeValues();
     
     /**
+     * TODO: refactor this relationship out in favor of CustomAttribute->default_val
      * The hasMany customAttributeDefaults relationship.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -223,6 +224,7 @@ trait CustomAttributeTrait
         $name = strtolower($displayName);
         $name = preg_replace('/\s+/', '_', $name);
         
+        // TODO: deal with all this default logic:
         $defaultIsNull = is_null($defaultValue);
         
         $hasDefault = $defaultIsNull ? false : true;
@@ -310,6 +312,7 @@ trait CustomAttributeTrait
      */
     private function createCustomAttribute($name, $displayName, $rawType, $type, $hasDefault, $defaultValue = null, $required = false, $rule = null, $ruleDesc = null)
     {
+        // TODO: put default value in this object
         $newCustomAttribute = [
             'name' => $name,
             'display_name' => $displayName,
@@ -471,6 +474,8 @@ trait CustomAttributeTrait
 
     
     /**
+     * TODO: this may not be necessary without custom_attribute_default
+     * 
      * Gets a customAttributeDefault object by custom_attribute_id and
      * inventory_id
      * 
@@ -578,6 +583,8 @@ trait CustomAttributeTrait
     }
 
     /**
+     * TODO: refactor this method to set the default on the CustomAttribute model itself
+     * 
      * Sets the given custom attribute default for this item
      *
      * @param string|int|Model $attr

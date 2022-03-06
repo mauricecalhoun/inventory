@@ -33,6 +33,7 @@ class CreateCustomAttributesTables extends Migration
                 'longText',
             ]);
             $table->boolean('has_default');
+            $table->string('default_value', 8191)->nullable();
             $table->string('rule', 256)->nullable();
             $table->string('rule_desc', 256)->nullable();
             $table->timestamp('created_at')->useCurrent();
@@ -57,6 +58,7 @@ class CreateCustomAttributesTables extends Migration
             $table->unique(['inventory_id', 'custom_attribute_id'], 'values_inventory_attribute_id_unique');
         });
 
+        // TODO: take this out and modify custom_attributes instead
         Schema::create('custom_attribute_defaults', function(Blueprint $table) {
             $table->id();
             $table->foreignId('inventory_id');

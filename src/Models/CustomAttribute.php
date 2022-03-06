@@ -41,6 +41,9 @@ class CustomAttribute extends BaseModel
     }
 
     /**
+     * TODO: REMOVE THIS CLASS
+     * TODO: bake this functionality into the CustomAttribute model & table
+     * 
      * The belongsToMany attributeDefaultValue relationship.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

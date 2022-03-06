@@ -7,6 +7,9 @@ namespace Stevebauman\Inventory\Models;
  */
 class CustomAttributeDefault extends BaseModel
 {
+    /**
+     * TODO: REMOVE THIS CLASS
+     */
     protected $table = 'custom_attribute_defaults';
 
     public $timestamps = false;
