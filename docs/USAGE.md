@@ -332,7 +332,6 @@ First we'll create a supplier:
     
     //Optional fields
     $supplier->address = '123 Fake Street';
-    $supplier->postal_code = 'N8J 2K7';
     $supplier->zip_code = '12345';
     $supplier->country = 'Canada';
     $supplier->region = 'Ontario';

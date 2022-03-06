@@ -132,7 +132,7 @@ trait CustomAttributeTrait
     }
 
     /**
-     * Returns the list of all custom attributes 
+     * Returns the list of all custom attribute models
      * for this inventory item
      * 
      * @return Collection
@@ -140,6 +140,39 @@ trait CustomAttributeTrait
     public function getCustomAttributes() 
     {
         return $this->customAttributes()->get();
+    }
+
+    /**
+     * Returns the list of all custom attribute value
+     * models for this inventory item
+     * 
+     * @return Collection
+     */
+    public function getCustomAttributeValueObjects()
+    {
+        return $this->customAttributeValues()->get();
+    }
+
+    /**
+     * Returns a formatted list of all custom attribute 
+     * values for this inventory item with the format
+     * [
+     *   attribute_name => value,
+     *   ...,
+     * ]
+     * 
+     * 
+     * @return Collection
+     */
+    public function getCustomAttributeValues() 
+    {
+        $attrVals = $this->customAttributes()->get()->reduce(function($carry, $item) {
+            if (!$carry) return [$item->name => $item->values[$item->value_type.'_val']];
+            else $carry[$item->name] = $item->values[$item->value_type.'_val'];
+            return $carry;
+        });
+
+        return $attrVals;
     }
 
     /**
@@ -215,7 +248,7 @@ trait CustomAttributeTrait
                 break;
 
             default:
-                $message = $type . ' is an invalid custom attribute type';
+                $message = '"' . $type . '" is an invalid custom attribute type';
                 throw new InvalidCustomAttributeException($message);
                 break;
         }
@@ -241,7 +274,7 @@ trait CustomAttributeTrait
         
         // If the customAttribute exists on this item, check if it's of the correct type
         if ($existingAttr) {
-            throw new InvalidCustomAttributeException('Cannot add same attribute '.$displayName.' twice');
+            throw new InvalidCustomAttributeException('Cannot add same attribute "'.$displayName.'" twice');
         } else {
             // Check that the attribute exists at all - not just on this item.
             $anyExistingAttr = CustomAttribute::where('name', $name)->where('value_type', $rawType)->first();
@@ -388,7 +421,7 @@ trait CustomAttributeTrait
         } catch (RequiredCustomAttributeException $e) {
             throw $e;
         } catch (\Exception $e) {
-            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$attr.', and can not create without a type');
+            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute "'.$attr.'", and can not create without a type');
 
             $this->validateAttribute($value, $type);
 
@@ -444,7 +477,7 @@ trait CustomAttributeTrait
 
             return $attrValObj->$key; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute value with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute value with key "'.$attr.'"');
         }
 
         return false;
@@ -467,7 +500,7 @@ trait CustomAttributeTrait
             $this->getCustomAttribute($attr) :
             CustomAttribute::where('id', $attr)->orWhere('name', $attr)->first();
 
-        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key '.$attr);
+        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key "'.$attr.'"');
 
         return $attrObj;
     }
@@ -498,7 +531,7 @@ trait CustomAttributeTrait
             if ($defaultObj) {return $defaultObj;}
             else throw new \Exception;
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute default object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute default object with key "'.$attr.'"');
         }
     }
     
@@ -525,7 +558,7 @@ trait CustomAttributeTrait
 
             return $attrDefaultObj->$key; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute with key "'.$attr.'"');
         }
 
         return false;
@@ -543,6 +576,9 @@ trait CustomAttributeTrait
      */
     public function getCustomAttributeValueObj($attr) 
     {
+        // If called with no attribute to find, don't bother looking
+        // if (!$attr) return false;
+
         try {
             $attrObj = $this->resolveCustomAttributeObject($attr);
 
@@ -552,7 +588,7 @@ trait CustomAttributeTrait
 
             return $attrValObj; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute value object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute value object with key "'.$attr.'"');
         }
     }
 
@@ -578,7 +614,7 @@ trait CustomAttributeTrait
 
             return true;
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not remove custom attribute value object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not remove custom attribute value object with key "'.$attr.'"');
         }
     }
 

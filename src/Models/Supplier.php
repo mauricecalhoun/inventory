@@ -12,8 +12,8 @@ class Supplier extends BaseModel
 
     protected $fillable = [
         'name',
+        'code',
         'address',
-        'postal_code',
         'zip_code',
         'region',
         'city',
