@@ -418,7 +418,7 @@ trait CustomAttributeTrait
         } catch (RequiredCustomAttributeException $e) {
             throw $e;
         } catch (\Exception $e) {
-            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute '.$attr.', and can not create without a type');
+            if (!$type) throw new InvalidCustomAttributeException('Could not find attribute "'.$attr.'", and can not create without a type');
 
             $this->validateAttribute($value, $type);
 
@@ -474,7 +474,7 @@ trait CustomAttributeTrait
 
             return $attrValObj->$key; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute value with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute value with key "'.$attr.'"');
         }
 
         return false;
@@ -497,7 +497,7 @@ trait CustomAttributeTrait
             $this->getCustomAttribute($attr) :
             CustomAttribute::where('id', $attr)->orWhere('name', $attr)->first();
 
-        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key '.$attr);
+        if (!$attrObj) throw new InvalidCustomAttributeException('Could not find custom attribute with key "'.$attr.'"');
 
         return $attrObj;
     }
@@ -526,7 +526,7 @@ trait CustomAttributeTrait
             if ($defaultObj) {return $defaultObj;}
             else throw new \Exception;
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute default object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute default object with key "'.$attr.'"');
         }
     }
     
@@ -553,7 +553,7 @@ trait CustomAttributeTrait
 
             return $attrDefaultObj->$key; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute with key "'.$attr.'"');
         }
 
         return false;
@@ -583,7 +583,7 @@ trait CustomAttributeTrait
 
             return $attrValObj; 
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute value object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not get custom attribute value object with key "'.$attr.'"');
         }
     }
 
@@ -609,7 +609,7 @@ trait CustomAttributeTrait
 
             return true;
         } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not remove custom attribute value object with key ' . $attr);
+            throw new InvalidCustomAttributeException('Could not remove custom attribute value object with key "'.$attr.'"');
         }
     }
 
