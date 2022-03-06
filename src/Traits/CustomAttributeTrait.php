@@ -37,64 +37,6 @@ trait CustomAttributeTrait
      */
     abstract public function customAttributeDefaults();
 
-    // NOTE: Cached attributes are unused in current implementation
-    // /**
-    //  * Returns the current item's custom attribute cache key
-    //  * 
-    //  * @return string
-    //  */
-    // private function getCustomAttributeCacheKey()
-    // {
-    //     return $this->customAttributeCacheKey.$this->getKey();
-    // }
-
-    // /**
-    //  * Returns boolean based on whether the current item
-    //  * has cached custom attributes
-    //  * 
-    //  * @return bool
-    //  */
-    // public function hasCachedCustomAttributes() 
-    // {
-    //     return Cache::has($this->getCustomAttributeCacheKey());
-    // }
-
-    // /**
-    //  * Puts the given custom attribute into the cache for
-    //  * the current item
-    //  * 
-    //  * @return bool
-    //  */
-    // public function addCachedCustomAttribute($attr) 
-    // {
-    //     return Cache::forever($this->getCustomAttributeCacheKey(), $attr);
-    // }
-
-    // /**
-    //  * Returns the current item's cached custom attributes if
-    //  * they exist in the cache, or false otherwise
-    //  * 
-    //  * @return bool|Collection
-    //  */
-    // public function getCachedCustomAttributes() 
-    // {
-    //     if ($this->hasCachedCustomAttributes()) {
-    //         return Cache::get($this->getCustomAttributeCacheKey());
-    //     }
-
-    //     return false;
-    // }
-
-    // /**
-    //  * Removes the current item's custom attributes from the cache
-    //  * 
-    //  * @return bool
-    //  */
-    // public function forgetCachedCustomAttributes()
-    // {
-    //     return Cache::forget($this->getCustomAttributeCacheKey());
-    // }
-
     /**
      * Returns true if item has given custom attribute, or 
      * false otherwise.
