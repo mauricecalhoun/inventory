@@ -18,6 +18,7 @@ class CustomAttribute extends BaseModel
         'reserved',
         'display_type',
         'has_default',
+        'default_value',
     ];
 
     /**
@@ -42,18 +43,5 @@ class CustomAttribute extends BaseModel
     public function customAttributeValues() 
     {
         return $this->hasMany(CustomAttributeValue::class, 'custom_attribute_id');
-    }
-
-    /**
-     * TODO: REMOVE THIS CLASS
-     * TODO: bake this functionality into the CustomAttribute model & table
-     * 
-     * The belongsToMany attributeDefaultValue relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function customAttributeDefault()
-    {
-        return $this->hasMany(CustomAttributeDefault::class, 'custom_attribute_id');
     }
 }

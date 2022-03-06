@@ -62,21 +62,6 @@ class CreateCustomAttributesTables extends Migration
 
             $table->unique(['inventory_id', 'custom_attribute_id'], 'values_inventory_attribute_id_unique');
         });
-
-        // TODO: take this out and modify custom_attributes instead
-        Schema::create('custom_attribute_defaults', function(Blueprint $table) {
-            $table->id();
-            $table->foreignId('inventory_id');
-            $table->foreignId('custom_attribute_id');
-            $table->string('string_val', 8191)->nullable();
-            $table->decimal('num_val', 16, 4)->nullable();  // 123,456,789,012.3456
-            $table->dateTime('date_val')->nullable();
-            
-            $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
-            $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
-
-            $table->unique(['inventory_id', 'custom_attribute_id'], 'defaults_inventory_attribute_id_unique');
-        });
     }
 
     /**

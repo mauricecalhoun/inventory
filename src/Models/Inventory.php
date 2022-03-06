@@ -123,21 +123,8 @@ class Inventory extends BaseModel
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-
      public function customAttributeValues()
      {
          return $this->hasMany(CustomAttributeValue::class, 'inventory_id');
      }
-
-     /**
-     * TODO: Remove this relationship and bake into the CustomAttribute model & class
-     * The hasMany attributeValues relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-
-    public function customAttributeDefaults()
-    {
-        return $this->hasMany(CustomAttributeDefault::class, 'inventory_id');
-    }
 }

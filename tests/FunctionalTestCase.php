@@ -357,6 +357,7 @@ abstract class FunctionalTestCase extends TestCase
                     'longText',
                 ]);
                 $table->boolean('has_default');
+                $table->string('default_value', 8191)->nullable();
                 $table->string('rule', 256)->nullable();
                 $table->string('rule_desc', 256)->nullable();
                 $table->timestamp('created_at')->useCurrent();
@@ -381,20 +382,6 @@ abstract class FunctionalTestCase extends TestCase
                 $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
 
                 $table->unique(['inventory_id', 'custom_attribute_id'], 'values_inventory_attribute_id_unique');
-            });
-
-            DB::schema()->create('custom_attribute_defaults', function($table) {
-                $table->id();
-                $table->foreignId('inventory_id');
-                $table->foreignId('custom_attribute_id');
-                $table->string('string_val', 8191)->nullable();
-                $table->decimal('num_val', 16, 4)->nullable();  // 123,456,789,012.3456
-                $table->dateTime('date_val')->nullable();
-                
-                $table->foreign('inventory_id')->references('id')->on('inventories')->onUpdate('restrict');
-                $table->foreign('custom_attribute_id')->references('id')->on('custom_attributes')->onUpdate('restrict');
-
-                $table->unique(['inventory_id', 'custom_attribute_id'], 'defaults_inventory_attribute_id_unique');
             });
         }
     }
