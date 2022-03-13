@@ -26,7 +26,7 @@ class CustomAttributeValue extends BaseModel
      */
     public function inventories()
     {
-        return $this->belongsTo(Inventory::class);
+        return $this->belongsTo(Inventory::class, 'inventory_id');
     }
 
     /**

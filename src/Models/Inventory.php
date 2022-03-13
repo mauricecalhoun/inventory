@@ -126,7 +126,7 @@ class Inventory extends BaseModel
 
      public function customAttributeValues()
      {
-         return $this->hasMany(CustomAttributeValue::class, 'inventory_id');
+        return $this->hasMany(CustomAttributeValue::class, 'inventory_id');
      }
 
      /**
