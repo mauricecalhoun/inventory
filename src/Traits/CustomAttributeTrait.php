@@ -20,14 +20,6 @@ trait CustomAttributeTrait
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     abstract public function customAttributeValues();
-    
-    /**
-     * TODO: refactor this relationship out in favor of CustomAttribute->default_val
-     * The hasMany customAttributeDefaults relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    abstract public function customAttributeDefaults();
 
     /**
      * Returns true if item has given custom attribute, or 
@@ -96,17 +88,6 @@ trait CustomAttributeTrait
     public function getCustomAttributes() 
     {
         return $this->customAttributes()->get();
-    }
-
-    /**
-     * Returns the list of all custom attribute value
-     * models for this inventory item
-     * 
-     * @return Collection
-     */
-    public function getCustomAttributeValueObjects()
-    {
-        return $this->customAttributeValues()->get();
     }
 
     /**
@@ -309,6 +290,7 @@ trait CustomAttributeTrait
             'reserved' => false,
             'display_type' => $type,
             'has_default' => $hasDefault,
+            'default_value' => $defaultValue,
             'required' => $required,
             'rule' => $rule,
             'rule_desc' => $ruleDesc,
@@ -337,9 +319,6 @@ trait CustomAttributeTrait
      */
     public function setCustomAttribute($attr, $value, $type = null) 
     {
-        /**
-         * TODO: Ability to add existing custom attribute to inventory item that does not have it assigned already
-         */
         try {
             if ($attr instanceof Model) {
                 // do nothing
@@ -440,37 +419,7 @@ trait CustomAttributeTrait
     }
 
     /**
-     * TODO: this may not be necessary without custom_attribute_default
-     * 
-     * Gets a customAttributeDefault object by custom_attribute_id and
-     * inventory_id
-     * 
-     * @param int|string|Model $attr
-     * 
-     * @return mixed
-     * 
-     * @throws InvalidCustomAttributeException
-     */
-    public function getCustomAttributeDefaultObj($attr) 
-    {
-        try {
-            $attrObj = $this->resolveCustomAttributeObject($attr);
-
-            $defaultObj = $this->customAttributeDefaults()
-                ->where('custom_attribute_id', $attrObj->getKey())
-                ->where('inventory_id', $this->getKey())
-                ->get()->first();
-                
-            if ($defaultObj) {return $defaultObj;}
-            else throw new \Exception;
-        } catch (\Exception $e) {
-            throw new InvalidCustomAttributeException('Could not get custom attribute default object with key "'.$attr.'"');
-        }
-    }
-    
-    /**
-     * Gets a custom attribute default based on the custom attribute id
-     * and inventory item's id
+     * Gets a custom attribute default from the custom attribute's model
      *
      * @param int|string $attr
      * 
@@ -483,13 +432,8 @@ trait CustomAttributeTrait
         try {
             $attrObj = $this->getCustomAttribute($attr);
 
-            $attrDefaultObj = $this->getCustomAttributeDefaultObj($attrObj);
-
-            $type = $attrObj->value_type;
-
-            $key = $type . '_val';
-
-            return $attrDefaultObj->$key; 
+            if (is_numeric($attrObj->default_value)) return filter_var($attrObj->default_value, FILTER_SANITIZE_NUMBER_FLOAT);
+            else return $attrObj->default_value;
         } catch (\Exception $e) {
             throw new InvalidCustomAttributeException('Could not get custom attribute with key "'.$attr.'"');
         }
@@ -551,47 +495,42 @@ trait CustomAttributeTrait
         }
     }
 
-    /**
-     * TODO: refactor this method to set the default on the CustomAttribute model itself
-     * 
+    /** 
      * Sets the given custom attribute default for this item
      *
      * @param string|int|Model $attr
      * @param string|int|date $value
      * 
-     * @return Model|boolean
+     * @return Model
      */
     public function setCustomAttributeDefault($attr, $value) {
-        $attrObj = $this->resolveCustomAttributeObject($attr);
+        $attrObj = $this->getCustomAttribute($attr);
 
-        $id = $attrObj->id;
+        $attrObj->default_value = $value;
 
-        $type = $attrObj->value_type;
+        if (!$attrObj->has_default) $attrObj->has_default = true;
 
-        try {
-            $existingAttrDefaultObj = $this->getCustomAttributeDefaultObj($id);
+        $attrObj->save();
 
-            $valKey = $type . '_val';
-    
-            $existingAttrDefaultObj->$valKey = $value;
-            
-            return $existingAttrDefaultObj->save();
-        } catch (\Exception $e) {
-            $itemKey = $this->getKey();
-            
-            $attrDefault = [
-                'custom_attribute_id' => $id,
-                'inventory_id' => $itemKey,
-                'string_val' => $type == 'string' ? $value : null,
-                'num_val' => $type == 'num' ? $value : null,
-                'date_val' => $type == 'date' ? $value : null,
-            ];
-    
-            $attrObj->has_default = true;
-            $attrObj->save();
+        return $attrObj;
+    }
 
-            return $this->customAttributeDefaults()->create($attrDefault);
-        }
+    /** 
+     * Sets the given custom attribute default for this item
+     *
+     * @param string|int|Model $attr
+     * 
+     * @return Model
+     */
+    public function removeCustomAttributeDefault($attr) {
+        $attrObj = $this->getCustomAttribute($attr);
 
+        $attrObj->default_value = null;
+
+        if ($attrObj->has_default) $attrObj->has_default = false;
+
+        $attrObj->save();
+
+        return $attrObj;
     }
 }
