@@ -17,7 +17,11 @@ class CreateInventoryAssembliesTable extends Migration
         Schema::create('inventory_assemblies', function (Blueprint $table) {
 
             $table->id();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table
+                ->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
             $table->foreignId('inventory_id')->unsigned();
             $table->foreignId('part_id')->unsigned();
             $table->integer('quantity')->nullable();

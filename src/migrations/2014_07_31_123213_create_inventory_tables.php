@@ -16,7 +16,11 @@ class CreateInventoryTables extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table
+                ->timestamp('updated_at')
+                ->useCurrent()
+                ->useCurrentOnUpdate();
             $table->softDeletes();
 
             $table->foreignId('category_id')->unsigned()->nullable();
