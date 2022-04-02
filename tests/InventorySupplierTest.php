@@ -213,4 +213,18 @@ class InventorySupplierTest extends FunctionalTestCase
 
         $this->assertEquals('test345', $item->getSupplierSKU($supplier->code));
     }
+
+    public function testSupplierShouldBeAttachedToSKUs() {
+        $item = $this->newInventory();
+
+        $supplier = $this->newSupplier();
+
+        $item->addSupplier($supplier);
+
+        $item->addSupplierSku($supplier, 'test123');
+
+        $sku = $supplier->skus()->first();
+
+        $this->assertEquals('test123', $sku->supplier_sku);
+    }
 }

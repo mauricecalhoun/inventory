@@ -34,4 +34,9 @@ class Supplier extends BaseModel
     {
         return $this->belongsToMany(Inventory::class, 'inventory_suppliers', 'supplier_id')->withTimestamps();
     }
+
+    public function skus()
+    {
+        return $this->hasMany(SupplierSKU::class, 'supplier_id', 'id');
+    }
 }
