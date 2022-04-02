@@ -81,6 +81,16 @@ class Inventory extends BaseModel
     }
 
     /**
+     * The belongsToMany supplier SKU relationship.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function supplierSKUs()
+    {
+        return $this->hasMany(SupplierSKU::class, 'inventory_id', 'id');
+    }
+
+    /**
      * The belongsToMany assemblies relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

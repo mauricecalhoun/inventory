@@ -185,4 +185,32 @@ class InventorySupplierTest extends FunctionalTestCase
         $item->addSupplier('testing');
         $item->removeSupplier('testing');
     }
+
+    public function testInventoryAddSupplierSKU() 
+    {
+        $item = $this->newInventory();
+
+        $supplier = $this->newSupplier();
+
+        $item->addSupplier($supplier);
+
+        $item->addSupplierSKU($supplier, 'test123');
+
+        $this->assertEquals('test123', $item->getSupplierSKU($supplier->id));
+    }
+
+    public function testInventoryUpdateSupplierSKU()
+    {
+        $item = $this->newInventory();
+
+        $supplier = $this->newSupplier();
+
+        $item->addSupplier($supplier);
+
+        $item->addSupplierSKU($supplier, 'test234');
+
+        $item->updateSupplierSKU($supplier->code, 'test345');
+
+        $this->assertEquals('test345', $item->getSupplierSKU($supplier->code));
+    }
 }

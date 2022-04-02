@@ -9,6 +9,7 @@ use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\IsParentException;
 use Stevebauman\Inventory\InventoryServiceProvider;
+use Stevebauman\Inventory\Models\SupplierSKU;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
@@ -72,6 +73,13 @@ trait InventoryTrait
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     abstract public function suppliers();
+
+    /**
+     * The belongsToMany supplier SKU relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    abstract public function supplierSKUs();
 
     /**
      * The hasManyThrough attributes relationship.
@@ -899,6 +907,73 @@ trait InventoryTrait
 
             throw new InvalidSupplierException($message);
         }
+    }
+
+    public function addSupplierSKU($supplier, $sku)
+    {
+        $supplierModel = $this->resolveSupplier($supplier);
+
+        $this->supplierSKUs()->updateOrCreate(['supplier_id'=>$supplierModel->id], ['supplier_id' => $supplierModel->id, 'supplier_sku' => $sku]);
+    }
+
+    /**
+     * TODO:
+     * Retrieves the sku code corresponding to this inventory item 
+     * for the given supplier
+     *
+     * @param mixed $supplier
+     * 
+     * @return string
+     */
+    public function getSupplierSKU($supplier) 
+    {
+        $supplierModel = $this->resolveSupplier($supplier);
+        $sku = $this->supplierSKUs->where('supplier_id', $supplierModel->id)->first();
+        
+        return $sku->supplier_sku;
+    }
+
+    public function updateSupplierSKU($supplier, $sku) {
+        $supplierModel = $this->resolveSupplier($supplier);
+
+        $skuModel = $this->supplierSKUs()->updateOrCreate(
+            ['supplier_id'=>$supplierModel->id], 
+            [
+                'supplier_id' => $supplierModel->id, 
+                'supplier_sku' => $sku
+            ]
+        );
+
+        return $skuModel;
+    }
+
+    /**
+     * Resolves the supplier model based on a supplier id
+     * or just returns the model
+     *
+     * @param mixed $supplier
+     * 
+     * @return \Stevebauman\Inventory\Models\Supplier
+     * 
+     * @throws InvalidSupplierException
+     */
+    private function resolveSupplier($supplier) {
+        $s = null;
+        if ($this->isNumeric($supplier)) {
+            $s = $this->getSupplierById($supplier);
+        } elseif ($this->isModel($supplier)) {
+            $s = $supplier;
+        } elseif (is_string($supplier)) {
+            $s = $this->suppliers->where('code', $supplier)->first();
+        } 
+        
+        if(is_null($s)) {
+            $message = "Supplier not found when attempting to resolve " . $supplier;
+
+            throw new InvalidSupplierException($message);
+        }
+
+        return $s;
     }
 
     /**

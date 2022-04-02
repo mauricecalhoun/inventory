@@ -237,6 +237,8 @@ abstract class FunctionalTestCase extends TestCase
             DB::schema()->create('inventory_suppliers', function ($table) {
                 $table->id();
                 $table->timestamps();
+        
+                $table->string('supplier_sku')->nullable();
 
                 $table->foreignId('inventory_id')->unsigned();
                 $table->foreignId('supplier_id')->unsigned();

@@ -182,7 +182,7 @@ trait SupplierTrait
             throw new InvalidItemException($message);
         }
     }
-
+    
     /**
      * Retrieves an item by the specified ID.
      *
