@@ -7,6 +7,12 @@ namespace Stevebauman\Inventory\Models;
  */
 class Metric extends BaseModel
 {
+    protected $fillable = [
+        "name",
+        "symbol",
+        "created_by",
+    ];
+
     protected $table = 'metrics';
 
     /**

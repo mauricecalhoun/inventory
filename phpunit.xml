@@ -23,6 +23,9 @@
             <directory suffix=".php">src</directory>
         </include>
     </coverage>
+    <php>
+        <env name="DB_CONNECTION" value="testing"/>
+    </php>
 </phpunit>
 <!-- beStrictAboutCoversAnnotation="true" -->
 <!-- forceCoversAnnotation="true" -->

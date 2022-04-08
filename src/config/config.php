@@ -35,7 +35,7 @@ return [
      *
      * @var bool
      */
-    'skus_enabled' => true,
+    'skus_enabled' => false,
 
     /*
      * The sku prefix length, not including the code for example:

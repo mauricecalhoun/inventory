@@ -15,13 +15,16 @@
     "license": "MIT",
     "require": {
         "php": ">=7.3.0",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^9.6",
         "gazsp/baum": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5.10",
         "mockery/mockery": "^1.0",
-        "fakerphp/faker": "^1.19"
+        "fakerphp/faker": "^1.19",
+        "orchestra/testbench": "^7.3",
+        "brianium/paratest": "^6.4",
+        "nunomaduro/collision": "^6.1"
     },
     "archive": {
       "exclude": ["/tests"]
@@ -41,6 +44,13 @@
     "config": {
         "allow-plugins": {
             "kylekatarnls/update-helper": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Stevebauman\\Inventory\\InventoryServiceProvider"
+            ]
         }
     }
 }

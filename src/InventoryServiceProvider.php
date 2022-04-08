@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Class InventoryServiceProvider.
@@ -66,9 +67,14 @@ class InventoryServiceProvider extends ServiceProvider
         /*
             * Assign the migrations as publishable, and tag it as 'migrations'
             */
-        $this->publishes([
-            __DIR__.'/migrations/' => base_path('database/migrations'),
-        ], 'migrations');
+        // $this->publishes([
+        //     __DIR__.'/migrations/' => base_path('database/migrations'),
+        // ], 'migrations');
+
+        /**
+         * Load migrations
+         */
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
     }
 
     /**

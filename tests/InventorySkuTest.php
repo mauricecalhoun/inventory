@@ -3,9 +3,9 @@
 namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
+// use Illuminate\Support\Facades\Event;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Config;
 use Stevebauman\Inventory\Models\Inventory;
 use Stevebauman\Inventory\Models\InventorySku;
 
@@ -18,41 +18,19 @@ class InventorySkuTest extends FunctionalTestCase
 {
     public function testInventorySkuGeneration()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        /*
-         * SKU separator
-         */
-        Config::shouldReceive('get')->once()->andReturn('');
-
-        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
-
-        Event::shouldReceive('dispatch')->once();
-
         $sku = $this->newInventorySku();
 
         $item = Inventory::where('id', $sku->inventory_id)->first();
 
         $this->assertEquals($item->id, $sku->inventory_id);
-        $this->assertMatchesRegularExpression('/DRI\d{6}/', $sku->code);
+        $this->assertMatchesRegularExpression('/DRI-\d{6}/', $sku->code);
     }
 
     public function testInventorySkuGenerationForSmallCategoryName()
     {
-        $item = $this->newInventory();
+        $item = $this->newInventory()->with("sku")->first();
+
+        $inventorySku = $item->sku;
 
         $category = $this->newCategory();
 
@@ -62,36 +40,10 @@ class InventorySkuTest extends FunctionalTestCase
 
         $category->update($update);
 
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        /*
-         * SKU separator
-         */
-        Config::shouldReceive('get')->once()->andReturn('');
-
-        // Sets facade root because laravel and phpunit aren't playing
-        // nice today
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-        Event::shouldReceive('dispatch')->once();
-
-        /*
-         * Generate the SKU
-         */
-        $inventorySku = $item->generateSku();
+        // /*
+        //  * Generate the SKU
+        //  */
+        // $inventorySku = $item->generateSku();
 
         /*
          * Get the sku code
@@ -102,27 +54,10 @@ class InventorySkuTest extends FunctionalTestCase
     }
 
     public function testInventorySkuRegeneration()
-    {
-        Config::shouldReceive('get')->once()->andReturn(true);
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-        Event::shouldReceive('dispatch')->once();
-        
+    {   
         $newSku = $this->newInventorySku();
 
         $item = Inventory::find($newSku->inventory_id);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
 
         $item->regenerateSku();
 
@@ -133,21 +68,6 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventoryHasSku()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $sku = $this->newInventorySku();
 
         $item = Inventory::find($sku->inventory_id);
@@ -157,21 +77,6 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventoryDoesNotHaveSku()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $newSku = $this->newInventorySku();
 
         $inventoryID = $newSku->inventory_id;
@@ -191,44 +96,11 @@ class InventorySkuTest extends FunctionalTestCase
         $item->category_id = null;
         $item->save();
 
-        // /*
-        //  * SKU generation is enabled
-        //  */
-        // Config::shouldReceive('get')->once()->andReturn(true);
-
-        // /*
-        //  * SKU code limit
-        //  */
-        // Config::shouldReceive('get')->once()->andReturn(6);
-
-        // /*
-        //  * SKU prefix limit
-        //  */
-        // Config::shouldReceive('get')->once()->andReturn(3);
         $this->assertFalse($item->generateSku());
     }
 
     public function testInventoryGetSku()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
-
-        Event::shouldReceive('dispatch')->once();
-
         $newSku = $this->newInventorySku();
 
         $inventoryID = $newSku->inventory_id;
@@ -236,26 +108,11 @@ class InventorySkuTest extends FunctionalTestCase
         $item = Inventory::find($inventoryID);
 
         $this->assertEquals($item->getSku(), $item->sku->code);
-        $this->assertMatchesRegularExpression('/DRI\d{6}/', $item->sku->code);
+        $this->assertMatchesRegularExpression('/DRI-\d{6}/', $item->sku->code);
     }
 
     public function testInventoryFindBySku()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $newSku = $this->newInventorySku();
 
         $newSkuCode = $newSku->code;
@@ -274,21 +131,6 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventorySkuBlankCategoryName()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $newSku = $this->newInventorySku();
         
         $category = $this->newCategory();
@@ -297,26 +139,6 @@ class InventorySkuTest extends FunctionalTestCase
 
         $item = Inventory::find($newSku->inventory_id);
 
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        /*
-         * SKU separator
-         */
-        Config::shouldReceive('get')->once()->andReturn('');
-
         $sku = $item->regenerateSku();
 
         /*
@@ -324,49 +146,14 @@ class InventorySkuTest extends FunctionalTestCase
          * with new ID
          */
         $this->assertEquals($newSku->id + 1, $sku->id);
-        $this->assertMatchesRegularExpression('/DRI\d{6}/', $sku->code);
+        $this->assertMatchesRegularExpression('/DRI-\d{6}/', $sku->code);
     }
 
     public function testInventorySkuSeparator()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $newSku = $this->newInventorySku();
         
         $inventoryID = $newSku->inventory_id;
-
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
-        /*
-         * SKU separator
-         */
-        Config::shouldReceive('get')->once()->andReturn('-');
 
         $item = Inventory::find($inventoryID);
 
@@ -376,21 +163,27 @@ class InventorySkuTest extends FunctionalTestCase
         $this->assertMatchesRegularExpression('/DRI-\d{6}/', $sku->code);
     }
 
-    public function testInventorySkuCreateSku()
-    {
-        $item = $this->newInventory();
+    // NOTE: CreateSku should never be explicitly called, since skus are created
+    //          automatically on the "created" event on inventory items.
+    //       So, this test is going away now.
 
-        $sku = $item->createSku('TESTING');
+    // public function testInventorySkuCreateSku()
+    // {
+    //     $item = $this->newInventory()->with("sku")->first();
 
-        $this->assertEquals($item->id, $sku->inventory_id);
-        $this->assertEquals('TESTING', $sku->code);
-    }
+    //     $sku = $item->sku;
+
+    //     // $sku = $item->createSku('TESTING');
+
+    //     $this->assertEquals($item->id, $sku->inventory_id);
+    //     $this->assertEquals('TESTING', $sku->code);
+    // }
 
     public function testInventorySkuCreateSkuOverwrite()
     {
         $item = $this->newInventory();
 
-        $firstSku = $item->createSku('TESTING2');
+        $firstSku = $item->with("sku")->first()->sku;
 
         $newSku = $item->createSku('TESTING-RESTORE', true);
 
@@ -401,9 +194,10 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testsInventorySkuUpdate()
     {
-        $item = $this->newInventory();
+        $item = $this->newInventory()->with("sku")->first();
 
-        $firstSku = $item->createSku('TESTING3');
+        $firstSku = $item->sku;
+        // $firstSku = $item->createSku('TESTING3');
 
         $sku = $item->updateSku('TESTING-UPDATE');
 
@@ -425,21 +219,6 @@ class InventorySkuTest extends FunctionalTestCase
 
     public function testInventorySkuCreateSkuAlreadyExistsException()
     {
-        /*
-         * SKU generation is enabled
-         */
-        Config::shouldReceive('get')->once()->andReturn(true);
-        
-        /*
-         * SKU code limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(6);
-
-        /*
-         * SKU prefix limit
-         */
-        Config::shouldReceive('get')->once()->andReturn(3);
-
         $newSku = $this->newInventorySku();
 
         $item = Inventory::find($newSku->inventory_id);

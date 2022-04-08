@@ -3,30 +3,43 @@
 namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Database\Capsule\Manager as DB;
-use PHPUnit\Framework\TestCase;
+// use Illuminate\Support\Facades\Lang;
+// use Illuminate\Support\Facades\Event;
+// use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
+use Orchestra\Testbench\TestCase;
 use Stevebauman\Inventory\Models\Inventory;
 use Stevebauman\Inventory\Models\InventoryStock;
 use Stevebauman\Inventory\Models\Location;
 use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Supplier;
+use Stevebauman\Inventory\InventoryServiceProvider;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory;
 
-abstract class FunctionalTestCase extends TestCase
+class FunctionalTestCase extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
+    // use DatabaseTransactions;
 
     protected static $db = null;
     protected static $connection = null;
+
+    protected static $migrated = false;
     
     public static $faker = null;
 
     protected function setUp(): void
     {
         parent::setUp();
-
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'allow_no_user', true);
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'skus_enabled', true);
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_separator', '-');
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_prefix_length', '3');
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_code_length', '6');
         // $this->configureDatabase();
         // $this->migrateTables();
     }
@@ -34,17 +47,65 @@ abstract class FunctionalTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         FunctionalTestCase::$faker = Factory::create();
-        if (!FunctionalTestCase::$db) {
-            FunctionalTestCase::configureDatabase();
-            FunctionalTestCase::migrateTables();
-            Eloquent::unguard();
-        }
+
+        // if (!FunctionalTestCase::$db) {
+        //     FunctionalTestCase::configureDatabase();
+        //     FunctionalTestCase::migrateTables();
+        //     // Eloquent::unguard();
+        // }
     }
 
     public static function tearDownAfterClass(): void
     {
-        FunctionalTestCase::dropTables();
+        // FunctionalTestCase::dropTables();
         // FunctionalTestCase::$db->getConnection('default')->disconnect();
+    }
+
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return array
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            'Stevebauman\Inventory\InventoryServiceProvider',
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        // Setup default database to use sqlite :memory:
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ]);
+    }
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        // if(!FunctionalTestCase::$migrated) {
+
+            // echo "Running database migrations...\n";
+            // $this->loadLaravelMigrations();
+        $this->loadMigrationsFrom(__DIR__ . '/test_migrations');
+        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+
+            // FunctionalTestCase::$migrated = true;
+        // }
+
+        // $this->beforeApplicationDestroyed(function() {
+        //     $this->artisan('migrate:rollback')->run();
+        // });
     }
 
     private static function configureDatabase()
@@ -409,7 +470,7 @@ abstract class FunctionalTestCase extends TestCase
 
         $category = $this->newCategory();
 
-        if(count($attributes) > 0) {
+        if (count($attributes) > 0) {
             return Inventory::create($attributes);
         }
 
@@ -500,8 +561,10 @@ abstract class FunctionalTestCase extends TestCase
     protected function newInventorySku()
     {
         $item = $this->newInventory();
-
-        return $item->generateSku();
+        
+        // Item already has a sku, dammit.
+        // return $item->generateSku();
+        return $item->with("sku")->first()->sku;
     }
 
     /**
