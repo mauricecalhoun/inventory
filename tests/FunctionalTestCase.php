@@ -22,7 +22,7 @@ use Faker\Factory;
 
 class FunctionalTestCase extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
     // use DatabaseTransactions;
 
     protected static $db = null;
