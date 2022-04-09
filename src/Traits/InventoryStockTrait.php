@@ -139,6 +139,8 @@ trait InventoryStockTrait
             /*
              * Generate the movement
              */
+            $this->quantity = is_null($this->quantity) ? 0 : $this->quantity;
+
             $this->generateStockMovement(0, $this->quantity, $this->reason, $this->cost);
         }
     }

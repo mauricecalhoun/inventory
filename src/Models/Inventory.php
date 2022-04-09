@@ -27,6 +27,7 @@ class Inventory extends BaseModel
         'metric_id',
         'name',
         'description',
+        'is_parent',
     ];
 
     /**

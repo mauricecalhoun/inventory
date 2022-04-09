@@ -2,10 +2,6 @@
 
 namespace Stevebauman\Inventory\Tests;
 
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\DB;
 use Stevebauman\Inventory\Models\Inventory;
 
 /**
@@ -31,11 +27,6 @@ class InventoryVariantTest extends FunctionalTestCase
         $chocolateMilk = $milk->newVariant();
 
         $chocolateMilk->name = 'Chocolate Milk';
-
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $chocolateMilk->save();
 
@@ -63,11 +54,6 @@ class InventoryVariantTest extends FunctionalTestCase
             'metric_id' => $metric->id,
             'category_id' => $category->id,
         ]);
-
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $name = 'Cherry Coke';
         $description = 'Delicious Cherry Coke';
@@ -108,11 +94,6 @@ class InventoryVariantTest extends FunctionalTestCase
             'category_id' => $category->id,
         ]);
 
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
-
         $cherryCoke->makeVariantOf($coke);
 
         $this->assertEquals($cherryCoke->parent_id, $coke->id);
@@ -138,11 +119,6 @@ class InventoryVariantTest extends FunctionalTestCase
         ]);
 
         $cherryCoke = $coke->createVariant('Cherry Coke');
-
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -173,11 +149,6 @@ class InventoryVariantTest extends FunctionalTestCase
         ]);
 
         $cherryCoke = $coke->createVariant('Cherry Coke');
-
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -212,11 +183,6 @@ class InventoryVariantTest extends FunctionalTestCase
             'metric_id' => $metric->id,
             'category_id' => $category->id,
         ]);
-
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
 
         $cherryCoke->makeVariantOf($coke);
 
@@ -253,18 +219,7 @@ class InventoryVariantTest extends FunctionalTestCase
 
         $vanillaCherryCoke->makeVariantOf($coke);
 
-        DB::shouldReceive('beginTransaction')->once()->andReturn(true);
-        DB::shouldReceive('commit')->once()->andReturn(true);
-
-        Event::shouldReceive('dispatch')->once()->andReturn(true);
-
         $location = $this->newLocation();
-
-        // Allow duplicate movements configuration option
-        Config::shouldReceive('get')->twice()->andReturn(true);
-
-        // Stock change reasons (one for create, one for put, for both items)
-        Lang::shouldReceive('get')->once()->andReturn('Default Reason');
 
         $vanillaCherryCoke->createStockOnLocation(40, $location);
 

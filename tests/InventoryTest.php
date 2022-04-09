@@ -56,8 +56,6 @@ class InventoryTest extends FunctionalTestCase
 
         $location = $this->newLocation();
 
-        Lang::shouldReceive('get')->once();
-
         $newStock = $item->createStockOnLocation(10, $location);
 
         $stock = InventoryStock::find($newStock->id);
@@ -125,8 +123,6 @@ class InventoryTest extends FunctionalTestCase
         $item = $this->newInventory();
 
         $location = $this->newLocation();
-
-        Lang::shouldReceive('get')->once();
 
         $this->expectException('Stevebauman\Inventory\Exceptions\InvalidQuantityException');
 
