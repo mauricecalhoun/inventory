@@ -51,6 +51,8 @@ class CreateInventorySupplierTables extends Migration
             $table->foreign('supplier_id')->references('id')->on('suppliers')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
+
+            $table->unique(['inventory_id', 'supplier_id']);
         });
     }
 
