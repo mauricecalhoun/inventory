@@ -175,6 +175,20 @@ class CustomAttributeTest extends FunctionalTestCase
         $this->assertEquals(strtotime($dateFormatted), strtotime($item->getCustomAttributeValue('date_property')));
     }
 
+    public function testCanSetDateCustomAttributeValueWithStringYearFirst()
+    {
+        $item = $this->newInventory();
+
+        $attr = $item->addCustomAttribute('date', 'Date Prop Again');
+
+        // For some reason, 1970-01-01 does not work.  Oh well.
+        $date = "1970-01-02";
+
+        $item->setCustomAttribute($attr->id, $date);
+
+        $this->assertEquals(strtotime($date), strtotime($item->getCustomAttributeValue('date_prop_again')));
+    }
+
     public function testCanSetDateCustomAttributeValueWithTimestamp()
     {
         $item = $this->newInventory();
