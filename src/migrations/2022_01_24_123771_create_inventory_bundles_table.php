@@ -29,6 +29,7 @@ class CreateInventoryBundlesTable extends Migration
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('component_id')->references('id')->on('inventories')->onDelete('cascade');
 
+            $table->unique(['inventory_id', 'component_id']);
         });
     }
 
