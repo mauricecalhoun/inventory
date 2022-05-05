@@ -28,6 +28,7 @@ class Inventory extends BaseModel
         'name',
         'description',
         'is_parent',
+        'is_bundle',
     ];
 
     /**
