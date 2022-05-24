@@ -500,6 +500,12 @@ class FunctionalTestCase extends TestCase
     {
         return Location::create([
             'name' => 'Warehouse',
+            'code' => 'WH',
+            'address_1' => '111 Fake St.',
+            'city' => 'Bellingham',
+            'state_province' => 'WA',
+            'postal_code' => '98226',
+            'country' => 'USA',
             'belongs_to' => '',
         ]);
     }

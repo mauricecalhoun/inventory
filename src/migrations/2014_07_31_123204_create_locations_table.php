@@ -26,12 +26,37 @@ class CreateLocationsTable extends Migration
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
             $table->string('name');
+            $table->string('code')->nullable();
+            $table->string('address_1');
+            $table->string('address_2')->nullable();
+            $table->string('city');
+            $table->string('state_province');
+            $table->string('postal_code');
+            $table->string('county')->nullable();
+            $table->string('district')->nullable();
+            $table->string('country');
+            // TODO: implement time zones
+            // $table->foreign('timezone_id')->references('id')->on('timezones')
+            //     ->onUpdate('restrict');
 
             /*
              * This field is for scoping categories, use it if you
              * want to store multiple nested sets on the same table
              */
             $table->string('belongs_to')->nullable();
+        });
+
+        Schema::create('location_contacts', function(Blueprint $table) {
+            $table->id();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->foreignId('location_id')->unsigned();
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone');
+
+            $table->foreign('location_id')->references('id')->on('locations')
+                ->onUpdate('restrict');
         });
     }
 
