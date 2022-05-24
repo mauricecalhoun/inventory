@@ -53,9 +53,7 @@ class InventoryStockTest extends FunctionalTestCase
     {
         $stock = $this->newInventoryStock();
 
-        $newLocation = Location::create([
-            'name' => 'New Location',
-        ]);
+        $newLocation = $this->newLocation();
 
         DB::shouldReceive('beginTransaction')->once()->shouldReceive('commit')->once();
         Event::shouldReceive('dispatch')->once();
@@ -193,9 +191,7 @@ class InventoryStockTest extends FunctionalTestCase
 
         $locationFrom = Location::find($newStock->location_id);
 
-        $locationTo = new Location();
-        $locationTo->name = 'New Location';
-        $locationTo->save();
+        $locationTo = $this->newLocation();
 
         $item = Inventory::find($newStock->inventory_id);
 
