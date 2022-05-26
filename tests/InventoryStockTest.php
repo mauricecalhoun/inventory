@@ -232,4 +232,19 @@ class InventoryStockTest extends FunctionalTestCase
 
         $this->assertInstanceOf('Stevebauman\Inventory\Interfaces\StateableInterface', $transaction);
     }
+
+    public function testRollbackStockMovement() {
+        $stock = $this->newInventoryStock();
+        $initialQuantity = $stock->quantity;
+
+        $txn = $stock->newTransaction();
+
+        $movement = $stock->add(20, 'fresh inventory', '50');
+
+        $this->assertEquals($initialQuantity + 20, $stock->quantity);
+
+        $stock->rollback();
+
+        $this->assertEquals($initialQuantity, $stock->quantity);
+    }
 }

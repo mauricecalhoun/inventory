@@ -328,7 +328,7 @@ trait InventoryStockTrait
      */
     public function getLastMovement()
     {
-        $movement = $this->movements()->orderBy('created_at', 'DESC')->first();
+        $movement = $this->movements()->orderBy('id', 'DESC')->first();
 
         if ($movement) {
             return $movement;
