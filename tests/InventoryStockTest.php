@@ -239,11 +239,49 @@ class InventoryStockTest extends FunctionalTestCase
 
         $txn = $stock->newTransaction();
 
-        $movement = $stock->add(20, 'fresh inventory', '50');
+        $stock->add(20, 'fresh inventory', 50);
 
         $this->assertEquals($initialQuantity + 20, $stock->quantity);
 
         $stock->rollback();
+
+        $this->assertEquals($initialQuantity, $stock->quantity);
+
+        $stock->remove(10, 'removing inventory cheaper', 40);
+
+        $this->assertEquals($initialQuantity - 10, $stock->quantity);
+
+        $stock->rollback($stock->getLastMovement());
+
+        $this->assertEquals($initialQuantity, $stock->quantity);
+
+        $stock->add(10, 'adding inventory cheaper', 40);
+
+        $this->assertEquals($initialQuantity + 10, $stock->quantity);
+
+        $stock->rollbackMovement($stock->getLastMovement());
+
+        $this->assertEquals($initialQuantity, $stock->quantity);
+
+        $stock->add(10, 'adding inventory even cheaper', 30);
+
+        $this->assertEquals($initialQuantity + 10, $stock->quantity);
+
+        $lastMovement = $stock->getLastMovement();
+
+        $stock->rollbackMovement($lastMovement->id);
+
+        $this->assertEquals($initialQuantity, $stock->quantity);
+
+        $stock->add(10, 'adding inventory even cheaperer', 25);
+
+        $this->assertEquals($initialQuantity + 10, $stock->quantity);
+
+        $lastMovement = $stock->getLastMovement();
+        $stock->add(10, 'adding inventory even cheaper again', 20);
+        $stock->add(10, 'adding inventory even cheaper for a third time', 15);
+
+        $rollbacks = $stock->rollback($lastMovement->id, true);
 
         $this->assertEquals($initialQuantity, $stock->quantity);
     }
