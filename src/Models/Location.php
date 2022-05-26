@@ -35,4 +35,14 @@ class Location extends Node
     {
         return $this->hasMany(InventoryStock::class, 'location_id', 'id');
     }
+
+    /**
+     * The hasMany locationContacts relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contacts()
+    {
+        return $this->hasMany(LocationContact::class, 'location_id', 'id');
+    }
 }

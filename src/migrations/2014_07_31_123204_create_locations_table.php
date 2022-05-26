@@ -52,8 +52,10 @@ class CreateLocationsTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('location_id')->unsigned();
             $table->string('name');
-            $table->string('email');
-            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->string('fax')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('type');
 
             $table->foreign('location_id')->references('id')->on('locations')
                 ->onUpdate('restrict');
