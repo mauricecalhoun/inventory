@@ -12,6 +12,22 @@ class Location extends Node
      * @var array
      */
     protected $scoped = ['belongs_to'];
+    
+    
+    public function getDefaultLeftColumnName()
+    {
+      return 'lft';
+    }
+
+    /**
+     * Override the "default" right column name.
+     *
+     * @return string
+     */
+    public function getDefaultRightColumnName()
+    {
+        return 'rgt';
+    }
 
     /**
      * The hasMany stocks relationship.
@@ -22,4 +38,6 @@ class Location extends Node
     {
         return $this->hasMany(InventoryStock::class, 'location_id', 'id');
     }
+    
+    
 }
