@@ -1,12 +1,16 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
+use Trexology\Inventory\Traits\InventoryStockMovementTrait;
 
-class InventoryStockMovement extends Model
+class InventoryStockMovement extends BaseModel
 {
     use InventoryStockMovementTrait;
+
+    protected $casts = [
+        'serial' => 'array',
+    ];
 
     /**
      * The belongsTo stock relationship.

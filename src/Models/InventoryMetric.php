@@ -1,9 +1,13 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-class Metric extends Model
+class InventoryMetric extends BaseModel
 {
+  protected $fillable = [
+              'name',
+              'symbol',
+            ];
     /**
      * The hasMany inventory items relationship.
      *

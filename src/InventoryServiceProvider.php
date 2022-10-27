@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory;
+namespace Trexology\Inventory;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,14 +13,16 @@ class InventoryServiceProvider extends ServiceProvider
      */
     const VERSION = '1.8.0';
 
+    public function boot() {
+      // Load the inventory translations from the inventory lang folder
+      $this->loadTranslationsFrom(__DIR__.'/Lang', 'inventory');
+    }
+
     /**
      * {@inheritdoc}
      */
     public function register()
     {
-        // Load the inventory translations from the inventory lang folder
-        $this->loadTranslationsFrom(__DIR__.'/Lang', 'inventory');
-
         // Assign the configuration as publishable, and tag it as 'config'
         $this->publishes([
             __DIR__.'/Config/config.php' => config_path('inventory.php'),

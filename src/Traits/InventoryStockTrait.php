@@ -1,11 +1,11 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
-use Stevebauman\Inventory\Exceptions\InvalidMovementException;
-use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
-use Stevebauman\Inventory\Helper;
+use Trexology\Inventory\Exceptions\NotEnoughStockException;
+use Trexology\Inventory\Exceptions\InvalidMovementException;
+use Trexology\Inventory\Exceptions\InvalidQuantityException;
+use Trexology\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
@@ -29,11 +29,26 @@ trait InventoryStockTrait
     public $cost = 0;
 
     /**
+     * Stores the receiver params.
+     *
+     * @var string
+     */
+    public $receiver_id = null;
+    public $receiver_type = null;
+
+    /**
      * Stores the quantity before an update.
      *
      * @var int|float|string
      */
     protected $beforeQuantity = 0;
+
+    /**
+     * Serial Number for stock movment
+     *
+     * @var Array
+     */
+    public $movementSerial = [];
 
     /**
      * The hasOne location relationship.
@@ -88,6 +103,12 @@ trait InventoryStockTrait
             // so we can create generate an update with it.
             $model->beforeQuantity = $model->getOriginal('quantity');
 
+            // Check if a serial number has been changed,
+            $original = json_decode($model->getOriginal('serial'));
+            if ($model->serial != $original && $model->quantity == $model->getOriginal('quantity')) {
+              $model->reason = "Serial number adjustment";
+            }
+
             // Check if a reason has been set, if not let's
             // retrieve the default change reason.
             if (!$model->reason) {
@@ -107,7 +128,7 @@ trait InventoryStockTrait
      */
     public function postCreate()
     {
-        $this->generateStockMovement(0, $this->getAttribute('quantity'), $this->reason, $this->cost);
+        $this->generateStockMovement(0, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver_id, $this->receiver_type, $this->movementSerial);
     }
 
     /**
@@ -117,7 +138,7 @@ trait InventoryStockTrait
      */
     public function postUpdate()
     {
-        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost);
+        $this->generateStockMovement($this->beforeQuantity, $this->getAttribute('quantity'), $this->reason, $this->cost, $this->receiver_id, $this->receiver_type, $this->movementSerial);
     }
 
     /**
@@ -149,9 +170,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function remove($quantity, $reason = '', $cost = 0)
+    public function remove($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
-        return $this->take($quantity, $reason, $cost);
+        return $this->take($quantity, $reason, $cost, $receiver_id, $receiver_type, $serial);
     }
 
     /**
@@ -166,9 +187,9 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    public function take($quantity, $reason = '', $cost = 0)
+    public function take($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
-        return $this->processTakeOperation($quantity, $reason, $cost);
+        return $this->processTakeOperation($quantity, $reason, $cost, $receiver_id, $receiver_type, $serial);
     }
 
     /**
@@ -180,9 +201,9 @@ trait InventoryStockTrait
      *
      * @return $this
      */
-    public function add($quantity, $reason = '', $cost = 0)
+    public function add($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
-        return $this->put($quantity, $reason, $cost);
+        return $this->put($quantity, $reason, $cost, $receiver_id, $receiver_type, $serial);
     }
 
     /**
@@ -196,9 +217,9 @@ trait InventoryStockTrait
      *
      * @return $this
      */
-    public function put($quantity, $reason = '', $cost = 0)
+    public function put($quantity, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
-        return $this->processPutOperation($quantity, $reason, $cost);
+        return $this->processPutOperation($quantity, $reason, $cost, $receiver_id, $receiver_type,$serial);
     }
 
     /**
@@ -232,6 +253,50 @@ trait InventoryStockTrait
             if ($movement) {
                 return $this->processRollbackOperation($movement, $recursive);
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return stock assigned to an entity. Stock may be disposed of during the process of returning
+     *
+     * @param mixed $movement
+     * @param bool  $recursive
+     *
+     * @return $this|bool
+     */
+    public function returnStock($movement, $collect_amt, $collect_reason, $collect_serial, $dispose_amt, $dispose_reason,$dispose_serial)
+    {
+        $collect_serial = is_null($collect_serial) ? [] : $collect_serial;
+        $dispose_serial = is_null($dispose_serial) ? [] : $dispose_serial;
+        $movement_serial = is_null($movement->serial) ? [] : $movement->serial;
+
+        if (!$movement) {
+            $movement = $this->getLastMovement();
+        }
+
+        $amt = $movement->getAttribute('before') - $movement->getAttribute('after');
+        $balance = $amt - $dispose_amt - $collect_amt;
+        if ($amt > 0 && $balance >= 0) {
+          // $bal_reason = Lang::get('inventory::reasons.rollback', [
+          //     'id' => $movement->getOriginal('id'),
+          //     'date' => $movement->getOriginal('created_at'),
+          // ]);
+          $bal_reason = "Balance leftover from stock redistribution. (id: $movement->id)";
+
+          $bal_serial = null;
+          if (is_array($collect_serial) && is_array($dispose_serial)) {
+            $bal_serial = array_diff($movement_serial, $collect_serial,$dispose_serial);
+          }
+          $this->put($amt,$collect_reason,0,$movement->receiver_id,$movement->receiver_type,$collect_serial);
+          $this->take($dispose_amt,$dispose_reason,0,null,null,$dispose_serial);
+          if ($balance > 0) {
+            $this->take($balance,$bal_reason,0,$movement->receiver_id,$movement->receiver_type,$bal_serial);
+          }
+
+          $movement->returned = true; // Prevent duplicate return for this movements
+          $movement->save();
         }
 
         return false;
@@ -385,7 +450,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    protected function processTakeOperation($taking, $reason = '', $cost = 0)
+    protected function processTakeOperation($taking, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
         if($this->isValidQuantity($taking) && $this->hasEnoughStock($taking)) {
             $available = $this->getAttribute('quantity');
@@ -400,15 +465,23 @@ trait InventoryStockTrait
             if ((float) $left === (float) $available && !$this->allowDuplicateMovementsEnabled()) {
                 return $this;
             }
-
             $this->setAttribute('quantity', $left);
 
-            $this->setReason($reason);
+            if (is_string($serial)) {
+              $serial = preg_split("/\s*,\s*/", trim($serial), -1, PREG_SPLIT_NO_EMPTY);
+            }
 
+            if ($this->serial && is_array($serial)) {
+              $this->serial = array_diff($this->serial,$serial);
+            }
+
+            $this->movementSerial = $serial;
+            $this->setReason($reason);
             $this->setCost($cost);
+            $this->receiver_id = $receiver_id;
+            $this->receiver_type = $receiver_type;
 
             $this->dbStartTransaction();
-
             try {
                 if ($this->save()) {
                     $this->dbCommitTransaction();
@@ -436,7 +509,7 @@ trait InventoryStockTrait
      *
      * @return $this|bool
      */
-    protected function processPutOperation($putting, $reason = '', $cost = 0)
+    protected function processPutOperation($putting, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
         if($this->isValidQuantity($putting)) {
             $current = $this->getAttribute('quantity');
@@ -449,11 +522,22 @@ trait InventoryStockTrait
                 return $this;
             }
 
+            if (is_string($serial)) {
+              $serial = preg_split("/\s*,\s*/", trim($serial), -1, PREG_SPLIT_NO_EMPTY);
+            }
+            if ($this->serial && is_array($serial)) {
+              $this->serial = array_merge($this->serial,$serial);
+            }
+            elseif (!$this->serial) {
+              $this->serial = $serial;
+            }
             $this->quantity = $total;
 
+            $this->movementSerial = $serial;
             $this->setReason($reason);
-
             $this->setCost($cost);
+            $this->receiver_id = $receiver_id;
+            $this->receiver_type = $receiver_type;
 
             $this->dbStartTransaction();
 
@@ -520,7 +604,8 @@ trait InventoryStockTrait
             return $this->processRecursiveRollbackOperation($movement);
         }
 
-        $this->setAttribute('quantity', $movement->getAttribute('before'));
+        $amt = $movement->getAttribute('after')- $movement->getAttribute('before');
+        $this->setAttribute('quantity', $this->quantity - $amt);
 
         $reason = Lang::get('inventory::reasons.rollback', [
             'id' => $movement->getOriginal('id'),
@@ -528,6 +613,9 @@ trait InventoryStockTrait
         ]);
 
         $this->setReason($reason);
+
+        $this->receiver_id = $movement->receiver_id;
+        $this->receiver_type = $movement->receiver_type;
 
         if ($this->rollbackCostEnabled()) {
             $this->setCost($movement->getAttribute('cost'));
@@ -594,15 +682,20 @@ trait InventoryStockTrait
      *
      * @return bool|Model
      */
-    protected function generateStockMovement($before, $after, $reason = '', $cost = 0)
+    protected function generateStockMovement($before, $after, $reason = '', $cost = 0, $receiver_id = null, $receiver_type = null, $serial = null)
     {
         $movement = $this->movements()->getRelated()->newInstance();
 
         $movement->setAttribute('stock_id', $this->getKey());
         $movement->setAttribute('before', $before);
         $movement->setAttribute('after', $after);
+        if ($receiver_id && $receiver_type) {
+          $movement->setAttribute('receiver_id', $receiver_id);
+          $movement->setAttribute('receiver_type', $receiver_type);
+        }
         $movement->setAttribute('reason', $reason);
         $movement->setAttribute('cost', $cost);
+        $movement->setAttribute('serial', $serial);
 
         if($movement->save()) {
             return $movement;

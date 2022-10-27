@@ -3,14 +3,14 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMetricsTable extends Migration
+class CreateInventoryMetricsTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('metrics', function (Blueprint $table) {
+        Schema::create('inventory_metrics', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
@@ -29,6 +29,6 @@ class CreateMetricsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('metrics');
+        Schema::dropIfExists('inventory_metrics');
     }
 }

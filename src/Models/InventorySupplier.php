@@ -1,10 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\SupplierTrait;
+use Trexology\Inventory\Traits\SupplierTrait;
 
-class Supplier extends Model
+class InventorySupplier extends BaseModel
 {
     use SupplierTrait;
 

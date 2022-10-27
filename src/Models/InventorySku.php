@@ -1,10 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventorySkuTrait;
+use Trexology\Inventory\Traits\InventorySkuTrait;
 
-class InventorySku extends Model
+class InventorySku extends BaseModel
 {
     use InventorySkuTrait;
 

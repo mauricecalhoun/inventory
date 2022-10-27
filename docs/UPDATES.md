@@ -32,7 +32,7 @@ If you <b>have</b> modified the migrations and ran them yourself, you will have 
 
 ##### Laravel 4:
 
-    php artisan migrate:publish --package="stevebauman/inventory"
+    php artisan migrate:publish --package="trexology/laravel-inventory"
 
 ##### Laravel 5:
 
@@ -86,7 +86,7 @@ If you're using custom migrations you will need to re-publish the inventory migr
 
 ##### Laravel 4:
 
-    php artisan migrate:publish --package="stevebauman/inventory"
+    php artisan migrate:publish --package="trexology/laravel-inventory"
 
 ##### Laravel 5:
 
@@ -116,7 +116,7 @@ If you have customized the included migrations, you'll have to publish the new o
 
 ##### Laravel 4:
 
-    php artisan migrate:publish --package="stevebauman/inventory"
+    php artisan migrate:publish --package="trexology/laravel-inventory"
 
 ##### Laravel 5:
 
@@ -139,7 +139,7 @@ Now you're good to go to use the new update!
 
 No migrations were added to this release, you can jump to `1.5.*` with no issues.
 
-However, the exception `Stevebauman\Inventory\Exceptions\StockIsSufficientException` has been removed.
+However, the exception `Trexology\Inventory\Exceptions\StockIsSufficientException` has been removed.
 
 It is no longer thrown when there is enough stock for a back-order. Simply remove it from your
 try/catch statement.
@@ -154,7 +154,7 @@ Follow standard update migration procedure:
 
 ##### Laravel 4:
 
-    php artisan migrate:publish --package="stevebauman/inventory"
+    php artisan migrate:publish --package="trexology/laravel-inventory"
 
 ##### Laravel 5:
 
@@ -166,7 +166,7 @@ Then run the migration using:
 
 If you're using your own models, be sure to insert the new trait on your `Inventory` model:
     
-    use Stevebauman\Inventory\Traits\InventoryVariantTrait;
+    use Trexology\Inventory\Traits\InventoryVariantTrait;
     
     class Inventory extends Eloquent {
         use InventoryVariantTrait;
@@ -178,7 +178,7 @@ If you're using the built in models, it's already included.
 
 In update `1.7`, assembly functionality has been added. This update comes with 2 new migrations, and a new trait.
 
-The new trait added is named `Stevebauman\Inventory\Traits\AssemblyTrait`. This trait will need to be inserted into
+The new trait added is named `Trexology\Inventory\Traits\AssemblyTrait`. This trait will need to be inserted into
 your `Inventory` model if you wish to use the assembly functionality.
 
 The first migration adds the column `is_assembly (bool)` to your `inventories` table. It is defaulted to `false`.
@@ -190,7 +190,7 @@ These migrations are non-destructive, so follow the standard update procedure:
 
 ##### Laravel 4:
 
-    php artisan migrate:publish --package="stevebauman/inventory"
+    php artisan migrate:publish --package="trexology/laravel-inventory"
 
 ##### Laravel 5:
 
@@ -202,9 +202,9 @@ Then run the migration using:
     
 Once you've ran the migrations, insert the new Assembly trait into your inventory model:
 
-    use Stevebauman\Inventory\Traits\AssemblyTrait;
-    use Stevebauman\Inventory\Traits\InventoryVariantTrait;
-    use Stevebauman\Inventory\Traits\InventoryTrait;
+    use Trexology\Inventory\Traits\AssemblyTrait;
+    use Trexology\Inventory\Traits\InventoryVariantTrait;
+    use Trexology\Inventory\Traits\InventoryTrait;
     
     class Inventory extends Eloquent
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
-use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
-use Stevebauman\Inventory\Exceptions\StockNotFoundException;
-use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
-use Stevebauman\Inventory\Helper;
+use Trexology\Inventory\Exceptions\SkuAlreadyExistsException;
+use Trexology\Inventory\Exceptions\StockNotFoundException;
+use Trexology\Inventory\Exceptions\StockAlreadyExistsException;
+use Trexology\Inventory\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
@@ -164,7 +164,7 @@ trait InventoryTrait
      */
     public function hasCategory()
     {
-        if ($this->category) {
+        if ($this->inventoryCategory) {
             return true;
         }
 
@@ -208,11 +208,11 @@ trait InventoryTrait
      *
      * @throws StockAlreadyExistsException
      * @throws StockNotFoundException
-     * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
+     * @throws \Trexology\Inventory\Exceptions\NoUserLoggedInException
      *
      * @return Model
      */
-    public function createStockOnLocation($quantity, Model $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
+    public function createStockOnLocation($quantity, Model $location, $reason = '', $cost = 0, $serial = null, $aisle = null, $row = null, $bin = null)
     {
         try {
             // We want to make sure stock doesn't exist on the specified location already
@@ -234,8 +234,8 @@ trait InventoryTrait
             $stock->setAttribute('row', $row);
             $stock->setAttribute('bin', $bin);
 
-            if($stock->save()) {
-                return $stock->put($quantity, $reason, $cost);
+            if($stock->save() && $quantity > 0) {
+                return $stock->put($quantity, $reason, $cost, null, null, $serial);
             }
         }
 

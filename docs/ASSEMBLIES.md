@@ -153,7 +153,7 @@ When adding parts to your items assembly, you have to make sure you're aware of 
 
 #### InvalidPartException
 
-The exception `Stevebauman\Inventory\Exceptions\InvalidPartException` is thrown when you try to add a part to an assembly
+The exception `Trexology\Inventory\Exceptions\InvalidPartException` is thrown when you try to add a part to an assembly
 that contains itself. This exception prevents infinite recursive queries. For example:
 
     $tables = Inventory::create([
@@ -222,7 +222,7 @@ resource intensive on larger assemblies. However this validation is completely n
 
 #### InvalidQuantityException
 
-As such when managing stock quantities, you will receive an `Stevebauman\Inventory\Exceptions\InvalidQuantityException` if
+As such when managing stock quantities, you will receive an `Trexology\Inventory\Exceptions\InvalidQuantityException` if
 and invalid quantity is entered inside any assembly methods that accept a quantity, for example:
 
     // All below methods throw InvalidQuantityException

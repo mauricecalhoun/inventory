@@ -1,6 +1,6 @@
 <?php
 
-namespace Stevebauman\Inventory\Exceptions;
+namespace Trexology\Inventory\Exceptions;
 
 class StockNotFoundException extends \Exception
 {

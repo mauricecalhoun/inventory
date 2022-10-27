@@ -1,8 +1,8 @@
 <?php
 
-namespace Stevebauman\Inventory;
+namespace Trexology\Inventory;
 
-use Stevebauman\Inventory\Exceptions\NoUserLoggedInException;
+use Trexology\Inventory\Exceptions\NoUserLoggedInException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;

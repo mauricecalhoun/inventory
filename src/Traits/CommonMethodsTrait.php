@@ -1,12 +1,12 @@
 <?php
 
-namespace Stevebauman\Inventory\Traits;
+namespace Trexology\Inventory\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
+use Trexology\Inventory\Exceptions\InvalidQuantityException;
 
 trait CommonMethodsTrait
 {
@@ -63,7 +63,7 @@ trait CommonMethodsTrait
      */
     protected function fireEvent($name, $args = [])
     {
-        return Event::fire((string) $name, (array) $args);
+        return Event::dispatch((string) $name, (array) $args);
     }
 
     /**

@@ -1,12 +1,16 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventoryStockTrait;
+use Trexology\Inventory\Traits\InventoryStockTrait;
 
-class InventoryStock extends Model
+class InventoryStock extends BaseModel
 {
     use InventoryStockTrait;
+
+    protected $casts = [
+        'serial' => 'array',
+    ];
 
     /**
      * The belongsTo inventory item relationship.
@@ -45,6 +49,6 @@ class InventoryStock extends Model
      */
     public function location()
     {
-        return $this->hasOne(Location::class);
+        return $this->belongsTo(Location::class);
     }
 }

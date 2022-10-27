@@ -1,10 +1,10 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
+use Trexology\Inventory\Traits\InventoryTransactionHistoryTrait;
 
-class InventoryTransactionHistory extends Model
+class InventoryTransactionHistory extends BaseModel
 {
     use InventoryTransactionHistoryTrait;
 

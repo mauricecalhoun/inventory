@@ -1,11 +1,11 @@
 <?php
 
-namespace Stevebauman\Inventory\Models;
+namespace Trexology\Inventory\Models;
 
-use Stevebauman\Inventory\Traits\InventoryTransactionTrait;
-use Stevebauman\Inventory\Interfaces\StateableInterface;
+use Trexology\Inventory\Traits\InventoryTransactionTrait;
+use Trexology\Inventory\Interfaces\StateableInterface;
 
-class InventoryTransaction extends Model implements StateableInterface
+class InventoryTransaction extends BaseModel implements StateableInterface
 {
     use InventoryTransactionTrait;
 
